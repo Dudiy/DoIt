@@ -113,14 +113,14 @@ class GroupsManager {
   }
 
   Future<GroupInfo> updateGroupInfo({
-    @required String groupIDToChange,
+    @required String groupIdToChange,
     String title,
     String description,
     String photoUrl,
   }) async {
     ShortUserInfo loggedInUser = app.getLoggedInUser();
-    if (loggedInUser == null) throw Exception('GroupManager: Cannot add a new group when a user is not logged in');
-    GroupInfo groupInfo = await getGroupInfoByID(groupIDToChange);
+    if (loggedInUser == null) throw Exception('GroupManager: Cannot update group when a user is not logged in');
+    GroupInfo groupInfo = await getGroupInfoByID(groupIdToChange);
     if (groupInfo == null) throw Exception('GroupManager: cannot update group, groupID was not found in the DB');
     if (groupInfo.managerID != loggedInUser.userID)
       throw Exception('GroupManager: only group managers can update the group info');
@@ -213,8 +213,8 @@ class GroupsManager {
     GroupInfo groupInfo = await getGroupInfoByID(groupID);
     groupInfo.members.remove(userID);
     _firestore
-        .document('$GROUPS/$userID')
-        .updateData({'members': UserUtils.generateUsersMapFromObject(groupInfo.members)});
+        .document('$GROUPS/$groupID')
+        .updateData({'members': UserUtils.generateObjectFromUsersMap(groupInfo.members)});
   }
 
   Future<List<GroupInfo>> getAllGroupsFromDB() async {

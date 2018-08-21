@@ -9,27 +9,6 @@ import 'package:do_it/data_classes/task/task_info_utils.dart';
 import 'package:do_it/data_classes/user/user_info_utils.dart';
 
 class GroupUtils {
-/*  static Map<String, ShortUserInfo> generateMembersMap(membersObject) {
-    Map<String, ShortUserInfo> members = new Map();
-    (membersObject as Map<dynamic, dynamic>).values.forEach((userInfo) {
-      // if we get a map that the values are already valid ShortUser info we add the "as is"
-      if (userInfo.runtimeType == ShortUserInfo) {
-        ShortUserInfo asShortUserInfo = userInfo as ShortUserInfo;
-        members.putIfAbsent(asShortUserInfo.uid, () => asShortUserInfo);
-      } else {
-        // if we get a dynamic map we convert to ShortUserInfo
-        members.putIfAbsent(userInfo['userID'], () {
-          return new ShortUserInfo(
-            userID: userInfo['userID'],
-            displayName: userInfo['displayName'],
-            photoUrl: userInfo['photoUrl'] ?? "",
-          );
-        });
-      }
-    });
-    return members;
-  }*/
-
   static GroupInfo generateGroupInfoFromObject(object) {
     return (object.runtimeType == GroupInfo)
         ? object

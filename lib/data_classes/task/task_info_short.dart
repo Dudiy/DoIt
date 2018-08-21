@@ -55,39 +55,32 @@ class ShortTaskInfo {
 
   Map<String, ShortUserInfo> get assignedUsers => _assignedUsers;
 
-  //TODO delete if not used
-//  static fromJson(String jsonString) {
-//    var object = json.decode(jsonString);
-//    var parentGroup = object['parentGroup'];
-//    ShortTaskInfo shortTaskInfo = new ShortTaskInfo(
-//      taskID: object['taskID'],
-//      title: object['title'],
-//      value: object['value'],
-//      parentGroup: new ShortGroupInfo(
-//        groupID: parentGroup['groupID'],
-//        managerID: parentGroup['managerID'],
-//        title: parentGroup['title'],
-//      ),
-//      isCompleted: object['isCompleted'],
-//      startTime: object['startTime'],
-//      endTime: object['endTime'],
-//      assignedUsers: object['assignedUsers'],
-//    );
-//
-//    return shortTaskInfo;
-//  }
+  // ===========================================================
+  // ========================= Setters =========================
+  // ===========================================================
+  set value(int value) {
+    if (value >= 0) _value = value;
+  }
 
-  //TODO delete if not used
-//  toJson() {
-//    return {
-//      'taskID': taskID,
-//      'title': title,
-//      'value': value,
-//      'parentGroup': json.encode(parentGroup),
-//      'isCompleted': isCompleted,
-//      'startTime': startTime.toString(),
-//      'endTime': endTime.toString(),
-//      'assignedUsers': json.encode(assignedUsers),
-//    };
-//  }
+  set isCompleted(bool value) {
+    if (value != null) _isCompleted = value;
+  }
+
+  set startTime(String value) {
+    if (value != null) {
+      _startTime = value;
+      DateTime startTime = DateTime.parse(_startTime);
+      DateTime endTime = DateTime.parse(_endTime);
+      if (startTime.isAfter(endTime)) {
+        _endTime = null;
+      }
+    }
+  }
+
+  set endTime(String value) {
+    DateTime startTime = DateTime.parse(_startTime);
+    DateTime newEndTime = DateTime.parse(value);
+    if (startTime.isAfter(newEndTime)) throw ArgumentError('End time cannot be before start time');
+    _endTime = value;
+  }
 }

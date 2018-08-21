@@ -81,7 +81,7 @@ class TaskUtils {
       'isCompleted': shortTaskInfo.isCompleted,
       'startTime': shortTaskInfo.startTime.toString(),
       'endTime': shortTaskInfo.endTime.toString(),
-      'assignedUsers': shortTaskInfo.assignedUsers,
+      'assignedUsers': UserUtils.generateObjectFromUsersMap(shortTaskInfo.assignedUsers),
     };
   }
 
@@ -96,7 +96,7 @@ class TaskUtils {
       'isCompleted': taskInfo.isCompleted,
       'startTime': taskInfo.startTime,
       'endTime': taskInfo.endTime,
-      'assignedUsers': taskInfo.assignedUsers,
+      'assignedUsers': UserUtils.generateObjectFromUsersMap(taskInfo.assignedUsers),
       'recurringPolicy': taskInfo.recurringPolicy,
     };
   }

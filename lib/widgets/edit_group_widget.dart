@@ -49,7 +49,7 @@ class EditGroupPageState extends State<EditGroupPage> {
             child: Icon(Icons.save, color: Colors.white),
             onPressed: () async {
               await app.groupsManager.updateGroupInfo(
-                groupIDToChange: widget.groupInfo.groupID,
+                groupIdToChange: widget.groupInfo.groupID,
                 title: _titleController.text.isNotEmpty ? _titleController.text : null,
                 description: _descriptionController.text.isNotEmpty ? _descriptionController.text : null,
                 photoUrl: _photoUrlController.text.isNotEmpty ? _photoUrlController.text : null,

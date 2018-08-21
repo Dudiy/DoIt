@@ -63,7 +63,7 @@ class HomePageState extends State<HomePage> {
             FlatButton(
               child: Icon(Icons.mood, color: Colors.white),
               onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => TestPage()));
+//                Navigator.of(context).push(MaterialPageRoute(builder: (context) => TestPage()));
                 App.instance.test();
               }
             ),

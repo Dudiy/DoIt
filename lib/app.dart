@@ -43,7 +43,7 @@ class App {
     _loggedInUser = user == null ? null : await usersManager.getShortUserInfo(user.uid);
   }
 
-  updateLoggedInUserPhotoUrl(String url){
+  updateLoggedInUserPhotoUrl(String url) {
     _loggedInUser.photoUrl = url;
   }
 
@@ -75,7 +75,19 @@ class App {
   // TODO delete
   Future test() async {
     print('in test');
-    App.instance.groupsManager.joinGroup('2f05b57d-b4b0-40d3-8b50-c3095e4af68e');
+//    App.instance.groupsManager.joinGroup('0bb8e8c5-70bc-497e-81b1-c514532ce021');
+    App.instance.tasksManager.assignTaskToUser(
+      taskID: '9f69bf0a-4547-4ae0-8418-be2258d4ec2e',
+      userID: '7AVyihkEZlUoKkmmQqieswO2vvf1',
+    );
+
+/*    App.instance.tasksManager.updateTask(
+      taskIdToChange: 'ed3fba92-ec85-476f-8753-0297b0315c12',
+      title: 'new title',
+      description: 'new description',
+      startTime: DateTime.now()
+    );*/
+
 //    App.instance.usersManager.deleteUser();
 //    App.instance.groupsManager.deleteGroup(groupID: '3d74aec1-8200-402c-9ca4-8ad16b5d96ad');
   }

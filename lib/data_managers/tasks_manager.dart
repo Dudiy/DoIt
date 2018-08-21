@@ -3,12 +3,14 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it/app.dart';
 import 'package:do_it/constants/db_constants.dart';
+import 'package:do_it/data_classes/group/group_info.dart';
 import 'package:do_it/data_classes/group/group_info_short.dart';
 import 'package:do_it/data_classes/task/task_info.dart';
 import 'package:do_it/data_classes/task/task_info_short.dart';
 import 'package:do_it/data_classes/task/task_info_utils.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/data_classes/user/user_info_utils.dart';
+import 'package:do_it/data_managers/users_manager.dart';
 import 'package:meta/meta.dart';
 
 class TasksManager {
@@ -50,7 +52,7 @@ class TasksManager {
             'monthly': false,
             'yearly': false,
           },
-      assignedUsers: assignedUsers ?? new Map<String, String>(), //TODO does this work?
+      assignedUsers: assignedUsers ?? new Map<String, String>(),
     );
     ShortTaskInfo shortTaskInfo = taskInfo.getShortTaskInfo();
     await _firestore
@@ -69,8 +71,72 @@ class TasksManager {
     });
   }
 
+  // TODO debug and verify this works
+  updateTask(
+      {@required String taskIdToChange,
+      String title,
+      String description,
+      int value,
+      DateTime startTime,
+      DateTime endTime,
+      Map<String, bool> recurringPolicy,
+      Map<String, ShortUserInfo> assignedUsers,
+      bool allowNonManagerUpdate = false}) async {
+    ShortUserInfo loggedInUser = app.loggedInUser;
+    String errorMessagePrefix = 'TasksManager: cannot update task.';
+    if (loggedInUser == null) throw Exception('$errorMessagePrefix User is not logged in');
+    TaskInfo taskInfo = await getTaskById(taskIdToChange);
+    if (taskInfo == null) throw Exception('$errorMessagePrefix TaskID was not found in the DB');
+    if (!allowNonManagerUpdate && taskInfo.parentGroupManagerID != loggedInUser.userID)
+      throw Exception('$errorMessagePrefix Only group managers can update tasks');
+
+    if (title != null) taskInfo.title = title;
+    if (description != null) taskInfo.description = description;
+    if (value != null) taskInfo.value = value;
+    if (startTime != null) taskInfo.startTime = startTime.toString();
+    if (endTime != null) taskInfo.endTime = endTime.toString();
+    if (recurringPolicy != null) taskInfo.recurringPolicy = recurringPolicy;
+    if (assignedUsers != null) taskInfo.assignedUsers = assignedUsers;
+    await _firestore.document('$TASKS/${taskInfo.taskID}').updateData(TaskUtils.generateObjectFromTaskInfo(taskInfo));
+
+    GroupInfo groupInfo = await app.groupsManager.getGroupInfoByID(taskInfo.parentGroupID);
+    groupInfo.tasks[taskIdToChange] = taskInfo.getShortTaskInfo();
+    await _firestore
+        .document('$GROUPS/${taskInfo.parentGroupID}')
+        .updateData({"tasks": TaskUtils.generateObjectFromTasksMap(groupInfo.tasks)});
+    print('TasksManager: task ${taskInfo.title} was updated succesfully');
+    return taskInfo;
+  }
+
+  // TODO debug and verify this works
+  Future<void> assignTaskToUser({String userID, String taskID}) async {
+    ShortUserInfo shortUserInfo = await app.usersManager.getShortUserInfo(userID);
+    TaskInfo taskInfo = await getTaskById(taskID);
+    String errorMessagePrefix = 'TasksManager: cannot update task.';
+    if (shortUserInfo == null) throw Exception('$errorMessagePrefix user was not found in the DB');
+    if (taskInfo == null) throw Exception('$errorMessagePrefix the task was not found in the DB');
+//    if (taskInfo.parentGroupManagerID != app.loggedInUser.userID)
+//      throw Exception('$errorMessagePrefix only the parentGroup manager can assign usrs to tasks');
+    //add user to "tasks" collection
+    taskInfo.assignedUsers.putIfAbsent(userID, () => shortUserInfo);
+    updateTask(
+      taskIdToChange: taskID,
+      assignedUsers: taskInfo.assignedUsers,
+      allowNonManagerUpdate: true,
+    );
+/*    await _firestore
+        .document('$TASKS/$taskID')
+        .updateData({"assignedUsers": UserUtils.generateObjectFromUsersMap(taskInfo.assignedUsers)});*/
+    // add user to the relevant task int the parent group in "groups" collection
+/*    GroupInfo groupInfo = await app.groupsManager.getGroupInfoByID(taskInfo.parentGroupID);
+    groupInfo.tasks[taskID].assignedUsers.putIfAbsent(userID, () => shortUserInfo);
+    await _firestore
+        .document('$GROUPS/${taskInfo.parentGroupID}')
+        .updateData({"tasks": TaskUtils.generateObjectFromTasksMap(groupInfo.tasks)});*/
+  }
+
   // delete from group parameter is for when deleting an entire group - set to false fo efficiency
-  deleteTask(String taskID, [bool deleteFromGroup = true]) async {
+  Future<void> deleteTask(String taskID, [bool deleteFromGroup = true]) async {
     TaskInfo taskInfo = await getTaskById(taskID);
     if (deleteFromGroup) app.groupsManager.removeTaskFromGroup(taskInfo.parentGroupID, taskInfo.taskID);
     _firestore.document('$TASKS/$taskID').delete();
@@ -83,7 +149,7 @@ class TasksManager {
 
   Future<List<ShortTaskInfo>> getAllMyTasks() async {
     String loggedInUserID = app.getLoggedInUserID();
-    List<String> myGroupsIDs = await app.groupsManager.getMyGroupsIDsFromDB(); 
+    List<String> myGroupsIDs = await app.groupsManager.getMyGroupsIDsFromDB();
     QuerySnapshot snapshot = await _firestore.collection('$TASKS').getDocuments();
     List<ShortTaskInfo> myTasks = snapshot.documents.where((doc) {
       ShortTaskInfo shortTaskInfo = TaskUtils.generateShortTaskInfoFromObject(doc.data);
@@ -106,9 +172,11 @@ class TasksManager {
       ShortTaskInfo shortTaskInfo = TaskUtils.generateShortTaskInfoFromObject(taskDoc.data);
       if (shortTaskInfo.assignedUsers.containsKey(userID)) {
         shortTaskInfo.assignedUsers.remove(userID);
-        _firestore
-            .document('$TASKS/${shortTaskInfo.taskID}')
-            .updateData({'assignedUsers': UserUtils.generateObjectFromUsersMap(shortTaskInfo.assignedUsers)});
+        updateTask(
+          taskIdToChange: shortTaskInfo.taskID,
+          assignedUsers: shortTaskInfo.assignedUsers,
+          allowNonManagerUpdate: true,
+        );
       }
     });
   }

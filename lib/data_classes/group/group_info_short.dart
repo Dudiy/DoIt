@@ -37,8 +37,6 @@ class ShortGroupInfo {
       } else {
         ShortTaskInfo shortTaskInfo = TaskUtils.generateShortTaskInfoFromObject(task);
         tasks[shortTaskInfo.taskID] = shortTaskInfo;
-//        String taskAsString = json.encode(task);
-//        tasks[task['taskID']] = ShortTaskInfo.fromJson(taskAsString);
       }
     });
 
