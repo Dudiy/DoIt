@@ -7,7 +7,6 @@ class UserSettingsPage extends StatefulWidget {
 
   UserSettingsPage(this.onSignedOut);
 
-
   @override
   UserSettingsPageState createState() {
     return new UserSettingsPageState();
@@ -31,10 +30,11 @@ class UserSettingsPageState extends State<UserSettingsPage> {
             child: const Text('reset password'),
           ),
           RaisedButton(
-            onPressed: () async {
-              await app.usersManager.deleteUser();
-              widget.onSignedOut();
-              Navigator.pop(context);
+            onPressed: () {
+              app.usersManager.deleteUser().then((val) {
+                widget.onSignedOut();
+                Navigator.pop(context);
+              });
             },
             child: const Text('Delete user'),
           ),

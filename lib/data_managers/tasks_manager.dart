@@ -21,7 +21,8 @@ class TasksManager {
     @required String title,
     @required String description,
     @required int value,
-    @required ShortGroupInfo parentGroup,
+    @required String parentGroupID,
+    @required String parentGroupManagerID,
     DateTime startTime,
     DateTime endTime,
     Object recurringPolicy,
@@ -29,7 +30,7 @@ class TasksManager {
   }) async {
     ShortUserInfo loggedInUser = app.getLoggedInUser();
     if (loggedInUser == null) throw Exception('TaskManager: Cannot add a task when a user is not logged in');
-    if (parentGroup.managerID != loggedInUser.userID) throw Exception('only group manager can add tasks to group');
+    if (parentGroupManagerID != loggedInUser.userID) throw Exception('only group manager can add tasks to group');
 
     String _taskID = App.instance.generateRandomID();
     TaskInfo taskInfo = new TaskInfo(
@@ -37,7 +38,8 @@ class TasksManager {
       title: title,
       description: description,
       value: value,
-      parentGroup: parentGroup,
+      parentGroupID: parentGroupID,
+      parentGroupManagerID: parentGroupManagerID,
       isCompleted: false,
       startTime: startTime ?? DateTime.now().toString(),
       endTime: endTime?.toString(),
@@ -48,7 +50,7 @@ class TasksManager {
             'monthly': false,
             'yearly': false,
           },
-      assignedUsers: assignedUsers ?? new Map<String, ShortUserInfo>(), //TODO does this work?
+      assignedUsers: assignedUsers ?? new Map<String, String>(), //TODO does this work?
     );
     ShortTaskInfo shortTaskInfo = taskInfo.getShortTaskInfo();
     await _firestore
@@ -57,7 +59,7 @@ class TasksManager {
         .whenComplete(() {
       app.groupsManager
           .addTaskToGroup(
-            groupID: parentGroup.groupID,
+            groupID: parentGroupID,
             shortTaskInfo: shortTaskInfo,
           )
           .then((val) => print('TaskManager: Task \"$title\" was added succesfully to group'));
@@ -70,7 +72,7 @@ class TasksManager {
   // delete from group parameter is for when deleting an entire group - set to false fo efficiency
   deleteTask(String taskID, [bool deleteFromGroup = true]) async {
     TaskInfo taskInfo = await getTaskById(taskID);
-    if (deleteFromGroup) app.groupsManager.removeTaskFromGroup(taskInfo.parentGroup.groupID, taskInfo.taskID);
+    if (deleteFromGroup) app.groupsManager.removeTaskFromGroup(taskInfo.parentGroupID, taskInfo.taskID);
     _firestore.document('$TASKS/$taskID').delete();
   }
 
@@ -81,14 +83,20 @@ class TasksManager {
 
   Future<List<ShortTaskInfo>> getAllMyTasks() async {
     String loggedInUserID = app.getLoggedInUserID();
+    List<String> myGroupsIDs = await app.groupsManager.getMyGroupsIDsFromDB(); 
     QuerySnapshot snapshot = await _firestore.collection('$TASKS').getDocuments();
-    List<ShortTaskInfo> myGroups = snapshot.documents.where((doc) {
-      Map<String, ShortUserInfo> assignedUsers = TaskUtils.generateShortTaskInfoFromObject(doc.data).assignedUsers;
-      return assignedUsers.length == null || assignedUsers.length == 0 || assignedUsers.containsKey(loggedInUserID);
+    List<ShortTaskInfo> myTasks = snapshot.documents.where((doc) {
+      ShortTaskInfo shortTaskInfo = TaskUtils.generateShortTaskInfoFromObject(doc.data);
+      Map<String, ShortUserInfo> assignedUsers = shortTaskInfo.assignedUsers;
+      if (assignedUsers.length == null || assignedUsers.length == 0) {
+        return myGroupsIDs.contains(shortTaskInfo.parentGroupID);
+      } else {
+        return assignedUsers.containsKey(loggedInUserID);
+      }
     }).map((docSnap) {
       return TaskUtils.generateShortTaskInfoFromObject(docSnap.data);
     }).toList();
-    return myGroups;
+    return myTasks;
   }
 
   // if the removed user is the only one that the task is assigned to the task will become assigned to all group members

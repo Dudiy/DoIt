@@ -29,18 +29,37 @@ class GroupsManager {
       throw Exception('GroupManager: Cannot get all groups when a user is not logged in');
     }
     QuerySnapshot groupsQuerySnapshot = await _firestore.collection(GROUPS).getDocuments();
-    return conventDBGroupsToObjectList(loggedInUser.userID, groupsQuerySnapshot);
+    return conventDBGroupsToGroupInfoList(loggedInUser.userID, groupsQuerySnapshot);
   }
 
   ///
   /// get groupsQuerySnapshot from db and return only user's groups
   ///
-  static conventDBGroupsToObjectList(String userId, QuerySnapshot groupsQuerySnapshot) {
+  static List<ShortGroupInfo> conventDBGroupsToGroupInfoList(String userId, QuerySnapshot groupsQuerySnapshot) {
     List<ShortGroupInfo> myGroups = groupsQuerySnapshot.documents.where((doc) {
       return userId != null && GroupUtils.generateShortGroupInfoFromObject(doc.data).members.containsKey(userId);
     }).map((docSnap) {
       return GroupUtils.generateShortGroupInfoFromObject(docSnap.data);
     }).toList();
+    return myGroups;
+  }
+
+  Future<List<String>> getMyGroupsIDsFromDB() async {
+    ShortUserInfo loggedInUser = app.getLoggedInUser();
+    if (loggedInUser == null) {
+      throw Exception('GroupManager: Cannot get all groups when a user is not logged in');
+    }
+    QuerySnapshot groupsQuerySnapshot = await _firestore.collection(GROUPS).getDocuments();
+    return conventDBGroupsToGroupIdList(loggedInUser.userID, groupsQuerySnapshot);
+  }
+
+  static List<String> conventDBGroupsToGroupIdList(String userId, QuerySnapshot groupsQuerySnapshot) {
+    List<String> myGroups = new List();
+    groupsQuerySnapshot.documents.where((doc) {
+      return userId != null && GroupUtils.generateShortGroupInfoFromObject(doc.data).members.containsKey(userId);
+    }).forEach((docSnap) {
+      myGroups.add(docSnap.data['groupID']);
+    });
     return myGroups;
   }
 

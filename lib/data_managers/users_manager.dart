@@ -27,7 +27,6 @@ class UsersManager {
     });
   }
 
-  // TODO maybe redundant feature
   Future<void> deleteUser() async {
     if (app.loggedInUser == null) throw Exception('UserManager: Cannot delete - no user is logged in');
     String userID = app.loggedInUser.userID;
@@ -35,7 +34,7 @@ class UsersManager {
     await App.instance.groupsManager.deleteUserFromAllGroups(userID);
     await App.instance.tasksManager.removeUserFromAssignedTasks(userID);
     await _firestore.document('$USERS/$userID').delete();
-    App.instance.authenticator.deleteUser();
+    await App.instance.authenticator.deleteUser();
   }
 
   //we only want the user to be able to change his picture and not hes other data
