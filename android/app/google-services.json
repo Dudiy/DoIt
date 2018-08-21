@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "291233909530",
+    "firebase_url": "https://doit-grouptaskmanager.firebaseio.com",
+    "project_id": "doit-grouptaskmanager",
+    "storage_bucket": "doit-grouptaskmanager.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:291233909530:android:54f64faae0d9503c",
+        "android_client_info": {
+          "package_name": "com.dudior.doit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "291233909530-had7apmbecq55m2irrri8q7n4dsved2v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dudior.doit",
+            "certificate_hash": "607d984683afc300877d852f99e0d36fdef1638e"
+          }
+        },
+        {
+          "client_id": "291233909530-4nehqbu53s58g20cdk6ak4aco7g6srla.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-OuHsd38cOJGWY2cz5sV-3Yhyp2cUNQ8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "291233909530-4nehqbu53s58g20cdk6ak4aco7g6srla.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
