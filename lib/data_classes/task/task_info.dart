@@ -9,7 +9,8 @@ class TaskInfo {
   String _title;
   String _description;
   int _value;
-  ShortGroupInfo _parentGroup;
+  String _parentGroupID;
+  String _parentGroupManagerID;
   bool _isCompleted = false;
   String _startTime;
   String _endTime;
@@ -21,7 +22,8 @@ class TaskInfo {
     @required title,
     @required description,
     @required value,
-    @required parentGroup,
+    @required parentGroupID,
+    @required parentGroupManagerID,
     isCompleted,
     startTime,
     endTime,
@@ -32,7 +34,8 @@ class TaskInfo {
     this._title = title;
     this._description = description;
     this._value = value;
-    this._parentGroup = parentGroup;
+    this._parentGroupID = parentGroupID;
+    this._parentGroupManagerID = parentGroupManagerID;
     this._isCompleted = isCompleted;
     this._startTime = startTime;
     this._endTime = endTime;
@@ -45,10 +48,11 @@ class TaskInfo {
       taskID: taskID,
       title: title,
       value: value,
-      parentGroup: parentGroup,
+      parentGroupID: parentGroupID,
+      parentGroupManagerID: parentGroupManagerID,
       isCompleted: isCompleted,
-      startTime: startTime/*.toString()*/,  // TODO delete commented
-      endTime: endTime/*.toString()*/,
+      startTime: startTime /*.toString()*/, // TODO delete commented
+      endTime: endTime /*.toString()*/,
       assignedUsers: assignedUsers,
     );
   }
@@ -61,7 +65,9 @@ class TaskInfo {
 
   int get value => _value;
 
-  ShortGroupInfo get parentGroup => _parentGroup;
+  String get parentGroupID => _parentGroupID;
+
+  String get parentGroupManagerID => _parentGroupManagerID;
 
   bool get isCompleted => _isCompleted;
 

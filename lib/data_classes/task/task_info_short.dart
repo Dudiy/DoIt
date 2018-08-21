@@ -9,7 +9,8 @@ class ShortTaskInfo {
   String _taskID;
   String _title;
   int _value;
-  ShortGroupInfo _parentGroup;
+  String _parentGroupID;
+  String _parentGroupManagerID;
   bool _isCompleted = false;
   String _startTime;
   String _endTime;
@@ -19,7 +20,8 @@ class ShortTaskInfo {
       {@required taskID,
       @required title,
       @required value,
-      @required parentGroup,
+      @required parentGroupID,
+      @required parentGroupManagerID,
       @required isCompleted,
       @required startTime,
       @required endTime,
@@ -27,7 +29,8 @@ class ShortTaskInfo {
     this._taskID = taskID;
     this._title = title;
     this._value = value;
-    this._parentGroup = parentGroup;
+    this._parentGroupID = parentGroupID;
+    this._parentGroupManagerID = parentGroupManagerID;
     this._isCompleted = isCompleted;
     this._startTime = startTime;
     this._endTime = endTime;
@@ -40,7 +43,9 @@ class ShortTaskInfo {
 
   int get value => _value;
 
-  ShortGroupInfo get parentGroup => _parentGroup;
+  String get parentGroupID => _parentGroupID;
+
+  String get parentGroupManagerID => _parentGroupManagerID;
 
   bool get isCompleted => _isCompleted;
 

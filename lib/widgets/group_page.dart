@@ -135,7 +135,8 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                     endTime: _endTimeController.text.isNotEmpty ? DateTime.parse(_endTimeController.text) : null,
                     assignedUsers: null,
                     recurringPolicy: null,
-                    parentGroup: groupInfo.getShortGroupInfo(),
+                    parentGroupID: groupInfo.groupID,
+                    parentGroupManagerID: groupInfo.managerID,
                   );
                   Navigator.pop(context);
                 },
