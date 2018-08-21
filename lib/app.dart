@@ -75,7 +75,8 @@ class App {
   // TODO delete
   Future test() async {
     print('in test');
-//    App.instance.authenticator.deleteUser();
+    App.instance.groupsManager.joinGroup('2f05b57d-b4b0-40d3-8b50-c3095e4af68e');
+//    App.instance.usersManager.deleteUser();
 //    App.instance.groupsManager.deleteGroup(groupID: '3d74aec1-8200-402c-9ca4-8ad16b5d96ad');
   }
 }
