@@ -52,7 +52,6 @@ public class NfcActivity extends FlutterActivity {
                 public void onMethodCall(MethodCall call, Result result) {
                     if (call.method.equals(GET_LAST_TEXT_READ_AND_RESET)) {
                         result.success(textRead);
-                        textRead = null;
                     } else if (call.method.equals(GET_STATE)) {
                         result.success(nfcState.getId().equals(NfcState.READ.getId()) ?
                             NfcState.READ.getId() :
@@ -96,7 +95,7 @@ public class NfcActivity extends FlutterActivity {
                 }
             } else if (nfcState == NfcState.WRITE) {
                 Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-                NdefMessage ndefMessage = createNdefMessage(textRead);
+                NdefMessage ndefMessage = createNdefMessage("NEW WRITE");
                 writeNdefMessage(tag, ndefMessage);
             } else {
                 throw new NotImplementedError("unknown nfc state");
