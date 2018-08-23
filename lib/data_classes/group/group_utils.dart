@@ -1,8 +1,3 @@
-import 'dart:async';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:do_it/app.dart';
-import 'package:do_it/constants/db_constants.dart';
 import 'package:do_it/data_classes/group/group_info.dart';
 import 'package:do_it/data_classes/group/group_info_short.dart';
 import 'package:do_it/data_classes/task/task_info_utils.dart';

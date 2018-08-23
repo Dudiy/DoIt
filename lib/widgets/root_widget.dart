@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:do_it/app.dart';
 import 'package:do_it/authenticator.dart';
 import 'package:do_it/widgets/home_page.dart';
-import 'package:do_it/widgets/login_widget.dart';
+import 'package:do_it/widgets/login/login_widget.dart';
 import 'package:flutter/material.dart';
 
 enum eAuthenticationStatus { SIGNED_IN, NOT_SIGNED_IN }

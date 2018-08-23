@@ -67,6 +67,7 @@ class GroupsManager {
 
   Future<GroupInfo> getGroupInfoByID(String groupID) async {
     DocumentSnapshot groupRef = await _firestore.document('$GROUPS/$groupID').get();
+    if (groupRef.data == null) throw ('GroupsManager: groupID \'$groupID\' was nof found in the DB');
     return GroupUtils.generateGroupInfoFromObject(groupRef.data);
   }
 
@@ -250,8 +251,8 @@ class GroupsManager {
       };
     });
     QuerySnapshot snapshot = await _firestore.collection('$GROUPS/$groupID/$COMPLETED_TASKS').getDocuments();
-    var myTasks = snapshot.documents.where((doc) {
-      DateTime completedTime = DateTime.parse(doc.data['completedTime']);
+    snapshot.documents.where((doc) {
+      DateTime completedTime = doc.data['completedTime'];
       bool isAfterFromDate = fromDate == null ? true : completedTime.isAfter(fromDate);
       return isAfterFromDate && completedTime.isBefore(toDate);
     }).forEach((doc) {

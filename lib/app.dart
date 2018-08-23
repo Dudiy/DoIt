@@ -77,16 +77,16 @@ class App {
     var app = App.instance;
 
     print('in test');
-//    App.instance.groupsManager.joinGroup('0bb8e8c5-70bc-497e-81b1-c514532ce021');
-//    app.tasksManager.assignTaskToUser(
-//      taskID: '9f69bf0a-4547-4ae0-8418-be2258d4ec2e',
-//      userID: '7AVyihkEZlUoKkmmQqieswO2vvf1',
-//    );
-    await app.tasksManager
+//    App.instance.groupsManager.joinGroup('2c560738-7457-4ebb-af05-1d9cfec46f89');
+    /*app.tasksManager.assignTaskToUser(
+      taskID: '9f69bf0a-4547-4ae0-8418-be2258d4ec2e',
+      userID: '7AVyihkEZlUoKkmmQqieswO2vvf1',
+    );*/
+    /*await app.tasksManager
         .completeTask(
-      taskID: 'b0228d1b-4454-453d-b340-8e439a4defe4',
+      taskID: 'c9402590-cd7e-469d-8563-5e5e2fe6577a',
       userWhoCompletedID: '9Pw9pPNz8YYoFLM6QI7pDxrONIk1',
-    );
+    );*/
 //        .then((v) {
     /*await app.tasksManager.unCompleteTask(
       parentGroupID: 'af05e893-50b0-49c4-9333-9376bf99266f',
@@ -94,14 +94,10 @@ class App {
     );*/
 //    });
 
-/*    App.instance.tasksManager.updateTask(
-      taskIdToChange: 'ed3fba92-ec85-476f-8753-0297b0315c12',
-      title: 'new title',
-      description: 'new description',
-      startTime: DateTime.now()
-    );*/
-
-//    App.instance.usersManager.deleteUser();
-//    App.instance.groupsManager.deleteGroup(groupID: '3d74aec1-8200-402c-9ca4-8ad16b5d96ad');
+    Map<String, Map<String, dynamic>> groupScoreboards =
+        await app.groupsManager.getGroupScoreboards(groupID: '2c560738-7457-4ebb-af05-1d9cfec46f89');
+    groupScoreboards.forEach((userID, map){
+      print('\t${map['userInfo'].displayName}:   ${map['score']}');
+    });
   }
 }

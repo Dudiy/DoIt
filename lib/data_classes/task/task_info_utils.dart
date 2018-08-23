@@ -1,4 +1,3 @@
-import 'package:do_it/data_classes/group/group_utils.dart';
 import 'package:do_it/data_classes/task/task_info.dart';
 import 'package:do_it/data_classes/task/task_info_completed.dart';
 import 'package:do_it/data_classes/task/task_info_short.dart';
@@ -33,7 +32,6 @@ class TaskUtils {
         title: taskObject['title'],
         description: taskObject['description'],
         value: taskObject['value'],
-        isCompleted: taskObject['isCompleted'],
         startTime: taskObject['startTime'],
         endTime: taskObject['endTime'],
         parentGroupID: taskObject['parentGroupID'],
@@ -53,7 +51,6 @@ class TaskUtils {
       taskID: object['taskID'],
       title: object['title'],
       value: object['value'],
-      isCompleted: object['isCompleted'],
       startTime: object['startTime'],
       endTime: object['endTime'],
       parentGroupID: object['parentGroupID'],
@@ -79,9 +76,8 @@ class TaskUtils {
       'value': shortTaskInfo.value,
       'parentGroupID': shortTaskInfo.parentGroupID,
       'parentGroupManagerID': shortTaskInfo.parentGroupManagerID,
-      'isCompleted': shortTaskInfo.isCompleted,
-      'startTime': shortTaskInfo.startTime.toString(),
-      'endTime': shortTaskInfo.endTime.toString(),
+      'startTime': shortTaskInfo.startTime,
+      'endTime': shortTaskInfo.endTime,
       'assignedUsers': UserUtils.generateObjectFromUsersMap(shortTaskInfo.assignedUsers),
     };
   }
@@ -94,7 +90,6 @@ class TaskUtils {
       'value': taskInfo.value,
       'parentGroupID': taskInfo.parentGroupID,
       'parentGroupManagerID': taskInfo.parentGroupManagerID,
-      'isCompleted': taskInfo.isCompleted,
       'startTime': taskInfo.startTime,
       'endTime': taskInfo.endTime,
       'assignedUsers': UserUtils.generateObjectFromUsersMap(taskInfo.assignedUsers),

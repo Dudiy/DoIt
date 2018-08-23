@@ -69,11 +69,12 @@ public class NfcActivity extends FlutterActivity {
             });
     }
 
-    @Override
+    //TODO uncomment
+/*    @Override
     protected void onResume() {
-        super.onResume();
         enableForegroundDispatchSystem();
-    }
+        super.onResume();
+    }*/
 
     @Override
     protected void onPause() {

@@ -49,10 +49,13 @@ class GroupInfo {
 
   String get managerID => _managerID;
 
+  // ignore: unnecessary_getters_setters
   String get title => _title;
 
+  // ignore: unnecessary_getters_setters
   String get description => _description;
 
+  // ignore: unnecessary_getters_setters
   Object get photoUrl => _photoUrl;
 
   Map<String, ShortUserInfo> get members => _members;
@@ -61,9 +64,12 @@ class GroupInfo {
 
   Map<String, Object> get taskCompletionHistory => _taskCompletionHistory;
 
+  // ignore: unnecessary_getters_setters
   set title(String value) => _title = value;
 
+  // ignore: unnecessary_getters_setters
   set photoUrl(Object value) => _photoUrl = value;
 
+  // ignore: unnecessary_getters_setters
   set description(String value) => _description = value;
 }

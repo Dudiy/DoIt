@@ -8,21 +8,21 @@ import 'package:do_it/data_classes/task/task_info_short.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/data_managers/groups_manager.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
-import 'package:do_it/widgets/edit_group_widget.dart';
+import 'package:do_it/widgets/groups/group_details_page.dart';
 import 'package:flutter/material.dart';
 
-class GroupDetailsPage extends StatefulWidget {
+class SingleGroupPage extends StatefulWidget {
   final GroupInfo groupInfo;
 
-  GroupDetailsPage(this.groupInfo);
+  SingleGroupPage(this.groupInfo);
 
   @override
-  GroupDetailsPageState createState() {
-    return new GroupDetailsPageState(groupInfo);
+  SingleGroupPageState createState() {
+    return new SingleGroupPageState(groupInfo);
   }
 }
 
-class GroupDetailsPageState extends State<GroupDetailsPage> {
+class SingleGroupPageState extends State<SingleGroupPage> {
   final App app = App.instance;
   List<ShortTaskInfo> _groupTasks;
   GroupInfo groupInfo;
@@ -30,7 +30,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
 // for remove groups listener
   StreamSubscription<DocumentSnapshot> _streamSubscriptionTasks;
 
-  GroupDetailsPageState(this.groupInfo);
+  SingleGroupPageState(this.groupInfo);
 
   @override
   void initState() {
@@ -71,24 +71,49 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
           onVerticalDragDown: (details) => getMyGroupTasksFromDB(),
           child: Container(
             child: ListView(
-              children: getAllTasks(),
+              children: getTasks(),
             ),
           ),
         ),
         floatingActionButton: _drawAddTaskButton());
   }
 
-  List<Widget> getAllTasks() {
-    return _groupTasks == null
-        ? [Text('Fetching tasks from server...')]
-        : _groupTasks.length == 0
-            ? [ListTile(title: Text("There are no tasks in this group yet"))]
-            : _groupTasks.map((taskInfo) {
-                return ListTile(
-                  title: Text(taskInfo.title),
-                  subtitle: Text(taskInfo.isCompleted ? 'completed' : 'incomplete'),
-                );
-              }).toList();
+  List<Widget> getTasks() {
+    if (_groupTasks == null) return [Text('Fetching tasks from server...')];
+    if (_groupTasks.length == 0) return [ListTile(title: Text("There are no tasks in this group yet"))];
+    List<Widget> tasksList = new List();
+    tasksList.add(Center(
+        child: Text(
+      'Tasks assigned to me',
+      style: Theme.of(context).textTheme.title.copyWith(decoration: TextDecoration.underline),
+    )));
+    _groupTasks.forEach((taskInfo) {
+      if (taskInfo.assignedUsers == null ||
+          taskInfo.assignedUsers.length == 0 ||
+          taskInfo.assignedUsers.containsKey(app.loggedInUser.userID)) {
+        tasksList.add(ListTile(
+          title: Text(taskInfo.title),
+          subtitle: Text(taskInfo.value.toString()),
+        ));
+      }
+    });
+    tasksList.add(Center(
+        child: Text(
+      'Tasks assigned to others',
+      style: Theme.of(context).textTheme.title.copyWith(decoration: TextDecoration.underline),
+    )));
+
+    _groupTasks.forEach((taskInfo) {
+      if (taskInfo.assignedUsers != null &&
+          taskInfo.assignedUsers.length != 0 &&
+          !taskInfo.assignedUsers.containsKey(app.loggedInUser.userID)) {
+        tasksList.add(ListTile(
+          title: Text(taskInfo.title),
+          subtitle: Text(taskInfo.value.toString()),
+        ));
+      }
+    });
+    return tasksList;
   }
 
   Future<void> _showDialog() async {
@@ -191,16 +216,16 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
 
   List<Widget> _drawEditAndDelete() {
     List<Widget> buttons = new List();
+    buttons.add(FlatButton(
+      child: Icon(Icons.info_outline, color: Colors.white),
+      onPressed: () async {
+        ShortUserInfo managerInfo = await app.usersManager.getShortUserInfo(groupInfo.managerID);
+        Navigator
+            .of(context)
+            .push(MaterialPageRoute(builder: (context) => GroupDetailsPage(groupInfo, managerInfo, _groupInfoChanged)));
+      },
+    ));
     if (app.getLoggedInUserID() == groupInfo.managerID) {
-      buttons.add(FlatButton(
-        child: Icon(Icons.edit, color: Colors.white),
-        onPressed: () async {
-          ShortUserInfo managerInfo = await app.usersManager.getShortUserInfo(groupInfo.managerID);
-          Navigator
-              .of(context)
-              .push(MaterialPageRoute(builder: (context) => EditGroupPage(groupInfo, managerInfo, _groupInfoChanged)));
-        },
-      ));
       buttons.add(FlatButton(
         child: Icon(Icons.delete, color: Colors.white),
         onPressed: () async {

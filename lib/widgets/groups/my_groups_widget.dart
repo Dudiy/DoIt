@@ -8,8 +8,7 @@ import 'package:do_it/data_classes/task/task_info_short.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/data_managers/groups_manager.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
-import 'package:do_it/widgets/group_page.dart';
-import 'package:do_it/widgets/user_settings_page.dart';
+import 'package:do_it/widgets/groups/single_group_page.dart';
 import 'package:flutter/material.dart';
 
 class MyGroupsPage extends StatefulWidget {
@@ -94,7 +93,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
         subtitle: Text(group.tasksPerUser[App.instance.getLoggedInUser().userID].toString()),
         onTap: () {
           app.groupsManager.getGroupInfoByID(group.groupID).then((groupInfo) {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => GroupDetailsPage(groupInfo)));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => SingleGroupPage(groupInfo)));
           });
         },
       );

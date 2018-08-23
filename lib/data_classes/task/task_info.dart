@@ -1,4 +1,3 @@
-import 'package:do_it/data_classes/group/group_info_short.dart';
 import 'package:do_it/data_classes/task/task_info_completed.dart';
 import 'package:do_it/data_classes/task/task_info_short.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
@@ -8,18 +7,12 @@ import 'package:meta/meta.dart';
 class TaskInfo {
   String _taskID;
   String _title;
-
-  set title(String value) {
-    _title = value;
-  }
-
   String _description;
   int _value;
   String _parentGroupID;
   String _parentGroupManagerID;
-  bool _isCompleted = false;
-  String _startTime;
-  String _endTime;
+  DateTime _startTime;
+  DateTime _endTime;
   Map<String, dynamic> _recurringPolicy;
   Map<String, ShortUserInfo> _assignedUsers;
 
@@ -30,7 +23,6 @@ class TaskInfo {
     @required value,
     @required parentGroupID,
     @required parentGroupManagerID,
-    isCompleted,
     startTime,
     endTime,
     recurringPolicy,
@@ -42,7 +34,6 @@ class TaskInfo {
     this._value = value;
     this._parentGroupID = parentGroupID;
     this._parentGroupManagerID = parentGroupManagerID;
-    this._isCompleted = isCompleted;
     this._startTime = startTime;
     this._endTime = endTime;
     this._recurringPolicy = recurringPolicy;
@@ -56,9 +47,8 @@ class TaskInfo {
       value: value,
       parentGroupID: parentGroupID,
       parentGroupManagerID: parentGroupManagerID,
-      isCompleted: isCompleted,
-      startTime: startTime /*.toString()*/, // TODO delete commented
-      endTime: endTime /*.toString()*/,
+      startTime: startTime,
+      endTime: endTime,
       assignedUsers: assignedUsers,
     );
   }
@@ -66,10 +56,13 @@ class TaskInfo {
   // ===========================================================
   // ========================= Getters =========================
   // ===========================================================
+
   String get taskID => _taskID;
 
+  // ignore: unnecessary_getters_setters
   String get title => _title;
 
+  // ignore: unnecessary_getters_setters
   String get description => _description;
 
   int get value => _value;
@@ -78,11 +71,9 @@ class TaskInfo {
 
   String get parentGroupManagerID => _parentGroupManagerID;
 
-  bool get isCompleted => _isCompleted;
+  DateTime get startTime => _startTime;
 
-  String get startTime => _startTime;
-
-  String get endTime => _endTime;
+  DateTime get endTime => _endTime;
 
   Map<String, dynamic> get recurringPolicy => _recurringPolicy;
 
@@ -91,40 +82,28 @@ class TaskInfo {
   // ===========================================================
   // ========================= Setters =========================
   // ===========================================================
+
+  // ignore: unnecessary_getters_setters
   set description(String value) => _description = value;
+
+  // ignore: unnecessary_getters_setters
+  set title(String value) => _title = value;
 
   set value(int value) {
     if (value >= 0) _value = value;
   }
 
-  set isCompleted(bool value) {
-    if (value != null) _isCompleted = value;
-  }
-
-  set startTime(String value) {
+  set startTime(DateTime value) {
     if (value != null) {
       _startTime = value;
-      DateTime startTime, endTime;
-      if (_startTime != null && _startTime.isNotEmpty) {
-        startTime = DateTime.parse(_startTime);
-      }
-      if (_endTime != null && _endTime.isNotEmpty) {
-        endTime = DateTime.parse(_endTime);
-      }
       if (startTime != null && endTime != null && startTime.isAfter(endTime)) {
         _endTime = null;
       }
     }
   }
 
-  set endTime(String value) {
-    DateTime startTime, newEndTime;
-    if (_startTime != null && _startTime.isNotEmpty) {
-      startTime = DateTime.parse(_startTime);
-    }
-    if (value != null && value.isNotEmpty) {
-      newEndTime = DateTime.parse(value);
-    }
+  set endTime(DateTime value) {
+    DateTime newEndTime = value;
     if (startTime != null && newEndTime != null && startTime.isAfter(newEndTime))
       throw ArgumentError('End time cannot be before start time');
     _endTime = value;
@@ -153,7 +132,7 @@ class TaskInfo {
       description: description,
       parentGroupID: parentGroupID,
       parentGroupManagerID: parentGroupManagerID,
-      completedTime: DateTime.now().toString(),
+      completedTime: DateTime.now(),
       userWhoCompleted: userWhoCompleted,
     );
   }

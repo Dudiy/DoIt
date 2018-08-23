@@ -55,7 +55,7 @@ class _LifecycleNfcWatcherState extends State<LifecycleNfcWatcher> with WidgetsB
           print("NFC TEST: there isn't data to read");
         }
       });
-    } on PlatformException catch (e) {
+    } on PlatformException {
       print("NFC exception");
     }
   }

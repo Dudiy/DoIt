@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 //import 'package:do_it/widgets/image_picker.dart';
 
 class UserSettingsPage extends StatefulWidget {
-  VoidCallback onSignedOut;
+  final VoidCallback onSignedOut;
 
   UserSettingsPage(this.onSignedOut);
 

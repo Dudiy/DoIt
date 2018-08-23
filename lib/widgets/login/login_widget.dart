@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it/app.dart';
 import 'package:do_it/authenticator.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
-import 'package:do_it/widgets/register_widget.dart';
+import 'package:do_it/widgets/login/register_widget.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {

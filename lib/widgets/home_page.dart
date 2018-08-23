@@ -1,15 +1,10 @@
-import 'dart:async';
-
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:do_it/app.dart';
-import 'package:do_it/data_classes/group/group_info_short.dart';
 import 'package:do_it/LifecycleNfcWatcher.dart';
-import 'package:do_it/widgets/my_groups_widget.dart';
+import 'package:do_it/app.dart';
+import 'package:do_it/widgets/groups/my_groups_widget.dart';
 import 'package:do_it/widgets/nfc_write_widget.dart';
-import 'package:do_it/widgets/test_page.dart';
-import 'package:do_it/widgets/user_settings_page.dart';
+import 'package:do_it/widgets/users/user_settings_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class HomePage extends StatefulWidget {
   final VoidCallback onSignedOut;
@@ -32,7 +27,6 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  List<ShortGroupInfo> _myGroups;
   AssetImage defaultImage = AssetImage('assets/images/loading_profile_pic.png');
   String photoUrl = App.instance.loggedInUser?.photoUrl ?? "";
 
@@ -52,9 +46,7 @@ class HomePageState extends State<HomePage> {
                 children: <Widget>[
                   _getDefaultProfile(),
                   _getProfilePicFromDB(),
-                  Container(
-                      child: LifecycleNfcWatcher()
-                  ),
+                  Container(child: LifecycleNfcWatcher()),
                 ],
               ),
             ),
@@ -66,12 +58,11 @@ class HomePageState extends State<HomePage> {
               onPressed: widget._signOut,
             ),
             FlatButton(
-              child: Icon(Icons.mood, color: Colors.white),
-              onPressed: () {
+                child: Icon(Icons.mood, color: Colors.white),
+                onPressed: () {
 //                Navigator.of(context).push(MaterialPageRoute(builder: (context) => TestPage()));
-                App.instance.test();
-              }
-            ),
+                  App.instance.test();
+                }),
             FlatButton(
               child: Icon(Icons.settings, color: Colors.white),
               onPressed: () {
@@ -83,9 +74,7 @@ class HomePageState extends State<HomePage> {
             FlatButton(
               child: Icon(Icons.nfc, color: Colors.white),
               onPressed: () {
-                Navigator
-                    .of(context)
-                    .push(MaterialPageRoute(builder: (context) => NfcWritePage()));
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => NfcWritePage()));
                 // TODO call set state of nfc to write
               },
             ),

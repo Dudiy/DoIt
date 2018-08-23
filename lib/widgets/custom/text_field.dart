@@ -5,21 +5,17 @@ class DoItTextField extends StatelessWidget {
   final String label;
   final TextInputType textInputType;
   final maxLength;
-  bool isRequired;
-  bool enabled;
-
+  final bool isRequired;
+  final bool enabled;
 
   DoItTextField({
     @required this.controller,
     @required this.label,
     this.textInputType,
     this.maxLength,
-    isRequired,
-    enabled,
-  }) {
-    this.isRequired = isRequired ?? false;
-    this.enabled = enabled ?? true;
-  }
+    this.isRequired = false,
+    this.enabled = true,
+  });
 
   @override
   Widget build(BuildContext context) {

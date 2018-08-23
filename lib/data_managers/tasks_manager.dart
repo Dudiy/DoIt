@@ -4,14 +4,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it/app.dart';
 import 'package:do_it/constants/db_constants.dart';
 import 'package:do_it/data_classes/group/group_info.dart';
-import 'package:do_it/data_classes/group/group_info_short.dart';
 import 'package:do_it/data_classes/task/task_info.dart';
 import 'package:do_it/data_classes/task/task_info_completed.dart';
 import 'package:do_it/data_classes/task/task_info_short.dart';
 import 'package:do_it/data_classes/task/task_info_utils.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
-import 'package:do_it/data_classes/user/user_info_utils.dart';
-import 'package:do_it/data_managers/users_manager.dart';
 import 'package:meta/meta.dart';
 
 class TasksManager {
@@ -43,8 +40,7 @@ class TasksManager {
       value: value,
       parentGroupID: parentGroupID,
       parentGroupManagerID: parentGroupManagerID,
-      isCompleted: false,
-      startTime: startTime ?? DateTime.now().toString(),
+      startTime: startTime ?? DateTime.now(),
       endTime: endTime?.toString(),
       recurringPolicy: recurringPolicy ??
           {
@@ -93,8 +89,8 @@ class TasksManager {
     if (title != null) taskInfo.title = title;
     if (description != null) taskInfo.description = description;
     if (value != null) taskInfo.value = value;
-    if (startTime != null) taskInfo.startTime = startTime.toString();
-    if (endTime != null) taskInfo.endTime = endTime.toString();
+    if (startTime != null) taskInfo.startTime = startTime;
+    if (endTime != null) taskInfo.endTime = endTime;
     if (recurringPolicy != null) taskInfo.recurringPolicy = recurringPolicy;
     if (assignedUsers != null) taskInfo.assignedUsers = assignedUsers;
     await _firestore.document('$TASKS/${taskInfo.taskID}').updateData(TaskUtils.generateObjectFromTaskInfo(taskInfo));
