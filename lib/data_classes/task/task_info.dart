@@ -44,6 +44,7 @@ class TaskInfo {
     return new ShortTaskInfo(
       taskID: taskID,
       title: title,
+      description: description,
       value: value,
       parentGroupID: parentGroupID,
       parentGroupManagerID: parentGroupManagerID,

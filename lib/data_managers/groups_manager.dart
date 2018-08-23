@@ -250,14 +250,32 @@ class GroupsManager {
         'score': 0,
       };
     });
-    QuerySnapshot snapshot = await _firestore.collection('$GROUPS/$groupID/$COMPLETED_TASKS').getDocuments();
+    await getCompletedTasks(groupID: groupID, fromDate: fromDate, toDate: toDate).then((completedTasks) {
+      completedTasks.forEach((completedTask) {
+        scoreBoard[completedTask.userWhoCompleted.userID]['score'] += completedTask.value;
+      });
+    });
+/*    QuerySnapshot snapshot = await _firestore.collection('$GROUPS/$groupID/$COMPLETED_TASKS').getDocuments();
     snapshot.documents.where((doc) {
       DateTime completedTime = doc.data['completedTime'];
       bool isAfterFromDate = fromDate == null ? true : completedTime.isAfter(fromDate);
       return isAfterFromDate && completedTime.isBefore(toDate);
     }).forEach((doc) {
       scoreBoard[doc.data['userWhoCompleted']['userID']]['score'] += doc.data['value'];
-    });
+    });*/
     return scoreBoard;
+  }
+
+  Future<List<CompletedTaskInfo>> getCompletedTasks(
+      {@required String groupID, DateTime fromDate, DateTime toDate}) async {
+    if (toDate == null) toDate = DateTime.now();
+    QuerySnapshot snapshot = await _firestore.collection('$GROUPS/$groupID/$COMPLETED_TASKS').getDocuments();
+    return snapshot.documents.where((doc) {
+      DateTime completedTime = doc.data['completedTime'];
+      bool isAfterFromDate = fromDate == null ? true : completedTime.isAfter(fromDate);
+      return isAfterFromDate && completedTime.isBefore(toDate);
+    }).map((doc) {
+      return TaskUtils.generateCompletedTaskInfoFromObject(doc.data);
+    }).toList();
   }
 }

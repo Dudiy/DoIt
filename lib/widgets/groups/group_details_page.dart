@@ -2,6 +2,7 @@ import 'package:do_it/app.dart';
 import 'package:do_it/data_classes/group/group_info.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
+import 'package:do_it/widgets/groups/scoreboard_widget.dart';
 import 'package:flutter/material.dart';
 
 class GroupDetailsPage extends StatefulWidget {
@@ -22,7 +23,9 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
   final TextEditingController _photoUrlController = new TextEditingController();
   final TextEditingController _groupIDController = new TextEditingController();
   final TextEditingController _managerDisplayNameController = new TextEditingController();
+
   bool editEnabled;
+  List<StatelessWidget> _scoreBoardWidget;
 
   @override
   void initState() {
@@ -62,6 +65,20 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
           Column(
             children: getAllMembers(),
           ),
+          /*Column(
+            children: _scoreBoardWidget,
+          )*/
+          Container(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                  child: Text(
+                'Score Board',
+                style: Theme.of(context).textTheme.title.copyWith(decoration: TextDecoration.underline),
+              )),
+            ),
+          ),
+          ScoreBoard(widget.groupInfo),
         ],
       ),
     );
@@ -110,5 +127,36 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
             );
           }).toList());
     return list;
+  }
+
+  getScoreBoard() {
+    List<StatelessWidget> list = new List();
+    list.add(Container(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Center(
+            child: Text(
+          'Score Board',
+          style: Theme.of(context).textTheme.title.copyWith(decoration: TextDecoration.underline),
+        )),
+      ),
+    ));
+    if (_scoreBoardWidget == null) {
+      list.add(Text('fetchig score board from DB...'));
+      _scoreBoardWidget = list;
+    }
+    app.groupsManager.getGroupScoreboards(groupID: widget.groupInfo.groupID).then((scoreBoard) {
+      scoreBoard.forEach((userID, userScoreMap) {
+        ShortUserInfo userInfo = userScoreMap['userInfo'];
+        list.add(ListTile(
+          title: Text(userInfo.displayName),
+          subtitle: userScoreMap['score'],
+        ));
+      });
+    }).then((val) {
+      setState(() {
+        _scoreBoardWidget = list;
+      });
+    });
   }
 }

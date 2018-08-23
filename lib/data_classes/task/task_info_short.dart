@@ -5,6 +5,7 @@ import 'package:meta/meta.dart';
 class ShortTaskInfo {
   String _taskID;
   String _title;
+  String _description;
   int _value;
   String _parentGroupID;
   String _parentGroupManagerID;
@@ -15,6 +16,7 @@ class ShortTaskInfo {
   ShortTaskInfo(
       {@required taskID,
       @required title,
+      @required description,
       @required value,
       @required parentGroupID,
       @required parentGroupManagerID,
@@ -23,6 +25,7 @@ class ShortTaskInfo {
       @required assignedUsers}) {
     this._taskID = taskID;
     this._title = title;
+    this._description = description;
     this._value = value;
     this._parentGroupID = parentGroupID;
     this._parentGroupManagerID = parentGroupManagerID;
@@ -34,6 +37,9 @@ class ShortTaskInfo {
   String get taskID => _taskID;
 
   String get title => _title;
+
+  // ignore: unnecessary_getters_setters
+  String get description => _description;
 
   int get value => _value;
 
@@ -50,6 +56,10 @@ class ShortTaskInfo {
   // ===========================================================
   // ========================= Setters =========================
   // ===========================================================
+
+  // ignore: unnecessary_getters_setters
+  set description(String value) => _description = value;
+
   set value(int value) {
     if (value >= 0) _value = value;
   }

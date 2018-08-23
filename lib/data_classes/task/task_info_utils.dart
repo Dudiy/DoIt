@@ -50,6 +50,7 @@ class TaskUtils {
     return new ShortTaskInfo(
       taskID: object['taskID'],
       title: object['title'],
+      description: object['description'],
       value: object['value'],
       startTime: object['startTime'],
       endTime: object['endTime'],
@@ -73,6 +74,7 @@ class TaskUtils {
     return {
       'taskID': shortTaskInfo.taskID,
       'title': shortTaskInfo.title,
+      'description': shortTaskInfo.description,
       'value': shortTaskInfo.value,
       'parentGroupID': shortTaskInfo.parentGroupID,
       'parentGroupManagerID': shortTaskInfo.parentGroupManagerID,
