@@ -7,6 +7,7 @@ import 'package:do_it/constants/db_constants.dart';
 import 'package:do_it/data_classes/group/group_info.dart';
 import 'package:do_it/data_classes/group/group_info_short.dart';
 import 'package:do_it/data_classes/group/group_utils.dart';
+import 'package:do_it/data_classes/task/task_info_completed.dart';
 import 'package:do_it/data_classes/task/task_info_short.dart';
 import 'package:do_it/data_classes/task/task_info_utils.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
@@ -20,6 +21,7 @@ class GroupsManager {
   GroupsManager(this._firestore);
 
   /* ############## GET FROM DB ############## */
+
   ///
   /// get all current user's groups from db
   ///
@@ -141,7 +143,7 @@ class GroupsManager {
     if (loggedInUserID == null) throw new Exception('GroupManager: User is not logged in, cannot delete group');
     if (groupInfo.managerID != loggedInUserID)
       throw new Exception('GroupManager: Only the group manager can delete a group');
-    groupInfo.tasks.forEach((taskID, taskInfo){
+    groupInfo.tasks.forEach((taskID, taskInfo) {
       app.tasksManager.deleteTask(taskID, false);
     });
     await _firestore.document('$GROUPS/$groupID').delete();
@@ -191,6 +193,16 @@ class GroupsManager {
     });
   }
 
+  Future<void> addCompletedTaskToGroup({
+    @required String groupID,
+    @required CompletedTaskInfo completedTaskInfo,
+  }) async {
+    if (app.getLoggedInUser() == null) throw Exception('GroupsManager: cannot add task when user is not logged in');
+    await _firestore
+        .document('$GROUPS/$groupID/$COMPLETED_TASKS/${completedTaskInfo.taskID}')
+        .setData(TaskUtils.generateObjectFromCompletedTaskInfo(completedTaskInfo));
+  }
+
   Future<void> deleteAllGroupsUserIsManagerOf(String userId) async {
     getAllGroupsFromDB().then((allGroups) {
       allGroups.forEach((group) {
@@ -222,5 +234,29 @@ class GroupsManager {
     return snapshot.documents.map((doc) {
       return GroupUtils.generateGroupInfoFromObject(doc.data);
     }).toList();
+  }
+
+  Future<Map<String, Map<String, dynamic>>> getGroupScoreboards(
+      {@required String groupID, DateTime fromDate, DateTime toDate}) async {
+    if (toDate == null) toDate = DateTime.now();
+    Map<String, Map<String, dynamic>> scoreBoard = new Map();
+    Map<String, ShortUserInfo> allGroupMembers = await getGroupInfoByID(groupID).then((groupInfo) {
+      return groupInfo.members;
+    });
+    allGroupMembers.forEach((userID, userInfo) {
+      scoreBoard[userID] = {
+        'userInfo': userInfo,
+        'score': 0,
+      };
+    });
+    QuerySnapshot snapshot = await _firestore.collection('$GROUPS/$groupID/$COMPLETED_TASKS').getDocuments();
+    var myTasks = snapshot.documents.where((doc) {
+      DateTime completedTime = DateTime.parse(doc.data['completedTime']);
+      bool isAfterFromDate = fromDate == null ? true : completedTime.isAfter(fromDate);
+      return isAfterFromDate && completedTime.isBefore(toDate);
+    }).forEach((doc) {
+      scoreBoard[doc.data['userWhoCompleted']['userID']]['score'] += doc.data['value'];
+    });
+    return scoreBoard;
   }
 }

@@ -6,6 +6,7 @@ import 'package:do_it/constants/db_constants.dart';
 import 'package:do_it/data_classes/group/group_info.dart';
 import 'package:do_it/data_classes/group/group_info_short.dart';
 import 'package:do_it/data_classes/task/task_info.dart';
+import 'package:do_it/data_classes/task/task_info_completed.dart';
 import 'package:do_it/data_classes/task/task_info_short.dart';
 import 'package:do_it/data_classes/task/task_info_utils.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
@@ -71,8 +72,7 @@ class TasksManager {
     });
   }
 
-  // TODO debug and verify this works
-  updateTask(
+  Future<TaskInfo> updateTask(
       {@required String taskIdToChange,
       String title,
       String description,
@@ -108,7 +108,52 @@ class TasksManager {
     return taskInfo;
   }
 
-  // TODO debug and verify this works
+  Future<void> completeTask({@required String taskID, @required String userWhoCompletedID}) async {
+    // validations and error checking
+    ShortUserInfo loggedInUser = app.loggedInUser;
+    String errorMessagePrefix = 'TasksManager: cannot complete task.';
+    if (loggedInUser == null) throw Exception('$errorMessagePrefix User is not logged in');
+    ShortUserInfo userWhoCompleted = await app.usersManager.getShortUserInfo(userWhoCompletedID);
+    if (loggedInUser == null) throw Exception('$errorMessagePrefix User who completed was not found in the DB');
+    TaskInfo taskInfo = await getTaskById(taskID);
+    if (taskInfo == null) throw Exception('$errorMessagePrefix TaskID was not found in the DB');
+    GroupInfo parentGroupInfo = await app.groupsManager.getGroupInfoByID(taskInfo.parentGroupID);
+    if (parentGroupInfo == null || !parentGroupInfo.members.containsKey(userWhoCompletedID))
+      throw Exception('$errorMessagePrefix The given user is not a member of the task\'s parent group \n'
+          'or parent group was not found in the DB');
+    if (taskInfo.assignedUsers.length > 0 && !taskInfo.assignedUsers.containsKey(userWhoCompletedID))
+      throw Exception('$errorMessagePrefix The given user was not assigned to this task');
+
+    // complete the task (add completedTaskInfo to the groups sub-collection -> delete the original task)
+    CompletedTaskInfo completedTaskInfo = taskInfo.generateCompletedTaskInfo(userWhoCompleted: userWhoCompleted);
+    await deleteTask(taskID);
+    await app.groupsManager.addCompletedTaskToGroup(
+      groupID: parentGroupInfo.groupID,
+      completedTaskInfo: completedTaskInfo,
+    );
+    print('TaskManager: taskID: $taskID has been completed');
+  }
+
+  Future<void> unCompleteTask({@required String parentGroupID, @required String taskID}) async {
+    CompletedTaskInfo completedTask = await getCompletedTask(parentGroupID, taskID);
+    addTask(
+      title: completedTask.title,
+      description: completedTask.description,
+      value: completedTask.value,
+      parentGroupID: completedTask.parentGroupID,
+      parentGroupManagerID: completedTask.parentGroupManagerID,
+    );
+    await _firestore.document('$GROUPS/$parentGroupID/$COMPLETED_TASKS/$taskID').delete();
+  }
+
+  Future<CompletedTaskInfo> getCompletedTask(String parentGroupID, String taskID) async {
+    DocumentSnapshot documentSnapshot =
+        await _firestore.document('$GROUPS/$parentGroupID/$COMPLETED_TASKS/$taskID').get();
+    if (documentSnapshot == null)
+      throw Exception('Completed task, was not found in \"$GROUPS/$parentGroupID/$COMPLETED_TASKS/$taskID\"');
+    return TaskUtils.generateCompletedTaskInfoFromObject(documentSnapshot.data);
+  }
+
   Future<void> assignTaskToUser({String userID, String taskID}) async {
     ShortUserInfo shortUserInfo = await app.usersManager.getShortUserInfo(userID);
     TaskInfo taskInfo = await getTaskById(taskID);

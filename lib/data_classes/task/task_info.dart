@@ -1,4 +1,5 @@
 import 'package:do_it/data_classes/group/group_info_short.dart';
+import 'package:do_it/data_classes/task/task_info_completed.dart';
 import 'package:do_it/data_classes/task/task_info_short.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/data_classes/user/user_info_utils.dart';
@@ -143,7 +144,17 @@ class TaskInfo {
       _assignedUsers = value;
     }
   }
-}
 
-// TODO implement
-class CompletedTaskInfo {}
+  CompletedTaskInfo generateCompletedTaskInfo({@required ShortUserInfo userWhoCompleted}) {
+    return CompletedTaskInfo(
+      taskID: taskID,
+      title: title,
+      value: value,
+      description: description,
+      parentGroupID: parentGroupID,
+      parentGroupManagerID: parentGroupManagerID,
+      completedTime: DateTime.now().toString(),
+      userWhoCompleted: userWhoCompleted,
+    );
+  }
+}

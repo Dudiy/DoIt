@@ -74,12 +74,25 @@ class App {
 
   // TODO delete
   Future test() async {
+    var app = App.instance;
+
     print('in test');
 //    App.instance.groupsManager.joinGroup('0bb8e8c5-70bc-497e-81b1-c514532ce021');
-    App.instance.tasksManager.assignTaskToUser(
-      taskID: '9f69bf0a-4547-4ae0-8418-be2258d4ec2e',
-      userID: '7AVyihkEZlUoKkmmQqieswO2vvf1',
+//    app.tasksManager.assignTaskToUser(
+//      taskID: '9f69bf0a-4547-4ae0-8418-be2258d4ec2e',
+//      userID: '7AVyihkEZlUoKkmmQqieswO2vvf1',
+//    );
+    await app.tasksManager
+        .completeTask(
+      taskID: 'b0228d1b-4454-453d-b340-8e439a4defe4',
+      userWhoCompletedID: '9Pw9pPNz8YYoFLM6QI7pDxrONIk1',
     );
+//        .then((v) {
+    /*await app.tasksManager.unCompleteTask(
+      parentGroupID: 'af05e893-50b0-49c4-9333-9376bf99266f',
+      taskID: '7e7c01d2-3fac-4957-a095-bf30d7bff15d',
+    );*/
+//    });
 
 /*    App.instance.tasksManager.updateTask(
       taskIdToChange: 'ed3fba92-ec85-476f-8753-0297b0315c12',

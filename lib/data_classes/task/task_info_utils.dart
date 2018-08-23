@@ -1,5 +1,6 @@
 import 'package:do_it/data_classes/group/group_utils.dart';
 import 'package:do_it/data_classes/task/task_info.dart';
+import 'package:do_it/data_classes/task/task_info_completed.dart';
 import 'package:do_it/data_classes/task/task_info_short.dart';
 import 'package:do_it/data_classes/user/user_info_utils.dart';
 
@@ -99,5 +100,32 @@ class TaskUtils {
       'assignedUsers': UserUtils.generateObjectFromUsersMap(taskInfo.assignedUsers),
       'recurringPolicy': taskInfo.recurringPolicy,
     };
+  }
+
+  static Map<String, dynamic> generateObjectFromCompletedTaskInfo(CompletedTaskInfo completedTaskInfo) {
+    return {
+      'taskID': completedTaskInfo.taskID,
+      'title': completedTaskInfo.title,
+      'description': completedTaskInfo.description,
+      'value': completedTaskInfo.value,
+      'parentGroupID': completedTaskInfo.parentGroupID,
+      'parentGroupManagerID': completedTaskInfo.parentGroupManagerID,
+      'completedTime': completedTaskInfo.completedTime,
+      'userWhoCompleted': UserUtils.generateObjectFromShortUserInfo(completedTaskInfo.userWhoCompleted),
+    };
+  }
+
+  static CompletedTaskInfo generateCompletedTaskInfoFromObject(object) {
+    if (object.runtimeType == CompletedTaskInfo) return object;
+    return new CompletedTaskInfo(
+      taskID: object['taskID'],
+      title: object['title'],
+      description: object['description'],
+      value: object['value'],
+      parentGroupID: object['parentGroupID'],
+      parentGroupManagerID: object['parentGroupManagerID'],
+      completedTime: object['completedTime'],
+      userWhoCompleted: UserUtils.generateShortUserInfoFromObject(object['userWhoCompleted']),
+    );
   }
 }
