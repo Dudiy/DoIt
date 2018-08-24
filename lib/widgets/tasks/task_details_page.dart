@@ -181,6 +181,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
         });
   }
 
+  // TODO stopped here 2018-08-25
   void updateAssignedUsers(Map<String, dynamic> _updatedAssignedUsers) {
     _parentGroupMembers.keys.forEach((userID) async {
       if (!_assignedUsers.containsKey(userID) && _updatedAssignedUsers[userID]['isSelected']) {
