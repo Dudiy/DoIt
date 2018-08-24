@@ -278,4 +278,19 @@ class GroupsManager {
       return TaskUtils.generateCompletedTaskInfoFromObject(doc.data);
     }).toList();
   }
+
+  Future<ShortUserInfo> addMember({@required String groupID, @required String newMemberEmail}) async {
+    ShortUserInfo newMemberInfo = await app.usersManager.getShortUserInfoByEmail(newMemberEmail);
+    if (newMemberInfo == null) throw Exception('GroupsManager: No user found in the DB with the given email addres');
+    getGroupInfoByID(groupID).then((groupInfo) {
+      if (!groupInfo.members.containsKey(newMemberInfo.userID)) {
+        groupInfo.members.putIfAbsent(newMemberInfo.userID, () => newMemberInfo);
+        _firestore
+            .document('$GROUPS/${groupInfo.groupID}')
+            .updateData(<String, dynamic>{'members': UserUtils.generateObjectFromUsersMap(groupInfo.members)});
+        print('GroupManager: ${newMemberInfo.displayName} was added to the group ${groupInfo.title}');
+      }
+    });
+    return newMemberInfo;
+  }
 }

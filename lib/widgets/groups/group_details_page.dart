@@ -24,6 +24,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
   final TextEditingController _groupIDController = new TextEditingController();
   final TextEditingController _managerDisplayNameController = new TextEditingController();
 
+  Map<String, ShortUserInfo> _groupMembers;
   bool editEnabled;
   List<StatelessWidget> _scoreBoardWidget;
 
@@ -35,6 +36,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
     _titleController.text = widget.groupInfo.title;
     _descriptionController.text = widget.groupInfo.description;
     _photoUrlController.text = widget.groupInfo.photoUrl;
+    _groupMembers = widget.groupInfo.members;
     super.initState();
   }
 
@@ -111,11 +113,25 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
     list.add(Container(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Center(
-            child: Text(
-          'Group Members',
-          style: Theme.of(context).textTheme.title.copyWith(decoration: TextDecoration.underline),
-        )),
+        child: Stack(
+          children: <Widget>[
+            Center(
+                child: Text(
+              'Group Members',
+              style: Theme.of(context).textTheme.title.copyWith(decoration: TextDecoration.underline),
+            )),
+            Positioned(
+              right: 10.0,
+              top: -11.0,
+              child: IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () {
+                  _showAddMemberDialog();
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     ));
     list.addAll(widget.groupInfo.members == null || widget.groupInfo.members.length == 0
@@ -158,5 +174,41 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
         _scoreBoardWidget = list;
       });
     });
+  }
+
+  void _showAddMemberDialog() async {
+    TextEditingController _emailController = new TextEditingController();
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return new SimpleDialog(
+            title: Text('Test'),
+            children: <Widget>[
+              DoItTextField(
+                controller: _emailController,
+                label: 'Email',
+                textInputType: TextInputType.emailAddress,
+                isRequired: true,
+              ),
+              RaisedButton(
+                onPressed: () async {
+                  await app.groupsManager
+                      .addMember(
+                    groupID: widget.groupInfo.groupID,
+                    newMemberEmail: _emailController.text,
+                  )
+                      .then((newMember) {
+                    setState(() {
+                      _groupMembers.putIfAbsent(newMember.userID, () => newMember);
+                    });
+                  });
+                  Navigator.pop(context);
+                },
+                child: const Text('Ok'),
+              )
+            ],
+          );
+        });
   }
 }

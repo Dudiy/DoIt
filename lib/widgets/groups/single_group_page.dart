@@ -10,6 +10,7 @@ import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/data_managers/groups_manager.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:do_it/widgets/groups/group_details_page.dart';
+import 'package:do_it/widgets/tasks/task_details_page.dart';
 import 'package:flutter/material.dart';
 
 class SingleGroupPage extends StatefulWidget {
@@ -180,6 +181,11 @@ class SingleGroupPageState extends State<SingleGroupPage> {
                   fetchCompletedTasksFromServer();
                 });
               }),
+          onTap: () {
+            app.tasksManager.getTaskById(taskInfo.taskID).then((taskInfo) {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetailsPage(taskInfo)));
+            });
+          },
         ));
       }
     });

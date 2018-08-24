@@ -1,14 +1,16 @@
+import 'dart:async';
+
 import 'package:do_it/app.dart';
 import 'package:do_it/data_classes/task/task_info.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
-import 'package:do_it/widgets/groups/scoreboard_widget.dart';
+import 'package:do_it/widgets/users/user_selector.dart';
 import 'package:flutter/material.dart';
 
 class TaskDetailsPage extends StatefulWidget {
   final TaskInfo taskInfo;
-  final Function onGroupInfoChanged;
-  TaskDetailsPage(this.taskInfo, this.onGroupInfoChanged);
+//  final Function onGroupInfoChanged;
+  TaskDetailsPage(this.taskInfo /*, this.onGroupInfoChanged*/);
 
   @override
   TaskDetailsPageState createState() => new TaskDetailsPageState();
@@ -25,7 +27,8 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
   final TextEditingController _endTimeController = new TextEditingController();
 
   bool editEnabled;
-  List<StatelessWidget> _scoreBoardWidget;
+  Map<String, ShortUserInfo> _parentGroupMembers;
+  Map<String, ShortUserInfo> _assignedUsers;
 
   @override
   void initState() {
@@ -36,6 +39,14 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
     _valueController.text = widget.taskInfo.value.toString();
     _startTimeController.text = widget.taskInfo.startTime.toString();
     _endTimeController.text = widget.taskInfo.endTime.toString();
+    app.groupsManager.getGroupInfoByID(widget.taskInfo.parentGroupID).then((parentGroupInfo) {
+      setState(() {
+        _parentGroupMembers = parentGroupInfo.members;
+        _assignedUsers = widget.taskInfo.assignedUsers == null || widget.taskInfo.assignedUsers.length == 0
+            ? Map.from(_parentGroupMembers)
+            : widget.taskInfo.assignedUsers;
+      });
+    });
     super.initState();
   }
 
@@ -66,7 +77,11 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
                     textInputType: TextInputType.numberWithOptions(),
                   ),
                   //TODO add date pickers
-                  DoItTextField(controller: _startTimeController, label: 'Start time', enabled: editEnabled,),
+                  DoItTextField(
+                    controller: _startTimeController,
+                    label: 'Start time',
+                    enabled: editEnabled,
+                  ),
                   DoItTextField(controller: _endTimeController, label: 'End time', enabled: editEnabled),
                 ])),
           ),
@@ -90,12 +105,14 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
             title: _titleController.text.isNotEmpty ? _titleController.text : null,
             description: _descriptionController.text.isNotEmpty ? _descriptionController.text : null,
             value: _valueController.text.isNotEmpty ? int.parse(_valueController.text) : null,
-            startTime: _startTimeController.text.isNotEmpty ? DateTime.parse(_valueController.text) : null,
-            endTime: _endTimeController.text.isNotEmpty ? DateTime.parse(_valueController.text) : null,
+            startTime: _startTimeController.text.isNotEmpty ? DateTime.parse(_startTimeController.text) : null,
+            endTime: _endTimeController.text.isNotEmpty && _endTimeController.text != "null"
+                ? DateTime.parse(_endTimeController.text)
+                : null,
             // TODO add recurring policy
           )
               .then((newGroupInfo) {
-                // TODO check if we need this
+            // TODO check if we need this
 //            widget.onTaskInfoChanged(newGroupInfo);
           });
           Navigator.pop(context);
@@ -105,56 +122,101 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
   }
 
   List<Widget> getAssignedUsers() {
-    List<StatelessWidget> list = new List();
+    List<Widget> list = new List();
     list.add(Container(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Center(
-            child: Text(
-          'Assigned users',
-          style: Theme.of(context).textTheme.title.copyWith(decoration: TextDecoration.underline),
-        )),
+      child: Stack(
+        children: <Widget>[
+          _drawEditAssignedUsersButton(),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+                child: Text(
+              'Assigned users',
+              style: Theme.of(context).textTheme.title.copyWith(decoration: TextDecoration.underline),
+            )),
+          ),
+        ],
       ),
     ));
-    list.addAll(widget.groupInfo.members == null || widget.groupInfo.members.length == 0
-        ? [Text('The group has no members...')]
-        : widget.groupInfo.members.values.map((shortUserInfo) {
-            return ListTile(
-              title: Text(shortUserInfo.displayName),
-              subtitle: Text(shortUserInfo.userID),
-            );
-          }).toList());
+    if (widget.taskInfo.assignedUsers == null || widget.taskInfo.assignedUsers.length == 0) {
+      _parentGroupMembers == null
+          ? list.add(Center(child: Text(('Fetching assigned users from DB...'))))
+          : _parentGroupMembers.forEach((userID, shortUserInfo) {
+              list.add(ListTile(
+                // TODO display with a nicer widget
+                title: Text(shortUserInfo.displayName),
+              ));
+            });
+    } else {
+      _assignedUsers.forEach((userID, shortUserInfo) {
+        list.add(ListTile(
+          // TODO display with a nicer widget
+          title: Text(shortUserInfo.displayName),
+        ));
+      });
+    }
     return list;
   }
 
-  getScoreBoard() {
-    List<StatelessWidget> list = new List();
-    list.add(Container(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Center(
-            child: Text(
-          'Score Board',
-          style: Theme.of(context).textTheme.title.copyWith(decoration: TextDecoration.underline),
-        )),
-      ),
-    ));
-    if (_scoreBoardWidget == null) {
-      list.add(Text('fetchig score board from DB...'));
-      _scoreBoardWidget = list;
-    }
-    app.groupsManager.getGroupScoreboards(groupID: widget.groupInfo.groupID).then((scoreBoard) {
-      scoreBoard.forEach((userID, userScoreMap) {
-        ShortUserInfo userInfo = userScoreMap['userInfo'];
-        list.add(ListTile(
-          title: Text(userInfo.displayName),
-          subtitle: userScoreMap['score'],
-        ));
-      });
-    }).then((val) {
+  _showEditAssignedUsersDialog() {
+    Map<String, dynamic> _updatedAssignedUsers = new Map();
+    _parentGroupMembers.forEach((userID, userInfo) {
+      _updatedAssignedUsers.putIfAbsent(
+          userID,
+          () => {
+                'userInfo': userInfo,
+                'isSelected': false,
+              });
+    });
+    _assignedUsers.keys.forEach((userID) {
+      _updatedAssignedUsers[userID]['isSelected'] = true;
+    });
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return new Dialog(
+            child: UserSelector(_updatedAssignedUsers, updateAssignedUsers),
+          );
+        });
+  }
+
+  void updateAssignedUsers(Map<String, dynamic> _updatedAssignedUsers) {
+    _parentGroupMembers.keys.forEach((userID) async {
+      if (!_assignedUsers.containsKey(userID) && _updatedAssignedUsers[userID]['isSelected']) {
+        // user was assigned
+        await app.tasksManager.assignTaskToUser(userID: userID, taskID: widget.taskInfo.taskID);
+      } else if (_assignedUsers.containsKey(userID) && !_updatedAssignedUsers[userID]['isSelected']) {
+        // user was removed
+        await app.tasksManager.removeUserFromAssignedTask(userID: userID, taskID: widget.taskInfo.taskID);
+      }
+    });
+    _getAssignedUsersFromDB();
+    Navigator.pop(context);
+  }
+
+  void _getAssignedUsersFromDB() {
+    app.tasksManager.getTaskById(widget.taskInfo.taskID).then((taskInfo) {
       setState(() {
-        _scoreBoardWidget = list;
+        _assignedUsers = Map.from(taskInfo.assignedUsers);
       });
     });
+  }
+
+  _drawEditAssignedUsersButton() {
+    return app.loggedInUser.userID == widget.taskInfo.parentGroupManagerID ?
+      Positioned(
+        right: 10.0,
+        child: IconButton(
+          icon: Icon(Icons.edit),
+          onPressed: () {
+
+              // TODO implement assigned users selector
+              _showEditAssignedUsersDialog();
+
+          },
+        ),
+      )
+        : Container(height: 0.0, width: 0.0);
   }
 }

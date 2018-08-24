@@ -94,10 +94,14 @@ class App {
     );*/
 //    });
 
-    Map<String, Map<String, dynamic>> groupScoreboards =
+/*    Map<String, Map<String, dynamic>> groupScoreboards =
         await app.groupsManager.getGroupScoreboards(groupID: '2c560738-7457-4ebb-af05-1d9cfec46f89');
     groupScoreboards.forEach((userID, map){
       print('\t${map['userInfo'].displayName}:   ${map['score']}');
-    });
+    });*/
+
+//    ShortUserInfo shortUserInfoByEmail = await app.usersManager.getShortUserInfoByEmail('d@d.com');
+    ShortUserInfo shortUserInfoByEmail2 = await app.usersManager.getShortUserInfoByEmail('d@da.com');
+    print('end of test');
   }
 }

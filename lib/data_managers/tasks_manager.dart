@@ -207,7 +207,7 @@ class TasksManager {
   }
 
   // if the removed user is the only one that the task is assigned to the task will become assigned to all group members
-  Future<void> removeUserFromAssignedTasks(String userID) async {
+  Future<void> removeUserFromAllAssignedTasks(String userID) async {
     QuerySnapshot snapshot = await _firestore.collection('$TASKS').getDocuments();
     snapshot.documents.forEach((taskDoc) {
       ShortTaskInfo shortTaskInfo = TaskUtils.generateShortTaskInfoFromObject(taskDoc.data);
@@ -216,6 +216,19 @@ class TasksManager {
         updateTask(
           taskIdToChange: shortTaskInfo.taskID,
           assignedUsers: shortTaskInfo.assignedUsers,
+          allowNonManagerUpdate: true,
+        );
+      }
+    });
+  }
+
+  Future<void> removeUserFromAssignedTask({String userID, String taskID}) async {
+    getTaskById(taskID).then((taskInfo) {
+      if (taskInfo.assignedUsers.containsKey(userID)) {
+        taskInfo.assignedUsers.remove(userID);
+        updateTask(
+          taskIdToChange: taskInfo.taskID,
+          assignedUsers: taskInfo.assignedUsers,
           allowNonManagerUpdate: true,
         );
       }

@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it/app.dart';
 import 'package:do_it/constants/db_constants.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
+import 'package:do_it/data_classes/user/user_info_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
@@ -29,7 +30,7 @@ class UsersManager {
     String userID = app.loggedInUser.userID;
     await App.instance.groupsManager.deleteAllGroupsUserIsManagerOf(userID);
     await App.instance.groupsManager.deleteUserFromAllGroups(userID);
-    await App.instance.tasksManager.removeUserFromAssignedTasks(userID);
+    await App.instance.tasksManager.removeUserFromAllAssignedTasks(userID);
     await _firestore.document('$USERS/$userID').delete();
     await App.instance.authenticator.deleteUser();
   }
@@ -65,5 +66,22 @@ class UsersManager {
         App.instance.loggedInUser.photoUrl = uploadTask.downloadUrl.toString();
       });
     }
+  }
+
+  // returns null if given email is not found
+  Future<ShortUserInfo> getShortUserInfoByEmail(String newMemberEmail) async {
+    ShortUserInfo newMemberInfo;
+    QuerySnapshot query =
+        await _firestore.collection('$USERS').where('email', isEqualTo: newMemberEmail).getDocuments();
+    List<DocumentSnapshot> documents = query.documents;
+    if (documents.length > 0) {
+      DocumentSnapshot newMemberDoc = query.documents.firstWhere((doc) {
+        return doc.data['email'] == newMemberEmail;
+      });
+      if (newMemberDoc.data != null) {
+        newMemberInfo = UserUtils.generateShortUserInfoFromObject(newMemberDoc.data);
+      }
+    }
+    return newMemberInfo;
   }
 }
