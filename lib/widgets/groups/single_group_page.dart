@@ -27,11 +27,12 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   final App app = App.instance;
   List<ShortTaskInfo> _groupTasks;
   List<CompletedTaskInfo> _completedTasks;
-  Map<String, bool> _groupTasksCompleted = new Map();
+  Map<String, bool> _myTasksCheckboxes = new Map();
   GroupInfo groupInfo;
   bool myTasksIsExpanded = true;
   bool othersTasksIsExpanded = false;
   bool completedTasksIsExpanded = false;
+  int daysBeforeTodayToShowCompletedTasks;
 
 // for remove groups listener
   StreamSubscription<DocumentSnapshot> _streamSubscriptionTasks;
@@ -65,7 +66,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     app.groupsManager.getMyGroupTasksFromDB(groupInfo.groupID).then((tasks) {
       setState(() {
         _groupTasks = tasks;
-        _groupTasksCompleted
+        _myTasksCheckboxes
             .addAll(Map.fromIterable(tasks, key: (task) => (task as ShortTaskInfo).taskID, value: (task) => false));
       });
     });
@@ -75,7 +76,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     app.groupsManager.getCompletedTasks(groupID: groupInfo.groupID).then((completedTasks) {
       setState(() {
         _completedTasks = completedTasks;
-        _groupTasksCompleted.addAll(Map.fromIterable(completedTasks,
+        _myTasksCheckboxes.addAll(Map.fromIterable(completedTasks,
             key: (completedTask) => (completedTask as CompletedTaskInfo).taskID, value: (completedTask) => true));
       });
     });
@@ -103,6 +104,9 @@ class SingleGroupPageState extends State<SingleGroupPage> {
                             break;
                           case 2:
                             completedTasksIsExpanded = !completedTasksIsExpanded;
+                            if (completedTasksIsExpanded) {
+                              fetchCompletedTasksFromServer();
+                            }
                             break;
                         }
                       });
@@ -125,7 +129,18 @@ class SingleGroupPageState extends State<SingleGroupPage> {
                       ),
                       ExpansionPanel(
                         headerBuilder: (BuildContext context, bool isExpanded) {
-                          return Center(child: Text('Completed tasks', style: Theme.of(context).textTheme.title));
+                          return Stack(
+                            children: <Widget>[
+                              Center(child: Text('Completed tasks', style: Theme.of(context).textTheme.title)),
+                              Positioned(
+                                child: IconButton(
+                                  icon: Icon(Icons.refresh),
+                                  onPressed: () => fetchCompletedTasksFromServer(),
+                                ),
+                                right: 0.0,
+                              ),
+                            ],
+                          );
                         },
                         body: getCompletedTasks(),
                         isExpanded: completedTasksIsExpanded,
@@ -154,12 +169,16 @@ class SingleGroupPageState extends State<SingleGroupPage> {
           title: Text('${taskInfo.title} (${taskInfo.value.toString()})'),
           subtitle: Text(taskInfo.description ?? "no description", maxLines: 3),
           trailing: Checkbox(
-              value: _groupTasksCompleted[taskInfo.taskID] ?? false,
+              value: _myTasksCheckboxes[taskInfo.taskID] ?? false,
               onChanged: (value) {
                 setState(() {
-                  _groupTasksCompleted[taskInfo.taskID] = true;
+                  _myTasksCheckboxes[taskInfo.taskID] = true;
                 });
-                app.tasksManager.completeTask(taskID: taskInfo.taskID, userWhoCompletedID: app.loggedInUser.userID);
+                app.tasksManager
+                    .completeTask(taskID: taskInfo.taskID, userWhoCompletedID: app.loggedInUser.userID)
+                    .then((val) {
+                  fetchCompletedTasksFromServer();
+                });
               }),
         ));
       }
@@ -200,8 +219,10 @@ class SingleGroupPageState extends State<SingleGroupPage> {
             padding: const EdgeInsets.fromLTRB(6.0, 0.0, 6.0, 6.0),
             child: RaisedButton(
               child: Text('past week'),
-              onPressed: () =>
-                  fetchCompletedTasksFromServer(fromDate: DateTime.now().add(Duration(days: -7)), toDate: DateTime.now()),
+              onPressed: () {
+                daysBeforeTodayToShowCompletedTasks = 7;
+                fetchCompletedTasksFromServer();
+              },
             ),
           ),
         ),
@@ -210,10 +231,10 @@ class SingleGroupPageState extends State<SingleGroupPage> {
             padding: const EdgeInsets.fromLTRB(6.0, 0.0, 6.0, 6.0),
             child: RaisedButton(
               child: Text('past month'),
-              onPressed: () => fetchCompletedTasksFromServer(
-                    fromDate: DateTime.now().add(Duration(days: -30)),
-                    toDate: DateTime.now(),
-                  ),
+              onPressed: () {
+                daysBeforeTodayToShowCompletedTasks = 30;
+                fetchCompletedTasksFromServer();
+              },
             ),
           ),
         ),
@@ -222,13 +243,26 @@ class SingleGroupPageState extends State<SingleGroupPage> {
             padding: const EdgeInsets.fromLTRB(6.0, 0.0, 6.0, 6.0),
             child: RaisedButton(
               child: Text('all time'),
-              onPressed: () => fetchCompletedTasksFromServer(),
+              onPressed: () {
+                daysBeforeTodayToShowCompletedTasks = 0;
+                fetchCompletedTasksFromServer();
+              },
             ),
           ),
         ),
       ],
     );
-    if (_completedTasks == null) return timeSpanSelectors;
+    if (_completedTasks == null) {
+      return Column(
+        children: <Widget>[
+          timeSpanSelectors,
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Center(child: Text("Please select a timespan")),
+          ),
+        ],
+      );
+    }
     if (_completedTasks.length == 0)
       return Column(
         children: <Widget>[
@@ -248,13 +282,23 @@ class SingleGroupPageState extends State<SingleGroupPage> {
           completedTask.description ?? "no description",
           maxLines: 3,
         ),
+        trailing: Checkbox(
+            value: _myTasksCheckboxes[completedTask.taskID] ?? true,
+            onChanged: (value) {
+              setState(() {
+                _myTasksCheckboxes[completedTask.taskID] = false;
+                app.tasksManager
+                    .unCompleteTask(parentGroupID: completedTask.parentGroupID, taskID: completedTask.taskID)
+                    .then((val) {
+                  fetchCompletedTasksFromServer();
+                });
+              });
+            }),
+        enabled: app.loggedInUser.userID == completedTask.userWhoCompleted.userID ||
+            app.loggedInUser.userID == completedTask.parentGroupManagerID,
       ));
     });
-    return Padding(
-        padding: EdgeInsets.all(20.0),
-        child: Column(
-          children: tasksList
-        ));
+    return Padding(padding: EdgeInsets.all(20.0), child: Column(children: tasksList));
   }
 
   Future<void> _showDialog() async {
@@ -392,7 +436,12 @@ class SingleGroupPageState extends State<SingleGroupPage> {
         : null;
   }
 
-  void fetchCompletedTasksFromServer({DateTime fromDate, DateTime toDate}) {
+  void fetchCompletedTasksFromServer() {
+    if (daysBeforeTodayToShowCompletedTasks == null || !completedTasksIsExpanded) return;
+    DateTime toDate = DateTime.now();
+    DateTime fromDate = daysBeforeTodayToShowCompletedTasks == 0
+        ? DateTime.now().add(Duration(days: -daysBeforeTodayToShowCompletedTasks))
+        : null;
     app.groupsManager
         .getCompletedTasks(groupID: widget.groupInfo.groupID, fromDate: fromDate, toDate: toDate)
         .then((completedTasks) {

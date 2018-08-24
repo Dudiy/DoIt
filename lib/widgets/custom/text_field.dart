@@ -9,8 +9,8 @@ class DoItTextField extends StatelessWidget {
   final bool enabled;
 
   DoItTextField({
-    @required this.controller,
     @required this.label,
+    this.controller,
     this.textInputType,
     this.maxLength,
     this.isRequired = false,
