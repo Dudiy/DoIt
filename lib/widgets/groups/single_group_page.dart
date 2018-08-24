@@ -154,7 +154,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
           title: Text('${taskInfo.title} (${taskInfo.value.toString()})'),
           subtitle: Text(taskInfo.description ?? "no description", maxLines: 3),
           trailing: Checkbox(
-              value: _groupTasksCompleted[taskInfo.taskID],
+              value: _groupTasksCompleted[taskInfo.taskID] ?? false,
               onChanged: (value) {
                 setState(() {
                   _groupTasksCompleted[taskInfo.taskID] = true;

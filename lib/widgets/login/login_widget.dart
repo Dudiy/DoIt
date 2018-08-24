@@ -135,8 +135,8 @@ class LoginPageState extends State<LoginPage> {
     return RaisedButton(
       child: Text('log in with google'),
       onPressed: () {
-        widget.authenticator.signInWithGoogle().whenComplete(() {
-          widget.onSignedIn();
+        widget.authenticator.signInWithGoogle().then((signedInUser) {
+          if (signedInUser != null) widget.onSignedIn();
         }).catchError((e) {
           print('Error while trying to log in with google: \n${e.message}');
         });
