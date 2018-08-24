@@ -36,6 +36,7 @@ public class NfcActivity extends FlutterActivity {
     NfcAdapter nfcAdapter;
     String textRead;
     NfcState nfcState = NfcState.READ;
+    boolean hasNfc;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,6 +44,7 @@ public class NfcActivity extends FlutterActivity {
         // nfc init
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         textRead = null;
+        hasNfc = nfcAdapter != null && nfcAdapter.isEnabled();
 
         // set channel to call class method from flutter
         GeneratedPluginRegistrant.registerWith(this);
@@ -69,17 +71,20 @@ public class NfcActivity extends FlutterActivity {
             });
     }
 
-    //TODO uncomment
-/*    @Override
+    @Override
     protected void onResume() {
-        enableForegroundDispatchSystem();
         super.onResume();
-    }*/
+        if (hasNfc) {
+            enableForegroundDispatchSystem();
+        }
+    }
 
     @Override
     protected void onPause() {
         super.onPause();
-        disableForegroundDispatchSystem();
+        if (hasNfc) {
+            disableForegroundDispatchSystem();
+        }
     }
 
     @Override
