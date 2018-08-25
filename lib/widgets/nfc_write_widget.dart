@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class NfcWritePage extends StatefulWidget {
+  final String _taskId;
+
+  NfcWritePage(this._taskId);
+
   @override
   NfcWritePageState createState() {
     return new NfcWritePageState();
@@ -35,27 +39,26 @@ class NfcWritePageState extends State<NfcWritePage> {
         padding: EdgeInsets.all(20.0),
         child: ListView(
           children: <Widget>[
-            Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    DoItTextField(
-                      controller: _taskIdToWrite,
-                      label: 'Task id to write to NFC',
-                      isRequired: true,
-                      textInputType: TextInputType.text,
-                    ),
-                    RaisedButton(
-                      onPressed: _enableWriteToNfc,
-                      child: const Text('write to nfc'),
-                    ),
-                  ],
-                )),
+            Text(
+              "Please put device on NFC tag",
+              style: Theme.of(context).textTheme.headline,
+            ),
           ],
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _enableWriteToNfc();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _disableWriteToNfc();
   }
 
   _enableWriteToNfc() async {
@@ -65,9 +68,19 @@ class NfcWritePageState extends State<NfcWritePage> {
       print("NFC status: " + returnVal);
     });
     platform.invokeMethod(SET_TEXT_TO_WRITE, <String, dynamic>{
-      'textToWrite': _taskIdToWrite == null ? "" : _taskIdToWrite.text,
+      'textToWrite': widget._taskId == null ? "" : widget._taskId ,
     }).then((returnVal) {
       print("when device get NFC it will write: " + _taskIdToWrite.text);
     });
   }
+
+  _disableWriteToNfc() async {
+    platform.invokeMethod(SET_STATE, <String, dynamic>{
+      'state': READ_STATE,
+    }).then((returnVal) {
+      print("NFC status: " + returnVal);
+    });
+  }
+
+
 }

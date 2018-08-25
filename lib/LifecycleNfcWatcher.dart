@@ -75,6 +75,7 @@ class _LifecycleNfcWatcherState extends State<LifecycleNfcWatcher> with WidgetsB
     }).then((returnVal) {
       print("NFC status: " + returnVal);
     });
+    Navigator.pop(context);
   }
 
   @override
