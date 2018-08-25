@@ -1,3 +1,4 @@
+import 'package:do_it/app.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -61,7 +62,10 @@ class _LifecycleNfcWatcherState extends State<LifecycleNfcWatcher> with WidgetsB
   void _readFromNfc() {
     platform.invokeMethod(GET_LAST_TEXT_READ).then((taskId) {
       print("NFC READ TEST: " + taskId);
-      // TODO mark taskId as DONE
+      App.instance.tasksManager.completeTask(
+          taskID: taskId,
+          userWhoCompletedID: App.instance.getLoggedInUserID()
+      );
     });
   }
 
