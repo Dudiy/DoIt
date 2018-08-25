@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:do_it/app.dart';
 import 'package:do_it/data_classes/task/task_info.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
@@ -33,22 +31,29 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
 
   @override
   void initState() {
-    editEnabled = app.loggedInUser.userID == widget.taskInfo.parentGroupManagerID;
-    _taskIDController.text = widget.taskInfo.taskID;
-    _titleController.text = widget.taskInfo.title;
-    _descriptionController.text = widget.taskInfo.description;
-    _valueController.text = widget.taskInfo.value.toString();
-    _startTimeController.text = widget.taskInfo.startTime.toString();
-    _endTimeController.text = widget.taskInfo.endTime.toString();
-    app.groupsManager.getGroupInfoByID(widget.taskInfo.parentGroupID).then((parentGroupInfo) {
+    var taskInfo = widget.taskInfo;
+    editEnabled = app.loggedInUser.userID == taskInfo.parentGroupManagerID;
+    _taskIDController.text = taskInfo.taskID;
+    _titleController.text = taskInfo.title;
+    _descriptionController.text = taskInfo.description;
+    _valueController.text = taskInfo.value.toString();
+    _startTimeController.text = _formatTime(taskInfo.startTime);
+    _endTimeController.text = _formatTime(taskInfo.endTime);
+    app.groupsManager.getGroupInfoByID(taskInfo.parentGroupID).then((parentGroupInfo) {
       setState(() {
         _parentGroupMembers = parentGroupInfo.members;
-        _assignedUsers = widget.taskInfo.assignedUsers == null || widget.taskInfo.assignedUsers.length == 0
+        _assignedUsers = taskInfo.assignedUsers == null || taskInfo.assignedUsers.length == 0
             ? Map.from(_parentGroupMembers)
-            : widget.taskInfo.assignedUsers;
+            : taskInfo.assignedUsers;
       });
     });
     super.initState();
+  }
+
+  String _formatTime(DateTime dateTime) {
+    return dateTime == null
+        ? "Time not set"
+        : '${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour}:${dateTime.minute}';
   }
 
   @override
@@ -207,7 +212,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
   void updateAssignedUsers(Map<String, dynamic> _selectedUsers) {
     Map<String, ShortUserInfo> _newAssignedUsers = new Map();
     bool allUsersChecked = true;
-    for (var selectedUser in _selectedUsers.values){
+    for (var selectedUser in _selectedUsers.values) {
       if (!selectedUser['isSelected']) {
         allUsersChecked = false;
         break;

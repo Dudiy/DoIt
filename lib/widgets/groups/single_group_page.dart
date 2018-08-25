@@ -8,6 +8,7 @@ import 'package:do_it/data_classes/task/task_info_completed.dart';
 import 'package:do_it/data_classes/task/task_info_short.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/data_managers/groups_manager.dart';
+import 'package:do_it/widgets/custom/dialog.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:do_it/widgets/groups/group_details_page.dart';
 import 'package:do_it/widgets/tasks/task_details_page.dart';
@@ -84,25 +85,25 @@ class SingleGroupPageState extends State<SingleGroupPage> {
                 Padding(
                   padding: EdgeInsets.all(10.0),
                   child: ExpansionPanelList(
-                      expansionCallback: (int index, bool isExpanded) {
-                        setState(() {
-                          switch (index) {
-                            case 0:
-                              myTasksIsExpanded = !myTasksIsExpanded;
-                              break;
-                            case 1:
-                              othersTasksIsExpanded = !othersTasksIsExpanded;
-                              break;
-                            case 2:
-                              completedTasksIsExpanded = !completedTasksIsExpanded;
-                              if (completedTasksIsExpanded) {
-                                fetchCompletedTasksFromServer();
-                              }
-                              break;
-                          }
-                        });
-                      },
-                      children: [
+                    expansionCallback: (int index, bool isExpanded) {
+                      setState(() {
+                        switch (index) {
+                          case 0:
+                            myTasksIsExpanded = !myTasksIsExpanded;
+                            break;
+                          case 1:
+                            othersTasksIsExpanded = !othersTasksIsExpanded;
+                            break;
+                          case 2:
+                            completedTasksIsExpanded = !completedTasksIsExpanded;
+                            if (completedTasksIsExpanded) {
+                              fetchCompletedTasksFromServer();
+                            }
+                            break;
+                        }
+                      });
+                    },
+                    children: [
                       ExpansionPanel(
                         headerBuilder: (BuildContext context, bool isExpanded) {
                           return Center(child: Text('Tasks assigned to me', style: Theme.of(context).textTheme.title));
@@ -137,7 +138,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
                         isExpanded: completedTasksIsExpanded,
                       ),
                     ],
-                      ),
+                  ),
                 )
               ],
             )),
@@ -251,14 +252,59 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     return Padding(padding: EdgeInsets.all(20.0), child: Column(children: tasksList));
   }
 
-  Future<void> _showDialog() async {
+  Future<void> _showAddTaskDialog() async {
     TextEditingController _titleController = new TextEditingController();
     TextEditingController _descriptionController = new TextEditingController();
     TextEditingController _valueController = new TextEditingController();
     TextEditingController _startTimeController = new TextEditingController();
     TextEditingController _endTimeController = new TextEditingController();
 
-    showDialog(
+    DoItDialogs.showUserInputDialog(
+      context: context,
+      inputWidgets: [
+        DoItTextField(
+          controller: _titleController,
+          label: 'Title',
+          isRequired: true,
+        ),
+        DoItTextField(
+          controller: _descriptionController,
+          label: 'Description',
+          isRequired: true,
+        ),
+        DoItTextField(
+          controller: _valueController,
+          isRequired: true,
+          label: 'Task value',
+          textInputType: TextInputType.numberWithOptions(),
+        ),
+        DoItTextField(
+          controller: _startTimeController,
+          label: 'Starting time',
+          isRequired: false,
+          textInputType: TextInputType.datetime,
+        ),
+      ],
+      title: 'New Task',
+      onSubmit: () async {
+        try {
+          await app.tasksManager.addTask(
+            title: _titleController.text,
+            description: _descriptionController.text,
+            value: int.parse(_valueController.text),
+            startTime: _startTimeController.text.isNotEmpty ? DateTime.parse(_startTimeController.text) : null,
+            endTime: _endTimeController.text.isNotEmpty ? DateTime.parse(_endTimeController.text) : null,
+            assignedUsers: null,
+            recurringPolicy: null,
+            parentGroupID: groupInfo.groupID,
+            parentGroupManagerID: groupInfo.managerID,
+          );
+        } catch (e) {
+          print(e);
+        }
+      },
+    );
+    /*showDialog(
         context: context,
         builder: (BuildContext context) {
           return new SimpleDialog(
@@ -304,7 +350,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
               )
             ],
           );
-        });
+        });*/
   }
 
   void _updateTasksList(DocumentSnapshot documentSnapshotGroupTasks) {
@@ -381,7 +427,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
         ? FloatingActionButton(
             child: Icon(Icons.add),
             onPressed: () {
-              _showDialog();
+              _showAddTaskDialog();
             })
         : null;
   }

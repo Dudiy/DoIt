@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:do_it/data_classes/user/user_info_short.dart';
-import 'package:do_it/widgets/custom/alertDialog.dart';
+import 'package:do_it/widgets/custom/dialog.dart';
 import 'package:flutter/material.dart';
 
 class UserSelector extends StatefulWidget {
@@ -45,7 +45,7 @@ class UserSelectorState extends State<UserSelector> {
                     value: isSelected,
                     onChanged: (checked) {
                       if (!checked && _numSelected == 1) {
-                        DoItAlertDialog.showErrorDialog(context, "At least one user must be selected");
+                        DoItDialogs.showErrorDialog(context, "At least one user must be selected");
                       } else {
                         checked ? _numSelected++ : _numSelected--;
                         setState(() {

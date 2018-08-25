@@ -150,6 +150,18 @@ class GroupsManager {
     await _firestore.document('$GROUPS/$groupID').delete();
   }
 
+  Future<void> deleteAllCompletedTasksFromGroup({@required groupID}) async {
+    GroupInfo groupInfo = await getGroupInfoByID(groupID);
+    String loggedInUserID = app.getLoggedInUserID();
+    if (loggedInUserID == null) throw new Exception('GroupManager: User is not logged in, cannot delete completed tasks');
+    if (groupInfo.managerID != loggedInUserID)
+      throw new Exception('GroupManager: Only the group manager can delete completed tasks');
+    QuerySnapshot querySnapshot = await _firestore.collection('$GROUPS/$groupID/$COMPLETED_TASKS').getDocuments();
+    await Future.forEach(querySnapshot.documents, (completedTaskDoc) {
+      _firestore.document('$GROUPS/$groupID/$COMPLETED_TASKS/${completedTaskDoc.documentID}').delete();
+    });
+  }
+
   void joinGroup(String groupID) async {
     ShortUserInfo loggedInUser = app.getLoggedInUser();
     if (loggedInUser == null) throw Exception('GroupManager: Cannot join a new group when a user is not logged in');

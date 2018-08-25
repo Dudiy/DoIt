@@ -43,7 +43,7 @@ class TasksManager {
       parentGroupID: parentGroupID,
       parentGroupManagerID: parentGroupManagerID,
       startTime: startTime ?? DateTime.now(),
-      endTime: endTime?.toString(),
+      endTime: endTime,
       recurringPolicy: recurringPolicy ??
           {
             'weekly': false,

@@ -7,6 +7,7 @@ import 'package:do_it/data_classes/group/group_info_short.dart';
 import 'package:do_it/data_classes/task/task_info_short.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/data_managers/groups_manager.dart';
+import 'package:do_it/widgets/custom/dialog.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:do_it/widgets/groups/single_group_page.dart';
 import 'package:flutter/material.dart';
@@ -102,47 +103,80 @@ class MyGroupsPageState extends State<MyGroupsPage> {
     return list;
   }
 
-  Future<void> _showAddGroupDialog(String message) async {
+  Future<void> _showAddGroupDialog() async {
     TextEditingController _groupTitleController = new TextEditingController();
     TextEditingController _groupDescriptionController = new TextEditingController();
-    TextEditingController _groupPhotoUrlController = new TextEditingController();
+
+    DoItDialogs.showUserInputDialog(
+      context: context,
+      inputWidgets: [
+        DoItTextField(
+          controller: _groupTitleController,
+          label: 'Title',
+          isRequired: true,
+          maxLength: 15,
+        ),
+        DoItTextField(
+          controller: _groupDescriptionController,
+          label: 'Description',
+          isRequired: false,
+        ),
+      ],
+      title: 'New Group',
+      onSubmit: () async {
+        await App.instance.groupsManager.addNewGroup(
+          title: _groupTitleController.text,
+          description: _groupDescriptionController.text,
+        );
+      },
+    );
+    /*TextEditingController _groupTitleController = new TextEditingController();
+    TextEditingController _groupDescriptionController = new TextEditingController();
+    final _formKey = GlobalKey<FormState>();
 
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return new SimpleDialog(
-            title: Text('Test'),
+            title: Center(child: Text('New Group')),
             children: <Widget>[
-              DoItTextField(
-                controller: _groupTitleController,
-                label: 'Title',
-                isRequired: true,
-                maxLength: 15,
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: <Widget>[
+                    DoItTextField(
+                      controller: _groupTitleController,
+                      label: 'Title',
+                      isRequired: true,
+                      maxLength: 15,
+                    ),
+                    DoItTextField(
+                      controller: _groupDescriptionController,
+                      label: 'Description',
+                      isRequired: false,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: RaisedButton(
+                        child: const Text('Ok', style: TextStyle(color: Colors.white)),
+                        color: Theme.of(context).primaryColor,
+                        onPressed: () async {
+                          if (_formKey.currentState.validate()) {
+                            await App.instance.groupsManager.addNewGroup(
+                              title: _groupTitleController.text,
+                              description: _groupDescriptionController.text,
+                            );
+                            Navigator.pop(context);
+                          }
+                        },
+                      ),
+                    )
+                  ],
+                ),
               ),
-              DoItTextField(
-                controller: _groupDescriptionController,
-                label: 'Description',
-                isRequired: false,
-              ),
-              DoItTextField(
-                controller: _groupPhotoUrlController,
-                label: 'Photo Url',
-                isRequired: false,
-              ),
-              RaisedButton(
-                onPressed: () async {
-                  await App.instance.groupsManager.addNewGroup(
-                    title: _groupTitleController.text,
-                    description: _groupDescriptionController.text,
-                    photoURL: _groupPhotoUrlController.text,
-                  );
-                  Navigator.pop(context);
-                },
-                child: const Text('Ok'),
-              )
             ],
           );
-        });
+        });*/
   }
 
   /// update the change groups from db
@@ -165,7 +199,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
           Icons.add,
         ),
         onPressed: () {
-          _showAddGroupDialog('test');
+          _showAddGroupDialog();
         },
       ),
     );

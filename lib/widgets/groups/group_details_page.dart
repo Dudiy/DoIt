@@ -1,6 +1,7 @@
 import 'package:do_it/app.dart';
 import 'package:do_it/data_classes/group/group_info.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
+import 'package:do_it/widgets/custom/dialog.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:do_it/widgets/groups/scoreboard_widget.dart';
 import 'package:flutter/material.dart';
@@ -180,11 +181,32 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
   void _showAddMemberDialog() async {
     TextEditingController _emailController = new TextEditingController();
 
-    showDialog(
+    DoItDialogs.showUserInputDialog(
+      context: context,
+      inputWidgets: [
+        DoItTextField(
+          controller: _emailController,
+          label: 'Email',
+          textInputType: TextInputType.emailAddress,
+          isRequired: true,
+        ),
+      ],
+      title: 'Add Member',
+      onSubmit: () async {
+        await app.groupsManager
+            .addMember(groupID: widget.groupInfo.groupID, newMemberEmail: _emailController.text)
+            .then((newMember) {
+          setState(() {
+            _groupMembers.putIfAbsent(newMember.userID, () => newMember);
+          });
+        });
+      },
+    );
+/*    showDialog(
         context: context,
         builder: (BuildContext context) {
           return new SimpleDialog(
-            title: Text('Test'),
+            title: Center(child: Text('Add Member')),
             children: <Widget>[
               DoItTextField(
                 controller: _emailController,
@@ -210,6 +232,6 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
               )
             ],
           );
-        });
+        });*/
   }
 }
