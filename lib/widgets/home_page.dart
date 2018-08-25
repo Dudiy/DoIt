@@ -71,13 +71,6 @@ class HomePageState extends State<HomePage> {
                     .push(MaterialPageRoute(builder: (context) => UserSettingsPage(widget.onSignedOut)));
               },
             ),
-            FlatButton(
-              child: Icon(Icons.nfc, color: Colors.white),
-              onPressed: () {
-                // TODO disable whjen we dont have NFC
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => NfcWritePage()));
-              },
-            ),
           ],
         ),
         body: MyGroupsPage());

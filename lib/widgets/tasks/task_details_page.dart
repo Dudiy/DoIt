@@ -4,6 +4,7 @@ import 'package:do_it/app.dart';
 import 'package:do_it/data_classes/task/task_info.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
+import 'package:do_it/widgets/nfc_write_widget.dart';
 import 'package:do_it/widgets/users/user_selector.dart';
 import 'package:flutter/material.dart';
 
@@ -96,7 +97,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
 
   List<Widget> drawActions() {
     List<Widget> actions = new List();
-    if (editEnabled)
+    if (editEnabled){
       actions.add(FlatButton(
         child: Icon(Icons.save, color: Colors.white),
         onPressed: () async {
@@ -119,6 +120,11 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
           Navigator.pop(context);
         },
       ));
+      // TODO add that if we have NFC
+      actions.add(_getNfcWidget());
+    }
+
+
     return actions;
   }
 
@@ -228,5 +234,14 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
       _getAssignedUsersFromDB();
     });
     Navigator.pop(context);
+  }
+
+  Widget _getNfcWidget() {
+    return FlatButton(
+      child: Icon(Icons.nfc, color: Colors.white),
+      onPressed: () {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => NfcWritePage(widget.taskInfo.taskID)));
+      },
+    );
   }
 }
