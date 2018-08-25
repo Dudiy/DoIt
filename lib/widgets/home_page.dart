@@ -74,8 +74,8 @@ class HomePageState extends State<HomePage> {
             FlatButton(
               child: Icon(Icons.nfc, color: Colors.white),
               onPressed: () {
+                // TODO disable whjen we dont have NFC
                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => NfcWritePage()));
-                // TODO call set state of nfc to write
               },
             ),
           ],

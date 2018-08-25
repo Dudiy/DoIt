@@ -8,11 +8,12 @@ class LifecycleNfcWatcher extends StatefulWidget {
 
 class _LifecycleNfcWatcherState extends State<LifecycleNfcWatcher> with WidgetsBindingObserver {
   static const CLASS_PATH = "doit:nfc";
-  static const GET_LAST_TEXT_READ_AND_RESET = "getLastTextReadAndReset";
+  static const GET_LAST_TEXT_READ = "getLastTextRead";
   static const GET_STATE = "getState";
   static const SET_STATE = "setState";
   static const READ_STATE = "1";
   static const WRITE_STATE = "2";
+  static const NA_STATE = "0";
   static const platform = const MethodChannel(CLASS_PATH);
   AppLifecycleState _lastLifecycleState;
 
@@ -38,26 +39,37 @@ class _LifecycleNfcWatcherState extends State<LifecycleNfcWatcher> with WidgetsB
 
   void _handleNfc() {
     try {
-      platform.invokeMethod(GET_LAST_TEXT_READ_AND_RESET).then((textReadFromNfc) {
-        if (textReadFromNfc != null) {
-          platform.invokeMethod(GET_STATE).then((nfcState) {
-            print("NFC state: " + nfcState);
-            if (READ_STATE.toString() == nfcState) {
-              // TODO method on textReadFromNfc
-              print("NFC REAS TEST: " + textReadFromNfc);
-            } else {
-              // TODO method on textReadFromNfc
-              print("NFC WRITE TEST: " + textReadFromNfc);
-            }
-          });
-        } else {
-          // TODO delete
-          print("NFC TEST: there isn't data to read");
+      platform.invokeMethod(GET_STATE).then((nfcState) {
+        print("NFC state: " + nfcState);
+        switch (nfcState) {
+          case READ_STATE:
+            _readFromNfc();
+            break;
+          case WRITE_STATE:
+            _writeToNfc();
+            break;
+          case NA_STATE:
+            print("NFC NA TEST: there isn't data to read");
+            break;
         }
       });
     } on PlatformException {
       print("NFC exception");
     }
+  }
+
+  void _readFromNfc() {
+    platform.invokeMethod(GET_LAST_TEXT_READ).then((taskId) {
+      print("NFC READ TEST: " + taskId);
+      // TODO mark taskId as DONE
+    });
+  }
+
+  void _writeToNfc() {
+    platform.invokeMethod(GET_LAST_TEXT_READ).then((_textFromNfc) {
+      print("NFC WRIETE TEST: " + _textFromNfc);
+      // TODO switch to read mode
+    });
   }
 
   @override
@@ -69,7 +81,3 @@ class _LifecycleNfcWatcherState extends State<LifecycleNfcWatcher> with WidgetsB
         textDirection: TextDirection.ltr);
   }
 }
-
-//void main() {
-//  runApp(Center(child: LifecycleWatcher()));
-//}

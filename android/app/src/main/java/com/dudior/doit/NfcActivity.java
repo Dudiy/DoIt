@@ -29,43 +29,61 @@ import kotlin.NotImplementedError;
 
 public class NfcActivity extends FlutterActivity {
     private static final String CLASS_PATH = "doit:nfc";
-    private static final String GET_LAST_TEXT_READ_AND_RESET = "getLastTextReadAndReset";
-    private static final String GET_STATE = "getState";
+    private static final String GET_LAST_TEXT_READ = "getLastTextRead";
     private static final String SET_STATE = "setState";
+    private static final String GET_STATE = "getState";
+    private static final String SET_TEXT_TO_WRITE = "setTextToWrite";
+    private static final String GET_TEXT_TO_WRITE = "getTextToWrite";
 
     NfcAdapter nfcAdapter;
-    String textRead;
-    NfcState nfcState = NfcState.READ;
-    boolean hasNfc;
+    String textRead="";
+    String textToWrite = "";
+    NfcState nfcState = NfcState.NA;
+    boolean hasNfc = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // nfc init
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-        textRead = null;
         hasNfc = nfcAdapter != null && nfcAdapter.isEnabled();
+        nfcState = hasNfc ? NfcState.READ : NfcState.NA;
 
+        initMethodChannel();
+    }
+
+    private void initMethodChannel() {
         // set channel to call class method from flutter
         GeneratedPluginRegistrant.registerWith(this);
         new MethodChannel(getFlutterView(), CLASS_PATH).setMethodCallHandler(
             new MethodCallHandler() {
                 @Override
                 public void onMethodCall(MethodCall call, Result result) {
-                    if (call.method.equals(GET_LAST_TEXT_READ_AND_RESET)) {
-                        result.success(textRead);
-                    } else if (call.method.equals(GET_STATE)) {
-                        result.success(nfcState.getId().equals(NfcState.READ.getId()) ?
-                            NfcState.READ.getId() :
-                            NfcState.WRITE.getId());
-                    } else if (call.method.equals(SET_STATE)) {
-                        String nfcStateString = call.argument("state");
-                        nfcState = nfcStateString.equals(NfcState.READ.toString()) ?
-                            NfcState.READ :
-                            NfcState.WRITE;
-                        result.success(nfcStateString);
-                    } else {
-                        result.notImplemented();
+                    switch (call.method) {
+                        case GET_LAST_TEXT_READ:
+                            result.success(textRead);
+                            break;
+                        case SET_STATE:
+                            String nfcStateString = call.argument("state");
+                            nfcState = nfcStateString.equals(NfcState.READ.toString()) ?
+                                NfcState.READ :
+                                NfcState.WRITE;
+                            result.success(nfcStateString);
+                            break;
+                        case GET_STATE:
+                            result.success(nfcState.getId());
+                            break;
+                        case SET_TEXT_TO_WRITE:
+                            textToWrite = call.argument("textToWrite");
+                            result.success(textToWrite);
+                            break;
+                        case GET_TEXT_TO_WRITE:
+                            result.success(textToWrite);
+                            break;
+                        default:
+                            result.notImplemented();
+                            break;
+
                     }
                 }
             });
@@ -101,7 +119,7 @@ public class NfcActivity extends FlutterActivity {
                 }
             } else if (nfcState == NfcState.WRITE) {
                 Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-                NdefMessage ndefMessage = createNdefMessage("NEW WRITE");
+                NdefMessage ndefMessage = createNdefMessage(textToWrite);
                 writeNdefMessage(tag, ndefMessage);
             } else {
                 throw new NotImplementedError("unknown nfc state");

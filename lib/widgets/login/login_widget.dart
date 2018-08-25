@@ -50,7 +50,7 @@ class LoginPageState extends State<LoginPage> {
   Widget _drawLogo(BuildContext context) {
     return Column(
       children: <Widget>[
-        SizedBox(height: 80.0),
+        SizedBox(height: 40.0),
         Column(
           children: <Widget>[
 //                Image.asset('assets/diamond.png'), //TODO placeholder for logo
@@ -59,7 +59,7 @@ class LoginPageState extends State<LoginPage> {
               'DoIt',
               style: Theme.of(context).textTheme.headline,
             ),
-            SizedBox(height: 80.0),
+            SizedBox(height: 40.0),
           ],
         ),
       ],
@@ -142,7 +142,9 @@ class LoginPageState extends State<LoginPage> {
       child: Text('log in with google'),
       onPressed: () {
         widget.authenticator.signInWithGoogle().then((signedInUser) {
-          if (signedInUser != null) widget.onSignedIn();
+          if (signedInUser != null) {
+            widget.onSignedIn();
+          }
         }).catchError((e) {
           print('Error while trying to log in with google: \n${e.message}');
         });

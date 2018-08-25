@@ -22,7 +22,7 @@ class ResetPasswordPageState extends State<ResetPasswordPage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: new AppBar(
-        title: Text("Register"),
+        title: Text("Reset password"),
       ),
       body: Container(
         padding: EdgeInsets.all(20.0),
