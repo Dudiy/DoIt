@@ -59,12 +59,12 @@ class NfcWritePageState extends State<NfcWritePage> {
   }
 
   _enableWriteToNfc() async {
-    await platform.invokeMethod(SET_STATE, <String, dynamic>{
+    platform.invokeMethod(SET_STATE, <String, dynamic>{
       'state': WRITE_STATE,
     }).then((returnVal) {
-      print("write NFC status: " + returnVal);
+      print("NFC status: " + returnVal);
     });
-    await platform.invokeMethod(SET_TEXT_TO_WRITE, <String, dynamic>{
+    platform.invokeMethod(SET_TEXT_TO_WRITE, <String, dynamic>{
       'textToWrite': _taskIdToWrite == null ? "" : _taskIdToWrite.text,
     }).then((returnVal) {
       print("when device get NFC it will write: " + _taskIdToWrite.text);

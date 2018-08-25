@@ -65,10 +65,15 @@ class _LifecycleNfcWatcherState extends State<LifecycleNfcWatcher> with WidgetsB
     });
   }
 
+  ///
+  /// write to nfc already done
+  /// switch to read NFC mode
+  ///
   void _writeToNfc() {
-    platform.invokeMethod(GET_LAST_TEXT_READ).then((_textFromNfc) {
-      print("NFC WRIETE TEST: " + _textFromNfc);
-      // TODO switch to read mode
+    platform.invokeMethod(SET_STATE, <String, dynamic>{
+      'state': READ_STATE,
+    }).then((returnVal) {
+      print("NFC status: " + returnVal);
     });
   }
 

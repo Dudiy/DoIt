@@ -65,10 +65,10 @@ public class NfcActivity extends FlutterActivity {
                             break;
                         case SET_STATE:
                             String nfcStateString = call.argument("state");
-                            nfcState = nfcStateString.equals(NfcState.READ.toString()) ?
+                            nfcState = nfcStateString.equals(NfcState.READ.getId()) ?
                                 NfcState.READ :
                                 NfcState.WRITE;
-                            result.success(nfcStateString);
+                            result.success(nfcState.getId());
                             break;
                         case GET_STATE:
                             result.success(nfcState.getId());
