@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/widgets/custom/dialog.dart';
 import 'package:flutter/material.dart';

@@ -1,3 +1,5 @@
+import 'package:do_it/app.dart';
+import 'package:do_it/data_classes/task/eRecurringPolicies.dart';
 import 'package:do_it/data_classes/task/task_info_completed.dart';
 import 'package:do_it/data_classes/task/task_info_short.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
@@ -13,7 +15,7 @@ class TaskInfo {
   String _parentGroupManagerID;
   DateTime _startTime;
   DateTime _endTime;
-  Map<String, dynamic> _recurringPolicy;
+  eRecurringPolicy _recurringPolicy;
   Map<String, ShortUserInfo> _assignedUsers;
 
   TaskInfo({
@@ -25,7 +27,7 @@ class TaskInfo {
     @required parentGroupManagerID,
     startTime,
     endTime,
-    recurringPolicy,
+    recurringPolicy = eRecurringPolicy.none,
     assignedUsers,
   }) {
     this._taskID = taskID;
@@ -76,7 +78,8 @@ class TaskInfo {
 
   DateTime get endTime => _endTime;
 
-  Map<String, dynamic> get recurringPolicy => _recurringPolicy;
+  // ignore: unnecessary_getters_setters
+  eRecurringPolicy get recurringPolicy => _recurringPolicy;
 
   Map<String, ShortUserInfo> get assignedUsers => _assignedUsers;
 
@@ -110,14 +113,8 @@ class TaskInfo {
     _endTime = value;
   }
 
-  set recurringPolicy(Map<String, dynamic> value) {
-    _recurringPolicy = {
-      'weekly': value['weekly'] ?? false,
-      'daily': value['daily'] ?? false,
-      'monthly': value['monthly'] ?? false,
-      'yearly': value['yearly'] ?? false,
-    };
-  }
+  // ignore: unnecessary_getters_setters
+  set recurringPolicy(eRecurringPolicy value) => _recurringPolicy = value;
 
   set assignedUsers(Map<String, ShortUserInfo> value) {
     if (value != null) {
@@ -127,7 +124,7 @@ class TaskInfo {
 
   CompletedTaskInfo generateCompletedTaskInfo({@required ShortUserInfo userWhoCompleted}) {
     return CompletedTaskInfo(
-      taskID: taskID,
+      taskID: App.instance.generateRandomID(),
       title: title,
       value: value,
       description: description,

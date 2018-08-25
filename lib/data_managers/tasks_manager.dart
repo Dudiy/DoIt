@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it/app.dart';
 import 'package:do_it/constants/db_constants.dart';
 import 'package:do_it/data_classes/group/group_info.dart';
+import 'package:do_it/data_classes/task/eRecurringPolicies.dart';
 import 'package:do_it/data_classes/task/task_info.dart';
 import 'package:do_it/data_classes/task/task_info_completed.dart';
 import 'package:do_it/data_classes/task/task_info_short.dart';
@@ -25,7 +26,7 @@ class TasksManager {
     @required String parentGroupManagerID,
     DateTime startTime,
     DateTime endTime,
-    Object recurringPolicy,
+    eRecurringPolicy recurringPolicy,
     Map<String, ShortUserInfo> assignedUsers,
     bool allowNonManagerAdd = false,
   }) async {
@@ -44,13 +45,7 @@ class TasksManager {
       parentGroupManagerID: parentGroupManagerID,
       startTime: startTime ?? DateTime.now(),
       endTime: endTime,
-      recurringPolicy: recurringPolicy ??
-          {
-            'weekly': false,
-            'daily': false,
-            'monthly': false,
-            'yearly': false,
-          },
+      recurringPolicy: recurringPolicy ?? eRecurringPolicy.none,
       assignedUsers: assignedUsers ?? new Map<String, String>(),
     );
     ShortTaskInfo shortTaskInfo = taskInfo.getShortTaskInfo();
@@ -78,7 +73,7 @@ class TasksManager {
       int value,
       DateTime startTime,
       DateTime endTime,
-      Map<String, bool> recurringPolicy,
+      eRecurringPolicy recurringPolicy,
       Map<String, ShortUserInfo> assignedUsers,
       bool allowNonManagerUpdate = false}) async {
     ShortUserInfo loggedInUser = app.loggedInUser;
@@ -125,7 +120,13 @@ class TasksManager {
 
     // complete the task (add completedTaskInfo to the groups sub-collection -> delete the original task)
     CompletedTaskInfo completedTaskInfo = taskInfo.generateCompletedTaskInfo(userWhoCompleted: userWhoCompleted);
-    await deleteTask(taskID);
+    if (taskInfo.recurringPolicy == eRecurringPolicy.none) {
+      await deleteTask(taskID);
+    } else {
+      DateTime newStartTime = _getStartTimeFromRecurringPolicy(taskInfo.startTime, taskInfo.recurringPolicy);
+      DateTime newEndTime = _getStartTimeFromRecurringPolicy(taskInfo.endTime, taskInfo.recurringPolicy);
+      updateTask(taskIdToChange: taskInfo.taskID, startTime: newStartTime, endTime: newEndTime);
+    }
     await app.groupsManager.addCompletedTaskToGroup(
       groupID: parentGroupInfo.groupID,
       completedTaskInfo: completedTaskInfo,
@@ -183,6 +184,7 @@ class TasksManager {
     return TaskUtils.generateTaskInfoFromObject(taskRef.data);
   }
 
+  // returns all tasks assigned to me that their start date is before now
   Future<List<ShortTaskInfo>> getAllMyTasks() async {
     String loggedInUserID = app.getLoggedInUserID();
     List<String> myGroupsIDs = await app.groupsManager.getMyGroupsIDsFromDB();
@@ -190,6 +192,7 @@ class TasksManager {
     List<ShortTaskInfo> myTasks = snapshot.documents.where((doc) {
       ShortTaskInfo shortTaskInfo = TaskUtils.generateShortTaskInfoFromObject(doc.data);
       Map<String, ShortUserInfo> assignedUsers = shortTaskInfo.assignedUsers;
+      if (shortTaskInfo.startTime.isAfter(DateTime.now())) return false;
       if (assignedUsers.length == null || assignedUsers.length == 0) {
         return myGroupsIDs.contains(shortTaskInfo.parentGroupID);
       } else {
@@ -229,5 +232,41 @@ class TasksManager {
       }
 //      print('TasksManager: Task ${taskInfo.title} no longer assigned to $userID');
     });
+  }
+
+  DateTime _getStartTimeFromRecurringPolicy(DateTime time, eRecurringPolicy policy) {
+    if (time == null) return null;
+
+    DateTime newStartTime = DateTime.parse(time.toString());
+    switch (policy) {
+      case eRecurringPolicy.daily:
+        newStartTime = newStartTime.add(Duration(days: 1));
+        break;
+      case eRecurringPolicy.weekly:
+        newStartTime = newStartTime.add(Duration(days: 7));
+        break;
+      case eRecurringPolicy.monthly:
+        // TODO - there is no easy way to add one month, add to release notes / readme
+        newStartTime = DateTime(
+          newStartTime.year,
+          (newStartTime.month + 1) % 12,
+          newStartTime.day,
+          newStartTime.hour,
+          newStartTime.minute,
+        );
+        break;
+      case eRecurringPolicy.yearly:
+        newStartTime = DateTime(
+          newStartTime.year + 1,
+          newStartTime.month,
+          newStartTime.day,
+          newStartTime.hour,
+          newStartTime.minute,
+        );
+        break;
+      default:
+        break;
+    }
+    return newStartTime;
   }
 }

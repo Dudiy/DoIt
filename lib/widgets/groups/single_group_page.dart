@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it/app.dart';
 import 'package:do_it/constants/db_constants.dart';
 import 'package:do_it/data_classes/group/group_info.dart';
+import 'package:do_it/data_classes/task/eRecurringPolicies.dart';
 import 'package:do_it/data_classes/task/task_info_completed.dart';
 import 'package:do_it/data_classes/task/task_info_short.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
@@ -200,6 +201,13 @@ class SingleGroupPageState extends State<SingleGroupPage> {
         tasksList.add(ListTile(
           title: Text('${taskInfo.title} (${taskInfo.value.toString()})'),
           subtitle: Text(taskInfo.description ?? "no description", maxLines: 3),
+          onTap: () {
+            if (app.loggedInUser.userID == taskInfo.parentGroupManagerID) {
+              app.tasksManager.getTaskById(taskInfo.taskID).then((taskInfo) {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetailsPage(taskInfo)));
+              });
+            }
+          },
         ));
       }
     });
@@ -295,7 +303,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
             startTime: _startTimeController.text.isNotEmpty ? DateTime.parse(_startTimeController.text) : null,
             endTime: _endTimeController.text.isNotEmpty ? DateTime.parse(_endTimeController.text) : null,
             assignedUsers: null,
-            recurringPolicy: null,
+            recurringPolicy: eRecurringPolicy.weekly, // TODO change to input!
             parentGroupID: groupInfo.groupID,
             parentGroupManagerID: groupInfo.managerID,
           );

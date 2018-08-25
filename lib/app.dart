@@ -11,7 +11,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
-
+import 'package:do_it/data_classes/task/eRecurringPolicies.dart';
 ///
 /// singleton class
 ///
@@ -101,7 +101,12 @@ class App {
     });*/
 
 //    ShortUserInfo shortUserInfoByEmail = await app.usersManager.getShortUserInfoByEmail('d@d.com');
-    ShortUserInfo shortUserInfoByEmail2 = await app.usersManager.getShortUserInfoByEmail('d@da.com');
+    app.tasksManager.updateTask(taskIdToChange: '78c7f37d-aa5f-40f5-bc22-ab762bc7e063', recurringPolicy: eRecurringPolicy.weekly);
+//    print(eRecurringPolicy.weekly);
+//    print('foreach:');
+//    for (var value in eRecurringPolicy.values) {
+//      print(value);
+//    }
     print('end of test');
   }
 }

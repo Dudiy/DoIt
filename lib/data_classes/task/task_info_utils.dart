@@ -1,3 +1,4 @@
+import 'package:do_it/data_classes/task/eRecurringPolicies.dart';
 import 'package:do_it/data_classes/task/task_info.dart';
 import 'package:do_it/data_classes/task/task_info_completed.dart';
 import 'package:do_it/data_classes/task/task_info_short.dart';
@@ -9,9 +10,11 @@ class TaskUtils {
     if (tasksObject != null) {
       (tasksObject as Map<dynamic, dynamic>).values.forEach((taskObject) {
         ShortTaskInfo shortTaskInfo = generateShortTaskInfoFromObject(taskObject);
-        tasks.putIfAbsent(shortTaskInfo.taskID, () {
-          return shortTaskInfo;
-        });
+        if (shortTaskInfo.startTime.isBefore(DateTime.now())) {
+          tasks.putIfAbsent(shortTaskInfo.taskID, () {
+            return shortTaskInfo;
+          });
+        }
       });
     }
     return tasks;
@@ -20,29 +23,20 @@ class TaskUtils {
   static TaskInfo generateTaskInfoFromObject(taskObject) {
     if (taskObject == null) return null;
     if (taskObject.runtimeType == TaskInfo) return taskObject;
-    var recurringPolicy = taskObject['recurringPolicy'] ??
-        {
-          'weekly': false,
-          'daily': false,
-          'monthly': false,
-          'yearly': false,
-        };
+    eRecurringPolicy recurringPolicy =
+        RecurringPolicyUtils.parse(taskObject['recurringPolicy']) ?? eRecurringPolicy.none;
     return new TaskInfo(
-        taskID: taskObject['taskID'],
-        title: taskObject['title'],
-        description: taskObject['description'],
-        value: taskObject['value'],
-        startTime: taskObject['startTime'],
-        endTime: taskObject['endTime'],
-        parentGroupID: taskObject['parentGroupID'],
-        parentGroupManagerID: taskObject['parentGroupManagerID'],
-        assignedUsers: UserUtils.generateUsersMapFromObject(taskObject['assignedUsers']),
-        recurringPolicy: {
-          'weekly': recurringPolicy['weekly'],
-          'daily': recurringPolicy['daily'],
-          'monthly': recurringPolicy['monthly'],
-          'yearly': recurringPolicy['yearly'],
-        });
+      taskID: taskObject['taskID'],
+      title: taskObject['title'],
+      description: taskObject['description'],
+      value: taskObject['value'],
+      startTime: taskObject['startTime'],
+      endTime: taskObject['endTime'],
+      parentGroupID: taskObject['parentGroupID'],
+      parentGroupManagerID: taskObject['parentGroupManagerID'],
+      assignedUsers: UserUtils.generateUsersMapFromObject(taskObject['assignedUsers']),
+      recurringPolicy: recurringPolicy,
+    );
   }
 
   static ShortTaskInfo generateShortTaskInfoFromObject(object) {
@@ -95,7 +89,7 @@ class TaskUtils {
       'startTime': taskInfo.startTime,
       'endTime': taskInfo.endTime,
       'assignedUsers': UserUtils.generateObjectFromUsersMap(taskInfo.assignedUsers),
-      'recurringPolicy': taskInfo.recurringPolicy,
+      'recurringPolicy': taskInfo.recurringPolicy.toString(),
     };
   }
 

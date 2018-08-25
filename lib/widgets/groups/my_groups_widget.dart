@@ -130,53 +130,6 @@ class MyGroupsPageState extends State<MyGroupsPage> {
         );
       },
     );
-    /*TextEditingController _groupTitleController = new TextEditingController();
-    TextEditingController _groupDescriptionController = new TextEditingController();
-    final _formKey = GlobalKey<FormState>();
-
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return new SimpleDialog(
-            title: Center(child: Text('New Group')),
-            children: <Widget>[
-              Form(
-                key: _formKey,
-                child: Column(
-                  children: <Widget>[
-                    DoItTextField(
-                      controller: _groupTitleController,
-                      label: 'Title',
-                      isRequired: true,
-                      maxLength: 15,
-                    ),
-                    DoItTextField(
-                      controller: _groupDescriptionController,
-                      label: 'Description',
-                      isRequired: false,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: RaisedButton(
-                        child: const Text('Ok', style: TextStyle(color: Colors.white)),
-                        color: Theme.of(context).primaryColor,
-                        onPressed: () async {
-                          if (_formKey.currentState.validate()) {
-                            await App.instance.groupsManager.addNewGroup(
-                              title: _groupTitleController.text,
-                              description: _groupDescriptionController.text,
-                            );
-                            Navigator.pop(context);
-                          }
-                        },
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ],
-          );
-        });*/
   }
 
   /// update the change groups from db

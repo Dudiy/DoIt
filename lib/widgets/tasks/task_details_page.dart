@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:do_it/app.dart';
 import 'package:do_it/data_classes/task/task_info.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
@@ -25,10 +27,11 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
   final TextEditingController _valueController = new TextEditingController();
   final TextEditingController _startTimeController = new TextEditingController();
   final TextEditingController _endTimeController = new TextEditingController();
-
   bool editEnabled;
   Map<String, ShortUserInfo> _parentGroupMembers;
   Map<String, ShortUserInfo> _assignedUsers;
+  DateTime _selectedStartDate, _selectedEndDate;
+  TimeOfDay _selectedStartTime, _selectedEndTime;
 
   @override
   void initState() {
@@ -38,8 +41,10 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
     _titleController.text = taskInfo.title;
     _descriptionController.text = taskInfo.description;
     _valueController.text = taskInfo.value.toString();
-    _startTimeController.text = _formatTime(taskInfo.startTime);
-    _endTimeController.text = _formatTime(taskInfo.endTime);
+    _selectedStartDate = taskInfo.startTime;
+    _selectedStartTime = taskInfo.startTime != null ? TimeOfDay.fromDateTime(taskInfo.startTime) : null;
+    _selectedEndDate = taskInfo.endTime;
+    _selectedEndTime = taskInfo.endTime != null ? TimeOfDay.fromDateTime(taskInfo.endTime) : null;
     app.groupsManager.getGroupInfoByID(taskInfo.parentGroupID).then((parentGroupInfo) {
       setState(() {
         _parentGroupMembers = parentGroupInfo.members;
@@ -51,7 +56,23 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
     super.initState();
   }
 
-  String _formatTime(DateTime dateTime) {
+  Future<DateTime> _selectDate(BuildContext context, DateTime initDate) async {
+    final DateTime picked = await showDatePicker(
+      context: context,
+      initialDate: initDate ?? DateTime.now(),
+      firstDate: new DateTime(2017, 1),
+      lastDate: new DateTime(2050),
+    );
+    return picked != null && picked != initDate ? picked : initDate;
+  }
+
+  Future<TimeOfDay> _selectTime(BuildContext context, DateTime initDate) async {
+    TimeOfDay initTime = initDate != null ? TimeOfDay.fromDateTime(initDate) : TimeOfDay.now();
+    final TimeOfDay picked = await showTimePicker(context: context, initialTime: initTime);
+    return picked != null && picked != initTime ? picked : initTime;
+  }
+
+  String _formatDateTime(DateTime dateTime) {
     return dateTime == null
         ? "Time not set"
         : '${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour}:${dateTime.minute}';
@@ -83,13 +104,43 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
                     enabled: false,
                     textInputType: TextInputType.numberWithOptions(),
                   ),
-                  //TODO add date pickers
-                  DoItTextField(
-                    controller: _startTimeController,
-                    label: 'Start time',
-                    enabled: editEnabled,
-                  ),
-                  DoItTextField(controller: _endTimeController, label: 'End time', enabled: editEnabled),
+                  Row(children: <Widget>[
+                    IconButton(
+                      icon: Icon(Icons.date_range),
+                      onPressed: () {
+                        _selectDate(context, widget.taskInfo.startTime).then((selectedDate) {
+                          _selectedStartDate = selectedDate;
+                          _selectTime(context, widget.taskInfo.startTime).then((selectedTime) {
+                            _selectedStartTime = selectedTime;
+                            setState(() {
+                              _selectedStartDate = _getSelectedDateTime(selectedDate, selectedTime);
+                            });
+                          });
+                        });
+                      },
+                    ),
+                    Text('Start time: ${_selectedStartDate.day}/${_selectedStartDate.month}/${_selectedStartDate
+                        .year} ${_selectedStartDate.hour}:${_selectedStartDate.minute}'),
+                  ]),
+                  Row(children: <Widget>[
+                    IconButton(
+                      icon: Icon(Icons.date_range),
+                      onPressed: () {
+                        _selectDate(context, widget.taskInfo.endTime).then((selectedDate) {
+                          _selectedEndDate = selectedDate;
+                          _selectTime(context, widget.taskInfo.endTime).then((selectedTime) {
+                            _selectedEndTime = selectedTime;
+                            setState(() {
+                              _selectedEndDate = _getSelectedDateTime(selectedDate, selectedTime);
+                            });
+                          });
+                        });
+                      },
+                    ),
+                    Text('End time: ${_selectedEndDate.day}/${_selectedEndDate.month}/${_selectedEndDate
+                        .year} ${_selectedEndDate.hour}:${_selectedEndDate.minute}'),
+                  ]),
+
                 ])),
           ),
           Column(
@@ -102,7 +153,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
 
   List<Widget> drawActions() {
     List<Widget> actions = new List();
-    if (editEnabled){
+    if (editEnabled) {
       actions.add(FlatButton(
         child: Icon(Icons.save, color: Colors.white),
         onPressed: () async {
@@ -112,10 +163,8 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
             title: _titleController.text.isNotEmpty ? _titleController.text : null,
             description: _descriptionController.text.isNotEmpty ? _descriptionController.text : null,
             value: _valueController.text.isNotEmpty ? int.parse(_valueController.text) : null,
-            startTime: _startTimeController.text.isNotEmpty ? DateTime.parse(_startTimeController.text) : null,
-            endTime: _endTimeController.text.isNotEmpty && _endTimeController.text != "null"
-                ? DateTime.parse(_endTimeController.text)
-                : null,
+            startTime: _getSelectedDateTime(_selectedStartDate, _selectedStartTime),
+            endTime: _getSelectedDateTime(_selectedEndDate, _selectedEndTime),
             // TODO add recurring policy
           )
               .then((newGroupInfo) {
@@ -128,7 +177,6 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
       // TODO add that if we have NFC
       actions.add(_getNfcWidget());
     }
-
 
     return actions;
   }
@@ -248,5 +296,13 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) => NfcWritePage(widget.taskInfo.taskID)));
       },
     );
+  }
+
+  _getSelectedDateTime(DateTime selectedDate, TimeOfDay selectedTime) {
+    if (selectedDate == null || selectedTime == null) {
+      return null;
+    } else {
+      return DateTime(selectedDate.year, selectedDate.month, selectedDate.day, selectedTime.hour, selectedTime.minute);
+    }
   }
 }
