@@ -160,20 +160,11 @@ class TasksManager {
 //      throw Exception('$errorMessagePrefix only the parentGroup manager can assign usrs to tasks');
     //add user to "tasks" collection
     taskInfo.assignedUsers.putIfAbsent(userID, () => shortUserInfo);
-    updateTask(
+    await updateTask(
       taskIdToChange: taskID,
       assignedUsers: taskInfo.assignedUsers,
       allowNonManagerUpdate: true,
-    );
-/*    await _firestore
-        .document('$TASKS/$taskID')
-        .updateData({"assignedUsers": UserUtils.generateObjectFromUsersMap(taskInfo.assignedUsers)});*/
-    // add user to the relevant task int the parent group in "groups" collection
-/*    GroupInfo groupInfo = await app.groupsManager.getGroupInfoByID(taskInfo.parentGroupID);
-    groupInfo.tasks[taskID].assignedUsers.putIfAbsent(userID, () => shortUserInfo);
-    await _firestore
-        .document('$GROUPS/${taskInfo.parentGroupID}')
-        .updateData({"tasks": TaskUtils.generateObjectFromTasksMap(groupInfo.tasks)});*/
+    ).whenComplete(() => print('TasksManager: Task ${taskInfo.title} assigned to ${shortUserInfo.displayName}'));
   }
 
   // delete from group parameter is for when deleting an entire group - set to false fo efficiency
@@ -223,15 +214,16 @@ class TasksManager {
   }
 
   Future<void> removeUserFromAssignedTask({String userID, String taskID}) async {
-    getTaskById(taskID).then((taskInfo) {
+    getTaskById(taskID).then((taskInfo) async {
       if (taskInfo.assignedUsers.containsKey(userID)) {
         taskInfo.assignedUsers.remove(userID);
-        updateTask(
+        await updateTask(
           taskIdToChange: taskInfo.taskID,
           assignedUsers: taskInfo.assignedUsers,
           allowNonManagerUpdate: true,
-        );
+        ).whenComplete(() => print('TasksManager: Task ${taskInfo.title} no longer assigned to $userID'));
       }
+//      print('TasksManager: Task ${taskInfo.title} no longer assigned to $userID');
     });
   }
 }

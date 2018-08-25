@@ -139,7 +139,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
         ],
       ),
     ));
-    if (widget.taskInfo.assignedUsers == null || widget.taskInfo.assignedUsers.length == 0) {
+    if (_assignedUsers == null || _assignedUsers.length == 0) {
       _parentGroupMembers == null
           ? list.add(Center(child: Text(('Fetching assigned users from DB...'))))
           : _parentGroupMembers.forEach((userID, shortUserInfo) {
@@ -159,44 +159,6 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
     return list;
   }
 
-  _showEditAssignedUsersDialog() {
-    Map<String, dynamic> _updatedAssignedUsers = new Map();
-    _parentGroupMembers.forEach((userID, userInfo) {
-      _updatedAssignedUsers.putIfAbsent(
-          userID,
-          () => {
-                'userInfo': userInfo,
-                'isSelected': false,
-              });
-    });
-    _assignedUsers.keys.forEach((userID) {
-      _updatedAssignedUsers[userID]['isSelected'] = true;
-    });
-
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return new Dialog(
-            child: UserSelector(_updatedAssignedUsers, updateAssignedUsers),
-          );
-        });
-  }
-
-  // TODO stopped here 2018-08-25
-  void updateAssignedUsers(Map<String, dynamic> _updatedAssignedUsers) {
-    _parentGroupMembers.keys.forEach((userID) async {
-      if (!_assignedUsers.containsKey(userID) && _updatedAssignedUsers[userID]['isSelected']) {
-        // user was assigned
-        await app.tasksManager.assignTaskToUser(userID: userID, taskID: widget.taskInfo.taskID);
-      } else if (_assignedUsers.containsKey(userID) && !_updatedAssignedUsers[userID]['isSelected']) {
-        // user was removed
-        await app.tasksManager.removeUserFromAssignedTask(userID: userID, taskID: widget.taskInfo.taskID);
-      }
-    });
-    _getAssignedUsersFromDB();
-    Navigator.pop(context);
-  }
-
   void _getAssignedUsersFromDB() {
     app.tasksManager.getTaskById(widget.taskInfo.taskID).then((taskInfo) {
       setState(() {
@@ -212,11 +174,59 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
             child: IconButton(
               icon: Icon(Icons.edit),
               onPressed: () {
-                // TODO implement assigned users selector
                 _showEditAssignedUsersDialog();
               },
             ),
           )
         : Container(height: 0.0, width: 0.0);
+  }
+
+  _showEditAssignedUsersDialog() {
+    Map<String, dynamic> _updatedAssignedUsers = new Map();
+    _parentGroupMembers.forEach((userID, userInfo) {
+      _updatedAssignedUsers.putIfAbsent(
+          userID,
+          () => {
+                'userInfo': userInfo,
+                'isSelected': _assignedUsers.length == 0 ? true : false,
+              });
+    });
+    _assignedUsers.keys.forEach((userID) {
+      _updatedAssignedUsers[userID]['isSelected'] = true;
+    });
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return new Dialog(
+            child: UserSelector(_updatedAssignedUsers, updateAssignedUsers),
+          );
+        });
+  }
+
+  void updateAssignedUsers(Map<String, dynamic> _selectedUsers) {
+    Map<String, ShortUserInfo> _newAssignedUsers = new Map();
+    bool allUsersChecked = true;
+    for (var selectedUser in _selectedUsers.values){
+      if (!selectedUser['isSelected']) {
+        allUsersChecked = false;
+        break;
+      }
+    }
+    // if all users are checked set assigned users to be an empty map
+    if (!allUsersChecked) {
+      _parentGroupMembers.forEach((userID, userInfo) {
+        // add all checked users to the new assigned users map
+        if (_selectedUsers[userID]['isSelected']) {
+          _newAssignedUsers.putIfAbsent(userID, () => userInfo);
+        }
+      });
+    }
+    app.tasksManager
+        .updateTask(taskIdToChange: widget.taskInfo.taskID, assignedUsers: _newAssignedUsers)
+        .whenComplete(() {
+      _getAssignedUsersFromDB();
+    });
+    Navigator.pop(context);
   }
 }

@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:do_it/data_classes/user/user_info_short.dart';
+import 'package:do_it/widgets/custom/alertDialog.dart';
 import 'package:flutter/material.dart';
 
 class UserSelector extends StatefulWidget {
@@ -24,6 +27,7 @@ class UserSelectorState extends State<UserSelector> {
 
   @override
   Widget build(BuildContext context) {
+    int _numSelected = 0;
     return Column(
       children: <Widget>[
         Text('Select assigned users'),
@@ -32,14 +36,22 @@ class UserSelectorState extends State<UserSelector> {
             children: _updatedUsersState.values.map((user) {
               ShortUserInfo userInfo = user['userInfo'];
               bool isSelected = user['isSelected'];
+              if (isSelected) {
+                _numSelected++;
+              }
               return ListTile(
                 title: Text(userInfo.displayName),
                 trailing: Checkbox(
                     value: isSelected,
                     onChanged: (checked) {
-                      setState(() {
-                        _updatedUsersState[userInfo.userID]['isSelected'] = checked;
-                      });
+                      if (!checked && _numSelected == 1) {
+                        DoItAlertDialog.showErrorDialog(context, "At least one user must be selected");
+                      } else {
+                        checked ? _numSelected++ : _numSelected--;
+                        setState(() {
+                          _updatedUsersState[userInfo.userID]['isSelected'] = checked;
+                        });
+                      }
                     }),
               );
             }).toList(),
