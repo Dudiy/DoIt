@@ -46,8 +46,8 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     // listen for tasks list update
     _streamSubscriptionTasks =
         App.instance.firestore.collection('$GROUPS').document('$groupId').snapshots().listen(_updateTasksList);
-    super.initState();
     getMyGroupTasksFromDB();
+    super.initState();
   }
 
   void _groupInfoChanged(GroupInfo newGroupInfo) {
@@ -73,16 +73,6 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     });
   }
 
-  void getCompletedTasksFromDB() {
-    app.groupsManager.getCompletedTasks(groupID: groupInfo.groupID).then((completedTasks) {
-      setState(() {
-        _completedTasks = completedTasks;
-        _myTasksCheckboxes.addAll(Map.fromIterable(completedTasks,
-            key: (completedTask) => (completedTask as CompletedTaskInfo).taskID, value: (completedTask) => true));
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,25 +84,25 @@ class SingleGroupPageState extends State<SingleGroupPage> {
                 Padding(
                   padding: EdgeInsets.all(10.0),
                   child: ExpansionPanelList(
-                    expansionCallback: (int index, bool isExpanded) {
-                      setState(() {
-                        switch (index) {
-                          case 0:
-                            myTasksIsExpanded = !myTasksIsExpanded;
-                            break;
-                          case 1:
-                            othersTasksIsExpanded = !othersTasksIsExpanded;
-                            break;
-                          case 2:
-                            completedTasksIsExpanded = !completedTasksIsExpanded;
-                            if (completedTasksIsExpanded) {
-                              fetchCompletedTasksFromServer();
-                            }
-                            break;
-                        }
-                      });
-                    },
-                    children: [
+                      expansionCallback: (int index, bool isExpanded) {
+                        setState(() {
+                          switch (index) {
+                            case 0:
+                              myTasksIsExpanded = !myTasksIsExpanded;
+                              break;
+                            case 1:
+                              othersTasksIsExpanded = !othersTasksIsExpanded;
+                              break;
+                            case 2:
+                              completedTasksIsExpanded = !completedTasksIsExpanded;
+                              if (completedTasksIsExpanded) {
+                                fetchCompletedTasksFromServer();
+                              }
+                              break;
+                          }
+                        });
+                      },
+                      children: [
                       ExpansionPanel(
                         headerBuilder: (BuildContext context, bool isExpanded) {
                           return Center(child: Text('Tasks assigned to me', style: Theme.of(context).textTheme.title));
@@ -147,7 +137,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
                         isExpanded: completedTasksIsExpanded,
                       ),
                     ],
-                  ),
+                      ),
                 )
               ],
             )),
@@ -220,42 +210,9 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   Widget getCompletedTasks() {
     Row timeSpanSelectors = Row(
       children: <Widget>[
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(6.0, 0.0, 6.0, 6.0),
-            child: RaisedButton(
-              child: Text('past week'),
-              onPressed: () {
-                daysBeforeTodayToShowCompletedTasks = 7;
-                fetchCompletedTasksFromServer();
-              },
-            ),
-          ),
-        ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(6.0, 0.0, 6.0, 6.0),
-            child: RaisedButton(
-              child: Text('past month'),
-              onPressed: () {
-                daysBeforeTodayToShowCompletedTasks = 30;
-                fetchCompletedTasksFromServer();
-              },
-            ),
-          ),
-        ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(6.0, 0.0, 6.0, 6.0),
-            child: RaisedButton(
-              child: Text('all time'),
-              onPressed: () {
-                daysBeforeTodayToShowCompletedTasks = 0;
-                fetchCompletedTasksFromServer();
-              },
-            ),
-          ),
-        ),
+        _timeSpanSelector('week', 7),
+        _timeSpanSelector('month', 31),
+        _timeSpanSelector('all time', 0),
       ],
     );
     if (_completedTasks == null) {
@@ -288,20 +245,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
           completedTask.description ?? "no description",
           maxLines: 3,
         ),
-        trailing: Checkbox(
-            value: _myTasksCheckboxes[completedTask.taskID] ?? true,
-            onChanged: (value) {
-              setState(() {
-                _myTasksCheckboxes[completedTask.taskID] = false;
-                app.tasksManager
-                    .unCompleteTask(parentGroupID: completedTask.parentGroupID, taskID: completedTask.taskID)
-                    .then((val) {
-                  fetchCompletedTasksFromServer();
-                });
-              });
-            }),
-        enabled: app.loggedInUser.userID == completedTask.userWhoCompleted.userID ||
-            app.loggedInUser.userID == completedTask.parentGroupManagerID,
+        trailing: _completedTaskCheckbox(completedTask),
       ));
     });
     return Padding(padding: EdgeInsets.all(20.0), child: Column(children: tasksList));
@@ -453,7 +397,77 @@ class SingleGroupPageState extends State<SingleGroupPage> {
         .then((completedTasks) {
       setState(() {
         _completedTasks = completedTasks;
+        _myTasksCheckboxes.addAll(Map.fromIterable(completedTasks,
+            key: (completedTask) => (completedTask as CompletedTaskInfo).taskID, value: (completedTask) => true));
       });
     });
   }
+
+  Widget _timeSpanSelector(String label, int numDays) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(6.0, 0.0, 6.0, 6.0),
+        child: RaisedButton(
+          child: Text(label),
+          onPressed: () {
+            daysBeforeTodayToShowCompletedTasks = numDays;
+            fetchCompletedTasksFromServer();
+          },
+        ),
+      ),
+    );
+  }
+
+  _completedTaskCheckbox(CompletedTaskInfo completedTask) {
+    bool isEnabled = app.loggedInUser.userID == completedTask.userWhoCompleted.userID ||
+        app.loggedInUser.userID == completedTask.parentGroupManagerID;
+    return isEnabled
+        ? Checkbox(
+            value: _myTasksCheckboxes[completedTask.taskID] ?? true,
+            onChanged: (value) {
+              setState(() {
+                _myTasksCheckboxes[completedTask.taskID] = false;
+                app.tasksManager
+                    .unCompleteTask(parentGroupID: completedTask.parentGroupID, taskID: completedTask.taskID)
+                    .then((val) {
+                  fetchCompletedTasksFromServer();
+                });
+              });
+            })
+        : Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Icon(Icons.check_box, color: Theme.of(context).disabledColor),
+          );
+  }
+
+  // TODO delete after commit
+//  ExpansionPanel _tasksExpansionPanel(
+//      {@required String title,
+//      @required bool isExpanded,
+//      @required Function bodyBuilderFunc,
+//      bool showRefresh = false}) {
+//    return ExpansionPanel(
+//      headerBuilder: (BuildContext context, bool isExpanded) {
+//        // show refresh button only if show refresh is true
+//        Widget refreshButton = showRefresh
+//            ? Positioned(
+//                child: IconButton(
+//                  icon: Icon(Icons.refresh),
+//                  onPressed: () => fetchCompletedTasksFromServer(),
+//                ),
+//                right: 0.0,
+//              )
+//            : Container(height: 0.0, width: 0.0);
+//        //build and return the expansion panel
+//        return Stack(
+//          children: <Widget>[
+//            Center(child: Text(title, style: Theme.of(context).textTheme.title)),
+//            refreshButton,
+//          ],
+//        );
+//      },
+//      body: bodyBuilderFunc(),
+//      isExpanded: isExpanded,
+//    );
+//  }
 }

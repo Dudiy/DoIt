@@ -177,13 +177,11 @@ class GroupsManager {
     });
   }
 
-  Future<void> addTaskToGroup({
-    @required String groupID,
-    @required ShortTaskInfo shortTaskInfo,
-  }) async {
+  Future<void> addTaskToGroup(
+      {@required String groupID, @required ShortTaskInfo shortTaskInfo, bool allowNonManagerAdd = false}) async {
     DocumentSnapshot groupSnapshot = await _firestore.document('$GROUPS/$groupID').get();
     if (app.getLoggedInUser() == null) throw Exception('GroupsManager: cannot add task when user is not logged in');
-    if (app.getLoggedInUser().userID != groupSnapshot.data['managerID']) {
+    if (!allowNonManagerAdd && app.getLoggedInUser().userID != groupSnapshot.data['managerID']) {
       throw Exception('GroupsManager: only manager can add tasks to a group');
     }
 

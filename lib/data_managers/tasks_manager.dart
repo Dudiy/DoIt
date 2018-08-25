@@ -27,10 +27,12 @@ class TasksManager {
     DateTime endTime,
     Object recurringPolicy,
     Map<String, ShortUserInfo> assignedUsers,
+    bool allowNonManagerAdd = false,
   }) async {
     ShortUserInfo loggedInUser = app.getLoggedInUser();
     if (loggedInUser == null) throw Exception('TaskManager: Cannot add a task when a user is not logged in');
-    if (parentGroupManagerID != loggedInUser.userID) throw Exception('only group manager can add tasks to group');
+    if (!allowNonManagerAdd && parentGroupManagerID != loggedInUser.userID)
+      throw Exception('only group manager can add tasks to group');
 
     String _taskID = App.instance.generateRandomID();
     TaskInfo taskInfo = new TaskInfo(
@@ -60,6 +62,7 @@ class TasksManager {
           .addTaskToGroup(
             groupID: parentGroupID,
             shortTaskInfo: shortTaskInfo,
+            allowNonManagerAdd: allowNonManagerAdd,
           )
           .then((val) => print('TaskManager: Task \"$title\" was added succesfully to group'));
     }).catchError((e) {
@@ -138,6 +141,7 @@ class TasksManager {
       value: completedTask.value,
       parentGroupID: completedTask.parentGroupID,
       parentGroupManagerID: completedTask.parentGroupManagerID,
+      allowNonManagerAdd: true,
     );
     await _firestore.document('$GROUPS/$parentGroupID/$COMPLETED_TASKS/$taskID').delete();
   }
