@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 class ScoreBoard extends StatefulWidget {
   final GroupInfo groupInfo;
+
   ScoreBoard(this.groupInfo);
 
   @override
@@ -24,7 +25,8 @@ class ScoreBoardState extends State<ScoreBoard> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: _scoreBoardBody);/*[
+    return Column(children: _scoreBoardBody);
+    /*[
       Container(
         child: Padding(
           padding: const EdgeInsets.all(8.0),

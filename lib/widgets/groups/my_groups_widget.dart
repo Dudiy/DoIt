@@ -22,6 +22,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
   final App app = App.instance;
   List<ShortGroupInfo> _myGroups;
   Widget _allTasksWidget;
+
   // for remove groups listener
   StreamSubscription<QuerySnapshot> _groupsStreamSubscription;
 

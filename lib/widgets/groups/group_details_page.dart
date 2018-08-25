@@ -9,6 +9,7 @@ class GroupDetailsPage extends StatefulWidget {
   final GroupInfo groupInfo;
   final ShortUserInfo groupManager;
   final Function onGroupInfoChanged;
+
   GroupDetailsPage(this.groupInfo, this.groupManager, this.onGroupInfoChanged);
 
   @override

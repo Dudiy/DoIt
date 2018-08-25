@@ -13,6 +13,7 @@ import 'package:image_picker/image_picker.dart';
 class UsersManager {
   Firestore _firestore;
   final App app = App.instance;
+
   UsersManager(this._firestore);
 
   // [] on parameter to make them optional

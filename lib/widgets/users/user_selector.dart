@@ -5,7 +5,6 @@ class UserSelector extends StatefulWidget {
   final Map<String, dynamic> _initialUsersState; // userID, {'userInfo', 'isSelectd'}
   final Function _onSelectionSubmitted;
 
-
   UserSelector(this._initialUsersState, this._onSelectionSubmitted);
 
   @override
@@ -55,5 +54,4 @@ class UserSelectorState extends State<UserSelector> {
       ],
     );
   }
-
 }

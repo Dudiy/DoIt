@@ -66,16 +66,15 @@ class Authenticator {
     return user;
   }
 
-  void sendPasswordResetEmail() async {
-    final FirebaseUser currentUser = await getCurrentUser();
-    _firebaseAuth.sendPasswordResetEmail(email: currentUser.email).whenComplete(() {
+  void sendPasswordResetEmail(String email) {
+    _firebaseAuth.sendPasswordResetEmail(email: email).whenComplete(() {
       print("password reset successfully, email sent");
     });
   }
 
   Future<void> deleteUser() async {
     final FirebaseUser currentUser = await getCurrentUser();
-    await currentUser.delete().whenComplete((){
+    await currentUser.delete().whenComplete(() {
       print("user auth removed");
     });
   }

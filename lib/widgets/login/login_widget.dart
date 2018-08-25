@@ -3,6 +3,7 @@ import 'package:do_it/app.dart';
 import 'package:do_it/authenticator.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:do_it/widgets/login/register_widget.dart';
+import 'package:do_it/widgets/login/reset_password_page.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -90,6 +91,11 @@ class LoginPageState extends State<LoginPage> {
                 Navigator
                     .of(context)
                     .push(MaterialPageRoute(builder: (context) => RegisterPage(onSignedIn: widget.onSignedIn)));
+              }),
+          FlatButton(
+              child: Text("Reset password"),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => ResetPasswordPage()));
               }),
         ],
       ),

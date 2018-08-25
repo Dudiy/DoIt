@@ -1,4 +1,5 @@
 import 'package:do_it/app.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 //import 'package:do_it/widgets/image_picker.dart';
 
@@ -25,7 +26,8 @@ class UserSettingsPageState extends State<UserSettingsPage> {
                 child: Column(children: <Widget>[
           RaisedButton(
             onPressed: () async {
-              app.authenticator.sendPasswordResetEmail();
+              final FirebaseUser currentUser = await App.instance.authenticator.getCurrentUser();
+              app.authenticator.sendPasswordResetEmail(currentUser.email);
             },
             child: const Text('reset password'),
           ),

@@ -74,7 +74,8 @@ class ShortTaskInfo {
 
   set endTime(DateTime value) {
     DateTime newEndTime = value;
-    if (newEndTime != null && _startTime.isAfter(newEndTime)) throw ArgumentError('End time cannot be before start time');
+    if (newEndTime != null && _startTime.isAfter(newEndTime))
+      throw ArgumentError('End time cannot be before start time');
     _endTime = value;
   }
 }

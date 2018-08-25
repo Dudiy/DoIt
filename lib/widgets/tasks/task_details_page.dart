@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 
 class TaskDetailsPage extends StatefulWidget {
   final TaskInfo taskInfo;
+
 //  final Function onGroupInfoChanged;
   TaskDetailsPage(this.taskInfo /*, this.onGroupInfoChanged*/);
 
@@ -205,19 +206,17 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
   }
 
   _drawEditAssignedUsersButton() {
-    return app.loggedInUser.userID == widget.taskInfo.parentGroupManagerID ?
-      Positioned(
-        right: 10.0,
-        child: IconButton(
-          icon: Icon(Icons.edit),
-          onPressed: () {
-
-              // TODO implement assigned users selector
-              _showEditAssignedUsersDialog();
-
-          },
-        ),
-      )
+    return app.loggedInUser.userID == widget.taskInfo.parentGroupManagerID
+        ? Positioned(
+            right: 10.0,
+            child: IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: () {
+                // TODO implement assigned users selector
+                _showEditAssignedUsersDialog();
+              },
+            ),
+          )
         : Container(height: 0.0, width: 0.0);
   }
 }
