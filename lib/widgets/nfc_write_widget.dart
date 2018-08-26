@@ -1,5 +1,4 @@
 import 'package:do_it/app.dart';
-import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -25,7 +24,6 @@ class NfcWritePageState extends State<NfcWritePage> {
   static const platform = const MethodChannel(CLASS_PATH);
   final app = App.instance;
   final TextEditingController _taskIdToWrite = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override

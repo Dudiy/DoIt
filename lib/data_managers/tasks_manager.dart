@@ -246,9 +246,8 @@ class TasksManager {
         newStartTime = newStartTime.add(Duration(days: 7));
         break;
       case eRecurringPolicy.monthly:
-        // TODO - there is no easy way to add one month, add to release notes / readme
         newStartTime = DateTime(
-          newStartTime.year,
+          time.month < 12 ? newStartTime.year : newStartTime.year + 1,
           (newStartTime.month + 1) % 12,
           newStartTime.day,
           newStartTime.hour,

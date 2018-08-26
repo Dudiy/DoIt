@@ -1,18 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class DoItTextField extends StatelessWidget {
   final TextEditingController controller;
   final String label;
-  final TextInputType textInputType;
+  final TextInputType keyboardType;
   final maxLength;
   final bool isRequired;
   final bool enabled;
+  final int maxLines;
+  final TextAlign textAlign;
+  final String initValue;
+
+
 
   DoItTextField({
     @required this.label,
     this.controller,
-    this.textInputType,
     this.maxLength,
+    this.maxLines,
+    this.initValue,
+    this.keyboardType = TextInputType.text,
+    this.textAlign = TextAlign.start,
     this.isRequired = false,
     this.enabled = true,
   });
@@ -22,8 +31,12 @@ class DoItTextField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextFormField(
+        textAlign: textAlign,
+        keyboardType: keyboardType,
         controller: controller,
         maxLength: maxLength,
+        maxLines: maxLines,
+        initialValue: initValue,
         obscureText: label.contains('Password') || label.contains('password'),
         decoration: InputDecoration(
           labelText: label,

@@ -1,7 +1,4 @@
-import 'dart:async';
-
 import 'package:do_it/app.dart';
-import 'package:do_it/authenticator.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:flutter/material.dart';
 
@@ -37,7 +34,7 @@ class ResetPasswordPageState extends State<ResetPasswordPage> {
                       controller: _emailController,
                       label: 'Email',
                       isRequired: true,
-                      textInputType: TextInputType.emailAddress,
+                      keyboardType: TextInputType.emailAddress,
                     ),
                   ],
                 )),

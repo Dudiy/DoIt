@@ -44,7 +44,7 @@ class RegisterPageState extends State<RegisterPage> {
                       controller: _emailController,
                       label: 'Email',
                       isRequired: true,
-                      textInputType: TextInputType.emailAddress,
+                      keyboardType: TextInputType.emailAddress,
                     ),
                     DoItTextField(
                       controller: _displayNameController,

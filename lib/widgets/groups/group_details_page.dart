@@ -187,7 +187,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
         DoItTextField(
           controller: _emailController,
           label: 'Email',
-          textInputType: TextInputType.emailAddress,
+          keyboardType: TextInputType.emailAddress,
           isRequired: true,
         ),
       ],

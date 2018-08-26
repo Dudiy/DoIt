@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:do_it/LifecycleNfcWatcher.dart';
 import 'package:do_it/app.dart';
 import 'package:do_it/widgets/groups/my_groups_widget.dart';
-import 'package:do_it/widgets/nfc_write_widget.dart';
 import 'package:do_it/widgets/users/user_settings_page.dart';
 import 'package:flutter/material.dart';
 
