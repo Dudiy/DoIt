@@ -3,6 +3,7 @@ import 'dart:core';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it/app.dart';
+import 'package:do_it/constants/ShouldBeSync.dart';
 import 'package:do_it/constants/db_constants.dart';
 import 'package:do_it/data_classes/group/group_info.dart';
 import 'package:do_it/data_classes/group/group_info_short.dart';
@@ -65,6 +66,7 @@ class GroupsManager {
     return myGroups;
   }
 
+  @ShouldBeSync()
   Future<GroupInfo> getGroupInfoByID(String groupID) async {
     DocumentSnapshot groupRef = await _firestore.document('$GROUPS/$groupID').get();
     if (groupRef.data == null) throw ('GroupsManager: groupID \'$groupID\' was nof found in the DB');
@@ -144,8 +146,8 @@ class GroupsManager {
     if (loggedInUserID == null) throw new Exception('GroupManager: User is not logged in, cannot delete group');
     if (groupInfo.managerID != loggedInUserID)
       throw new Exception('GroupManager: Only the group manager can delete a group');
-    groupInfo.tasks.forEach((taskID, taskInfo) {
-      app.tasksManager.deleteTask(taskID, false);
+    groupInfo.tasks.forEach((taskID, taskInfo) async {
+      await app.tasksManager.deleteTask(taskID, false);
     });
     await _firestore.document('$GROUPS/$groupID').delete();
   }
@@ -153,7 +155,8 @@ class GroupsManager {
   Future<void> deleteAllCompletedTasksFromGroup({@required groupID}) async {
     GroupInfo groupInfo = await getGroupInfoByID(groupID);
     String loggedInUserID = app.getLoggedInUserID();
-    if (loggedInUserID == null) throw new Exception('GroupManager: User is not logged in, cannot delete completed tasks');
+    if (loggedInUserID == null)
+      throw new Exception('GroupManager: User is not logged in, cannot delete completed tasks');
     if (groupInfo.managerID != loggedInUserID)
       throw new Exception('GroupManager: Only the group manager can delete completed tasks');
     QuerySnapshot querySnapshot = await _firestore.collection('$GROUPS/$groupID/$COMPLETED_TASKS').getDocuments();
@@ -178,15 +181,15 @@ class GroupsManager {
     }
   }
 
-  removeTaskFromGroup(String groupID, String taskID) {
-    getGroupInfoByID(groupID).then((groupInfo) {
-      if (groupInfo.tasks.containsKey(taskID)) {
-        groupInfo.tasks.remove(taskID);
-        _firestore
-            .document('$GROUPS/$groupID')
-            .updateData({'tasks': TaskUtils.generateObjectFromTasksMap(groupInfo.tasks)});
-      }
-    });
+  @ShouldBeSync()
+  Future<void> removeTaskFromGroup(String groupID, String taskID) async {
+    GroupInfo groupInfo = await getGroupInfoByID(groupID);
+    if (groupInfo.tasks.containsKey(taskID)) {
+      groupInfo.tasks.remove(taskID);
+      await _firestore
+          .document('$GROUPS/$groupID')
+          .updateData({'tasks': TaskUtils.generateObjectFromTasksMap(groupInfo.tasks)});
+    }
   }
 
   Future<void> addTaskToGroup(

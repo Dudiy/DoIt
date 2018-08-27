@@ -1,0 +1,4 @@
+
+class ShouldBeSync {
+  const ShouldBeSync();
+}
