@@ -119,4 +119,14 @@ class App {
 //    await testAsync();
     print('end of test');
   }
+
+  Future<void> testAsync() async {
+    print('starting func');
+    await App.instance.firebaseStorage.ref().child("users/${App.instance.loggedInUser.userID}/profile.jpg").getData(5000000).whenComplete((){
+      print('download complete');
+      sleep(Duration(seconds: 3));
+      print('after sleep');
+    });
+    print('testAsync function returning');
+  }
 }

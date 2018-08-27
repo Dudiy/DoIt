@@ -5,6 +5,7 @@ import 'package:do_it/data_classes/task/eRecurringPolicies.dart';
 import 'package:do_it/data_classes/task/task_info.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
+import 'package:do_it/widgets/custom/time_field.dart';
 import 'package:do_it/widgets/nfc_write_widget.dart';
 import 'package:do_it/widgets/users/user_selector.dart';
 import 'package:do_it/widgets/utils/widget_utils.dart';
@@ -27,13 +28,10 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
   final TextEditingController _titleController = new TextEditingController();
   final TextEditingController _descriptionController = new TextEditingController();
   final TextEditingController _valueController = new TextEditingController();
-  final TextEditingController _startTimeController = new TextEditingController();
-  final TextEditingController _endTimeController = new TextEditingController();
   bool editEnabled;
   Map<String, ShortUserInfo> _parentGroupMembers;
   Map<String, ShortUserInfo> _assignedUsers;
-  DateTime _selectedStartDate, _selectedEndDate;
-  TimeOfDay _selectedStartTime, _selectedEndTime;
+  DateTime _selectedStartDateTime, _selectedEndDateTime;
   eRecurringPolicy _selectedPolicy = eRecurringPolicy.none;
 
   @override
@@ -44,12 +42,8 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
     _titleController.text = taskInfo.title;
     _descriptionController.text = taskInfo.description;
     _valueController.text = taskInfo.value.toString();
-    _selectedStartDate = taskInfo.startTime;
-    _selectedStartTime = taskInfo.startTime != null ? TimeOfDay.fromDateTime(taskInfo.startTime) : null;
-    _selectedEndDate = taskInfo.endTime;
-    _selectedEndTime = taskInfo.endTime != null ? TimeOfDay.fromDateTime(taskInfo.endTime) : null;
-    _startTimeController.text = _formatDateTime(taskInfo.startTime);
-    _endTimeController.text = _formatDateTime(taskInfo.endTime);
+    _selectedStartDateTime = taskInfo.startTime;
+    _selectedEndDateTime = taskInfo.endTime;
     _selectedPolicy = taskInfo.recurringPolicy;
     app.groupsManager.getGroupInfoByID(taskInfo.parentGroupID).then((parentGroupInfo) {
       setState(() {
@@ -60,122 +54,6 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
       });
     });
     super.initState();
-  }
-
-  Future<DateTime> _selectDate(BuildContext context, DateTime initDate) async {
-    final DateTime picked = await showDatePicker(
-      context: context,
-      initialDate: initDate ?? DateTime.now(),
-      firstDate: new DateTime(2017, 1),
-      lastDate: new DateTime(2050),
-    );
-    return picked != null && picked != initDate ? picked : initDate;
-  }
-
-  Future<TimeOfDay> _selectTime(BuildContext context, DateTime initDate) async {
-    TimeOfDay initTime = initDate != null ? TimeOfDay.fromDateTime(initDate) : TimeOfDay.now();
-    final TimeOfDay picked = await showTimePicker(context: context, initialTime: initTime);
-    return picked != null && picked != initTime ? picked : initTime;
-  }
-
-  String _formatDateTime(DateTime dateTime) {
-    return dateTime == null
-        ? "Time not set"
-        : '${dateTime.day}/${dateTime.month}/${dateTime.year} - '
-        '${dateTime.hour > 9 ? dateTime.hour : '0${dateTime.hour}'}:'
-        '${dateTime.minute > 9 ? dateTime.minute : '0${dateTime.minute}'}';
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Task \"${widget.taskInfo.title}\" details',
-          maxLines: 2,
-        ),
-        titleSpacing: 0.0,
-        actions: _drawActionsBar(),
-      ),
-      body: ListView(
-        children: <Widget>[
-          Container(
-            child: Form(
-                key: _formKey,
-                child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-                  DoItTextField(label: 'Task ID', controller: _taskIDController, enabled: false),
-                  DoItTextField(
-                    controller: _titleController,
-                    label: 'Title',
-                    enabled: editEnabled,
-                  ),
-                  DoItTextField(
-                    controller: _descriptionController,
-                    label: 'Description',
-                    enabled: editEnabled,
-                    maxLines: 3,
-                  ),
-                  DoItTextField(
-                    keyboardType: TextInputType.number,
-                    controller: _valueController,
-                    label: 'Value',
-                    enabled: editEnabled,
-                  ),
-                  _recurringPolicyField(),
-                  _timeField(
-                    label: 'Start time',
-                    controller: _startTimeController,
-                    onPressed: () => _setStartTime(context),
-                  ),
-                  _timeField(
-                    label: 'End time',
-                    controller: _endTimeController,
-                    onPressed: () => _setEndTime(context),
-                  ),
-                ])),
-          ),
-          Divider(),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.black38),
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Column(
-                children: getAssignedUsers(),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _setEndTime(BuildContext context) {
-    _selectDate(context, widget.taskInfo.endTime).then((selectedDate) {
-      _selectedEndDate = selectedDate;
-      _selectTime(context, widget.taskInfo.endTime).then((selectedTime) {
-        _selectedEndTime = selectedTime;
-        setState(() {
-          _selectedEndDate = _getSelectedDateTime(selectedDate, selectedTime);
-          _endTimeController.text = _formatDateTime(_selectedEndDate);
-        });
-      });
-    });
-  }
-
-  void _setStartTime(BuildContext context) {
-    _selectDate(context, widget.taskInfo.startTime).then((selectedDate) {
-      _selectedStartDate = selectedDate;
-      _selectTime(context, widget.taskInfo.startTime).then((selectedTime) {
-        _selectedStartTime = selectedTime;
-        setState(() {
-          _selectedStartDate = _getSelectedDateTime(selectedDate, selectedTime);
-          _startTimeController.text = _formatDateTime(_selectedStartDate);
-        });
-      });
-    });
   }
 
   List<Widget> _drawActionsBar() {
@@ -200,8 +78,8 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
           title: _titleController.text.isNotEmpty ? _titleController.text : null,
           description: _descriptionController.text.isNotEmpty ? _descriptionController.text : null,
           value: _valueController.text.isNotEmpty ? int.parse(_valueController.text) : null,
-          startTime: _getSelectedDateTime(_selectedStartDate, _selectedStartTime),
-          endTime: _getSelectedDateTime(_selectedEndDate, _selectedEndTime),
+          startTime: _selectedStartDateTime,
+          endTime: _selectedEndDateTime,
           recurringPolicy: _selectedPolicy,
         )
             .then((newGroupInfo) {
@@ -347,62 +225,6 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
     Navigator.pop(context);
   }
 
-  DateTime _getSelectedDateTime(DateTime selectedDate, TimeOfDay selectedTime) {
-    if (selectedDate == null || selectedTime == null) {
-      return null;
-    } else {
-      return DateTime(selectedDate.year, selectedDate.month, selectedDate.day, selectedTime.hour, selectedTime.minute);
-    }
-  }
-
-  Widget _timeField({String label, TextEditingController controller, VoidCallback onPressed}) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 8.0, 8.0, 8.0),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-              child: Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: Stack(
-                    children: [
-                      TextFormField(
-                        controller: controller,
-                        enabled: false,
-                        textAlign: TextAlign.center,
-                        decoration: InputDecoration(
-                          labelText: label,
-                          border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(16.0))),
-                        ),
-                      ),
-                      Positioned(
-                        right: 0.0,
-                        child: ButtonTheme(
-                          height: 60.0,
-                          minWidth: 20.0,
-                          child: FlatButton(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.horizontal(
-                                right: Radius.circular(16.0),
-                              )),
-                              color: Theme.of(context).primaryColorLight,
-                              child: Icon(Icons.date_range),
-                              onPressed: () => onPressed()),
-                        ),
-                      ),
-                    ],
-                  )
-                  /*DoItTextField(
-                                label: 'Start time',
-                                controller: _startTimeController,
-                                enabled: false,
-                                textAlign: TextAlign.center,
-                              ),*/
-                  )),
-        ],
-      ),
-    );
-  }
-
   Widget _recurringPolicyField() {
     Widget selector = editEnabled
         ? Container(
@@ -447,6 +269,80 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: selector,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Task \"${widget.taskInfo.title}\" details',
+          maxLines: 2,
+        ),
+        titleSpacing: 0.0,
+        actions: _drawActionsBar(),
+      ),
+      body: ListView(
+        children: <Widget>[
+          Container(
+            child: Form(
+                key: _formKey,
+                child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+                  DoItTextField(label: 'Task ID', controller: _taskIDController, enabled: false),
+                  DoItTextField(
+                    controller: _titleController,
+                    label: 'Title',
+                    enabled: editEnabled,
+                  ),
+                  DoItTextField(
+                    controller: _descriptionController,
+                    label: 'Description',
+                    enabled: editEnabled,
+                    maxLines: 3,
+                  ),
+                  DoItTextField(
+                    keyboardType: TextInputType.number,
+                    controller: _valueController,
+                    label: 'Value',
+                    enabled: editEnabled,
+                  ),
+                  _recurringPolicyField(),
+                  DoItTimeField(
+                    label: 'Start time',
+                    initDateTime: widget.taskInfo.startTime,
+                    enabled: editEnabled,
+                    onDateTimeUpdated: (selectedDateTime) {
+                      _selectedStartDateTime = selectedDateTime;
+                    },
+                  ),
+                  DoItTimeField(
+                    label: 'End time',
+                    initDateTime: widget.taskInfo.endTime,
+                    enabled: editEnabled,
+                    onDateTimeUpdated: (selectedDateTime) {
+                      setState(() {
+                        _selectedEndDateTime = selectedDateTime;
+                      });
+                    },
+                  ),
+                ])),
+          ),
+          Divider(),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black38),
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: Column(
+                children: getAssignedUsers(),
+              ),
             ),
           ),
         ],
