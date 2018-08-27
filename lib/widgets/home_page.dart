@@ -25,11 +25,17 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   static const LOADING_GIF = 'assets/images/loading_profile_pic.png';
-  String photoUrl="";
+  static const DEFAULT_PICTURE = 'assets/images/unknown_profile_pic.png';
+  String photoUrl = DEFAULT_PICTURE;
 
   @override
   Widget build(BuildContext context) {
-    photoUrl = App.instance.loggedInUser?.photoUrl ?? "";
+    if (App.instance.loggedInUser?.photoUrl != null && App.instance.loggedInUser?.photoUrl != "") {
+      photoUrl = App.instance.loggedInUser?.photoUrl;
+    }else{
+      photoUrl = DEFAULT_PICTURE;
+    }
+
     return Scaffold(
         appBar: AppBar(
           leading: GestureDetector(
@@ -40,12 +46,7 @@ class HomePageState extends State<HomePage> {
                 }),
             child: Padding(
               padding: const EdgeInsets.all(5.0),
-              child: Center(
-                child: FadeInImage.assetNetwork(
-                  placeholder: LOADING_GIF,
-                  image: photoUrl,
-                ),
-              ),
+              child: _addProfilePicture(),
             ),
           ),
           title: Text("DoIt"),
@@ -71,5 +72,20 @@ class HomePageState extends State<HomePage> {
           ],
         ),
         body: MyGroupsPage());
+  }
+
+  _addProfilePicture() {
+    return photoUrl == DEFAULT_PICTURE
+        ? DecoratedBox(
+            decoration: BoxDecoration(
+                image: DecorationImage(
+            image: AssetImage(DEFAULT_PICTURE),
+          )))
+        : Center(
+            child: FadeInImage.assetNetwork(
+              placeholder: LOADING_GIF,
+              image: photoUrl,
+            ),
+          );
   }
 }
