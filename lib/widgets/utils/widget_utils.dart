@@ -3,18 +3,16 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class WidgetUtils {
-  static Future<bool> showDeleteDialog(context) async {
+  static Future<bool> showDeleteDialog({context, message}) async {
     return showDialog<bool>(
         context: context,
         builder: (BuildContext context) {
           return new SimpleDialog(
-            title: Text(
-              'Are you sure you would like to delete this group? \nThis cannot be undone',
-            ),
+            title: Text(message),
             children: <Widget>[
               RaisedButton(
                 child: Text(
-                  'Delete Group',
+                  'Delete',
                   style: TextStyle(color: Colors.white),
                 ),
                 color: Theme.of(context).errorColor,

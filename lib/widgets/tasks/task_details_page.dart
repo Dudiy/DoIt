@@ -7,6 +7,7 @@ import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:do_it/widgets/nfc_write_widget.dart';
 import 'package:do_it/widgets/users/user_selector.dart';
+import 'package:do_it/widgets/utils/widget_utils.dart';
 import 'package:flutter/material.dart';
 
 class TaskDetailsPage extends StatefulWidget {
@@ -216,13 +217,16 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
     return FlatButton(
         child: Icon(Icons.delete, color: Colors.white),
         onPressed: () async {
-//        _showDeleteDialog().then((deleteConfimed) {
-//          if (deleteConfimed) {
-//            app.groupsManager.deleteGroup(groupID: groupInfo.groupID);
-//            Navigator.pop(context);
-//          }
-        }
-        );
+          WidgetUtils
+              .showDeleteDialog(
+                  context: context, message: 'Are you sure you would like to delete this task? \nThis cannot be undone')
+              .then((deleteConfirmed) {
+            if (deleteConfirmed) {
+              app.tasksManager.deleteTask(widget.taskInfo.taskID);
+              Navigator.pop(context);
+            }
+          });
+        });
   }
 
   Widget _getNfcWidget() {

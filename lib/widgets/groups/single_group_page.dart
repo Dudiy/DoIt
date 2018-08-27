@@ -282,7 +282,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       context: context,
       inputWidgets:*/
 
-      /*[
+    /*[
         DoItTextField(
           controller: _titleController,
           label: 'Title',
@@ -354,19 +354,22 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     );*/
   }
 
-  void addTaskSubmitted(TaskInfo taskInfo){
+  void addTaskSubmitted(TaskInfo taskInfo) {
     try {
-      app.tasksManager.addTask(
-        title: taskInfo.title,
-        description: taskInfo.description,
-        value: taskInfo.value,
-        startTime: taskInfo.startTime,
-        endTime: taskInfo.endTime,
-        assignedUsers: taskInfo.assignedUsers,
-        recurringPolicy: taskInfo.recurringPolicy, // TODO change to input!
-        parentGroupID: groupInfo.groupID,
-        parentGroupManagerID: groupInfo.managerID,
-      ).whenComplete(() => Navigator.pop(context));
+      app.tasksManager
+          .addTask(
+            title: taskInfo.title,
+            description: taskInfo.description,
+            value: taskInfo.value,
+            startTime: taskInfo.startTime,
+            endTime: taskInfo.endTime,
+            assignedUsers: taskInfo.assignedUsers,
+            recurringPolicy: taskInfo.recurringPolicy,
+            // TODO change to input!
+            parentGroupID: groupInfo.groupID,
+            parentGroupManagerID: groupInfo.managerID,
+          )
+          .whenComplete(() => Navigator.pop(context));
     } catch (e) {
       print(e);
     }
@@ -399,7 +402,11 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       buttons.add(FlatButton(
         child: Icon(Icons.delete, color: Colors.white),
         onPressed: () async {
-          WidgetUtils.showDeleteDialog(context).then((deleteConfimed) {
+          WidgetUtils
+              .showDeleteDialog(
+                  context: context,
+                  message: 'Are you sure you would like to delete this group? \nThis cannot be undone')
+              .then((deleteConfimed) {
             if (deleteConfimed) {
               app.groupsManager.deleteGroup(groupID: groupInfo.groupID);
               Navigator.pop(context);
@@ -475,7 +482,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
           );
   }
 
-  // TODO delete after commit
+// TODO delete after commit
 //  ExpansionPanel _tasksExpansionPanel(
 //      {@required String title,
 //      @required bool isExpanded,
