@@ -9,7 +9,7 @@ class LifecycleNfcWatcher extends StatefulWidget {
 
 class _LifecycleNfcWatcherState extends State<LifecycleNfcWatcher> with WidgetsBindingObserver {
   static const CLASS_PATH = "doit:nfc";
-  static const GET_LAST_TEXT_READ = "getLastTextRead";
+  static const GET_LAST_TEXT_READ_AND_RESET = "getLastTextReadAndReset";
   static const GET_STATE = "getState";
   static const SET_STATE = "setState";
   static const READ_STATE = "1";
@@ -60,12 +60,14 @@ class _LifecycleNfcWatcherState extends State<LifecycleNfcWatcher> with WidgetsB
   }
 
   void _readFromNfc() {
-    platform.invokeMethod(GET_LAST_TEXT_READ).then((taskId) {
-      print("NFC READ TEST: " + taskId);
-      App.instance.tasksManager.completeTask(
-          taskID: taskId,
-          userWhoCompletedID: App.instance.getLoggedInUserID()
-      );
+    platform.invokeMethod(GET_LAST_TEXT_READ_AND_RESET).then((taskId) {
+      if(taskId != null){
+        print("NFC READ TEST: " + taskId);
+        App.instance.tasksManager.completeTask(
+            taskID: taskId,
+            userWhoCompletedID: App.instance.getLoggedInUserID()
+        );
+      }
     });
   }
 

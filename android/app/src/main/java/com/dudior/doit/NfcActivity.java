@@ -29,14 +29,14 @@ import kotlin.NotImplementedError;
 
 public class NfcActivity extends FlutterActivity {
     private static final String CLASS_PATH = "doit:nfc";
-    private static final String GET_LAST_TEXT_READ = "getLastTextRead";
+    private static final String GET_LAST_TEXT_READ_AND_RESET = "getLastTextReadAndReset";
     private static final String SET_STATE = "setState";
     private static final String GET_STATE = "getState";
     private static final String SET_TEXT_TO_WRITE = "setTextToWrite";
     private static final String GET_TEXT_TO_WRITE = "getTextToWrite";
 
     NfcAdapter nfcAdapter;
-    String textRead="";
+    String textRead=null;
     String textToWrite = "";
     NfcState nfcState = NfcState.NA;
     boolean hasNfc = false;
@@ -60,8 +60,9 @@ public class NfcActivity extends FlutterActivity {
                 @Override
                 public void onMethodCall(MethodCall call, Result result) {
                     switch (call.method) {
-                        case GET_LAST_TEXT_READ:
+                        case GET_LAST_TEXT_READ_AND_RESET:
                             result.success(textRead);
+                            textRead=null;
                             break;
                         case SET_STATE:
                             String nfcStateString = call.argument("state");
