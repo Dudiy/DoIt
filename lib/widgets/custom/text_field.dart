@@ -12,8 +12,6 @@ class DoItTextField extends StatelessWidget {
   final TextAlign textAlign;
   final String initValue;
 
-
-
   DoItTextField({
     @required this.label,
     this.controller,

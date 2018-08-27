@@ -3,8 +3,8 @@ import 'dart:core';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it/app.dart';
-import 'package:do_it/constants/ShouldBeSync.dart';
 import 'package:do_it/constants/db_constants.dart';
+import 'package:do_it/constants/should_be_sync.dart';
 import 'package:do_it/data_classes/group/group_info.dart';
 import 'package:do_it/data_classes/group/group_info_short.dart';
 import 'package:do_it/data_classes/group/group_utils.dart';
@@ -146,7 +146,7 @@ class GroupsManager {
     if (loggedInUserID == null) throw new Exception('GroupManager: User is not logged in, cannot delete group');
     if (groupInfo.managerID != loggedInUserID)
       throw new Exception('GroupManager: Only the group manager can delete a group');
-    Future.forEach(groupInfo.tasks.keys, (taskID){
+    Future.forEach(groupInfo.tasks.keys, (taskID) {
       app.tasksManager.deleteTask(taskID, false);
     });
     await _firestore.document('$GROUPS/$groupID').delete();

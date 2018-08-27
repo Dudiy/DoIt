@@ -62,10 +62,9 @@ class UsersManager {
       if (fileSizeInMb > MAX_PROFILE_PIC_SIZE_MB)
         throw Exception('UsersManager: cannot upload profile pic, max file size is $MAX_PROFILE_PIC_SIZE_MB Mb');
       StorageUploadTask uploadTask = storageRef.child("users/${app.loggedInUser.userID}/profile.jpg").putFile(file);
-      await uploadTask.future.then((uploadTask) {
-        updateUser(app.loggedInUser.userID, uploadTask.downloadUrl.toString());
-        App.instance.loggedInUser.photoUrl = uploadTask.downloadUrl.toString();
-      });
+      UploadTaskSnapshot uploadTaskSnapshot = await uploadTask.future;
+      updateUser(app.loggedInUser.userID, uploadTaskSnapshot.downloadUrl.toString());
+      App.instance.loggedInUser.photoUrl = uploadTaskSnapshot.downloadUrl.toString();
     }
   }
 

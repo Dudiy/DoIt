@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it/app.dart';
-import 'package:do_it/constants/ShouldBeSync.dart';
 import 'package:do_it/constants/db_constants.dart';
+import 'package:do_it/constants/should_be_sync.dart';
 import 'package:do_it/data_classes/group/group_info.dart';
 import 'package:do_it/data_classes/task/eRecurringPolicies.dart';
 import 'package:do_it/data_classes/task/task_info.dart';
@@ -56,10 +56,10 @@ class TasksManager {
         .whenComplete(() {
       app.groupsManager
           .addTaskToGroup(
-        groupID: parentGroupID,
-        shortTaskInfo: shortTaskInfo,
-        allowNonManagerAdd: allowNonManagerAdd,
-      )
+            groupID: parentGroupID,
+            shortTaskInfo: shortTaskInfo,
+            allowNonManagerAdd: allowNonManagerAdd,
+          )
           .then((val) => print('TaskManager: Task \"$title\" was added succesfully to group'));
     }).catchError((e) {
       print('TasksManager: error while trying to add task');
@@ -67,15 +67,16 @@ class TasksManager {
     });
   }
 
-  Future<TaskInfo> updateTask({@required String taskIdToChange,
-    String title,
-    String description,
-    int value,
-    DateTime startTime,
-    DateTime endTime,
-    eRecurringPolicy recurringPolicy,
-    Map<String, ShortUserInfo> assignedUsers,
-    bool allowNonManagerUpdate = false}) async {
+  Future<TaskInfo> updateTask(
+      {@required String taskIdToChange,
+      String title,
+      String description,
+      int value,
+      DateTime startTime,
+      DateTime endTime,
+      eRecurringPolicy recurringPolicy,
+      Map<String, ShortUserInfo> assignedUsers,
+      bool allowNonManagerUpdate = false}) async {
     ShortUserInfo loggedInUser = app.loggedInUser;
     String errorMessagePrefix = 'TasksManager: cannot update task.';
     if (loggedInUser == null) throw Exception('$errorMessagePrefix User is not logged in');
@@ -149,7 +150,7 @@ class TasksManager {
 
   Future<CompletedTaskInfo> getCompletedTask(String parentGroupID, String taskID) async {
     DocumentSnapshot documentSnapshot =
-    await _firestore.document('$GROUPS/$parentGroupID/$COMPLETED_TASKS/$taskID').get();
+        await _firestore.document('$GROUPS/$parentGroupID/$COMPLETED_TASKS/$taskID').get();
     if (documentSnapshot == null)
       throw Exception('Completed task, was not found in \"$GROUPS/$parentGroupID/$COMPLETED_TASKS/$taskID\"');
     return TaskUtils.generateCompletedTaskInfoFromObject(documentSnapshot.data);

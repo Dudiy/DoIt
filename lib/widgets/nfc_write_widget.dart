@@ -18,7 +18,7 @@ class NfcWritePageState extends State<NfcWritePage> {
   static const GET_LAST_TEXT_READ_AND_RESET = "getLastTextReadAndReset";
   static const SET_STATE = "setState";
   static const GET_STATE = "getState";
-  static const  SET_TEXT_TO_WRITE = "setTextToWrite";
+  static const SET_TEXT_TO_WRITE = "setTextToWrite";
   static const READ_STATE = "1";
   static const WRITE_STATE = "2";
   static const platform = const MethodChannel(CLASS_PATH);
@@ -66,7 +66,7 @@ class NfcWritePageState extends State<NfcWritePage> {
       print("NFC status: " + returnVal);
     });
     platform.invokeMethod(SET_TEXT_TO_WRITE, <String, dynamic>{
-      'textToWrite': widget._taskId == null ? "" : widget._taskId ,
+      'textToWrite': widget._taskId == null ? "" : widget._taskId,
     }).then((returnVal) {
       print("when device get NFC it will write: " + _taskIdToWrite.text);
     });
@@ -79,6 +79,4 @@ class NfcWritePageState extends State<NfcWritePage> {
       print("NFC status: " + returnVal);
     });
   }
-
-
 }

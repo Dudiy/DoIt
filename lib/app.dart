@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it/authenticator.dart';
-import 'package:do_it/constants/ShouldBeSync.dart';
+import 'package:do_it/data_classes/task/eRecurringPolicies.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/data_managers/groups_manager.dart';
 import 'package:do_it/data_managers/tasks_manager.dart';
@@ -12,7 +12,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
-import 'package:do_it/data_classes/task/eRecurringPolicies.dart';
+
 ///
 /// singleton class
 ///
@@ -102,7 +102,8 @@ class App {
     });*/
 
 //    ShortUserInfo shortUserInfoByEmail = await app.usersManager.getShortUserInfoByEmail('d@d.com');
-    app.tasksManager.updateTask(taskIdToChange: '78c7f37d-aa5f-40f5-bc22-ab762bc7e063', recurringPolicy: eRecurringPolicy.weekly);
+    app.tasksManager
+        .updateTask(taskIdToChange: '78c7f37d-aa5f-40f5-bc22-ab762bc7e063', recurringPolicy: eRecurringPolicy.weekly);
 //    print(eRecurringPolicy.weekly);
 //    print('foreach:');
 //    for (var value in eRecurringPolicy.values) {
