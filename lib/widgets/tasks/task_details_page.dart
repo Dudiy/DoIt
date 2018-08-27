@@ -94,7 +94,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
           maxLines: 2,
         ),
         titleSpacing: 0.0,
-        actions: drawActions(),
+        actions: _drawActionsBar(),
       ),
       body: ListView(
         children: <Widget>[
@@ -177,34 +177,61 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
     });
   }
 
-  List<Widget> drawActions() {
+  List<Widget> _drawActionsBar() {
     List<Widget> actions = new List();
     if (editEnabled) {
-      actions.add(FlatButton(
-        child: Icon(Icons.save, color: Colors.white),
-        onPressed: () async {
-          await app.tasksManager
-              .updateTask(
-            taskIdToChange: widget.taskInfo.taskID,
-            title: _titleController.text.isNotEmpty ? _titleController.text : null,
-            description: _descriptionController.text.isNotEmpty ? _descriptionController.text : null,
-            value: _valueController.text.isNotEmpty ? int.parse(_valueController.text) : null,
-            startTime: _getSelectedDateTime(_selectedStartDate, _selectedStartTime),
-            endTime: _getSelectedDateTime(_selectedEndDate, _selectedEndTime),
-            recurringPolicy: _selectedPolicy,
-          )
-              .then((newGroupInfo) {
-            // TODO check if we need this
-//            widget.onTaskInfoChanged(newGroupInfo);
-          });
-          Navigator.pop(context);
-        },
-      ));
+      actions.add(_getSaveButton());
+      actions.add(_getDeleteButton());
       // TODO add that if we have NFC
       actions.add(_getNfcWidget());
     }
 
     return actions;
+  }
+
+  Widget _getSaveButton() {
+    return FlatButton(
+      child: Icon(Icons.save, color: Colors.white),
+      onPressed: () async {
+        await app.tasksManager
+            .updateTask(
+          taskIdToChange: widget.taskInfo.taskID,
+          title: _titleController.text.isNotEmpty ? _titleController.text : null,
+          description: _descriptionController.text.isNotEmpty ? _descriptionController.text : null,
+          value: _valueController.text.isNotEmpty ? int.parse(_valueController.text) : null,
+          startTime: _getSelectedDateTime(_selectedStartDate, _selectedStartTime),
+          endTime: _getSelectedDateTime(_selectedEndDate, _selectedEndTime),
+          recurringPolicy: _selectedPolicy,
+        )
+            .then((newGroupInfo) {
+          // TODO check if we need this
+//            widget.onTaskInfoChanged(newGroupInfo);
+        });
+        Navigator.pop(context);
+      },
+    );
+  }
+
+  Widget _getDeleteButton() {
+    return FlatButton(
+        child: Icon(Icons.delete, color: Colors.white),
+        onPressed: () async {
+//        _showDeleteDialog().then((deleteConfimed) {
+//          if (deleteConfimed) {
+//            app.groupsManager.deleteGroup(groupID: groupInfo.groupID);
+//            Navigator.pop(context);
+//          }
+        }
+        );
+  }
+
+  Widget _getNfcWidget() {
+    return FlatButton(
+      child: Icon(Icons.nfc, color: Colors.white),
+      onPressed: () {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => NfcWritePage(widget.taskInfo.taskID)));
+      },
+    );
   }
 
   List<Widget> getAssignedUsers() {
@@ -314,15 +341,6 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
       _getAssignedUsersFromDB();
     });
     Navigator.pop(context);
-  }
-
-  Widget _getNfcWidget() {
-    return FlatButton(
-      child: Icon(Icons.nfc, color: Colors.white),
-      onPressed: () {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => NfcWritePage(widget.taskInfo.taskID)));
-      },
-    );
   }
 
   DateTime _getSelectedDateTime(DateTime selectedDate, TimeOfDay selectedTime) {

@@ -15,6 +15,7 @@ import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:do_it/widgets/groups/group_details_page.dart';
 import 'package:do_it/widgets/tasks/add_task.dart';
 import 'package:do_it/widgets/tasks/task_details_page.dart';
+import 'package:do_it/widgets/utils/widget_utils.dart';
 import 'package:flutter/material.dart';
 
 class SingleGroupPage extends StatefulWidget {
@@ -383,36 +384,6 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     }
   }
 
-  Future<bool> _showDeleteDialog() async {
-    return showDialog<bool>(
-        context: context,
-        builder: (BuildContext context) {
-          return new SimpleDialog(
-            title: Text(
-              'Are you sure you would like to delete this group? \nThis cannot be undone',
-            ),
-            children: <Widget>[
-              RaisedButton(
-                child: Text(
-                  'Delete Group',
-                  style: TextStyle(color: Colors.white),
-                ),
-                color: Theme.of(context).errorColor,
-                onPressed: () {
-                  Navigator.pop(context, true);
-                },
-              ),
-              RaisedButton(
-                child: Text('Cancel'),
-                onPressed: () {
-                  Navigator.pop(context, false);
-                },
-              )
-            ],
-          );
-        });
-  }
-
   List<Widget> _drawEditAndDelete() {
     List<Widget> buttons = new List();
     buttons.add(FlatButton(
@@ -428,7 +399,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       buttons.add(FlatButton(
         child: Icon(Icons.delete, color: Colors.white),
         onPressed: () async {
-          _showDeleteDialog().then((deleteConfimed) {
+          WidgetUtils.showDeleteDialog(context).then((deleteConfimed) {
             if (deleteConfimed) {
               app.groupsManager.deleteGroup(groupID: groupInfo.groupID);
               Navigator.pop(context);
