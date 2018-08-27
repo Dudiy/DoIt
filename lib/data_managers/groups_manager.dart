@@ -140,14 +140,14 @@ class GroupsManager {
     return groupInfo;
   }
 
-  deleteGroup({@required String groupID}) async {
+  Future<void> deleteGroup({@required String groupID}) async {
     GroupInfo groupInfo = await getGroupInfoByID(groupID);
     String loggedInUserID = app.getLoggedInUserID();
     if (loggedInUserID == null) throw new Exception('GroupManager: User is not logged in, cannot delete group');
     if (groupInfo.managerID != loggedInUserID)
       throw new Exception('GroupManager: Only the group manager can delete a group');
-    Future.forEach(groupInfo.tasks.keys, (taskID){
-      app.tasksManager.deleteTask(taskID, false);
+    await Future.forEach(groupInfo.tasks.keys, (taskID) async{
+      await app.tasksManager.deleteTask(taskID, false);
     });
     await _firestore.document('$GROUPS/$groupID').delete();
   }

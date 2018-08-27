@@ -1,8 +1,7 @@
 import 'dart:async';
-
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it/authenticator.dart';
-import 'package:do_it/constants/ShouldBeSync.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/data_managers/groups_manager.dart';
 import 'package:do_it/data_managers/tasks_manager.dart';
@@ -12,7 +11,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
-import 'package:do_it/data_classes/task/eRecurringPolicies.dart';
+
 ///
 /// singleton class
 ///
@@ -102,12 +101,31 @@ class App {
     });*/
 
 //    ShortUserInfo shortUserInfoByEmail = await app.usersManager.getShortUserInfoByEmail('d@d.com');
-    app.tasksManager.updateTask(taskIdToChange: '78c7f37d-aa5f-40f5-bc22-ab762bc7e063', recurringPolicy: eRecurringPolicy.weekly);
+//    app.tasksManager.updateTask(taskIdToChange: '78c7f37d-aa5f-40f5-bc22-ab762bc7e063', recurringPolicy: eRecurringPolicy.weekly);
 //    print(eRecurringPolicy.weekly);
 //    print('foreach:');
 //    for (var value in eRecurringPolicy.values) {
 //      print(value);
 //    }
+    List<Future> funcs = [testAsync(), testAsync()];
+    await Future.forEach(funcs, (func) async {
+      return await func;
+    });
+//    funcs.forEach((func) async{
+//      await func;
+//    });
+//    await Future.wait(funcs);
+//    await testAsync();
     print('end of test');
+  }
+
+  Future<void> testAsync() async {
+    print('starting func');
+    await App.instance.firebaseStorage.ref().child("users/${App.instance.loggedInUser.userID}/profile.jpg").getData(5000000).whenComplete((){
+      print('download complete');
+      sleep(Duration(seconds: 3));
+      print('after sleep');
+    });
+    print('testAsync function returning');
   }
 }
