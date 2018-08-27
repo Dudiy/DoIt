@@ -24,11 +24,12 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  String photoUrl = App.instance.loggedInUser?.photoUrl ?? "";
   static const LOADING_GIF = 'assets/images/loading_profile_pic.png';
+  String photoUrl="";
 
   @override
   Widget build(BuildContext context) {
+    photoUrl = App.instance.loggedInUser?.photoUrl ?? "";
     return Scaffold(
         appBar: AppBar(
           leading: GestureDetector(

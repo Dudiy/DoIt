@@ -18,11 +18,20 @@ class UsersManager {
 
   // [] on parameter to make them optional
   Future<void> addUser(FirebaseUser user, [String displayName = "", String photoUrl = ""]) async {
+    DocumentSnapshot documentSnapshot = await App.instance.firestore.document('$USERS/${user.uid}').get();
+    bool isUserAlreadyInDB = documentSnapshot.data != null;
+    String photoUrl = "";
+    if (isUserAlreadyInDB && documentSnapshot['photoUrl'] != null) {
+      photoUrl = documentSnapshot['photoUrl'];
+    } else if (user.photoUrl != null) {
+      photoUrl = user.photoUrl;
+    }
+
     await _firestore.document('$USERS/${user.uid}').setData(<String, dynamic>{
       'userID': user.uid,
       'email': user.email,
       'displayName': user.displayName ?? displayName,
-      'photoUrl': user.photoUrl ?? photoUrl,
+      'photoUrl': photoUrl,
     });
   }
 
