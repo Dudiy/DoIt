@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it/authenticator.dart';
+import 'package:do_it/data_classes/task/eRecurringPolicies.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/data_managers/groups_manager.dart';
 import 'package:do_it/data_managers/tasks_manager.dart';
@@ -117,15 +118,5 @@ class App {
 //    await Future.wait(funcs);
 //    await testAsync();
     print('end of test');
-  }
-
-  Future<void> testAsync() async {
-    print('starting func');
-    await App.instance.firebaseStorage.ref().child("users/${App.instance.loggedInUser.userID}/profile.jpg").getData(5000000).whenComplete((){
-      print('download complete');
-      sleep(Duration(seconds: 3));
-      print('after sleep');
-    });
-    print('testAsync function returning');
   }
 }

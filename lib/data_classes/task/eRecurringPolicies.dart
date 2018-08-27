@@ -11,8 +11,8 @@ class RecurringPolicyUtils {
     return eRecurringPolicy.values.firstWhere((e) => e.toString() == string, orElse: null);
   }
 
-  static String policyToString(eRecurringPolicy policy){
-    switch (policy){
+  static String policyToString(eRecurringPolicy policy) {
+    switch (policy) {
       case eRecurringPolicy.none:
         return "None";
       case eRecurringPolicy.daily:

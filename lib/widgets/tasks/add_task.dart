@@ -29,7 +29,11 @@ class AddTaskDialogBodyState extends State<AddTaskDialogBody> {
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Center(child: Text('Add Task', style: Theme.of(context).textTheme.title,)),
+          child: Center(
+              child: Text(
+            'Add Task',
+            style: Theme.of(context).textTheme.title,
+          )),
         ),
         DoItTextField(
           controller: _titleController,
@@ -91,7 +95,8 @@ class AddTaskDialogBodyState extends State<AddTaskDialogBody> {
               startTime: _startTimeController.text.isNotEmpty ? DateTime.parse(_startTimeController.text) : null,
               endTime: _endTimeController.text.isNotEmpty ? DateTime.parse(_endTimeController.text) : null,
               assignedUsers: null,
-              recurringPolicy: _selectedPolicy, // TODO change to input!
+              recurringPolicy: _selectedPolicy,
+              // TODO change to input!
               // these fields are ignored in the callback function
               taskID: "",
               parentGroupID: "",

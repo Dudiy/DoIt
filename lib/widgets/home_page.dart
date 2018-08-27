@@ -1,5 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:do_it/LifecycleNfcWatcher.dart';
 import 'package:do_it/app.dart';
 import 'package:do_it/widgets/groups/my_groups_widget.dart';
 import 'package:do_it/widgets/users/user_settings_page.dart';
@@ -26,8 +24,8 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  AssetImage defaultImage = AssetImage('assets/images/loading_profile_pic.png');
   String photoUrl = App.instance.loggedInUser?.photoUrl ?? "";
+  static const LOADING_GIF = 'assets/images/loading_profile_pic.png';
 
   @override
   Widget build(BuildContext context) {
@@ -41,12 +39,11 @@ class HomePageState extends State<HomePage> {
                 }),
             child: Padding(
               padding: const EdgeInsets.all(5.0),
-              child: Stack(
-                children: <Widget>[
-                  _getDefaultProfile(),
-                  _getProfilePicFromDB(),
-                  Container(child: LifecycleNfcWatcher()),
-                ],
+              child: Center(
+                child: FadeInImage.assetNetwork(
+                  placeholder: LOADING_GIF,
+                  image: photoUrl,
+                ),
               ),
             ),
           ),
@@ -73,42 +70,5 @@ class HomePageState extends State<HomePage> {
           ],
         ),
         body: MyGroupsPage());
-  }
-
-  _getProfilePicFromDB() {
-    Widget renderedWidget;
-    try {
-      renderedWidget = Container(
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(style: BorderStyle.solid, color: Colors.lightBlueAccent),
-          image: DecorationImage(
-            fit: BoxFit.cover,
-            image: CachedNetworkImageProvider(photoUrl, scale: 0.1, errorListener: () {
-              // TODO does not hide the error message from the console
-              setState(() {
-                defaultImage = AssetImage('assets/images/unknown_profile_pic.png');
-              });
-            }),
-          ),
-        ),
-      );
-    } catch (e) {
-      renderedWidget = Container();
-    }
-    return renderedWidget;
-  }
-
-  _getDefaultProfile() {
-    return Container(
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(style: BorderStyle.solid, color: Colors.lightBlueAccent),
-        image: DecorationImage(
-          fit: BoxFit.cover,
-          image: defaultImage,
-        ),
-      ),
-    );
   }
 }

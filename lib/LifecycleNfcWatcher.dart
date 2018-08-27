@@ -61,12 +61,9 @@ class _LifecycleNfcWatcherState extends State<LifecycleNfcWatcher> with WidgetsB
 
   void _readFromNfc() {
     platform.invokeMethod(GET_LAST_TEXT_READ_AND_RESET).then((taskId) {
-      if(taskId != null){
+      if (taskId != null) {
         print("NFC READ TEST: " + taskId);
-        App.instance.tasksManager.completeTask(
-            taskID: taskId,
-            userWhoCompletedID: App.instance.getLoggedInUserID()
-        );
+        App.instance.tasksManager.completeTask(taskID: taskId, userWhoCompletedID: App.instance.getLoggedInUserID());
       }
     });
   }
@@ -86,10 +83,6 @@ class _LifecycleNfcWatcherState extends State<LifecycleNfcWatcher> with WidgetsB
 
   @override
   Widget build(BuildContext context) {
-    if (_lastLifecycleState == null)
-      return Text('This widget has not observed any lifecycle changes.', textDirection: TextDirection.ltr);
-
-    return Text('The most recent lifecycle state this widget observed was: $_lastLifecycleState.',
-        textDirection: TextDirection.ltr);
+    return Text("");
   }
 }
