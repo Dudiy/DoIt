@@ -247,11 +247,18 @@ class GroupsManager {
 
   void deleteUserFromGroup(String groupID, String userID) async {
     GroupInfo groupInfo = await getGroupInfoByID(groupID);
-    // TODO remove user from assigned tasks in group
+    // delete user from group
     groupInfo.members.remove(userID);
     _firestore
         .document('$GROUPS/$groupID')
         .updateData({'members': UserUtils.generateObjectFromUsersMap(groupInfo.members)});
+
+    // unassigned all user tasks
+    app.tasksManager.getAllMyTasks().then((allTask) {
+      allTask.forEach((task) {
+        app.tasksManager.unassignedTask(task.taskID);
+      });
+    });
   }
 
   Future<List<GroupInfo>> getAllGroupsFromDB() async {
