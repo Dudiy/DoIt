@@ -77,6 +77,7 @@ class TasksManager {
       eRecurringPolicy recurringPolicy,
       Map<String, ShortUserInfo> assignedUsers,
       bool allowNonManagerUpdate = false}) async {
+    print('taskID: $taskIdToChange - in updateTask'); //TODO delete
     /* validation */
     ShortUserInfo loggedInUser = app.loggedInUser;
     String errorMessagePrefix = 'TasksManager: cannot update task.';
@@ -97,7 +98,7 @@ class TasksManager {
 
     /* update */
     await _updateTaskInDB(taskInfo);
-
+    print('taskID: $taskIdToChange  - returning from updateTask'); //TODO delete
     return taskInfo;
   }
 
@@ -209,12 +210,11 @@ class TasksManager {
   /// we can filter by groupId
   Future<List<ShortTaskInfo>> getMyTasks([String groupId]) async {
     String loggedInUserID = app.getLoggedInUserID();
-    List<String> myGroupsIDs;
+    List<String> myGroupsIDs = new List();
     if (groupId != null) {
-      myGroupsIDs = new List<String>();
       myGroupsIDs.add(groupId);
     } else {
-      myGroupsIDs = await app.groupsManager.getMyGroupsIDsFromDB();
+      myGroupsIDs.addAll(await app.groupsManager.getMyGroupsIDsFromDB());
     }
     QuerySnapshot snapshot = await _firestore.collection('$TASKS').getDocuments();
     List<ShortTaskInfo> myTasks = snapshot.documents.where((doc) {
@@ -249,17 +249,18 @@ class TasksManager {
   }
 
   Future<void> removeUserFromAssignedTask({String userID, String taskID}) async {
-    getTaskById(taskID).then((taskInfo) async {
-      if (taskInfo.assignedUsers.containsKey(userID)) {
-        taskInfo.assignedUsers.remove(userID);
-        await updateTask(
-          taskIdToChange: taskInfo.taskID,
-          assignedUsers: taskInfo.assignedUsers,
-          allowNonManagerUpdate: true,
-        ).whenComplete(() => print('TasksManager: Task ${taskInfo.title} no longer assigned to $userID'));
-      }
-//      print('TasksManager: Task ${taskInfo.title} no longer assigned to $userID');
-    });
+    print('userId: $userID, taskID: $taskID - in removeUserFromAssignedTask'); //TODO delete
+    TaskInfo taskInfo = await getTaskById(taskID);
+    if (taskInfo.assignedUsers.containsKey(userID)) {
+      taskInfo.assignedUsers.remove(userID);
+      await updateTask(
+        taskIdToChange: taskInfo.taskID,
+        assignedUsers: taskInfo.assignedUsers,
+        allowNonManagerUpdate: true,
+      );
+      print('TasksManager: Task ${taskInfo.title} no longer assigned to $userID');
+    }
+    print('userId: $userID, taskID: $taskID  - returning from removeUserFromAssignedTask'); //TODO delete
   }
 
   DateTime _getStartTimeFromRecurringPolicy(DateTime time, eRecurringPolicy policy) {

@@ -255,16 +255,19 @@ class GroupsManager {
     GroupInfo groupInfo = await getGroupInfoByID(groupID);
     // delete user from group
     groupInfo.members.remove(userID);
-    Future<void> removeUserFromGroupMembers = _firestore
+    Future<void> removeUserFromGroupMembersFuture = _firestore
         .document('$GROUPS/$groupID')
         .updateData({'members': UserUtils.generateObjectFromUsersMap(groupInfo.members)});
 
     // un-assign user from all tasks
-    app.tasksManager.getMyTasks(groupID).then((allTask) {
-      allTask.forEach((task) {
-        app.tasksManager.removeUserFromAssignedTask(userID: app.loggedInUser.userID, taskID: task.taskID);
-      });
+    Iterable<ShortTaskInfo> tasksAssignedToUserInGroup =
+        groupInfo.tasks.values.where((shortTaskInfo) => shortTaskInfo.assignedUsers.containsKey(userID));
+    // used foreach and not wait => synchronous, because if done async, one thread can delete one task and
+    // re-upload the list with another task that was just deleted by another thread
+    Future removeUserFromAssignedTasksFuture = Future.forEach(tasksAssignedToUserInGroup, (task) async {
+      await app.tasksManager.removeUserFromAssignedTask(userID: userID, taskID: task.taskID);
     });
+    await Future.wait([removeUserFromGroupMembersFuture, removeUserFromAssignedTasksFuture]);
     print('userId: $userID, groupID: $groupID  - returning from deleteUserFromGroup'); //TODO delete
   }
 

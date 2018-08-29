@@ -39,7 +39,7 @@ class UsersManager {
     if (app.loggedInUser == null) throw Exception('UserManager: Cannot delete - no user is logged in');
     String userID = app.loggedInUser.userID;
     await App.instance.groupsManager.deleteAllGroupsUserIsManagerOf(userID);
-    await App.instance.groupsManager.deleteUserFromAllGroups(userID);
+    await App.instance.groupsManager.deleteUserFromAllGroups(userID);     //TODO delete - stopped here 2018-08-30 try to make await work
     await App.instance.tasksManager.removeUserFromAllAssignedTasks(userID);
     await _firestore.document('$USERS/$userID').delete();
     await App.instance.authenticator.deleteUser();
