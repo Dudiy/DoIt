@@ -260,9 +260,9 @@ class GroupsManager {
         .updateData({'members': UserUtils.generateObjectFromUsersMap(groupInfo.members)});
 
     // un-assign user from all tasks
-    app.tasksManager.getAllMyTasks().then((allTask) {
+    app.tasksManager.getMyTasks(groupID).then((allTask) {
       allTask.forEach((task) {
-        app.tasksManager.unassignedTask(task.taskID);
+        app.tasksManager.removeUserFromAssignedTask(userID: app.loggedInUser.userID, taskID: task.taskID);
       });
     });
     print('userId: $userID, groupID: $groupID  - returning from deleteUserFromGroup'); //TODO delete

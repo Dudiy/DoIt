@@ -111,13 +111,6 @@ class TasksManager {
     print('TasksManager: task ${taskInfo.title} was updated succesfully');
   }
 
-  Future<void> unassignedTask(taskId) async {
-    TaskInfo taskInfo = await getTaskById(taskId);
-    Map<String, ShortUserInfo> assignedUsers = taskInfo.assignedUsers;
-    assignedUsers.remove(app.loggedInUser.userID);
-    _updateTaskInDB(taskInfo);
-  }
-
   Future<void> completeTask({@required String taskID, @required String userWhoCompletedID}) async {
     // validations and error checking
     ShortUserInfo loggedInUser = app.loggedInUser;
@@ -212,10 +205,17 @@ class TasksManager {
     return TaskUtils.generateTaskInfoFromObject(taskRef.data);
   }
 
-  // returns all tasks assigned to me that their start date is before now
-  Future<List<ShortTaskInfo>> getAllMyTasks() async {
+  /// in default returns all tasks assigned to me that their start date is before now from all groups
+  /// we can filter by groupId
+  Future<List<ShortTaskInfo>> getMyTasks([String groupId]) async {
     String loggedInUserID = app.getLoggedInUserID();
-    List<String> myGroupsIDs = await app.groupsManager.getMyGroupsIDsFromDB();
+    List<String> myGroupsIDs;
+    if (groupId != null) {
+      myGroupsIDs = new List<String>();
+      myGroupsIDs.add(groupId);
+    } else {
+      myGroupsIDs = await app.groupsManager.getMyGroupsIDsFromDB();
+    }
     QuerySnapshot snapshot = await _firestore.collection('$TASKS').getDocuments();
     List<ShortTaskInfo> myTasks = snapshot.documents.where((doc) {
       ShortTaskInfo shortTaskInfo = TaskUtils.generateShortTaskInfoFromObject(doc.data);
