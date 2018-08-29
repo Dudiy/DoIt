@@ -150,7 +150,9 @@ class GroupsManager {
     await Future.forEach(groupInfo.tasks.keys, (taskID) async {
       await app.tasksManager.deleteTask(taskID, false);
     });
-    await _firestore.document('$GROUPS/$groupID').delete();
+    await _firestore.document('$GROUPS/$groupID').delete().whenComplete(() {
+      print('GroupsManager: groupID:$groupID deleted');
+    });
     print('groupID:$groupID - returning from deleteGroup'); //TODO delete
   }
 
@@ -221,44 +223,49 @@ class GroupsManager {
         .setData(TaskUtils.generateObjectFromCompletedTaskInfo(completedTaskInfo));
   }
 
-  Future<void> deleteAllGroupsUserIsManagerOf(String userId) async {
-    print('userId: $userId - in deleteAllGroupsUserIsManagerOf'); //TODO delete
-    List<GroupInfo> allGroupsFromDB = await  getAllGroupsFromDB();
-
-    await getAllGroupsFromDB().then((allGroups) {
-      allGroups.forEach((group) {
-        if (group.managerID == userId){
-          deleteGroup(groupID: group.groupID);
-        }
-      });
+  //deletes all group asynchronously but only returns after all groups are deleted
+  Future<void> deleteAllGroupsUserIsManagerOf(String userID) async {
+    print('userId: $userID - in deleteAllGroupsUserIsManagerOf'); //TODO delete
+    List<GroupInfo> allGroupsFromDB = await getAllGroupsFromDB();
+    List<Future> deleteGroupFunctions = new List();
+    allGroupsFromDB.forEach((groupInfo) {
+      if (groupInfo.managerID == userID) {
+        deleteGroupFunctions.add(deleteGroup(groupID: groupInfo.groupID));
+      }
     });
-    print('userId: $userId - returning from deleteAllGroupsUserIsManagerOf'); //TODO delete
+    await Future.wait(deleteGroupFunctions);
+    print('userId: $userID - returning from deleteAllGroupsUserIsManagerOf'); //TODO delete
   }
 
   Future<void> deleteUserFromAllGroups(String userID) async {
-    getAllGroupsFromDB().then((allGroups) {
-      allGroups.forEach((group) {
-        if (group.members.containsKey(userID)) {
-          deleteUserFromGroup(group.groupID, userID);
-        }
-      });
+    print('userId: $userID - in deleteUserFromAllGroups'); //TODO delete
+    List<GroupInfo> allGroupsFromDB = await getAllGroupsFromDB();
+    List<Future> deleteUserFromGroupFunctions = new List();
+    allGroupsFromDB.forEach((group) {
+      if (group.members.containsKey(userID)) {
+        deleteUserFromGroupFunctions.add(deleteUserFromGroup(group.groupID, userID));
+      }
     });
+    await Future.wait(deleteUserFromGroupFunctions);
+    print('userId: $userID - returning from deleteUserFromAllGroups'); //TODO delete
   }
 
-  void deleteUserFromGroup(String groupID, String userID) async {
+  Future<void> deleteUserFromGroup(String groupID, String userID) async {
+    print('userId: $userID, groupID: $groupID - in deleteUserFromGroup'); //TODO delete
     GroupInfo groupInfo = await getGroupInfoByID(groupID);
     // delete user from group
     groupInfo.members.remove(userID);
-    _firestore
+    Future<void> removeUserFromGroupMembers = _firestore
         .document('$GROUPS/$groupID')
         .updateData({'members': UserUtils.generateObjectFromUsersMap(groupInfo.members)});
 
-    // unassigned all user tasks
+    // un-assign user from all tasks
     app.tasksManager.getAllMyTasks().then((allTask) {
       allTask.forEach((task) {
         app.tasksManager.unassignedTask(task.taskID);
       });
     });
+    print('userId: $userID, groupID: $groupID  - returning from deleteUserFromGroup'); //TODO delete
   }
 
   Future<List<GroupInfo>> getAllGroupsFromDB() async {

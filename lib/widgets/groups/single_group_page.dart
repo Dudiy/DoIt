@@ -304,7 +304,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
         if (app.getLoggedInUserID() == groupInfo.managerID) {
           app.groupsManager.deleteGroup(groupID: groupInfo.groupID);
         } else {
-          app.groupsManager.deleteUserFromGroup(groupInfo.groupID, app.loggedInUser.userID);
+          app.groupsManager.deleteUserFromGroup(groupInfo.groupID, app.loggedInUser.userID); //TODO seperate to another function (leave group)
         }
         Navigator.pop(context);
       }

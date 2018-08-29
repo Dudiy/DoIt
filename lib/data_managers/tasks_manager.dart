@@ -192,11 +192,18 @@ class TasksManager {
   @ShouldBeSync()
   Future<void> deleteTask(String taskID, [bool deleteFromGroup = true]) async {
     print('taskID: $taskID - in deleteTask'); //TODO delete
+    // delete from group
     TaskInfo taskInfo = await getTaskById(taskID);
     if (deleteFromGroup) {
-      await app.groupsManager.removeTaskFromGroup(taskInfo.parentGroupID, taskInfo.taskID);
+      await app.groupsManager.removeTaskFromGroup(taskInfo.parentGroupID, taskInfo.taskID).whenComplete(() {
+        print('taskID: $taskID - deleted from parent group'); //TODO delete
+      });
     }
-    await _firestore.document('$TASKS/$taskID').delete();
+    // delete from tasks
+    await _firestore.document('$TASKS/$taskID').delete().whenComplete(() {
+      print('taskID: $taskID - deleted from tasks collection'); //TODO delete
+    });
+
     print('taskID: $taskID - returning from deleteTask'); //TODO delete
   }
 
