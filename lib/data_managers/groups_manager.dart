@@ -244,9 +244,9 @@ class GroupsManager {
         .updateData({'members': UserUtils.generateObjectFromUsersMap(groupInfo.members)});
 
     // unassigned all user tasks
-    app.tasksManager.getAllMyTasks().then((allTask) {
+    app.tasksManager.getMyTasks(groupID).then((allTask) {
       allTask.forEach((task) {
-        app.tasksManager.unassignedTask(task.taskID);
+        app.tasksManager.removeUserFromAssignedTask(userID: app.loggedInUser.userID, taskID: task.taskID);
       });
     });
   }
