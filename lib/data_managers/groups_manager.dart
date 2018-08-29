@@ -141,15 +141,17 @@ class GroupsManager {
   }
 
   Future<void> deleteGroup({@required String groupID}) async {
+    print('groupID:$groupID - in deleteGroup'); //TODO delete
     GroupInfo groupInfo = await getGroupInfoByID(groupID);
     String loggedInUserID = app.getLoggedInUserID();
     if (loggedInUserID == null) throw new Exception('GroupManager: User is not logged in, cannot delete group');
     if (groupInfo.managerID != loggedInUserID)
       throw new Exception('GroupManager: Only the group manager can delete a group');
-    await Future.forEach(groupInfo.tasks.keys, (taskID) async{
+    await Future.forEach(groupInfo.tasks.keys, (taskID) async {
       await app.tasksManager.deleteTask(taskID, false);
     });
     await _firestore.document('$GROUPS/$groupID').delete();
+    print('groupID:$groupID - returning from deleteGroup'); //TODO delete
   }
 
   Future<void> deleteAllCompletedTasksFromGroup({@required groupID}) async {
@@ -183,6 +185,7 @@ class GroupsManager {
 
   @ShouldBeSync()
   Future<void> removeTaskFromGroup(String groupID, String taskID) async {
+    print('groupID: $groupID - taskID:$taskID: in removeTaskFromGroup'); //TODO delete
     GroupInfo groupInfo = await getGroupInfoByID(groupID);
     if (groupInfo.tasks.containsKey(taskID)) {
       groupInfo.tasks.remove(taskID);
@@ -190,6 +193,7 @@ class GroupsManager {
           .document('$GROUPS/$groupID')
           .updateData({'tasks': TaskUtils.generateObjectFromTasksMap(groupInfo.tasks)});
     }
+    print('groupID: $groupID - taskID:$taskID: returning from removeTaskFromGroup'); //TODO delete
   }
 
   Future<void> addTaskToGroup(
@@ -218,11 +222,17 @@ class GroupsManager {
   }
 
   Future<void> deleteAllGroupsUserIsManagerOf(String userId) async {
-    getAllGroupsFromDB().then((allGroups) {
+    print('userId: $userId - in deleteAllGroupsUserIsManagerOf'); //TODO delete
+    List<GroupInfo> allGroupsFromDB = await  getAllGroupsFromDB();
+
+    await getAllGroupsFromDB().then((allGroups) {
       allGroups.forEach((group) {
-        if (group.managerID == userId) deleteGroup(groupID: group.groupID);
+        if (group.managerID == userId){
+          deleteGroup(groupID: group.groupID);
+        }
       });
     });
+    print('userId: $userId - returning from deleteAllGroupsUserIsManagerOf'); //TODO delete
   }
 
   Future<void> deleteUserFromAllGroups(String userID) async {
