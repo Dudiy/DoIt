@@ -42,16 +42,19 @@ class ShortGroupInfo {
       tasksPerUser[userID] = 0;
     });
     tasks.values.forEach((task) {
-      if (task.assignedUsers != null && task.assignedUsers.length == 0) {
-        // if a tasks user list is empty, increment task counter for all group's users
-        members.keys.forEach((userID) {
-          (userID != null && tasksPerUser.containsKey(userID)) ? tasksPerUser[userID]++ : tasksPerUser[userID] = 0;
-        });
-      } else {
-        // if a task has a users list, increment task counter only for the relevant users
-        task.assignedUsers.keys.forEach((userID) {
-          (userID != null && tasksPerUser.containsKey(userID)) ? tasksPerUser[userID]++ : tasksPerUser[userID] = 0;
-        });
+      // only count tasks are not in the future
+      if (task.startTime.isBefore(DateTime.now())) {
+        if (task.assignedUsers != null && task.assignedUsers.length == 0) {
+          // if a tasks user list is empty, increment task counter for all group's users
+          members.keys.forEach((userID) {
+            (userID != null && tasksPerUser.containsKey(userID)) ? tasksPerUser[userID]++ : tasksPerUser[userID] = 0;
+          });
+        } else {
+          // if a task has a users list, increment task counter only for the relevant users
+          task.assignedUsers.keys.forEach((userID) {
+            (userID != null && tasksPerUser.containsKey(userID)) ? tasksPerUser[userID]++ : tasksPerUser[userID] = 0;
+          });
+        }
       }
     });
     return tasksPerUser;

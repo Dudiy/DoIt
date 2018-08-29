@@ -28,13 +28,14 @@ class SingleGroupPage extends StatefulWidget {
 
 class SingleGroupPageState extends State<SingleGroupPage> {
   final App app = App.instance;
-  List<ShortTaskInfo> _groupTasks;
+  List<ShortTaskInfo> _allGroupTasks;
   List<CompletedTaskInfo> _completedTasks;
   Map<String, bool> _myTasksCheckboxes = new Map();
   GroupInfo groupInfo;
-  bool myTasksIsExpanded = true;
-  bool othersTasksIsExpanded = false;
-  bool completedTasksIsExpanded = false;
+  bool _myTasksIsExpanded = true;
+  bool _othersTasksIsExpanded = false;
+  bool _completedTasksIsExpanded = false;
+  bool _futureTasksIsExpanded = false;
   int daysBeforeTodayToShowCompletedTasks;
 
 // for remove groups listener
@@ -52,27 +53,11 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     super.initState();
   }
 
-  void _groupInfoChanged(GroupInfo newGroupInfo) {
-    setState(() {
-      groupInfo = newGroupInfo;
-    });
-  }
-
   @override
   void dispose() {
 // stop listen for group list update
     _streamSubscriptionTasks.cancel();
     super.dispose();
-  }
-
-  void getMyGroupTasksFromDB() {
-    app.groupsManager.getMyGroupTasksFromDB(groupInfo.groupID).then((tasks) {
-      setState(() {
-        _groupTasks = tasks;
-        _myTasksCheckboxes
-            .addAll(Map.fromIterable(tasks, key: (task) => (task as ShortTaskInfo).taskID, value: (task) => false));
-      });
-    });
   }
 
   @override
@@ -90,55 +75,24 @@ class SingleGroupPageState extends State<SingleGroupPage> {
                       setState(() {
                         switch (index) {
                           case 0:
-                            myTasksIsExpanded = !myTasksIsExpanded;
+                            _myTasksIsExpanded = !_myTasksIsExpanded;
                             break;
                           case 1:
-                            othersTasksIsExpanded = !othersTasksIsExpanded;
+                            _othersTasksIsExpanded = !_othersTasksIsExpanded;
                             break;
                           case 2:
-                            completedTasksIsExpanded = !completedTasksIsExpanded;
-                            if (completedTasksIsExpanded) {
+                            _futureTasksIsExpanded = !_futureTasksIsExpanded;
+                            break;
+                          case 3:
+                            _completedTasksIsExpanded = !_completedTasksIsExpanded;
+                            if (_completedTasksIsExpanded) {
                               fetchCompletedTasksFromServer();
                             }
                             break;
                         }
                       });
                     },
-                    children: [
-                      ExpansionPanel(
-                        headerBuilder: (BuildContext context, bool isExpanded) {
-                          return Center(child: Text('Tasks assigned to me', style: Theme.of(context).textTheme.title));
-                        },
-                        body: getTasksAssignedToMe(),
-                        isExpanded: myTasksIsExpanded,
-                      ),
-                      ExpansionPanel(
-                        headerBuilder: (BuildContext context, bool isExpanded) {
-                          return Center(
-                              child: Text('Tasks assigned to others', style: Theme.of(context).textTheme.title));
-                        },
-                        body: getTasksAssignedToOthers(),
-                        isExpanded: othersTasksIsExpanded,
-                      ),
-                      ExpansionPanel(
-                        headerBuilder: (BuildContext context, bool isExpanded) {
-                          return Stack(
-                            children: <Widget>[
-                              Center(child: Text('Completed tasks', style: Theme.of(context).textTheme.title)),
-                              Positioned(
-                                child: IconButton(
-                                  icon: Icon(Icons.refresh),
-                                  onPressed: () => fetchCompletedTasksFromServer(),
-                                ),
-                                right: 0.0,
-                              ),
-                            ],
-                          );
-                        },
-                        body: getCompletedTasks(),
-                        isExpanded: completedTasksIsExpanded,
-                      ),
-                    ],
+                    children: _getExpansionPanels(context),
                   ),
                 )
               ],
@@ -146,15 +100,35 @@ class SingleGroupPageState extends State<SingleGroupPage> {
         floatingActionButton: _drawAddTaskButton());
   }
 
+  void _groupInfoChanged(GroupInfo newGroupInfo) {
+    setState(() {
+      groupInfo = newGroupInfo;
+    });
+  }
+
+  void getMyGroupTasksFromDB() {
+    app.groupsManager.getMyGroupTasksFromDB(groupInfo.groupID).then((tasks) {
+      setState(() {
+        _allGroupTasks = tasks;
+        _myTasksCheckboxes
+            .addAll(Map.fromIterable(tasks, key: (task) => (task as ShortTaskInfo).taskID, value: (task) => false));
+      });
+    });
+  }
+
   Widget getTasksAssignedToMe() {
+    List<ShortTaskInfo> _myTasks = new List();
+    if (_allGroupTasks != null) {
+      _myTasks.addAll(_allGroupTasks.where((taskInfo) => taskInfo.startTime.isBefore(DateTime.now())));
+    }
     Padding noTasksAssignedToMe = Padding(
       padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
       child: Center(child: Text("There are no tasks assigned to you in this group")),
     );
-    if (_groupTasks == null) return Text('Fetching tasks from server...');
-    if (_groupTasks.length == 0) return noTasksAssignedToMe;
+    if (_myTasks == null) return Text('Fetching tasks from server...');
+    if (_myTasks.length == 0) return noTasksAssignedToMe;
     List<Widget> tasksList = new List();
-    _groupTasks.forEach((taskInfo) {
+    _myTasks.forEach((taskInfo) {
       if (taskInfo.assignedUsers == null ||
           taskInfo.assignedUsers.length == 0 ||
           taskInfo.assignedUsers.containsKey(app.loggedInUser.userID)) {
@@ -191,10 +165,10 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
       child: Center(child: Text("There are no tasks assigned to others in this group")),
     );
-    if (_groupTasks == null) return Text('Fetching tasks from server...');
-    if (_groupTasks.length == 0) return noTasksAssignedToOthers;
+    if (_allGroupTasks == null) return Text('Fetching tasks from server...');
+    if (_allGroupTasks.length == 0) return noTasksAssignedToOthers;
     List<Widget> tasksList = new List();
-    _groupTasks.forEach((taskInfo) {
+    _allGroupTasks.forEach((taskInfo) {
       if (taskInfo.assignedUsers != null &&
           taskInfo.assignedUsers.length != 0 &&
           !taskInfo.assignedUsers.containsKey(app.loggedInUser.userID)) {
@@ -268,87 +242,6 @@ class SingleGroupPageState extends State<SingleGroupPage> {
             child: AddTaskDialogBody(addTaskSubmitted),
           );
         });
-
-/*    TextEditingController _titleController = new TextEditingController();
-    TextEditingController _descriptionController = new TextEditingController();
-    TextEditingController _valueController = new TextEditingController();
-    TextEditingController _startTimeController = new TextEditingController();
-    TextEditingController _endTimeController = new TextEditingController();
-    eRecurringPolicy _selectedPolicy = eRecurringPolicy.none;
-    DoItDialogs.showUserInputDialog(
-      context: context,
-      inputWidgets:*/
-
-    /*[
-        DoItTextField(
-          controller: _titleController,
-          label: 'Title',
-          isRequired: true,
-        ),
-        DoItTextField(
-          controller: _descriptionController,
-          label: 'Description',
-          isRequired: true,
-        ),
-        DoItTextField(
-          controller: _valueController,
-          isRequired: true,
-          label: 'Task value',
-          keyboardType: TextInputType.numberWithOptions(),
-        ),
-        DoItTextField(
-          controller: _startTimeController,
-          label: 'Starting time',
-          isRequired: false,
-          keyboardType: TextInputType.datetime,
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.black38),
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            alignment: Alignment.center,
-            child: DropdownButton(
-              value: _selectedPolicy,
-              items: eRecurringPolicy.values.map((policy) {
-                return DropdownMenuItem(
-                  value: policy,
-                  child: Text(
-                    RecurringPolicyUtils.policyToString(policy),
-                    textAlign: TextAlign.center,
-                  ),
-                );
-              }).toList(),
-              onChanged: (selected) {
-                setState(() {
-                  _selectedPolicy = selected;
-                });
-              },
-            ),
-          ),
-        )
-      ],*/
-//      title: 'New Task',
-/*      onSubmit: () async {
-        try {
-          await app.tasksManager.addTask(
-            title: _titleController.text,
-            description: _descriptionController.text,
-            value: int.parse(_valueController.text),
-            startTime: _startTimeController.text.isNotEmpty ? DateTime.parse(_startTimeController.text) : null,
-            endTime: _endTimeController.text.isNotEmpty ? DateTime.parse(_endTimeController.text) : null,
-            assignedUsers: null,
-            recurringPolicy: _selectedPolicy, // TODO change to input!
-            parentGroupID: groupInfo.groupID,
-            parentGroupManagerID: groupInfo.managerID,
-          );
-        } catch (e) {
-          print(e);
-        }
-      },
-    );*/
   }
 
   void addTaskSubmitted(TaskInfo taskInfo) {
@@ -362,7 +255,6 @@ class SingleGroupPageState extends State<SingleGroupPage> {
             endTime: taskInfo.endTime,
             assignedUsers: taskInfo.assignedUsers,
             recurringPolicy: taskInfo.recurringPolicy,
-            // TODO change to input!
             parentGroupID: groupInfo.groupID,
             parentGroupManagerID: groupInfo.managerID,
           )
@@ -379,7 +271,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     }
     if (documentSnapshotGroupTasks.data != null) {
       setState(() {
-        _groupTasks = GroupsManager.conventDBGroupTaskToObjectList(documentSnapshotGroupTasks);
+        _allGroupTasks = GroupsManager.conventDBGroupTaskToObjectList(documentSnapshotGroupTasks);
       });
     }
   }
@@ -430,9 +322,9 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   }
 
   void fetchCompletedTasksFromServer() {
-    if (daysBeforeTodayToShowCompletedTasks == null || !completedTasksIsExpanded) return;
+    if (daysBeforeTodayToShowCompletedTasks == null || !_completedTasksIsExpanded) return;
     DateTime toDate = DateTime.now();
-    DateTime fromDate = daysBeforeTodayToShowCompletedTasks == 0
+    DateTime fromDate = daysBeforeTodayToShowCompletedTasks != 0
         ? DateTime.now().add(Duration(days: -daysBeforeTodayToShowCompletedTasks))
         : null;
     app.groupsManager
@@ -483,34 +375,86 @@ class SingleGroupPageState extends State<SingleGroupPage> {
           );
   }
 
-// TODO delete after commit
-//  ExpansionPanel _tasksExpansionPanel(
-//      {@required String title,
-//      @required bool isExpanded,
-//      @required Function bodyBuilderFunc,
-//      bool showRefresh = false}) {
-//    return ExpansionPanel(
-//      headerBuilder: (BuildContext context, bool isExpanded) {
-//        // show refresh button only if show refresh is true
-//        Widget refreshButton = showRefresh
-//            ? Positioned(
-//                child: IconButton(
-//                  icon: Icon(Icons.refresh),
-//                  onPressed: () => fetchCompletedTasksFromServer(),
-//                ),
-//                right: 0.0,
-//              )
-//            : Container(height: 0.0, width: 0.0);
-//        //build and return the expansion panel
-//        return Stack(
-//          children: <Widget>[
-//            Center(child: Text(title, style: Theme.of(context).textTheme.title)),
-//            refreshButton,
-//          ],
-//        );
-//      },
-//      body: bodyBuilderFunc(),
-//      isExpanded: isExpanded,
-//    );
-//  }
+  _getExpansionPanels(BuildContext context) {
+    List<ExpansionPanel> _expansionPanels = new List();
+    //Tasks assigned to me
+    _expansionPanels.add(ExpansionPanel(
+      headerBuilder: (BuildContext context, bool isExpanded) {
+        return Center(child: Text('Tasks assigned to me', style: Theme.of(context).textTheme.title));
+      },
+      body: getTasksAssignedToMe(),
+      isExpanded: _myTasksIsExpanded,
+    ));
+    //Other's tasks
+    _expansionPanels.add(ExpansionPanel(
+      headerBuilder: (BuildContext context, bool isExpanded) {
+        return Center(child: Text('Tasks assigned to others', style: Theme.of(context).textTheme.title));
+      },
+      body: getTasksAssignedToOthers(),
+      isExpanded: _othersTasksIsExpanded,
+    ));
+    //Future tasks
+    if (app.getLoggedInUserID() == groupInfo.managerID) {
+      _expansionPanels.add(_futureTasksExpansionPanel(context));
+    }
+    //Completed tasks
+    _expansionPanels.add(ExpansionPanel(
+      headerBuilder: (BuildContext context, bool isExpanded) {
+        return Stack(
+          children: <Widget>[
+            Center(child: Text('Completed tasks', style: Theme.of(context).textTheme.title)),
+            Positioned(
+              child: IconButton(
+                icon: Icon(Icons.refresh),
+                onPressed: () => fetchCompletedTasksFromServer(),
+              ),
+              right: 0.0,
+            ),
+          ],
+        );
+      },
+      body: getCompletedTasks(),
+      isExpanded: _completedTasksIsExpanded,
+    ));
+
+    return _expansionPanels;
+  }
+
+  ExpansionPanel _futureTasksExpansionPanel(BuildContext context) {
+    return ExpansionPanel(
+      headerBuilder: (BuildContext context, bool isExpanded) {
+        return Center(child: Text('Future tasks', style: Theme.of(context).textTheme.title));
+      },
+      body: getFutureTasks(),
+      isExpanded: _futureTasksIsExpanded,
+    );
+  }
+
+  getFutureTasks() {
+    List<ShortTaskInfo> _futureTasks = new List();
+    if (_allGroupTasks != null) {
+      _futureTasks = List.from(_allGroupTasks.where((taskInfo) => taskInfo.startTime.isAfter(DateTime.now())));
+    }
+    Padding noFutureTasks = Padding(
+      padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+      child: Center(child: Text("There are no future tasks in this group")),
+    );
+    if (_futureTasks == null) return Text('Fetching tasks from server...');
+    if (_futureTasks.length == 0) return noFutureTasks;
+    List<Widget> tasksList = new List();
+    _futureTasks.forEach((taskInfo) {
+      tasksList.add(ListTile(
+        title: Text('${taskInfo.title} (${taskInfo.value.toString()})'),
+        subtitle: Text(taskInfo.description ?? "no description", maxLines: 3),
+        onTap: () {
+          app.tasksManager.getTaskById(taskInfo.taskID).then((taskInfo) {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetailsPage(taskInfo)));
+          });
+        },
+      ));
+    });
+    return Column(
+      children: tasksList.length > 0 ? tasksList : [noFutureTasks],
+    );
+  }
 }
