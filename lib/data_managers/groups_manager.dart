@@ -146,7 +146,7 @@ class GroupsManager {
     if (loggedInUserID == null) throw new Exception('GroupManager: User is not logged in, cannot delete group');
     if (groupInfo.managerID != loggedInUserID)
       throw new Exception('GroupManager: Only the group manager can delete a group');
-    await Future.forEach(groupInfo.tasks.keys, (taskID) async{
+    await Future.forEach(groupInfo.tasks.keys, (taskID) async {
       await app.tasksManager.deleteTask(taskID, false);
     });
     await _firestore.document('$GROUPS/$groupID').delete();
@@ -237,10 +237,18 @@ class GroupsManager {
 
   void deleteUserFromGroup(String groupID, String userID) async {
     GroupInfo groupInfo = await getGroupInfoByID(groupID);
+    // delete user from group
     groupInfo.members.remove(userID);
     _firestore
         .document('$GROUPS/$groupID')
         .updateData({'members': UserUtils.generateObjectFromUsersMap(groupInfo.members)});
+
+    // unassigned all user tasks
+    app.tasksManager.getAllMyTasks().then((allTask) {
+      allTask.forEach((task) {
+        app.tasksManager.unassignedTask(task.taskID);
+      });
+    });
   }
 
   Future<List<GroupInfo>> getAllGroupsFromDB() async {

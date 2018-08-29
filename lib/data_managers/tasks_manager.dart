@@ -77,6 +77,7 @@ class TasksManager {
       eRecurringPolicy recurringPolicy,
       Map<String, ShortUserInfo> assignedUsers,
       bool allowNonManagerUpdate = false}) async {
+    /* validation */
     ShortUserInfo loggedInUser = app.loggedInUser;
     String errorMessagePrefix = 'TasksManager: cannot update task.';
     if (loggedInUser == null) throw Exception('$errorMessagePrefix User is not logged in');
@@ -85,6 +86,7 @@ class TasksManager {
     if (!allowNonManagerUpdate && taskInfo.parentGroupManagerID != loggedInUser.userID)
       throw Exception('$errorMessagePrefix Only group managers can update tasks');
 
+    /* build the new task */
     if (title != null) taskInfo.title = title;
     if (description != null) taskInfo.description = description;
     if (value != null) taskInfo.value = value;
@@ -92,15 +94,28 @@ class TasksManager {
     if (endTime != null) taskInfo.endTime = endTime;
     if (recurringPolicy != null) taskInfo.recurringPolicy = recurringPolicy;
     if (assignedUsers != null) taskInfo.assignedUsers = assignedUsers;
-    await _firestore.document('$TASKS/${taskInfo.taskID}').updateData(TaskUtils.generateObjectFromTaskInfo(taskInfo));
 
+    /* update */
+    await _updateTaskInDB(taskInfo);
+
+    return taskInfo;
+  }
+
+  Future<void> _updateTaskInDB(TaskInfo taskInfo) async {
+    await _firestore.document('$TASKS/${taskInfo.taskID}').updateData(TaskUtils.generateObjectFromTaskInfo(taskInfo));
     GroupInfo groupInfo = await app.groupsManager.getGroupInfoByID(taskInfo.parentGroupID);
-    groupInfo.tasks[taskIdToChange] = taskInfo.getShortTaskInfo();
+    groupInfo.tasks[taskInfo.taskID] = taskInfo.getShortTaskInfo();
     await _firestore
         .document('$GROUPS/${taskInfo.parentGroupID}')
         .updateData({"tasks": TaskUtils.generateObjectFromTasksMap(groupInfo.tasks)});
     print('TasksManager: task ${taskInfo.title} was updated succesfully');
-    return taskInfo;
+  }
+
+  Future<void> unassignedTask(taskId) async {
+    TaskInfo taskInfo = await getTaskById(taskId);
+    Map<String, ShortUserInfo> assignedUsers = taskInfo.assignedUsers;
+    assignedUsers.remove(app.loggedInUser.userID);
+    _updateTaskInDB(taskInfo);
   }
 
   Future<void> completeTask({@required String taskID, @required String userWhoCompletedID}) async {

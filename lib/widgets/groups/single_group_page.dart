@@ -395,24 +395,28 @@ class SingleGroupPageState extends State<SingleGroupPage> {
             .push(MaterialPageRoute(builder: (context) => GroupDetailsPage(groupInfo, managerInfo, _groupInfoChanged)));
       },
     ));
-    if (app.getLoggedInUserID() == groupInfo.managerID) {
-      buttons.add(FlatButton(
-        child: Icon(Icons.delete, color: Colors.white),
-        onPressed: () async {
-          WidgetUtils
-              .showDeleteDialog(
-                  context: context,
-                  message: 'Are you sure you would like to delete this group? \nThis cannot be undone')
-              .then((deleteConfimed) {
-            if (deleteConfimed) {
-              app.groupsManager.deleteGroup(groupID: groupInfo.groupID);
-              Navigator.pop(context);
-            }
-          });
-        },
-      ));
-    }
+    buttons.add(FlatButton(
+      child: Icon(Icons.delete, color: Colors.white),
+      onPressed: deleteGroup,
+    ));
     return buttons;
+  }
+
+  /// different behavior on the other user permission
+  void deleteGroup() async {
+    WidgetUtils
+        .showDeleteDialog(
+            context: context, message: 'Are you sure you would like to delete this group? \nThis cannot be undone')
+        .then((deleteConfirmed) {
+      if (deleteConfirmed) {
+        if (app.getLoggedInUserID() == groupInfo.managerID) {
+          app.groupsManager.deleteGroup(groupID: groupInfo.groupID);
+        } else {
+          app.groupsManager.deleteUserFromGroup(groupInfo.groupID, app.loggedInUser.userID);
+        }
+        Navigator.pop(context);
+      }
+    });
   }
 
   Widget _drawAddTaskButton() {
