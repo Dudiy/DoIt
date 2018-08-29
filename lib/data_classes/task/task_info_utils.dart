@@ -5,16 +5,17 @@ import 'package:do_it/data_classes/task/task_info_short.dart';
 import 'package:do_it/data_classes/user/user_info_utils.dart';
 
 class TaskUtils {
+  // returns both current and future tasks
   static Map<String, ShortTaskInfo> generateTasksMapFromObject(tasksObject) {
     Map<String, ShortTaskInfo> tasks = new Map();
     if (tasksObject != null) {
       (tasksObject as Map<dynamic, dynamic>).values.forEach((taskObject) {
         ShortTaskInfo shortTaskInfo = generateShortTaskInfoFromObject(taskObject);
-        if (shortTaskInfo.startTime.isBefore(DateTime.now())) {
-          tasks.putIfAbsent(shortTaskInfo.taskID, () {
-            return shortTaskInfo;
-          });
-        }
+//        if (shortTaskInfo.startTime.isBefore(DateTime.now())) {
+        tasks.putIfAbsent(shortTaskInfo.taskID, () {
+          return shortTaskInfo;
+        });
+//        }
       });
     }
     return tasks;

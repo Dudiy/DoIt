@@ -237,6 +237,7 @@ class GroupsManager {
 
   void deleteUserFromGroup(String groupID, String userID) async {
     GroupInfo groupInfo = await getGroupInfoByID(groupID);
+    // TODO remove user from assigned tasks in group
     groupInfo.members.remove(userID);
     _firestore
         .document('$GROUPS/$groupID')
