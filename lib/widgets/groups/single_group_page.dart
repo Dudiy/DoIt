@@ -81,7 +81,9 @@ class SingleGroupPageState extends State<SingleGroupPage> {
                             _othersTasksIsExpanded = !_othersTasksIsExpanded;
                             break;
                           case 2:
-                            _futureTasksIsExpanded = !_futureTasksIsExpanded;
+                            groupInfo.managerID == app.loggedInUser.userID
+                                ? _futureTasksIsExpanded = !_futureTasksIsExpanded
+                                : _completedTasksIsExpanded = !_completedTasksIsExpanded;
                             break;
                           case 3:
                             _completedTasksIsExpanded = !_completedTasksIsExpanded;
@@ -304,7 +306,8 @@ class SingleGroupPageState extends State<SingleGroupPage> {
         if (app.getLoggedInUserID() == groupInfo.managerID) {
           app.groupsManager.deleteGroup(groupID: groupInfo.groupID);
         } else {
-          app.groupsManager.deleteUserFromGroup(groupInfo.groupID, app.loggedInUser.userID); //TODO seperate to another function (leave group)
+          app.groupsManager.deleteUserFromGroup(
+              groupInfo.groupID, app.loggedInUser.userID); //TODO seperate to another function (leave group)
         }
         Navigator.pop(context);
       }

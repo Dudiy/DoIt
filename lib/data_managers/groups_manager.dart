@@ -264,10 +264,10 @@ class GroupsManager {
         groupInfo.tasks.values.where((shortTaskInfo) => shortTaskInfo.assignedUsers.containsKey(userID));
     // used foreach and not wait => synchronous, because if done async, one thread can delete one task and
     // re-upload the list with another task that was just deleted by another thread
-    Future removeUserFromAssignedTasksFuture = Future.forEach(tasksAssignedToUserInGroup, (task) async {
+    await Future.forEach(tasksAssignedToUserInGroup, (task) async {
       await app.tasksManager.removeUserFromAssignedTask(userID: userID, taskID: task.taskID);
     });
-    await Future.wait([removeUserFromGroupMembersFuture, removeUserFromAssignedTasksFuture]);
+    await Future.wait([removeUserFromGroupMembersFuture]);
     print('userId: $userID, groupID: $groupID  - returning from deleteUserFromGroup'); //TODO delete
   }
 
@@ -278,7 +278,7 @@ class GroupsManager {
     }).toList();
   }
 
-  Future<Map<String, Map<String, dynamic>>> getGroupScoreboards(
+  Future<Map<String, Map<String, dynamic>>> getGroupScoreboard(
       {@required String groupID, DateTime fromDate, DateTime toDate}) async {
     if (toDate == null) toDate = DateTime.now();
     Map<String, Map<String, dynamic>> scoreBoard = new Map();
@@ -293,17 +293,12 @@ class GroupsManager {
     });
     await getCompletedTasks(groupID: groupID, fromDate: fromDate, toDate: toDate).then((completedTasks) {
       completedTasks.forEach((completedTask) {
-        scoreBoard[completedTask.userWhoCompleted.userID]['score'] += completedTask.value;
+        // verify that the user who completed the task is still in the group
+        if (scoreBoard.containsKey(completedTask.userWhoCompleted.userID)) {
+          scoreBoard[completedTask.userWhoCompleted.userID]['score'] += completedTask.value;
+        }
       });
     });
-/*    QuerySnapshot snapshot = await _firestore.collection('$GROUPS/$groupID/$COMPLETED_TASKS').getDocuments();
-    snapshot.documents.where((doc) {
-      DateTime completedTime = doc.data['completedTime'];
-      bool isAfterFromDate = fromDate == null ? true : completedTime.isAfter(fromDate);
-      return isAfterFromDate && completedTime.isBefore(toDate);
-    }).forEach((doc) {
-      scoreBoard[doc.data['userWhoCompleted']['userID']]['score'] += doc.data['value'];
-    });*/
     return scoreBoard;
   }
 

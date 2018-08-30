@@ -111,6 +111,14 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
   }
 
   List<Widget> getAllMembers() {
+    Widget addMemberIcon = widget.groupInfo.managerID == app.loggedInUser.userID
+        ? IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () {
+              _showAddMemberDialog();
+            })
+        : Container(width: 0.0, height: 0.0);
+
     List<StatelessWidget> list = new List();
     list.add(Container(
       child: Padding(
@@ -122,16 +130,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
               'Group Members',
               style: Theme.of(context).textTheme.title.copyWith(decoration: TextDecoration.underline),
             )),
-            Positioned(
-              right: 10.0,
-              top: -11.0,
-              child: IconButton(
-                icon: Icon(Icons.add),
-                onPressed: () {
-                  _showAddMemberDialog();
-                },
-              ),
-            ),
+            Positioned(right: 10.0, top: -11.0, child: addMemberIcon),
           ],
         ),
       ),
@@ -163,7 +162,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
       list.add(Text('fetchig score board from DB...'));
       _scoreBoardWidget = list;
     }
-    app.groupsManager.getGroupScoreboards(groupID: widget.groupInfo.groupID).then((scoreBoard) {
+    app.groupsManager.getGroupScoreboard(groupID: widget.groupInfo.groupID).then((scoreBoard) {
       scoreBoard.forEach((userID, userScoreMap) {
         ShortUserInfo userInfo = userScoreMap['userInfo'];
         list.add(ListTile(

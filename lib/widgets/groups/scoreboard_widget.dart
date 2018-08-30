@@ -43,7 +43,7 @@ class ScoreBoardState extends State<ScoreBoard> {
 
   getScoreBoard() {
     List<StatelessWidget> list = new List();
-    app.groupsManager.getGroupScoreboards(groupID: widget.groupInfo.groupID).then((scoreBoard) {
+    app.groupsManager.getGroupScoreboard(groupID: widget.groupInfo.groupID).then((scoreBoard) {
       scoreBoard.forEach((userID, userScoreMap) {
         ShortUserInfo userInfo = userScoreMap['userInfo'];
         list.add(ListTile(

@@ -74,9 +74,8 @@ class Authenticator {
 
   Future<void> deleteUser() async {
     final FirebaseUser currentUser = await getCurrentUser();
-    await currentUser.delete().whenComplete(() {
-      print("user auth removed");
-    });
+    await currentUser.delete();
+    print("user auth removed");
   }
 
   Future<void> signOut() async {

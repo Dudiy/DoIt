@@ -39,10 +39,16 @@ class UsersManager {
     if (app.loggedInUser == null) throw Exception('UserManager: Cannot delete - no user is logged in');
     String userID = app.loggedInUser.userID;
     await App.instance.groupsManager.deleteAllGroupsUserIsManagerOf(userID);
-    await App.instance.groupsManager.deleteUserFromAllGroups(userID);     //TODO delete - stopped here 2018-08-30 try to make await work
-    await App.instance.tasksManager.removeUserFromAllAssignedTasks(userID);
+    await App.instance.groupsManager.deleteUserFromAllGroups(userID);
+    // unnecessary because user is removed from all tasks when he is removed from all groups
+    // TODO delete after commit
+//    await App.instance.tasksManager.removeUserFromAllAssignedTasks(userID);
+    print('userId: $userID - deleting user from DB'); //TODO delete
     await _firestore.document('$USERS/$userID').delete();
+    print('userId: $userID - user deleted from DB'); //TODO delete
+    print('userId: $userID - deleting user from Auth'); //TODO delete
     await App.instance.authenticator.deleteUser();
+    print('userId: $userID - user deleted from Auth'); //TODO delete
   }
 
   //we only want the user to be able to change his picture and not hes other data
@@ -85,7 +91,7 @@ class UsersManager {
     List<DocumentSnapshot> documents = query.documents;
     if (documents.length > 0) {
       DocumentSnapshot newMemberDoc = query.documents.firstWhere((doc) {
-        return doc.data['email'] == newMemberEmail;
+        return (doc.data['email'] as String).toLowerCase() == newMemberEmail.toLowerCase();
       });
       if (newMemberDoc.data != null) {
         newMemberInfo = UserUtils.generateShortUserInfoFromObject(newMemberDoc.data);
