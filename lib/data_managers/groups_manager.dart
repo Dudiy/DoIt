@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:core';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it/app.dart';
@@ -13,6 +14,8 @@ import 'package:do_it/data_classes/task/task_info_short.dart';
 import 'package:do_it/data_classes/task/task_info_utils.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/data_classes/user/user_info_utils.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:meta/meta.dart';
 
 class GroupsManager {
@@ -328,5 +331,27 @@ class GroupsManager {
       }
     });
     return newMemberInfo;
+  }
+
+  Future uploadGroupPic(GroupInfo groupInfo) async {
+    StorageReference storageRef = app.firebaseStorage.ref();
+    File file = await ImagePicker.pickImage(source: ImageSource.gallery);
+    if (file != null) {
+      // TODO do we want to limit the file size?
+      double fileSizeInMb = await file.length() / 1000000;
+      if (fileSizeInMb > MAX_PROFILE_PIC_SIZE_MB)
+        throw Exception('UsersManager: cannot upload profile pic, max file size is $MAX_PROFILE_PIC_SIZE_MB Mb');
+      StorageUploadTask uploadTask = storageRef.child("$GROUPS/${groupInfo.groupID}/profile.jpg").putFile(file);
+      UploadTaskSnapshot uploadTaskSnapshot = await uploadTask.future;
+      updateGroup(groupInfo.groupID, uploadTaskSnapshot.downloadUrl.toString());
+      groupInfo.photoUrl = uploadTaskSnapshot.downloadUrl.toString();
+    }
+  }
+
+  //we only want the user to be able to change his picture and not hes other data
+  Future<void> updateGroup(String groupId, String photoUrl) async {
+    await _firestore.document('$GROUPS/$groupId').updateData(<String, dynamic>{
+      'photoUrl': photoUrl,
+    });
   }
 }
