@@ -111,6 +111,13 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     ));
   }
 
+  // callback method
+  setGroupInfo(GroupInfo groupInfo) {
+    setState(() {
+      this.groupInfo = groupInfo;
+    });
+  }
+
   _addProfilePicture() {
     return photoUrl == DEFAULT_PICTURE
         ? DecoratedBox(
@@ -340,8 +347,8 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       child: Icon(Icons.info_outline, color: Colors.white),
       onPressed: () async {
         ShortUserInfo managerInfo = await app.usersManager.getShortUserInfo(groupInfo.managerID);
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => GroupDetailsPage(groupInfo, managerInfo, _groupInfoChanged)));
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => GroupDetailsPage(groupInfo, managerInfo, _groupInfoChanged, setGroupInfo)));
       },
     ));
     buttons.add(FlatButton(

@@ -10,8 +10,9 @@ class GroupDetailsPage extends StatefulWidget {
   final GroupInfo groupInfo;
   final ShortUserInfo groupManager;
   final Function onGroupInfoChanged;
+  final Function setGroupInfo;
 
-  GroupDetailsPage(this.groupInfo, this.groupManager, this.onGroupInfoChanged);
+  GroupDetailsPage(this.groupInfo, this.groupManager, this.onGroupInfoChanged, this.setGroupInfo);
 
   @override
   GroupDetailsPageState createState() => new GroupDetailsPageState();
@@ -63,7 +64,13 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                     enabled: editEnabled,
                   ),
                   DoItTextField(controller: _descriptionController, label: 'Description', enabled: editEnabled),
-                  DoItTextField(controller: _photoUrlController, label: 'Photo URL', enabled: editEnabled),
+                  // TODO update in flutter + DB but not at app
+                  FlatButton(
+                      child: Icon(Icons.insert_photo),
+                      onPressed: () async {
+                        await App.instance.groupsManager.uploadGroupPic(widget.groupInfo);
+                        widget.setGroupInfo(widget.groupInfo);
+                      }),
                 ])),
           ),
           Column(

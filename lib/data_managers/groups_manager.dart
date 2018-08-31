@@ -343,7 +343,7 @@ class GroupsManager {
         throw Exception('UsersManager: cannot upload profile pic, max file size is $MAX_PROFILE_PIC_SIZE_MB Mb');
       StorageUploadTask uploadTask = storageRef.child("$GROUPS/${groupInfo.groupID}/profile.jpg").putFile(file);
       UploadTaskSnapshot uploadTaskSnapshot = await uploadTask.future;
-      updateGroup(groupInfo.groupID, uploadTaskSnapshot.downloadUrl.toString());
+      await updateGroup(groupInfo.groupID, uploadTaskSnapshot.downloadUrl.toString());
       groupInfo.photoUrl = uploadTaskSnapshot.downloadUrl.toString();
     }
   }
