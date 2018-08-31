@@ -10,6 +10,7 @@
     <!--in order to access the NFC hardware-->
     <uses-permission android:name="android.permission.NFC" />
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <!--always ignore and take 21-->
     <!--<uses-sdk android:minSdkVersion="10"/>-->
 
@@ -44,6 +45,11 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            <!--Notifications-->
+            <intent-filter>
+                <action android:name="FLUTTER_NOTIFICATION_CLICK"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
     </application>

@@ -4,27 +4,6 @@ import 'package:do_it/data_classes/user/user_info.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 
 class UserUtils {
-/*  static Map<String, ShortUserInfo> generateAssignedUsersMapFromObject(assignedUsersObject) {
-    Map<String, ShortUserInfo> assignedUsers = new Map();
-    if (assignedUsersObject != null) {
-      (assignedUsersObject as Map<dynamic, dynamic>).values.forEach((userInfo) {
-        if (userInfo.runtimeType == ShortUserInfo) {
-          ShortUserInfo shortUserInfo = userInfo as ShortUserInfo;
-          assignedUsers.putIfAbsent(shortUserInfo.uid, () => shortUserInfo);
-        } else {
-          assignedUsers.putIfAbsent(userInfo['userID'], () {
-            return new ShortUserInfo(
-              uid: userInfo['userID'],
-              displayName: userInfo['displayName'],
-              photoUrl: userInfo['photoUrl'],
-            );
-          });
-        }
-      });
-    }
-    return assignedUsers;
-  }
-  */
   static Map<String, ShortUserInfo> generateUsersMapFromObject(usersMapObject) {
     Map<String, ShortUserInfo> usersMap = new Map();
     if (usersMapObject != null) {
@@ -37,12 +16,16 @@ class UserUtils {
   }
 
   static ShortUserInfo generateShortUserInfoFromObject(userInfoObject) {
+    if (userInfoObject == null) {
+      throw Exception('UserInfoUtils: cannot create shortUserInfo from null');
+    }
     return (userInfoObject.runtimeType == ShortUserInfo)
         ? userInfoObject
         : new ShortUserInfo(
             userID: userInfoObject['userID'],
             displayName: userInfoObject['displayName'],
             photoUrl: userInfoObject['photoUrl'],
+            fcmToken: userInfoObject['fcmToken'],
           );
   }
 
@@ -62,6 +45,7 @@ class UserUtils {
       'displayName': userInfo.displayName,
       'photoUrl': userInfo.photoURL,
       'email': userInfo.email,
+      'fcmToken': userInfo.fcmToken,
       'groups': GroupUtils.generateObjectFromGroupsMap(userInfo.groups),
       'tasks': TaskUtils.generateObjectFromTasksMap(userInfo.tasks),
 //      'messages': userInfo._messages,
@@ -73,6 +57,7 @@ class UserUtils {
       'userID': shortUserInfo.userID,
       'displayName': shortUserInfo.displayName,
       'photoUrl': shortUserInfo.photoUrl,
+      'fcmToken': shortUserInfo.fcmToken,
     };
   }
 }

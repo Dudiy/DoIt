@@ -58,7 +58,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
   }
 
   Future<Widget> _getAllTasksCount() async {
-    List<ShortTaskInfo> allTasks = await App.instance.tasksManager.getMyTasks();
+    List<ShortTaskInfo> allTasks = await App.instance.tasksManager.getAllMyTasks();
     return ListTile(
       title: Text('All Groups'),
       subtitle: Text(allTasks.length.toString()),

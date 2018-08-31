@@ -208,17 +208,9 @@ class TasksManager {
 
   /// in default returns all tasks assigned to me that their start date is before now from all groups
   /// we can filter by groupId
-  /*  TODO talk about optional parameter - I think its unnecessary, if you need tasks of a specific group
-      you can use getGroupInfoByID and then look at the tasks (get a single doc from the DB
-      and not the whole collection of tasks)*/
-  Future<List<ShortTaskInfo>> getMyTasks([String groupId]) async {
+  Future<List<ShortTaskInfo>> getAllMyTasks() async {
     String loggedInUserID = app.getLoggedInUserID();
-    List<String> myGroupsIDs = new List();
-    if (groupId != null) {
-      myGroupsIDs.add(groupId);
-    } else {
-      myGroupsIDs.addAll(await app.groupsManager.getMyGroupsIDsFromDB());
-    }
+    List<String> myGroupsIDs = await app.groupsManager.getMyGroupsIDsFromDB();
     QuerySnapshot snapshot = await _firestore.collection('$TASKS').getDocuments();
     List<ShortTaskInfo> myTasks = snapshot.documents.where((doc) {
       ShortTaskInfo shortTaskInfo = TaskUtils.generateShortTaskInfoFromObject(doc.data);

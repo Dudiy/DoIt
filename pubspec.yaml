@@ -4,18 +4,21 @@ description: DoIt goup task management application by DudiY and OrM
 dependencies:
   flutter:
     sdk: flutter
+  google_sign_in: ^3.0.4
+  # firebase dependencies
   cloud_firestore: ^0.7.3
   firebase_auth: ^0.5.18
-  google_sign_in: ^3.0.4
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^0.1.2
-  uuid: any
+  firebase_messaging: ^1.0.5
   firebase_storage: any
+  uuid: any
   image_picker: ^0.4.6
   path_provider: ^0.4.1
   cached_network_image: ^0.4.1
   flutter_cache_manager: ^0.1.1
+  flutter_local_notifications: ^0.3.7
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^0.1.2
 
 dev_dependencies:
   flutter_test:

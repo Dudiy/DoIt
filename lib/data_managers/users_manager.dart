@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it/app.dart';
 import 'package:do_it/constants/db_constants.dart';
+import 'package:do_it/data_classes/user/user_info.dart' as doItUserInfo;
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/data_classes/user/user_info_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -27,12 +28,19 @@ class UsersManager {
       photoUrl = user.photoUrl;
     }
 
-    await _firestore.document('$USERS/${user.uid}').setData(<String, dynamic>{
-      'userID': user.uid,
-      'email': user.email,
-      'displayName': user.displayName ?? displayName,
-      'photoUrl': photoUrl,
-    });
+    //TODO implement message handlers
+
+    String fcmToken = await app.firebaseMessaging.getToken();
+
+    // create new userInfo from parameters
+    doItUserInfo.UserInfo userInfo = new doItUserInfo.UserInfo(
+      userID: user.uid,
+      displayName: user.displayName ?? displayName,
+      fcmToken: fcmToken,
+      email: user.email,
+      photoUrl: photoUrl,
+    );
+    await _firestore.document('$USERS/${user.uid}').setData(UserUtils.generateObjectFromUserInfo(userInfo));
   }
 
   Future<void> deleteUser() async {
@@ -61,11 +69,7 @@ class UsersManager {
   Future<ShortUserInfo> getShortUserInfo(String userID) async {
     DocumentSnapshot userDoc = await _firestore.document('$USERS/$userID').get();
     if (userDoc.data == null) return null;
-    return new ShortUserInfo(
-      userID: userDoc['userID'],
-      displayName: userDoc['displayName'],
-      photoUrl: userDoc['photoUrl'],
-    );
+    return UserUtils.generateShortUserInfoFromObject(userDoc.data);
   }
 
   Future uploadProfilePic() async {

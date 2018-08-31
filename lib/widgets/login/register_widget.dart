@@ -73,7 +73,6 @@ class RegisterPageState extends State<RegisterPage> {
                           onPressed: () async {
                             print("clicked register");
                             if (_formKey.currentState.validate()) {
-                              print("register form is valid");
                               try {
                                 await widget.auth.registerUserWithEmailAndPassword(
                                   email: _emailController.text,
