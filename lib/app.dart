@@ -10,13 +10,13 @@ import 'package:do_it/data_managers/groups_manager.dart';
 import 'package:do_it/data_managers/tasks_manager.dart';
 import 'package:do_it/data_managers/users_manager.dart';
 import 'package:do_it/private.dart';
+import 'package:do_it/widgets/utils/notification_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 ///
@@ -30,7 +30,7 @@ class App {
   TasksManager tasksManager;
   FirebaseStorage firebaseStorage;
   FirebaseMessaging firebaseMessaging;
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  Notifier notifier = new Notifier();
   final Authenticator authenticator = new Authenticator();
   final Uuid uuid = new Uuid();
 
@@ -71,16 +71,15 @@ class App {
     tasksManager = new TasksManager(firestore);
     firebaseStorage = new FirebaseStorage(app: app, storageBucket: Private.storageBucket);
     firebaseMessaging = new FirebaseMessaging();
-    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-    var initializationSettingsAndroid = new AndroidInitializationSettings('@mipmap/ic_launcher');
-    var initializationSettingsIOS = new IOSInitializationSettings();
-    var initializationSettings = new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
-    flutterLocalNotificationsPlugin.initialize(initializationSettings, selectNotification: onSelectNotification);
     await authenticator.getCurrentUser().then((user) async {
       if (user != null) {
         await usersManager.getShortUserInfo(user.uid).then((shortUserInfo) {
-          // if the current logged in user is no longer in the DB sign out
-          if (shortUserInfo == null) FirebaseAuth.instance.signOut();
+          // if the current logged in user is no longer in the DB sign out and delete the user
+          if (shortUserInfo == null) {
+            FirebaseAuth.instance.signOut();
+          } else {
+            refreshLoggedInUserFcmToken();
+          }
           _loggedInUser = shortUserInfo;
         });
       }
@@ -104,65 +103,19 @@ class App {
     );
   }
 
-  Future onSelectNotification(String payload) async {
-    debugPrint("payload: $payload");
-  }
-
-
-  Future _scheduleNotification() async {
-    var scheduledNotificationDateTime = new DateTime.now().add(new Duration(hours: 3, seconds: 10));
-    var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-        'channel id', 'channel NAME', 'CHANNEL DESCRIPTION',
-        importance: Importance.Max, priority: Priority.High);
-    var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
-    var platformChannelSpecifics =
-        new NotificationDetails(androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.schedule(
-        0, 'scheduled title', 'scheduled body', scheduledNotificationDateTime, platformChannelSpecifics);
+  Future refreshLoggedInUserFcmToken() async {
+    String currentToken = await firebaseMessaging.getToken();
+    String loggedInUserToken = await usersManager.getFcmToken(loggedInUser.userID);
+    if (loggedInUserToken != currentToken) {
+      usersManager.updateFcmToken(loggedInUser.userID, currentToken);
+    }
   }
 
   // TODO delete
   Future test() async {
     var app = App.instance;
-
     print('in test');
-//    App.instance.groupsManager.joinGroup('2c560738-7457-4ebb-af05-1d9cfec46f89');
-    /*app.tasksManager.assignTaskToUser(
-      taskID: '9f69bf0a-4547-4ae0-8418-be2258d4ec2e',
-      userID: '7AVyihkEZlUoKkmmQqieswO2vvf1',
-    );*/
-    /*await app.tasksManager
-        .completeTask(
-      taskID: 'c9402590-cd7e-469d-8563-5e5e2fe6577a',
-      userWhoCompletedID: '9Pw9pPNz8YYoFLM6QI7pDxrONIk1',
-    );*/
-//        .then((v) {
-    /*await app.tasksManager.unCompleteTask(
-      parentGroupID: 'af05e893-50b0-49c4-9333-9376bf99266f',
-      taskID: '7e7c01d2-3fac-4957-a095-bf30d7bff15d',
-    );*/
-//    });
-
-/*    Map<String, Map<String, dynamic>> groupScoreboards =
-        await app.groupsManager.getGroupScoreboards(groupID: '2c560738-7457-4ebb-af05-1d9cfec46f89');
-    groupScoreboards.forEach((userID, map){
-      print('\t${map['userInfo'].displayName}:   ${map['score']}');
-    });*/
-
-//    ShortUserInfo shortUserInfoByEmail = await app.usersManager.getShortUserInfoByEmail('d@d.com');
-//    app.tasksManager.updateTask(taskIdToChange: '78c7f37d-aa5f-40f5-bc22-ab762bc7e063', recurringPolicy: eRecurringPolicy.weekly);
-//    print(eRecurringPolicy.weekly);
-//    print('foreach:');
-//    for (var value in eRecurringPolicy.values) {
-//      print(value);
-//    }
-
-//    String DATA =
-//        '{"notification": {"body": "this is a body","title": "this is a title"}, "priority": "high", "data": {"click_action": "FLUTTER_NOTIFICATION_CLICK", "id": "1", "status": "done"}, "to": "<FCM TOKEN>"}';
-//    curl https://fcm.googleapis.com/fcm/send -H "Content-Type:application/json" -X POST -d "$DATA" -H "Authorization: key=<FCM SERVER KEY>"
-
-    _scheduleNotification();
-    _showNotification();
+    print('firebase token: ' + await firebaseMessaging.getToken());
 //    http
 //        .post("https://fcm.googleapis.com/fcm/send",
 //            headers: {
@@ -179,21 +132,17 @@ class App {
 //        .then((res) {
 //      print(res);
 //    });
+    app.notifier.sendNotifications(
+      title: 'test',
+      body: 'test body',
+      data: {'someRandomData': 'hello there'},
+      destUsersFcmTokens: [
+        'ckZCm74ubFo:APA91bFb_IGtZDnE4P444qQBfKphnaqZswQqhlJc3-u2TuZD-5vxdyD_QSNNBtoYsJzVPfBCKE_09GM-zaryNTqWA3jrfNG8Q7FAiwOWKH6j-NIbgwMert1poebs0Ialk9UEcCyfZ997',
+        'feQupeYOJz8:APA91bH5Fj4hzrEB2cZ_umLjNgABXA9PSkb7Ws8bz3u9oLK3FJDY2yLO4Y7ZcKoDbIsTYNkEES4TKQuK1U5h3Z-qUVxrTTc80h64QSdfWhqXPsO1URfiqQc73wRSkXX6ZW9r1GKNy3wRWKjtStvsJrV7y80bVdoePw'
+      ],
+    );
     print('end of test');
   }
-
-  Future _showNotification() async {
-    var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-        'channel id', 'channel NAME', 'CHANNEL DESCRIPTION',
-        importance: Importance.Max, priority: Priority.High);
-    var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
-    var platformChannelSpecifics = new NotificationDetails(
-        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.show(
-        0, 'plain title', 'plain body', platformChannelSpecifics,
-        payload: 'item x');
-  }
-
 
   Future<void> testAsync() async {
     print('starting func');

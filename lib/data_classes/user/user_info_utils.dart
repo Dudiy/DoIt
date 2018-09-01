@@ -25,7 +25,21 @@ class UserUtils {
             userID: userInfoObject['userID'],
             displayName: userInfoObject['displayName'],
             photoUrl: userInfoObject['photoUrl'],
+          );
+  }
+
+  static UserInfo generateFullUserInfoFromObject(userInfoObject) {
+    if (userInfoObject == null) {
+      throw Exception('UserInfoUtils: cannot create userInfo from null');
+    }
+    return (userInfoObject.runtimeType == UserInfo)
+        ? userInfoObject
+        : new UserInfo(
+            userID: userInfoObject['userID'],
+            displayName: userInfoObject['displayName'],
+            email: userInfoObject['email'],
             fcmToken: userInfoObject['fcmToken'],
+            photoUrl: userInfoObject['photoUrl'],
           );
   }
 
@@ -46,8 +60,8 @@ class UserUtils {
       'photoUrl': userInfo.photoURL,
       'email': userInfo.email,
       'fcmToken': userInfo.fcmToken,
-      'groups': GroupUtils.generateObjectFromGroupsMap(userInfo.groups),
-      'tasks': TaskUtils.generateObjectFromTasksMap(userInfo.tasks),
+//      'groups': GroupUtils.generateObjectFromGroupsMap(userInfo.groups),
+//      'tasks': TaskUtils.generateObjectFromTasksMap(userInfo.tasks),
 //      'messages': userInfo._messages,
     };
   }
@@ -57,7 +71,6 @@ class UserUtils {
       'userID': shortUserInfo.userID,
       'displayName': shortUserInfo.displayName,
       'photoUrl': shortUserInfo.photoUrl,
-      'fcmToken': shortUserInfo.fcmToken,
     };
   }
 }

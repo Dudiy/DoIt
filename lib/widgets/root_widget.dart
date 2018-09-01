@@ -24,6 +24,7 @@ class _RootPageState extends State<RootPage> {
     widget.authenticator.getCurrentUser().then((user) {
       setState(() {
         authStatus = user == null ? eAuthenticationStatus.NOT_SIGNED_IN : eAuthenticationStatus.SIGNED_IN;
+
       });
     });
   }

@@ -4,10 +4,10 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it/app.dart';
 import 'package:do_it/constants/db_constants.dart';
-import 'package:do_it/data_classes/user/user_info.dart' as doItUserInfo;
+import 'package:do_it/data_classes/user/user_info.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/data_classes/user/user_info_utils.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as Auth;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -18,7 +18,7 @@ class UsersManager {
   UsersManager(this._firestore);
 
   // [] on parameter to make them optional
-  Future<void> addUser(FirebaseUser user, [String displayName = "", String photoUrl = ""]) async {
+  Future<void> addUser(Auth.FirebaseUser user, [String displayName = "", String photoUrl = ""]) async {
     DocumentSnapshot documentSnapshot = await App.instance.firestore.document('$USERS/${user.uid}').get();
     bool isUserAlreadyInDB = documentSnapshot.data != null;
     String photoUrl = "";
@@ -33,7 +33,7 @@ class UsersManager {
     String fcmToken = await app.firebaseMessaging.getToken();
 
     // create new userInfo from parameters
-    doItUserInfo.UserInfo userInfo = new doItUserInfo.UserInfo(
+    UserInfo userInfo = new UserInfo(
       userID: user.uid,
       displayName: user.displayName ?? displayName,
       fcmToken: fcmToken,
@@ -72,6 +72,12 @@ class UsersManager {
     return UserUtils.generateShortUserInfoFromObject(userDoc.data);
   }
 
+  Future<UserInfo> getFullUserInfo(String userID) async {
+    DocumentSnapshot userDoc = await _firestore.document('$USERS/$userID').get();
+    if (userDoc.data == null) return null;
+    return UserUtils.generateFullUserInfoFromObject(userDoc.data);
+  }
+
   Future uploadProfilePic() async {
     StorageReference storageRef = app.firebaseStorage.ref();
     File file = await ImagePicker.pickImage(source: ImageSource.gallery);
@@ -102,5 +108,15 @@ class UsersManager {
       }
     }
     return newMemberInfo;
+  }
+
+  Future<String> getFcmToken(String userID) async {
+    return (await getFullUserInfo(userID)).fcmToken;
+  }
+
+  Future<void> updateFcmToken(String userID, String newToken) async {
+    App.instance.firestore.document('$USERS/$userID').updateData({
+      'fcmToken' : newToken,
+    });
   }
 }

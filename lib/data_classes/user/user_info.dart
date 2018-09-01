@@ -9,8 +9,8 @@ class UserInfo {
   String _photoURL;
   String _email;
   String _fcmToken;
-  Map<String, ShortGroupInfo> _groups = new Map();
-  Map<String, ShortTaskInfo> _tasks = new Map();
+//  Map<String, ShortGroupInfo> _groups = new Map();
+//  Map<String, ShortTaskInfo> _tasks = new Map();
 
   UserInfo({
     @required String userID,
@@ -30,16 +30,15 @@ class UserInfo {
     this._email = email;
   }
 
-  addTask(String taskID, ShortTaskInfo shortTaskInfo) {
-    _tasks.putIfAbsent(taskID, () => shortTaskInfo);
-  }
+//  addTask(String taskID, ShortTaskInfo shortTaskInfo) {
+//    _tasks.putIfAbsent(taskID, () => shortTaskInfo);
+//  }
 
   ShortUserInfo getShortUserInfo() {
     return new ShortUserInfo(
       userID: _userID,
       displayName: _displayName,
       photoUrl: _photoURL,
-      fcmToken: _fcmToken,
     );
   }
 
@@ -47,9 +46,9 @@ class UserInfo {
 
 //  Map<String, Object> get messages => _messages;
 
-  Map<String, ShortTaskInfo> get tasks => _tasks;
+//  Map<String, ShortTaskInfo> get tasks => _tasks;
 
-  Map<String, ShortGroupInfo> get groups => _groups;
+//  Map<String, ShortGroupInfo> get groups => _groups;
 
   String get fcmToken => _fcmToken;
 
