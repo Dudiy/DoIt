@@ -9,6 +9,7 @@ import 'package:do_it/data_classes/task/task_info_completed.dart';
 import 'package:do_it/data_classes/task/task_info_short.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/data_managers/groups_manager.dart';
+import 'package:do_it/widgets/custom/dialog.dart';
 import 'package:do_it/widgets/groups/group_details_page.dart';
 import 'package:do_it/widgets/tasks/add_task.dart';
 import 'package:do_it/widgets/tasks/task_details_page.dart';
@@ -361,10 +362,12 @@ class SingleGroupPageState extends State<SingleGroupPage> {
 
   /// different behavior on the other user permission
   void deleteGroup() {
-    WidgetUtils
-        .showDeleteDialog(
-            context: context, message: 'Are you sure you would like to delete this group? \nThis cannot be undone')
-        .then((deleteConfirmed) {
+    DoItDialogs.showConfirmDialog(
+      context: context,
+      message: 'Are you sure you would like to delete this group? \nThis cannot be undone',
+      isWarning: true,
+      actionButtonText: 'Delete',
+    ).then((deleteConfirmed) {
       if (deleteConfirmed) {
         app.groupsManager.deleteGroup(groupID: groupInfo.groupID);
         Navigator.pop(context);
@@ -373,10 +376,12 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   }
 
   void leaveGroup() {
-    WidgetUtils
-        .showDeleteDialog(
-            context: context, message: 'Are you sure you would like to leave this group? \nThis cannot be undone')
-        .then((deleteConfirmed) {
+    DoItDialogs.showConfirmDialog(
+      context: context,
+      message: 'Are you sure you would like to leave this group? \nThis cannot be undone',
+      isWarning: true,
+      actionButtonText: 'Leave',
+    ).then((deleteConfirmed) {
       if (deleteConfirmed) {
         app.groupsManager.deleteUserFromGroup(groupInfo.groupID, app.loggedInUser.userID);
         Navigator.pop(context);

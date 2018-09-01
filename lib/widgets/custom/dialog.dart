@@ -89,4 +89,39 @@ class DoItDialogs {
           );
         });
   }
+
+  static Future<bool> showConfirmDialog({
+    @required BuildContext context,
+    @required String message,
+    bool isWarning = false,
+    String actionButtonText = 'Confirm'
+  }) async {
+    return showDialog<bool>(
+        context: context,
+        builder: (BuildContext context) {
+          return new SimpleDialog(
+            title: Text(message),
+            children: <Widget>[
+              ButtonBar(children: [
+                RaisedButton(
+                  child: Text('Cancel'),
+                  onPressed: () {
+                    Navigator.pop(context, false);
+                  },
+                ),
+                RaisedButton(
+                  child: Text(
+                    actionButtonText,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  color: isWarning ? Theme.of(context).errorColor : Theme.of(context).primaryColor,
+                  onPressed: () {
+                    Navigator.pop(context, true);
+                  },
+                ),
+              ]),
+            ],
+          );
+        });
+  }
 }

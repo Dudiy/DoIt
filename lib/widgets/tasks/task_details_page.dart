@@ -74,9 +74,12 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
     if (editEnabled) {
       _menuItems.addAll([
         _getSaveMenuItem(context),
-        _getDeleteTaskMenuItem(context),
+        PopupMenuDivider(),
         _getWriteToNfcMenuItem(context),
+        PopupMenuDivider(),
         _getNotifyUsersMenuItem(context),
+        PopupMenuDivider(),
+        _getDeleteTaskMenuItem(context),
       ]);
     }
     return _menuItems;
@@ -86,7 +89,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
     return PopupMenuItem(
       value: 'save',
       child: ListTile(
-        leading: Icon(Icons.save),
+        leading: Icon(Icons.save, color: Theme.of(context).primaryColor),
         title: Text('Save'),
         onTap: () async {
           await app.tasksManager
@@ -113,14 +116,15 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
     return PopupMenuItem(
       value: 'deleteTask',
       child: ListTile(
-          leading: Icon(Icons.delete),
+          leading: Icon(Icons.delete, color: Colors.red),
           title: Text('Delete task'),
           onTap: () async {
-            WidgetUtils
-                .showDeleteDialog(
-                    context: context,
-                    message: 'Are you sure you would like to delete this task? \nThis cannot be undone')
-                .then((deleteConfirmed) {
+            DoItDialogs.showConfirmDialog(
+              context: context,
+              message: 'Are you sure you would like to delete this task? \nThis cannot be undone',
+              isWarning: true,
+              actionButtonText: 'Delete',
+            ).then((deleteConfirmed) {
               if (deleteConfirmed) {
                 app.tasksManager.deleteTask(widget.taskInfo.taskID);
                 Navigator.popUntil(context, ModalRoute.withName('/singleGroupPage'));
@@ -134,7 +138,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
     return PopupMenuItem(
       value: 'writeToNfc',
       child: ListTile(
-          leading: Icon(Icons.nfc),
+          leading: Icon(Icons.nfc, color: Theme.of(context).primaryColor),
           title: Text('Write to NFC'),
           onTap: () {
             Navigator.pop(context); // hide the popup
@@ -155,7 +159,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
     return PopupMenuItem(
       value: 'notify',
       child: ListTile(
-          leading: Icon(Icons.comment),
+          leading: Icon(Icons.comment, color: Theme.of(context).primaryColor),
           title: Text('Notify users'),
           onTap: () {
             DoItDialogs.showUserInputDialog(
