@@ -11,6 +11,9 @@ class DoItTextField extends StatelessWidget {
   final int maxLines;
   final TextAlign textAlign;
   final String initValue;
+  final Function fieldValidator;
+  final String validationErrorMsg;
+
 
   DoItTextField({
     @required this.label,
@@ -22,6 +25,8 @@ class DoItTextField extends StatelessWidget {
     this.textAlign = TextAlign.start,
     this.isRequired = false,
     this.enabled = true,
+    this.fieldValidator,
+    this.validationErrorMsg,
   });
 
   @override
@@ -43,6 +48,7 @@ class DoItTextField extends StatelessWidget {
         ),
         validator: (value) {
           if (isRequired && value.isEmpty) return 'This field cannot be empty';
+          if (fieldValidator != null && !fieldValidator(value)) return validationErrorMsg;
         },
       ),
     );

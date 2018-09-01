@@ -142,9 +142,20 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
     list.addAll(widget.groupInfo.members == null || widget.groupInfo.members.length == 0
         ? [Text('The group has no members...')]
         : widget.groupInfo.members.values.map((shortUserInfo) {
+            var removeIcon = editEnabled
+                ? IconButton(
+                    icon: Icon(Icons.remove_circle_outline, color: Colors.red),
+                    onPressed: () {
+                      // TODO add are you sure dialog
+                      app.groupsManager.deleteUserFromGroup(widget.groupInfo.groupID, shortUserInfo.userID);
+                    },
+                  )
+                : Container(width: 0.0, height: 0.0);
+            if (editEnabled) {}
             return ListTile(
               title: Text(shortUserInfo.displayName),
               subtitle: Text(shortUserInfo.userID),
+              trailing: removeIcon,
             );
           }).toList());
     return list;
@@ -192,6 +203,10 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
           label: 'Email',
           keyboardType: TextInputType.emailAddress,
           isRequired: true,
+          fieldValidator: (email) async {
+            return (await app.usersManager.getShortUserInfoByEmail(email) != null);
+          },
+          validationErrorMsg: 'User not found',
         ),
       ],
       title: 'Add Member',
@@ -210,36 +225,5 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
         });
       },
     );
-/*    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return new SimpleDialog(
-            title: Center(child: Text('Add Member')),
-            children: <Widget>[
-              DoItTextField(
-                controller: _emailController,
-                label: 'Email',
-                textInputType: TextInputType.emailAddress,
-                isRequired: true,
-              ),
-              RaisedButton(
-                onPressed: () async {
-                  await app.groupsManager
-                      .addMember(
-                    groupID: widget.groupInfo.groupID,
-                    newMemberEmail: _emailController.text,
-                  )
-                      .then((newMember) {
-                    setState(() {
-                      _groupMembers.putIfAbsent(newMember.userID, () => newMember);
-                    });
-                  });
-                  Navigator.pop(context);
-                },
-                child: const Text('Ok'),
-              )
-            ],
-          );
-        });*/
   }
 }
