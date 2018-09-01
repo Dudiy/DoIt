@@ -1,0 +1,7 @@
+
+enum TaskManagerResult {
+  SUCCESS,
+  USER_NOT_LOGGED_IN,
+  USER_WHO_COMPLETED_TASK_NOT_FOUND,
+  TASK_NOT_FOUND,
+}
