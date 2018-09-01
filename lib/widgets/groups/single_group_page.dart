@@ -27,6 +27,9 @@ class SingleGroupPage extends StatefulWidget {
 }
 
 class SingleGroupPageState extends State<SingleGroupPage> {
+  static const LOADING_GIF = 'assets/images/loading_profile_pic.png';
+  static const DEFAULT_PICTURE = 'assets/images/default_group_icon.jpg';
+  String photoUrl = DEFAULT_PICTURE;
   final App app = App.instance;
   List<ShortTaskInfo> _allGroupTasks;
   List<CompletedTaskInfo> _completedTasks;
@@ -62,44 +65,97 @@ class SingleGroupPageState extends State<SingleGroupPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (groupInfo?.photoUrl != null && groupInfo?.photoUrl != "") {
+      photoUrl = groupInfo?.photoUrl;
+    } else {
+      photoUrl = DEFAULT_PICTURE;
+    }
     return Scaffold(
         appBar: AppBar(title: Text(groupInfo.title, maxLines: 2), actions: _drawEditAndDelete()),
         body: GestureDetector(
             onVerticalDragDown: (details) => getMyGroupTasksFromDB(),
             child: ListView(
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(10.0),
-                  child: ExpansionPanelList(
-                    expansionCallback: (int index, bool isExpanded) {
-                      setState(() {
-                        switch (index) {
-                          case 0:
-                            _myTasksIsExpanded = !_myTasksIsExpanded;
-                            break;
-                          case 1:
-                            _othersTasksIsExpanded = !_othersTasksIsExpanded;
-                            break;
-                          case 2:
-                            groupInfo.managerID == app.loggedInUser.userID
-                                ? _futureTasksIsExpanded = !_futureTasksIsExpanded
-                                : _completedTasksIsExpanded = !_completedTasksIsExpanded;
-                            break;
-                          case 3:
-                            _completedTasksIsExpanded = !_completedTasksIsExpanded;
-                            if (_completedTasksIsExpanded) {
-                              fetchCompletedTasksFromServer();
-                            }
-                            break;
-                        }
-                      });
-                    },
-                    children: _getExpansionPanels(context),
-                  ),
-                )
-              ],
+              children: <Widget>[_shortGroupInfo(), _groupTaskTabs(context)],
             )),
         floatingActionButton: _drawAddTaskButton());
+  }
+
+  Widget _shortGroupInfo() {
+    return new Row(
+      children: <Widget>[
+        new Expanded(
+          child: GestureDetector(
+            onTap: () => App.instance.groupsManager.uploadGroupPic(groupInfo).then((val) {
+                  setState(() {
+                    photoUrl = groupInfo.photoUrl;
+                  });
+                }),
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: _addGroupPicture(),
+            ),
+          ),
+        ),
+        new Expanded(
+          child: new Text(groupInfo.title +
+              "\n" +
+              "there are " +
+              groupInfo.members.length.toString() +
+              " members\n" +
+              "total " +
+              groupInfo.tasks.length.toString() +
+              " tasks"),
+        ),
+      ],
+    );
+  }
+
+  // callback method
+  setGroupInfo(GroupInfo groupInfoTest) {
+    setState(() {
+      this.groupInfo.photoUrl = groupInfoTest.photoUrl;
+    });
+  }
+
+  _addGroupPicture() {
+    return photoUrl == DEFAULT_PICTURE
+        ? Image.asset(DEFAULT_PICTURE)
+        : FadeInImage.assetNetwork(
+            placeholder: LOADING_GIF,
+            image: photoUrl,
+          );
+  }
+
+  Padding _groupTaskTabs(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(10.0),
+      child: ExpansionPanelList(
+        expansionCallback: (int index, bool isExpanded) {
+          setState(() {
+            switch (index) {
+              case 0:
+                _myTasksIsExpanded = !_myTasksIsExpanded;
+                break;
+              case 1:
+                _othersTasksIsExpanded = !_othersTasksIsExpanded;
+                break;
+              case 2:
+                groupInfo.managerID == app.loggedInUser.userID
+                    ? _futureTasksIsExpanded = !_futureTasksIsExpanded
+                    : _completedTasksIsExpanded = !_completedTasksIsExpanded;
+                break;
+              case 3:
+                _completedTasksIsExpanded = !_completedTasksIsExpanded;
+                if (_completedTasksIsExpanded) {
+                  fetchCompletedTasksFromServer();
+                }
+                break;
+            }
+          });
+        },
+        children: _getExpansionPanels(context),
+      ),
+    );
   }
 
   void _groupInfoChanged(GroupInfo newGroupInfo) {
@@ -284,9 +340,8 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       child: Icon(Icons.info_outline, color: Colors.white),
       onPressed: () async {
         ShortUserInfo managerInfo = await app.usersManager.getShortUserInfo(groupInfo.managerID);
-        Navigator
-            .of(context)
-            .push(MaterialPageRoute(builder: (context) => GroupDetailsPage(groupInfo, managerInfo, _groupInfoChanged)));
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => GroupDetailsPage(groupInfo, managerInfo, _groupInfoChanged, setGroupInfo)));
       },
     ));
     buttons.add(FlatButton(
@@ -298,8 +353,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
 
   /// different behavior on the other user permission
   void deleteGroup() async {
-    WidgetUtils
-        .showDeleteDialog(
+    WidgetUtils.showDeleteDialog(
             context: context, message: 'Are you sure you would like to delete this group? \nThis cannot be undone')
         .then((deleteConfirmed) {
       if (deleteConfirmed) {
@@ -380,6 +434,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
 
   _getExpansionPanels(BuildContext context) {
     List<ExpansionPanel> _expansionPanels = new List();
+
     //Tasks assigned to me
     _expansionPanels.add(ExpansionPanel(
       headerBuilder: (BuildContext context, bool isExpanded) {
@@ -388,6 +443,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       body: getTasksAssignedToMe(),
       isExpanded: _myTasksIsExpanded,
     ));
+
     //Other's tasks
     _expansionPanels.add(ExpansionPanel(
       headerBuilder: (BuildContext context, bool isExpanded) {
@@ -396,10 +452,12 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       body: getTasksAssignedToOthers(),
       isExpanded: _othersTasksIsExpanded,
     ));
+
     //Future tasks
     if (app.getLoggedInUserID() == groupInfo.managerID) {
       _expansionPanels.add(_futureTasksExpansionPanel(context));
     }
+
     //Completed tasks
     _expansionPanels.add(ExpansionPanel(
       headerBuilder: (BuildContext context, bool isExpanded) {

@@ -10,8 +10,9 @@ class GroupDetailsPage extends StatefulWidget {
   final GroupInfo groupInfo;
   final ShortUserInfo groupManager;
   final Function onGroupInfoChanged;
+  final Function setGroupInfo;
 
-  GroupDetailsPage(this.groupInfo, this.groupManager, this.onGroupInfoChanged);
+  GroupDetailsPage(this.groupInfo, this.groupManager, this.onGroupInfoChanged, this.setGroupInfo);
 
   @override
   GroupDetailsPageState createState() => new GroupDetailsPageState();
@@ -22,7 +23,6 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _titleController = new TextEditingController();
   final TextEditingController _descriptionController = new TextEditingController();
-  final TextEditingController _photoUrlController = new TextEditingController();
   final TextEditingController _groupIDController = new TextEditingController();
   final TextEditingController _managerDisplayNameController = new TextEditingController();
 
@@ -37,7 +37,6 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
     _managerDisplayNameController.text = widget.groupManager.displayName;
     _titleController.text = widget.groupInfo.title;
     _descriptionController.text = widget.groupInfo.description;
-    _photoUrlController.text = widget.groupInfo.photoUrl;
     _groupMembers = widget.groupInfo.members;
     super.initState();
   }
@@ -63,7 +62,13 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                     enabled: editEnabled,
                   ),
                   DoItTextField(controller: _descriptionController, label: 'Description', enabled: editEnabled),
-                  DoItTextField(controller: _photoUrlController, label: 'Photo URL', enabled: editEnabled),
+                  // TODO update in flutter + DB but not at app
+                  FlatButton(
+                      child: Icon(Icons.insert_photo),
+                      onPressed: () async {
+                        await App.instance.groupsManager.uploadGroupPic(widget.groupInfo);
+                        widget.setGroupInfo(widget.groupInfo);
+                      }),
                 ])),
           ),
           Column(
@@ -99,7 +104,6 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
             groupIdToChange: widget.groupInfo.groupID,
             title: _titleController.text.isNotEmpty ? _titleController.text : null,
             description: _descriptionController.text.isNotEmpty ? _descriptionController.text : null,
-            photoUrl: _photoUrlController.text.isNotEmpty ? _photoUrlController.text : null,
           )
               .then((newGroupInfo) {
             widget.onGroupInfoChanged(newGroupInfo);

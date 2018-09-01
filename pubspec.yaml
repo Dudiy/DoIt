@@ -40,6 +40,7 @@ flutter:
   assets:
     - assets/images/loading_profile_pic.png
     - assets/images/unknown_profile_pic.png
+    - assets/images/default_group_icon.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.
