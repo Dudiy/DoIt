@@ -76,7 +76,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
         _getSaveMenuItem(context),
         _getDeleteTaskMenuItem(context),
         _getWriteToNfcMenuItem(context),
-        _getNotifyAssignedMenuItem(context),
+        _getNotifyUsersMenuItem(context),
       ]);
     }
     return _menuItems;
@@ -143,7 +143,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
     );
   }
 
-  Widget _getNotifyAssignedMenuItem(context) {
+  Widget _getNotifyUsersMenuItem(context) {
     TextEditingController _notificationController = new TextEditingController();
     DoItTextField notificationMessage = DoItTextField(
       label: 'Notification message',
@@ -164,7 +164,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
               title: 'Send notification',
               onSubmit: () async {
                 List<String> _tokens = await _getAssignedUsersTokens();
-                Navigator.pop(context); // hide the popup
+                Navigator.pop(context); // hide menu items popup
                 app.notifier.sendNotifications(
                   title: 'Notification from task \"${widget.taskInfo.title}\"',
                   body: _notificationController.text,
