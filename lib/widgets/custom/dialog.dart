@@ -86,6 +86,7 @@ class DoItDialogs {
           return new SimpleDialog(
             title: Center(child: Text(title)),
             children: dialogBody,
+            contentPadding: EdgeInsets.all(16.0),
           );
         });
   }

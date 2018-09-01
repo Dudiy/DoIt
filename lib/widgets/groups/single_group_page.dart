@@ -4,16 +4,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it/app.dart';
 import 'package:do_it/constants/db_constants.dart';
 import 'package:do_it/data_classes/group/group_info.dart';
-import 'package:do_it/data_classes/task/task_info.dart';
+import 'package:do_it/data_classes/task/eRecurringPolicies.dart';
 import 'package:do_it/data_classes/task/task_info_completed.dart';
 import 'package:do_it/data_classes/task/task_info_short.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/data_managers/groups_manager.dart';
 import 'package:do_it/widgets/custom/dialog.dart';
+import 'package:do_it/widgets/custom/recurring_policy_field.dart';
+import 'package:do_it/widgets/custom/text_field.dart';
+import 'package:do_it/widgets/custom/time_field.dart';
 import 'package:do_it/widgets/groups/group_details_page.dart';
-import 'package:do_it/widgets/tasks/add_task.dart';
 import 'package:do_it/widgets/tasks/task_details_page.dart';
-import 'package:do_it/widgets/utils/widget_utils.dart';
 import 'package:flutter/material.dart';
 
 class SingleGroupPage extends StatefulWidget {
@@ -302,33 +303,67 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   }
 
   Future<void> _showAddTaskDialog() async {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return new Dialog(
-            child: AddTaskDialogBody(addTaskSubmitted),
-          );
-        });
-  }
+    TextEditingController _titleController = new TextEditingController();
+    TextEditingController _descriptionController = new TextEditingController();
+    TextEditingController _valueController = new TextEditingController();
+    eRecurringPolicy _selectedPolicy = eRecurringPolicy.none;
+    DateTime _selectedStartTime, _selectedEndTime;
 
-  void addTaskSubmitted(TaskInfo taskInfo) {
-    try {
-      app.tasksManager
-          .addTask(
-            title: taskInfo.title,
-            description: taskInfo.description,
-            value: taskInfo.value,
-            startTime: taskInfo.startTime,
-            endTime: taskInfo.endTime,
-            assignedUsers: taskInfo.assignedUsers,
-            recurringPolicy: taskInfo.recurringPolicy,
-            parentGroupID: groupInfo.groupID,
-            parentGroupManagerID: groupInfo.managerID,
-          )
-          .whenComplete(() => Navigator.pop(context));
-    } catch (e) {
-      print(e);
-    }
+    DoItDialogs.showUserInputDialog(
+        context: context,
+        inputWidgets: [
+          DoItTextField(
+            controller: _titleController,
+            label: 'Title',
+            isRequired: true,
+          ),
+          DoItTextField(
+            controller: _valueController,
+            isRequired: true,
+            label: 'Task value',
+            keyboardType: TextInputType.numberWithOptions(),
+            fieldValidator: (value) => int.tryParse(value) != null && int.parse(value) > 0,
+            validationErrorMsg: 'Task value must be a posiyive integer',
+          ),
+          DoItTextField(
+            controller: _descriptionController,
+            label: 'Description',
+            isRequired: false,
+          ),
+          DoItTimeField(
+            label: 'Start time',
+            onDateTimeUpdated: (selectedDateTime) {
+              _selectedStartTime = selectedDateTime;
+            },
+          ),
+          DoItTimeField(
+            label: 'End time',
+            onDateTimeUpdated: (selectedDateTime) {
+              _selectedEndTime = selectedDateTime;
+            },
+          ),
+          DoItRecurringPolicyField(onPolicyUpdated: (selectedPolicy) {
+            _selectedPolicy = selectedPolicy;
+          }),
+        ],
+        title: 'Add task',
+        onSubmit: () {
+          try {
+            app.tasksManager.addTask(
+              title: _titleController.text,
+              description: _descriptionController.text,
+              value: int.parse(_valueController.text),
+              startTime: _selectedStartTime,
+              endTime: _selectedEndTime,
+              assignedUsers: null,
+              recurringPolicy: _selectedPolicy,
+              parentGroupID: groupInfo.groupID,
+              parentGroupManagerID: groupInfo.managerID,
+            );
+          } catch (e) {
+            print(e);
+          }
+        });
   }
 
   void _updateTasksList(DocumentSnapshot documentSnapshotGroupTasks) {
@@ -341,23 +376,6 @@ class SingleGroupPageState extends State<SingleGroupPage> {
         _allGroupTasks = GroupsManager.conventDBGroupTaskToObjectList(documentSnapshotGroupTasks);
       });
     }
-  }
-
-  List<Widget> _drawEditAndDelete() {
-    List<Widget> buttons = new List();
-    buttons.add(FlatButton(
-      child: Icon(Icons.info_outline, color: Colors.white),
-      onPressed: () async {
-        ShortUserInfo managerInfo = await app.usersManager.getShortUserInfo(groupInfo.managerID);
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => GroupDetailsPage(groupInfo, managerInfo, _groupInfoChanged, setGroupInfo)));
-      },
-    ));
-    buttons.add(FlatButton(
-      child: Icon(Icons.delete, color: Colors.white),
-      onPressed: deleteGroup,
-    ));
-    return buttons;
   }
 
   /// different behavior on the other user permission

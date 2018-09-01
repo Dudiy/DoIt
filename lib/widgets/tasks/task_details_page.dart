@@ -5,11 +5,11 @@ import 'package:do_it/data_classes/task/eRecurringPolicies.dart';
 import 'package:do_it/data_classes/task/task_info.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/widgets/custom/dialog.dart';
+import 'package:do_it/widgets/custom/recurring_policy_field.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:do_it/widgets/custom/time_field.dart';
 import 'package:do_it/widgets/nfc_write_widget.dart';
 import 'package:do_it/widgets/users/user_selector.dart';
-import 'package:do_it/widgets/utils/widget_utils.dart';
 import 'package:flutter/material.dart';
 
 class TaskDetailsPage extends StatefulWidget {
@@ -60,6 +60,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
   List<Widget> _drawActionsBar() {
     List<Widget> actions = new List();
     if (editEnabled) {
+      actions.add(_getSaveButton());
       actions.add(new PopupMenuButton<String>(
         onSelected: (String result) {/*setState(() { _selection = result; });*/},
         itemBuilder: _getPopupMenuItems,
@@ -73,8 +74,6 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
     List<PopupMenuEntry<String>> _menuItems = new List();
     if (editEnabled) {
       _menuItems.addAll([
-        _getSaveMenuItem(context),
-        PopupMenuDivider(),
         _getWriteToNfcMenuItem(context),
         PopupMenuDivider(),
         _getNotifyUsersMenuItem(context),
@@ -83,6 +82,31 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
       ]);
     }
     return _menuItems;
+  }
+
+  Widget _getSaveButton() {
+    return IconButton(
+      icon: Icon(Icons.save, color: Colors.white),
+      tooltip: 'Save changes',
+      splashColor: Theme.of(context).primaryColorLight,
+      onPressed: () async {
+        await app.tasksManager
+            .updateTask(
+          taskIdToChange: widget.taskInfo.taskID,
+          title: _titleController.text.isNotEmpty ? _titleController.text : null,
+          description: _descriptionController.text.isNotEmpty ? _descriptionController.text : null,
+          value: _valueController.text.isNotEmpty ? int.parse(_valueController.text) : null,
+          startTime: _selectedStartDateTime,
+          endTime: _selectedEndDateTime,
+          recurringPolicy: _selectedPolicy,
+        )
+            .then((newGroupInfo) {
+          // TODO check if we need this
+//            widget.onTaskInfoChanged(newGroupInfo);
+        });
+        Navigator.pop(context);
+      },
+    );
   }
 
   Widget _getSaveMenuItem(context) {
@@ -296,56 +320,6 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
     Navigator.pop(context);
   }
 
-  Widget _recurringPolicyField() {
-    Widget selector = editEnabled
-        ? Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.black38),
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            alignment: Alignment.center,
-            child: DropdownButton(
-              value: _selectedPolicy,
-              items: eRecurringPolicy.values.map((policy) {
-                return DropdownMenuItem(
-                  value: policy,
-                  child: Text(
-                    RecurringPolicyUtils.policyToString(policy),
-                    textAlign: TextAlign.center,
-                  ),
-                );
-              }).toList(),
-              onChanged: (selected) {
-                if (editEnabled) {
-                  setState(() {
-                    _selectedPolicy = selected;
-                  });
-                }
-              },
-            ),
-          )
-        : DoItTextField(
-            label: 'Repeat',
-            textAlign: TextAlign.center,
-            enabled: false,
-            initValue: RecurringPolicyUtils.policyToString(_selectedPolicy),
-          );
-    return Padding(
-      padding: const EdgeInsets.only(left: 16.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text('Repeat: '),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: selector,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -382,7 +356,11 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
                     label: 'Value',
                     enabled: editEnabled,
                   ),
-                  _recurringPolicyField(),
+                  DoItRecurringPolicyField(
+                    enabled: editEnabled,
+                    initPolicy: widget.taskInfo.recurringPolicy,
+                    onPolicyUpdated: (selected) => _selectedPolicy = selected,
+                  ),
                   DoItTimeField(
                     label: 'Start time',
                     initDateTime: widget.taskInfo.startTime,

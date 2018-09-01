@@ -91,7 +91,7 @@ class DoItTimeFieldState extends State<DoItTimeField> {
                       TextFormField(
                         controller: controller,
                         enabled: false,
-                        textAlign: TextAlign.center,
+//                        textAlign: TextAlign.center,
                         decoration: InputDecoration(
                           labelText: widget.label,
                           border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(16.0))),
