@@ -111,10 +111,10 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
 
   Widget _getDeleteTaskMenuItem(context) {
     return PopupMenuItem(
-      value: 'deleteGroup',
+      value: 'deleteTask',
       child: ListTile(
           leading: Icon(Icons.delete),
-          title: Text('Delete group'),
+          title: Text('Delete task'),
           onTap: () async {
             WidgetUtils
                 .showDeleteDialog(

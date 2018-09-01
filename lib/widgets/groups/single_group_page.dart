@@ -71,7 +71,15 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       photoUrl = DEFAULT_PICTURE;
     }
     return Scaffold(
-        appBar: AppBar(title: Text(groupInfo.title, maxLines: 2), actions: _drawEditAndDelete()),
+        appBar: AppBar(
+          title: Text(groupInfo.title, maxLines: 2),
+          actions: [
+            PopupMenuButton<String>(
+              onSelected: (String result) {/*setState(() { _selection = result; });*/},
+              itemBuilder: _getPopupMenuItems,
+            )
+          ],
+        ),
         body: GestureDetector(
             onVerticalDragDown: (details) => getMyGroupTasksFromDB(),
             child: ListView(
@@ -352,17 +360,25 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   }
 
   /// different behavior on the other user permission
-  void deleteGroup() async {
-    WidgetUtils.showDeleteDialog(
+  void deleteGroup() {
+    WidgetUtils
+        .showDeleteDialog(
             context: context, message: 'Are you sure you would like to delete this group? \nThis cannot be undone')
         .then((deleteConfirmed) {
       if (deleteConfirmed) {
-        if (app.getLoggedInUserID() == groupInfo.managerID) {
-          app.groupsManager.deleteGroup(groupID: groupInfo.groupID);
-        } else {
-          app.groupsManager.deleteUserFromGroup(
-              groupInfo.groupID, app.loggedInUser.userID); //TODO seperate to another function (leave group)
-        }
+        app.groupsManager.deleteGroup(groupID: groupInfo.groupID);
+        Navigator.pop(context);
+      }
+    });
+  }
+
+  void leaveGroup() {
+    WidgetUtils
+        .showDeleteDialog(
+            context: context, message: 'Are you sure you would like to leave this group? \nThis cannot be undone')
+        .then((deleteConfirmed) {
+      if (deleteConfirmed) {
+        app.groupsManager.deleteUserFromGroup(groupInfo.groupID, app.loggedInUser.userID);
         Navigator.pop(context);
       }
     });
@@ -516,6 +532,59 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     });
     return Column(
       children: tasksList.length > 0 ? tasksList : [noFutureTasks],
+    );
+  }
+
+  List<PopupMenuEntry<String>> _getPopupMenuItems(BuildContext context) {
+    List<PopupMenuEntry<String>> _menuItems = new List();
+    _menuItems.add(_getGroupInfoMenuItem(context));
+    _menuItems.add(PopupMenuDivider());
+    if (app.loggedInUser.userID == widget.groupInfo.managerID) {
+      _menuItems.add(_getDeleteGroupMenuItem(context));
+    } else {
+      _menuItems.add(_getLeaveGroupMenuItem(context));
+    }
+    return _menuItems;
+  }
+
+  PopupMenuEntry<String> _getGroupInfoMenuItem(BuildContext context) {
+    return PopupMenuItem(
+      value: 'deleteGroup',
+      child: ListTile(
+          leading: Icon(Icons.info_outline, color: Theme.of(context).primaryColor),
+          title: Text('Group info'),
+          onTap: () async {
+            ShortUserInfo managerInfo = await app.usersManager.getShortUserInfo(groupInfo.managerID);
+            Navigator.pop(context);
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => GroupDetailsPage(groupInfo, managerInfo, _groupInfoChanged, setGroupInfo)));
+          }),
+    );
+  }
+
+  PopupMenuEntry<String> _getDeleteGroupMenuItem(BuildContext context) {
+    return PopupMenuItem(
+      value: 'deleteGroup',
+      child: ListTile(
+          leading: Icon(Icons.delete, color: Colors.red),
+          title: Text('Delete group'),
+          onTap: () async {
+            Navigator.pop(context); // close popup dialog
+            deleteGroup();
+          }),
+    );
+  }
+
+  PopupMenuEntry<String> _getLeaveGroupMenuItem(BuildContext context) {
+    return PopupMenuItem(
+      value: 'leaveGroup',
+      child: ListTile(
+          leading: Icon(Icons.exit_to_app, color: Colors.red),
+          title: Text('Leave group'),
+          onTap: () {
+            Navigator.pop(context); // close popup dialog
+            leaveGroup();
+          }),
     );
   }
 }

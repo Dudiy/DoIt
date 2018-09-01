@@ -320,7 +320,7 @@ class GroupsManager {
 
   Future<ShortUserInfo> addMember({@required String groupID, @required String newMemberEmail}) async {
     ShortUserInfo newMemberInfo = await app.usersManager.getShortUserInfoByEmail(newMemberEmail);
-    if (newMemberInfo == null) throw Exception('GroupsManager: No user found in the DB with the given email addres');
+    if (newMemberInfo == null) throw Exception('GroupsManager: No user found in the DB with the given email address');
     getGroupInfoByID(groupID).then((groupInfo) {
       if (!groupInfo.members.containsKey(newMemberInfo.userID)) {
         groupInfo.members.putIfAbsent(newMemberInfo.userID, () => newMemberInfo);

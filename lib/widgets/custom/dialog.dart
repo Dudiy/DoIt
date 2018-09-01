@@ -34,10 +34,16 @@ class DoItDialogs {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
               child: Row(
                 children: <Widget>[
-                  Text('Got it... ', style: TextStyle(color: Colors.white),),
+                  Text(
+                    'Got it... ',
+                    style: TextStyle(color: Colors.white),
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Icon(Icons.thumb_up, color: Colors.white,),
+                    child: Icon(
+                      Icons.thumb_up,
+                      color: Colors.white,
+                    ),
                   ),
                 ],
               ),
@@ -56,7 +62,10 @@ class DoItDialogs {
   }) async {
     final _formKey = GlobalKey<FormState>();
     List<Widget> dialogBody = new List();
-    dialogBody.add(Form(key: _formKey, child: Column(children: inputWidgets)));
+    dialogBody.add(Form(
+      key: _formKey,
+      child: Column(children: inputWidgets),
+    ));
     dialogBody.add(Padding(
       padding: const EdgeInsets.all(8.0),
       child: RaisedButton(

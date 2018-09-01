@@ -121,6 +121,7 @@ class LoginPageState extends State<LoginPage> {
             widget.authenticator
                 .signInWithEmailAndPassword(_emailController.text, _passwordController.text)
                 .then((user) {
+              App.instance.refreshLoggedInUserFcmToken();
               print('${user.displayName} has logged in using email and password');
               widget.onSignedIn();
             }).catchError((error) {

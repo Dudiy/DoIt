@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -13,7 +15,6 @@ class DoItTextField extends StatelessWidget {
   final String initValue;
   final Function fieldValidator;
   final String validationErrorMsg;
-
 
   DoItTextField({
     @required this.label,
@@ -48,7 +49,15 @@ class DoItTextField extends StatelessWidget {
         ),
         validator: (value) {
           if (isRequired && value.isEmpty) return 'This field cannot be empty';
-          if (fieldValidator != null && !fieldValidator(value)) return validationErrorMsg;
+          if (keyboardType == TextInputType.emailAddress) {
+            Pattern pattern =
+                r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+            RegExp regex = new RegExp(pattern);
+            if (!regex.hasMatch(value)) return 'Invalid email address';
+          }
+          if (fieldValidator != null && !fieldValidator(value)) {
+            return validationErrorMsg;
+          }
         },
       ),
     );

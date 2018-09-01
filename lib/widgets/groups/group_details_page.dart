@@ -142,19 +142,22 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
     list.addAll(widget.groupInfo.members == null || widget.groupInfo.members.length == 0
         ? [Text('The group has no members...')]
         : widget.groupInfo.members.values.map((shortUserInfo) {
-            var removeIcon = editEnabled
+            var removeIcon = (editEnabled && shortUserInfo.userID != widget.groupManager.userID)
                 ? IconButton(
                     icon: Icon(Icons.remove_circle_outline, color: Colors.red),
+                    tooltip: 'Delete user from group',
                     onPressed: () {
                       // TODO add are you sure dialog
                       app.groupsManager.deleteUserFromGroup(widget.groupInfo.groupID, shortUserInfo.userID);
+                      setState(() {
+                        _groupMembers.remove(shortUserInfo.userID);
+                      });
                     },
                   )
                 : Container(width: 0.0, height: 0.0);
             if (editEnabled) {}
             return ListTile(
               title: Text(shortUserInfo.displayName),
-              subtitle: Text(shortUserInfo.userID),
               trailing: removeIcon,
             );
           }).toList());
@@ -201,12 +204,9 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
         DoItTextField(
           controller: _emailController,
           label: 'Email',
+          maxLines: 1,
           keyboardType: TextInputType.emailAddress,
           isRequired: true,
-          fieldValidator: (email) async {
-            return (await app.usersManager.getShortUserInfoByEmail(email) != null);
-          },
-          validationErrorMsg: 'User not found',
         ),
       ],
       title: 'Add Member',
@@ -222,6 +222,8 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
           setState(() {
             _groupMembers.putIfAbsent(newMember.userID, () => newMember);
           });
+        }).catchError((err){
+          DoItDialogs.showErrorDialog(context, 'No user is registered with the email: ${_emailController.text} \n\n** email addresses are case sensitive **');
         });
       },
     );

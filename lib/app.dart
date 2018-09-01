@@ -80,21 +80,6 @@ class App {
         });
       }
     });
-/*    firebaseMessaging.configure(
-      // when app is closed
-      onLaunch: (Map<String, dynamic> message) {
-        print('onLaunch message:');
-      },
-      // when app is running
-      onMessage: (Map<String, dynamic> message) {
-
-        print('onMessage message:');
-      },
-      // when app is minimised
-      onResume: (Map<String, dynamic> message) {
-        print('onResume message:');
-      },
-    );*/
   }
 
   Future refreshLoggedInUserFcmToken() async {

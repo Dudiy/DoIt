@@ -55,6 +55,8 @@ class RegisterPageState extends State<RegisterPage> {
                       controller: _passwordController,
                       label: 'Password',
                       isRequired: true,
+                      fieldValidator: (String value) => value.length >= 6,
+                      validationErrorMsg: 'Password must be at least 6 characters long',
                     ),
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),

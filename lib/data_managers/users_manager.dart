@@ -101,7 +101,7 @@ class UsersManager {
     List<DocumentSnapshot> documents = query.documents;
     if (documents.length > 0) {
       DocumentSnapshot newMemberDoc = query.documents.firstWhere((doc) {
-        return (doc.data['email'] as String).toLowerCase() == newMemberEmail.toLowerCase();
+        return (doc.data['email'] as String).toLowerCase() == newMemberEmail;
       });
       if (newMemberDoc.data != null) {
         newMemberInfo = UserUtils.generateShortUserInfoFromObject(newMemberDoc.data);
