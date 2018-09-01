@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
-import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it/authenticator.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
@@ -10,15 +8,12 @@ import 'package:do_it/data_managers/groups_manager.dart';
 import 'package:do_it/data_managers/tasks_manager.dart';
 import 'package:do_it/data_managers/users_manager.dart';
 import 'package:do_it/private.dart';
-import 'package:do_it/widgets/custom/dialog.dart';
 import 'package:do_it/widgets/utils/notification_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:uuid/uuid.dart';
 
 ///
 /// singleton class
