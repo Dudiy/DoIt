@@ -33,25 +33,6 @@ class HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    App.instance.firebaseMessaging.configure(
-      // when app is closed
-      onLaunch: (Map<String, dynamic> message) {
-        print('onLaunch message:');
-      },
-      // when app is running
-      onMessage: (Map<String, dynamic> message) {
-        DoItDialogs.showNotificationDialog(
-          context: context,
-          title: message['title'],
-          body: message['body'],
-        );
-        print('onMessage message:');
-      },
-      // when app is minimised
-      onResume: (Map<String, dynamic> message) {
-        print('onResume message:');
-      },
-    );
   }
 
   @override
