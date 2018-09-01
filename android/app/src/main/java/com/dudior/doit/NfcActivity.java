@@ -36,7 +36,7 @@ public class NfcActivity extends FlutterActivity {
     private static final String GET_TEXT_TO_WRITE = "getTextToWrite";
 
     NfcAdapter nfcAdapter;
-    String textRead=null;
+    String textRead = null;
     String textToWrite = "";
     NfcState nfcState = NfcState.NA;
     boolean hasNfc = false;
@@ -62,7 +62,7 @@ public class NfcActivity extends FlutterActivity {
                     switch (call.method) {
                         case GET_LAST_TEXT_READ_AND_RESET:
                             result.success(textRead);
-                            textRead=null;
+                            textRead = null;
                             break;
                         case SET_STATE:
                             String nfcStateString = call.argument("state");
@@ -112,13 +112,18 @@ public class NfcActivity extends FlutterActivity {
         if (intent.hasExtra(NfcAdapter.EXTRA_TAG)) {
             Toast.makeText(this, "NfcIntent!", Toast.LENGTH_SHORT).show();
             if (nfcState == NfcState.READ) {
+                System.out.println("NFC: in read state");
                 Parcelable[] parcelables = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
                 if (parcelables != null && parcelables.length > 0) {
                     readTextFromMessage((NdefMessage) parcelables[0]);
+                    if (textRead != null) {
+                        System.out.println("NFC: in read that- " + textRead);
+                    }
                 } else {
                     Toast.makeText(this, "No NDEF messages found!", Toast.LENGTH_SHORT).show();
                 }
             } else if (nfcState == NfcState.WRITE) {
+                System.out.println("NFC: in write state");
                 Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
                 NdefMessage ndefMessage = createNdefMessage(textToWrite);
                 writeNdefMessage(tag, ndefMessage);
@@ -212,10 +217,10 @@ public class NfcActivity extends FlutterActivity {
         return null;
     }
 
-
     private NdefMessage createNdefMessage(String content) {
-        NdefRecord ndefRecord = createTextRecord(content);
-        NdefMessage ndefMessage = new NdefMessage(new NdefRecord[]{ndefRecord});
+        NdefRecord appRecord = NdefRecord.createApplicationRecord("com.dudior.doit");
+        NdefRecord textRecord = NdefRecord.createTextRecord("en",textToWrite);
+        NdefMessage ndefMessage = new NdefMessage(textRecord, appRecord);
         return ndefMessage;
     }
 

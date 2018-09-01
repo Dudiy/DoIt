@@ -11,6 +11,8 @@ import 'package:do_it/data_classes/task/task_info_completed.dart';
 import 'package:do_it/data_classes/task/task_info_short.dart';
 import 'package:do_it/data_classes/task/task_info_utils.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
+import 'package:do_it/data_managers/task_manager_exception.dart';
+import 'package:do_it/data_managers/task_manager_result.dart';
 import 'package:meta/meta.dart';
 
 class TasksManager {
@@ -116,11 +118,17 @@ class TasksManager {
     // validations and error checking
     ShortUserInfo loggedInUser = app.loggedInUser;
     String errorMessagePrefix = 'TasksManager: cannot complete task.';
-    if (loggedInUser == null) throw Exception('$errorMessagePrefix User is not logged in');
+    if (loggedInUser == null) {
+      throw TaskException(TaskManagerResult.USER_NOT_LOGGED_IN,  '$errorMessagePrefix User is not logged in');
+    }
     ShortUserInfo userWhoCompleted = await app.usersManager.getShortUserInfo(userWhoCompletedID);
-    if (loggedInUser == null) throw Exception('$errorMessagePrefix User who completed was not found in the DB');
+    if (userWhoCompleted == null) {
+      throw TaskException(TaskManagerResult.USER_WHO_COMPLETED_TASK_NOT_FOUND,'$errorMessagePrefix User who completed was not found in the DB');
+    }
     TaskInfo taskInfo = await getTaskById(taskID);
-    if (taskInfo == null) throw Exception('$errorMessagePrefix TaskID was not found in the DB');
+    if (taskInfo == null) {
+      throw TaskException(TaskManagerResult.TASK_NOT_FOUND,'$errorMessagePrefix TaskID was not found in the DB');
+    }
     GroupInfo parentGroupInfo = await app.groupsManager.getGroupInfoByID(taskInfo.parentGroupID);
     if (parentGroupInfo == null || !parentGroupInfo.members.containsKey(userWhoCompletedID))
       throw Exception('$errorMessagePrefix The given user is not a member of the task\'s parent group \n'
@@ -182,7 +190,7 @@ class TasksManager {
     ).whenComplete(() => print('TasksManager: Task ${taskInfo.title} assigned to ${shortUserInfo.displayName}'));
   }
 
-  // deleteFromGroup parameter is for when deleting an entire group - set to false fo efficiency
+// deleteFromGroup parameter is for when deleting an entire group - set to false fo efficiency
   @ShouldBeSync()
   Future<void> deleteTask(String taskID, [bool deleteFromGroup = true]) async {
     print('taskID: $taskID - in deleteTask'); //TODO delete
@@ -227,7 +235,7 @@ class TasksManager {
     return myTasks;
   }
 
-  // if the removed user is the only one that the task is assigned to the task will become assigned to all group members
+// if the removed user is the only one that the task is assigned to the task will become assigned to all group members
   Future<void> removeUserFromAllAssignedTasks(String userID) async {
     QuerySnapshot snapshot = await _firestore.collection('$TASKS').getDocuments();
     snapshot.documents.forEach((taskDoc) {

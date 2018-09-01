@@ -1,8 +1,11 @@
 import 'package:do_it/app.dart';
+import 'package:do_it/data_managers/task_manager_exception.dart';
+import 'package:do_it/data_managers/task_manager_result.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 class LifecycleNfcWatcher extends StatefulWidget {
+
   @override
   _LifecycleNfcWatcherState createState() => _LifecycleNfcWatcherState();
 }
@@ -63,7 +66,12 @@ class _LifecycleNfcWatcherState extends State<LifecycleNfcWatcher> with WidgetsB
     platform.invokeMethod(GET_LAST_TEXT_READ_AND_RESET).then((taskId) {
       if (taskId != null) {
         print("NFC READ TEST: " + taskId);
-        App.instance.tasksManager.completeTask(taskID: taskId, userWhoCompletedID: App.instance.getLoggedInUserID());
+        App.instance.tasksManager.completeTask(taskID: taskId, userWhoCompletedID: App.instance.getLoggedInUserID()).catchError((error){
+          if(error.result == TaskManagerResult.TASK_NOT_FOUND){
+            // TODO change
+            print(error.toString());
+          }
+        });
       }
     });
   }
