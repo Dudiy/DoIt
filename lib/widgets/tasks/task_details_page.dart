@@ -4,6 +4,7 @@ import 'package:do_it/app.dart';
 import 'package:do_it/data_classes/task/eRecurringPolicies.dart';
 import 'package:do_it/data_classes/task/task_info.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
+import 'package:do_it/widgets/custom/dialog.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:do_it/widgets/custom/time_field.dart';
 import 'package:do_it/widgets/nfc_write_widget.dart';
@@ -59,66 +60,139 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
   List<Widget> _drawActionsBar() {
     List<Widget> actions = new List();
     if (editEnabled) {
-      actions.add(_getSaveButton());
-      actions.add(_getDeleteButton());
-      // TODO add that if we have NFC
-      actions.add(_getNfcWidget());
+      actions.add(new PopupMenuButton<String>(
+        onSelected: (String result) {/*setState(() { _selection = result; });*/},
+        itemBuilder: _getPopupMenuItems,
+      ));
     }
 
     return actions;
   }
 
-  Widget _getSaveButton() {
-    return FlatButton(
-      child: Icon(Icons.save, color: Colors.white),
-      onPressed: () async {
-        await app.tasksManager
-            .updateTask(
-          taskIdToChange: widget.taskInfo.taskID,
-          title: _titleController.text.isNotEmpty ? _titleController.text : null,
-          description: _descriptionController.text.isNotEmpty ? _descriptionController.text : null,
-          value: _valueController.text.isNotEmpty ? int.parse(_valueController.text) : null,
-          startTime: _selectedStartDateTime,
-          endTime: _selectedEndDateTime,
-          recurringPolicy: _selectedPolicy,
-        )
-            .then((newGroupInfo) {
-          // TODO check if we need this
+  List<PopupMenuEntry<String>> _getPopupMenuItems(BuildContext context) {
+    List<PopupMenuEntry<String>> _menuItems = new List();
+    if (editEnabled) {
+      _menuItems.addAll([
+        _getSaveMenuItem(context),
+        _getDeleteTaskMenuItem(context),
+        _getWriteToNfcMenuItem(context),
+        _getNotifyAssignedMenuItem(context),
+      ]);
+    }
+    return _menuItems;
+  }
+
+  Widget _getSaveMenuItem(context) {
+    return PopupMenuItem(
+      value: 'save',
+      child: ListTile(
+        leading: Icon(Icons.save),
+        title: Text('Save'),
+        onTap: () async {
+          await app.tasksManager
+              .updateTask(
+            taskIdToChange: widget.taskInfo.taskID,
+            title: _titleController.text.isNotEmpty ? _titleController.text : null,
+            description: _descriptionController.text.isNotEmpty ? _descriptionController.text : null,
+            value: _valueController.text.isNotEmpty ? int.parse(_valueController.text) : null,
+            startTime: _selectedStartDateTime,
+            endTime: _selectedEndDateTime,
+            recurringPolicy: _selectedPolicy,
+          )
+              .then((newGroupInfo) {
+            // TODO check if we need this
 //            widget.onTaskInfoChanged(newGroupInfo);
-        });
-        Navigator.pop(context);
-      },
-    );
-  }
-
-  Widget _getDeleteButton() {
-    return FlatButton(
-        child: Icon(Icons.delete, color: Colors.white),
-        onPressed: () async {
-          WidgetUtils
-              .showDeleteDialog(
-                  context: context, message: 'Are you sure you would like to delete this task? \nThis cannot be undone')
-              .then((deleteConfirmed) {
-            if (deleteConfirmed) {
-              app.tasksManager.deleteTask(widget.taskInfo.taskID);
-              Navigator.pop(context);
-            }
           });
-        });
-  }
-
-  Widget _getNfcWidget() {
-    return FlatButton(
-      child: Icon(Icons.nfc, color: Colors.white),
-      onPressed: () {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => NfcWritePage(widget.taskInfo.taskID)));
-      },
+          Navigator.popUntil(context, ModalRoute.withName('/singleGroupPage'));
+        },
+      ),
     );
   }
 
-  List<Widget> getAssignedUsers() {
-    List<Widget> list = new List();
-    list.add(Container(
+  Widget _getDeleteTaskMenuItem(context) {
+    return PopupMenuItem(
+      value: 'deleteGroup',
+      child: ListTile(
+          leading: Icon(Icons.delete),
+          title: Text('Delete group'),
+          onTap: () async {
+            WidgetUtils
+                .showDeleteDialog(
+                    context: context,
+                    message: 'Are you sure you would like to delete this task? \nThis cannot be undone')
+                .then((deleteConfirmed) {
+              if (deleteConfirmed) {
+                app.tasksManager.deleteTask(widget.taskInfo.taskID);
+                Navigator.popUntil(context, ModalRoute.withName('/singleGroupPage'));
+              }
+            });
+          }),
+    );
+  }
+
+  Widget _getWriteToNfcMenuItem(context) {
+    return PopupMenuItem(
+      value: 'writeToNfc',
+      child: ListTile(
+          leading: Icon(Icons.nfc),
+          title: Text('Write to NFC'),
+          onTap: () {
+            Navigator.pop(context); // hide the popup
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => NfcWritePage(widget.taskInfo.taskID)));
+          }),
+    );
+  }
+
+  Widget _getNotifyAssignedMenuItem(context) {
+    TextEditingController _notificationController = new TextEditingController();
+    DoItTextField notificationMessage = DoItTextField(
+      label: 'Notification message',
+      controller: _notificationController,
+      maxLines: 3,
+      maxLength: 30,
+      isRequired: true,
+    );
+    return PopupMenuItem(
+      value: 'notify',
+      child: ListTile(
+          leading: Icon(Icons.comment),
+          title: Text('Notify users'),
+          onTap: () {
+            DoItDialogs.showUserInputDialog(
+              context: context,
+              inputWidgets: [notificationMessage],
+              title: 'Send notification',
+              onSubmit: () async {
+                List<String> _tokens = await _getAssignedUsersTokens();
+                Navigator.pop(context); // hide the popup
+                app.notifier.sendNotifications(
+                  title: 'Notification from task \"${widget.taskInfo.title}\"',
+                  body: _notificationController.text,
+                  destUsersFcmTokens: _tokens,
+                );
+              },
+            );
+          }),
+    );
+  }
+
+  // returns null if users have'nt been fetched from the DB
+  List<ShortUserInfo> _getAssignedUsers() {
+    List<ShortUserInfo> list = new List();
+    if (_assignedUsers == null || _assignedUsers.length == 0) {
+      if (_parentGroupMembers != null) {
+        list.addAll(_parentGroupMembers.values);
+      }
+    } else {
+      list.addAll(_assignedUsers.values);
+    }
+    return list.length == 0 ? null : list;
+  }
+
+  List<Widget> _getAssignedUsersWidgets() {
+    List<Widget> widgetsList = new List();
+    List<ShortUserInfo> assignedUsers = _getAssignedUsers();
+    widgetsList.add(Container(
       color: Theme.of(context).primaryColorLight,
       child: Stack(
         children: <Widget>[
@@ -134,24 +208,17 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
         ],
       ),
     ));
-    if (_assignedUsers == null || _assignedUsers.length == 0) {
-      _parentGroupMembers == null
-          ? list.add(Center(child: Text(('Fetching assigned users from DB...'))))
-          : _parentGroupMembers.forEach((userID, shortUserInfo) {
-              list.add(ListTile(
-                // TODO display with a nicer widget
-                title: Text(shortUserInfo.displayName),
-              ));
-            });
+    if (assignedUsers == null) {
+      widgetsList.add(Center(child: Text(('Fetching assigned users from DB...'))));
     } else {
-      _assignedUsers.forEach((userID, shortUserInfo) {
-        list.add(ListTile(
+      assignedUsers.forEach((shortUserInfo) {
+        widgetsList.add(ListTile(
           // TODO display with a nicer widget
           title: Text(shortUserInfo.displayName),
         ));
       });
     }
-    return list;
+    return widgetsList;
   }
 
   void _getAssignedUsersFromDB() {
@@ -341,12 +408,27 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: Column(
-                children: getAssignedUsers(),
+                children: _getAssignedUsersWidgets(),
               ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  Future<List<String>> _getAssignedUsersTokens() async {
+    List<Future> _tokenGetters = new List();
+    List<String> _assignedUsersTokens = new List();
+    List<ShortUserInfo> assignedUsers = _getAssignedUsers();
+    assignedUsers.forEach((shortUserInfo) {
+      if (shortUserInfo.userID != app.loggedInUser.userID) {
+        _tokenGetters.add((app.usersManager.getFcmToken(shortUserInfo.userID).then((token) {
+          _assignedUsersTokens.add(token);
+        })));
+      }
+    });
+    await Future.wait(_tokenGetters);
+    return _assignedUsersTokens;
   }
 }

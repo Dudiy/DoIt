@@ -15,6 +15,8 @@ class Notifier {
       data = new Map();
     }
     data.putIfAbsent("click_action", () => "FLUTTER_NOTIFICATION_CLICK"); //, "id": "1", "status": "done"
+    data.putIfAbsent("title", () => title);
+    data.putIfAbsent("body", () => body);
     destUsersFcmTokens.forEach((fcmToken) {
       http
           .post("https://fcm.googleapis.com/fcm/send",

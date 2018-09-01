@@ -10,6 +10,7 @@ import 'package:do_it/data_managers/groups_manager.dart';
 import 'package:do_it/data_managers/tasks_manager.dart';
 import 'package:do_it/data_managers/users_manager.dart';
 import 'package:do_it/private.dart';
+import 'package:do_it/widgets/custom/dialog.dart';
 import 'package:do_it/widgets/utils/notification_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -84,23 +85,21 @@ class App {
         });
       }
     });
-    firebaseMessaging.configure(
+/*    firebaseMessaging.configure(
       // when app is closed
       onLaunch: (Map<String, dynamic> message) {
-//        _scheduleNotification();
         print('onLaunch message:');
       },
       // when app is running
       onMessage: (Map<String, dynamic> message) {
-//        _scheduleNotification();
+
         print('onMessage message:');
       },
       // when app is minimised
       onResume: (Map<String, dynamic> message) {
-//        _scheduleNotification();
         print('onResume message:');
       },
-    );
+    );*/
   }
 
   Future refreshLoggedInUserFcmToken() async {
@@ -115,32 +114,6 @@ class App {
   Future test() async {
     var app = App.instance;
     print('in test');
-    print('firebase token: ' + await firebaseMessaging.getToken());
-//    http
-//        .post("https://fcm.googleapis.com/fcm/send",
-//            headers: {
-//              "Content-Type": "application/json",
-//              "Authorization": "key=AIzaSyCLbv8eH_Y2V4SlNrz938sJFWUeP1_GUM4"
-//            },
-//            body: jsonEncode({
-//              "notification": {"body": "2245", "title": "scheduled"},
-//              "priority": "high",
-//              "data": {"click_action": "FLUTTER_NOTIFICATION_CLICK", "id": "1", "status": "done"},
-//              "to":
-//                  "ckZCm74ubFo:APA91bFb_IGtZDnE4P444qQBfKphnaqZswQqhlJc3-u2TuZD-5vxdyD_QSNNBtoYsJzVPfBCKE_09GM-zaryNTqWA3jrfNG8Q7FAiwOWKH6j-NIbgwMert1poebs0Ialk9UEcCyfZ997",
-//            }))
-//        .then((res) {
-//      print(res);
-//    });
-    app.notifier.sendNotifications(
-      title: 'test',
-      body: 'test body',
-      data: {'someRandomData': 'hello there'},
-      destUsersFcmTokens: [
-        'ckZCm74ubFo:APA91bFb_IGtZDnE4P444qQBfKphnaqZswQqhlJc3-u2TuZD-5vxdyD_QSNNBtoYsJzVPfBCKE_09GM-zaryNTqWA3jrfNG8Q7FAiwOWKH6j-NIbgwMert1poebs0Ialk9UEcCyfZ997',
-        'feQupeYOJz8:APA91bH5Fj4hzrEB2cZ_umLjNgABXA9PSkb7Ws8bz3u9oLK3FJDY2yLO4Y7ZcKoDbIsTYNkEES4TKQuK1U5h3Z-qUVxrTTc80h64QSdfWhqXPsO1URfiqQc73wRSkXX6ZW9r1GKNy3wRWKjtStvsJrV7y80bVdoePw'
-      ],
-    );
     print('end of test');
   }
 

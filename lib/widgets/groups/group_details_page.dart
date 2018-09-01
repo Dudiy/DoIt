@@ -113,7 +113,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
   List<Widget> getAllMembers() {
     Widget addMemberIcon = widget.groupInfo.managerID == app.loggedInUser.userID
         ? IconButton(
-            icon: Icon(Icons.add),
+            icon: Icon(Icons.group_add),
             onPressed: () {
               _showAddMemberDialog();
             })
@@ -194,7 +194,12 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
       onSubmit: () async {
         await app.groupsManager
             .addMember(groupID: widget.groupInfo.groupID, newMemberEmail: _emailController.text)
-            .then((newMember) {
+            .then((newMember) async {
+          app.notifier.sendNotifications(
+            title: 'Group \"${widget.groupInfo.title}\"',
+            body: 'You have been added to this group by ${widget.groupManager.displayName}',
+            destUsersFcmTokens: [await App.instance.usersManager.getFcmToken(newMember.userID)],
+          );
           setState(() {
             _groupMembers.putIfAbsent(newMember.userID, () => newMember);
           });

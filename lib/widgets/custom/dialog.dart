@@ -16,6 +16,38 @@ class DoItDialogs {
         });
   }
 
+  static Future<void> showNotificationDialog({
+    @required BuildContext context,
+    @required String title,
+    @required String body,
+  }) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(body),
+          actions: <Widget>[
+            new RaisedButton(
+              onPressed: () => Navigator.pop(context),
+              color: Theme.of(context).primaryColor,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+              child: Row(
+                children: <Widget>[
+                  Text('Got it... ', style: TextStyle(color: Colors.white),),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(Icons.thumb_up, color: Colors.white,),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   static Future<void> showUserInputDialog({
     @required BuildContext context,
     @required List<Widget> inputWidgets,

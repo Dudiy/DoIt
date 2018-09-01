@@ -95,7 +95,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
         subtitle: Text(group.tasksPerUser[App.instance.getLoggedInUser().userID].toString()),
         onTap: () {
           app.groupsManager.getGroupInfoByID(group.groupID).then((groupInfo) {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => SingleGroupPage(groupInfo)));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => SingleGroupPage(groupInfo), settings: RouteSettings(name: '/singleGroupPage')));
           });
         },
       );
