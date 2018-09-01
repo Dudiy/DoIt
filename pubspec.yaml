@@ -38,7 +38,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/loading_profile_pic.png
-    - assets/images/unknown_profile_pic.png
+    - assets/images/unknown_profile_pic.jpg
     - assets/images/default_group_icon.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
