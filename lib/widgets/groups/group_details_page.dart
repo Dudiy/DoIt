@@ -23,7 +23,6 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _titleController = new TextEditingController();
   final TextEditingController _descriptionController = new TextEditingController();
-  final TextEditingController _photoUrlController = new TextEditingController();
   final TextEditingController _groupIDController = new TextEditingController();
   final TextEditingController _managerDisplayNameController = new TextEditingController();
 
@@ -38,7 +37,6 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
     _managerDisplayNameController.text = widget.groupManager.displayName;
     _titleController.text = widget.groupInfo.title;
     _descriptionController.text = widget.groupInfo.description;
-    _photoUrlController.text = widget.groupInfo.photoUrl;
     _groupMembers = widget.groupInfo.members;
     super.initState();
   }
@@ -106,7 +104,6 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
             groupIdToChange: widget.groupInfo.groupID,
             title: _titleController.text.isNotEmpty ? _titleController.text : null,
             description: _descriptionController.text.isNotEmpty ? _descriptionController.text : null,
-            photoUrl: _photoUrlController.text.isNotEmpty ? _photoUrlController.text : null,
           )
               .then((newGroupInfo) {
             widget.onGroupInfoChanged(newGroupInfo);

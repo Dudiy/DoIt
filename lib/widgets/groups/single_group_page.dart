@@ -28,7 +28,7 @@ class SingleGroupPage extends StatefulWidget {
 
 class SingleGroupPageState extends State<SingleGroupPage> {
   static const LOADING_GIF = 'assets/images/loading_profile_pic.png';
-  static const DEFAULT_PICTURE = 'assets/images/default_group_icon.png';
+  static const DEFAULT_PICTURE = 'assets/images/default_group_icon.jpg';
   String photoUrl = DEFAULT_PICTURE;
   final App app = App.instance;
   List<ShortTaskInfo> _allGroupTasks;
@@ -81,8 +81,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   }
 
   Widget _shortGroupInfo() {
-    return Container(
-        child: new Row(
+    return new Row(
       children: <Widget>[
         new Expanded(
           child: GestureDetector(
@@ -93,7 +92,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
                 }),
             child: Padding(
               padding: const EdgeInsets.all(5.0),
-              child: _addProfilePicture(),
+              child: _addGroupPicture(),
             ),
           ),
         ),
@@ -108,28 +107,22 @@ class SingleGroupPageState extends State<SingleGroupPage> {
               " tasks"),
         ),
       ],
-    ));
+    );
   }
 
   // callback method
-  setGroupInfo(GroupInfo groupInfo) {
+  setGroupInfo(GroupInfo groupInfoTest) {
     setState(() {
-      this.groupInfo = groupInfo;
+      this.groupInfo.photoUrl = groupInfoTest.photoUrl;
     });
   }
 
-  _addProfilePicture() {
+  _addGroupPicture() {
     return photoUrl == DEFAULT_PICTURE
-        ? DecoratedBox(
-            decoration: BoxDecoration(
-                image: DecorationImage(
-            image: AssetImage(DEFAULT_PICTURE),
-          )))
-        : Center(
-            child: FadeInImage.assetNetwork(
-              placeholder: LOADING_GIF,
-              image: photoUrl,
-            ),
+        ? Image.asset(DEFAULT_PICTURE)
+        : FadeInImage.assetNetwork(
+            placeholder: LOADING_GIF,
+            image: photoUrl,
           );
   }
 
