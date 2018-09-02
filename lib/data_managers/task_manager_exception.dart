@@ -1,12 +1,10 @@
 import 'package:do_it/data_managers/task_manager_result.dart';
 
 class TaskException implements Exception {
-  TaskManagerResult _result;
+  TaskCompleteResult _result;
   final Exception _exception;
 
-  TaskException(this._result, String message): _exception = new Exception(message);
+  TaskException(this._result, String message) : _exception = new Exception(message);
 
-  TaskManagerResult get result => _result;
-
-
+  TaskCompleteResult get result => _result;
 }
