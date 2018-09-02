@@ -320,7 +320,6 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
     Navigator.pop(context);
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -28,41 +28,58 @@ class UserSelectorState extends State<UserSelector> {
     int _numSelected = 0;
     return Column(
       children: <Widget>[
-        Text('Select assigned users'),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text('Select assigned users', style: Theme.of(context).textTheme.title),
+        ),
+        Divider(color: Colors.black),
         Expanded(
           child: ListView(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
             children: _updatedUsersState.values.map((user) {
               ShortUserInfo userInfo = user['userInfo'];
               bool isSelected = user['isSelected'];
               if (isSelected) {
                 _numSelected++;
               }
-              return ListTile(
-                title: Text(userInfo.displayName),
-                trailing: Checkbox(
-                    value: isSelected,
-                    onChanged: (checked) {
-                      if (!checked && _numSelected == 1) {
-                        DoItDialogs.showErrorDialog(
-                            context: context,
-                            message:"At least one user must be selected"
-                        );
-                      } else {
-                        checked ? _numSelected++ : _numSelected--;
-                        setState(() {
-                          _updatedUsersState[userInfo.userID]['isSelected'] = checked;
-                        });
-                      }
-                    }),
+              return Card(
+                child: Row(
+                  children: <Widget>[
+                    Checkbox(
+                        value: isSelected,
+                        onChanged: (checked) {
+                          if (!checked && _numSelected == 1) {
+                            DoItDialogs.showErrorDialog(
+                                context: context, message: "At least one user must be selected");
+                          } else {
+                            checked ? _numSelected++ : _numSelected--;
+                            setState(() {
+                              _updatedUsersState[userInfo.userID]['isSelected'] = checked;
+                            });
+                          }
+                        }),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text(userInfo.displayName),
+                    ),
+                  ],
+                ),
               );
             }).toList(),
           ),
         ),
-        RaisedButton(
-          child: Text('Update'),
-          onPressed: () {
-            widget._onSelectionSubmitted(_updatedUsersState);
-          },
+        Divider(color: Colors.black),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: RaisedButton(
+            child: Text('Update'),
+            color: Theme.of(context).primaryColor,
+            textColor: Colors.white,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+            onPressed: () {
+              widget._onSelectionSubmitted(_updatedUsersState);
+            },
+          ),
         ),
       ],
     );
