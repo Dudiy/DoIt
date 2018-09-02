@@ -39,7 +39,7 @@ class HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     if (App.instance.loggedInUser?.photoUrl != null && App.instance.loggedInUser?.photoUrl != "") {
       photoUrl = App.instance.loggedInUser?.photoUrl;
-    }else{
+    } else {
       photoUrl = DEFAULT_PICTURE;
     }
 
@@ -53,11 +53,10 @@ class HomePageState extends State<HomePage> {
                 }),
             child: Padding(
               padding: const EdgeInsets.all(5.0),
-              child: Stack(
-                  children: <Widget>[
-                    _addProfilePicture(),
-                    Container(child: LifecycleNfcWatcher()),
-                  ]),
+              child: Stack(children: <Widget>[
+                _addProfilePicture(),
+                Container(child: LifecycleNfcWatcher()),
+              ]),
             ),
           ),
           title: Text("DoIt"),
@@ -76,8 +75,7 @@ class HomePageState extends State<HomePage> {
             FlatButton(
               child: Icon(Icons.settings, color: Colors.white),
               onPressed: () {
-                Navigator
-                    .of(context)
+                Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) => UserSettingsPage(widget.onSignedOut)));
               },
             ),
@@ -88,16 +86,10 @@ class HomePageState extends State<HomePage> {
 
   _addProfilePicture() {
     return photoUrl == DEFAULT_PICTURE
-        ? DecoratedBox(
-            decoration: BoxDecoration(
-                image: DecorationImage(
-            image: AssetImage(DEFAULT_PICTURE),
-          )))
-        : Center(
-            child: FadeInImage.assetNetwork(
-              placeholder: LOADING_GIF,
-              image: photoUrl,
-            ),
+        ? Image.asset(DEFAULT_PICTURE)
+        : FadeInImage.assetNetwork(
+            placeholder: LOADING_GIF,
+            image: photoUrl,
           );
   }
 }
