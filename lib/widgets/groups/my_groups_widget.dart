@@ -9,6 +9,7 @@ import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/data_managers/groups_manager.dart';
 import 'package:do_it/widgets/custom/dialog.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
+import 'package:do_it/widgets/groups/group_card.dart';
 import 'package:do_it/widgets/groups/single_group_page.dart';
 import 'package:flutter/material.dart';
 
@@ -90,7 +91,11 @@ class MyGroupsPageState extends State<MyGroupsPage> {
     List<Widget> list = new List();
     list.add(_allTasksWidget);
     list.addAll(_myGroups.map((group) {
-      return ListTile(
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: GroupCard(shortGroupInfo: group),
+      );
+      /*return ListTile(
         title: Text(group.title),
         subtitle: Text(group.tasksPerUser[App.instance.getLoggedInUser().userID].toString()),
         onTap: () {
@@ -98,7 +103,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) => SingleGroupPage(groupInfo), settings: RouteSettings(name: '/singleGroupPage')));
           });
         },
-      );
+      );*/
     }).toList());
     return list;
   }

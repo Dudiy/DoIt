@@ -19,13 +19,13 @@ class ShortGroupInfo {
     if (members != null) {
       this._members = UserUtils.generateUsersMapFromObject(members);
       // getTasksPerUser has to be after initializing members
-      this._tasksPerUser = getTasksPerUser(tasks);
+      this._tasksPerUser = _getTasksPerUser(tasks);
     }
   }
 
   String get groupID => _groupID;
 
-  Map<String, int> getTasksPerUser(tasksObject) {
+  Map<String, int> _getTasksPerUser(tasksObject) {
     Map<String, int> tasksPerUser = new Map();
     Map<String, ShortTaskInfo> tasks = new Map();
     (tasksObject as Map<dynamic, dynamic>).values.forEach((task) {
