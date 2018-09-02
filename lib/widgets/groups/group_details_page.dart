@@ -223,7 +223,10 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
             _groupMembers.putIfAbsent(newMember.userID, () => newMember);
           });
         }).catchError((err){
-          DoItDialogs.showErrorDialog(context, 'No user is registered with the email: ${_emailController.text} \n\n** email addresses are case sensitive **');
+          DoItDialogs.showErrorDialog(
+              context:context,
+              message: 'No user is registered with the email: ${_emailController.text} \n\n** email addresses are case sensitive **'
+          );
         });
       },
     );

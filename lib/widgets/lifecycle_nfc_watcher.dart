@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:do_it/app.dart';
+import 'package:do_it/constants/should_be_sync.dart';
+import 'package:do_it/data_classes/task/task_info.dart';
 import 'package:do_it/data_managers/task_manager_result.dart';
 import 'package:do_it/widgets/custom/dialog.dart';
 import 'package:flutter/services.dart';
@@ -18,6 +22,7 @@ class _LifecycleNfcWatcherState extends State<LifecycleNfcWatcher> with WidgetsB
   static const WRITE_STATE = "2";
   static const NA_STATE = "0";
   static const platform = const MethodChannel(CLASS_PATH);
+  final App app = App.instance;
   AppLifecycleState _lastLifecycleState;
 
   @override
@@ -65,13 +70,24 @@ class _LifecycleNfcWatcherState extends State<LifecycleNfcWatcher> with WidgetsB
     platform.invokeMethod(GET_LAST_TEXT_READ_AND_RESET).then((taskId) {
       if (taskId != null) {
         print("NFC READ TEST: " + taskId);
-        App.instance.tasksManager
-            .completeTask(taskID: taskId, userWhoCompletedID: App.instance.getLoggedInUserID())
-            .catchError((error) {
-          DoItDialogs.showErrorDialog(context, TaskCompleteResultUtils.message(error.result));
-          print(error.toString());
-        });
+        _completeTask(taskId);
       }
+    });
+  }
+
+  @ShouldBeSync()
+  Future<void> _completeTask(taskId) async {
+    TaskInfo taskInfo = await app.tasksManager.getTaskById(taskId);
+    await app.tasksManager.completeTask(taskID: taskId, userWhoCompletedID: app.getLoggedInUserID()).then((dummyVal) {
+      print(TaskCompleteResult.SUCCESS.toString());
+      DoItDialogs.showNotificationDialog(
+        context: context,
+        title: "NFC has trigger",
+        body: TaskCompleteResultUtils.message(TaskCompleteResult.SUCCESS, taskInfo),
+      );
+    }).catchError((error) {
+      print(error.toString());
+      DoItDialogs.showErrorDialog(context: context, message: TaskCompleteResultUtils.message(error.result, taskInfo));
     });
   }
 

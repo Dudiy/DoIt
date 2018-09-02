@@ -3,7 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class DoItDialogs {
-  static Future<void> showErrorDialog(BuildContext context, String message) async {
+  static Future<void> showErrorDialog({
+    @required BuildContext context,
+    @required String message,
+  }) async {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -95,7 +98,7 @@ class DoItDialogs {
     @required BuildContext context,
     @required String message,
     bool isWarning = false,
-    String actionButtonText = 'Confirm'
+    String actionButtonText = 'Confirm',
   }) async {
     return showDialog<bool>(
         context: context,

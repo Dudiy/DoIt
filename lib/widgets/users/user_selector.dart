@@ -43,7 +43,10 @@ class UserSelectorState extends State<UserSelector> {
                     value: isSelected,
                     onChanged: (checked) {
                       if (!checked && _numSelected == 1) {
-                        DoItDialogs.showErrorDialog(context, "At least one user must be selected");
+                        DoItDialogs.showErrorDialog(
+                            context: context,
+                            message:"At least one user must be selected"
+                        );
                       } else {
                         checked ? _numSelected++ : _numSelected--;
                         setState(() {

@@ -1,4 +1,6 @@
 
+import 'package:do_it/data_classes/task/task_info.dart';
+
 ///
 /// message for UI
 ///
@@ -13,10 +15,10 @@ enum TaskCompleteResult {
 }
 
 class TaskCompleteResultUtils {
-  static String message(TaskCompleteResult enumType) {
+  static String message(TaskCompleteResult enumType, TaskInfo taskInfo) {
     switch (enumType) {
       case TaskCompleteResult.SUCCESS:
-        return "Task complete !! :)";
+        return "Task \""+ taskInfo.title +"\" complete !! :)";
       case TaskCompleteResult.USER_NOT_LOGGED_IN:
         return "Please log in first in order to complete the task";
       case TaskCompleteResult.USER_WHO_COMPLETED_TASK_NOT_FOUND:
