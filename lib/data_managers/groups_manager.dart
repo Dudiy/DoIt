@@ -35,20 +35,9 @@ class GroupsManager {
       throw Exception('GroupManager: Cannot get all groups when a user is not logged in');
     }
     QuerySnapshot groupsQuerySnapshot = await _firestore.collection(GROUPS).getDocuments();
-    return conventDBGroupsToGroupInfoList(loggedInUser.userID, groupsQuerySnapshot);
+    return GroupUtils.conventDBGroupsToGroupInfoList(loggedInUser.userID, groupsQuerySnapshot);
   }
 
-  ///
-  /// get groupsQuerySnapshot from db and return only user's groups
-  ///
-  static List<ShortGroupInfo> conventDBGroupsToGroupInfoList(String userId, QuerySnapshot groupsQuerySnapshot) {
-    List<ShortGroupInfo> myGroups = groupsQuerySnapshot.documents.where((doc) {
-      return userId != null && GroupUtils.generateShortGroupInfoFromObject(doc.data).members.containsKey(userId);
-    }).map((docSnap) {
-      return GroupUtils.generateShortGroupInfoFromObject(docSnap.data);
-    }).toList();
-    return myGroups;
-  }
 
   Future<List<String>> getMyGroupsIDsFromDB() async {
     ShortUserInfo loggedInUser = app.getLoggedInUser();
@@ -56,17 +45,7 @@ class GroupsManager {
       throw Exception('GroupManager: Cannot get all groups when a user is not logged in');
     }
     QuerySnapshot groupsQuerySnapshot = await _firestore.collection(GROUPS).getDocuments();
-    return conventDBGroupsToGroupIdList(loggedInUser.userID, groupsQuerySnapshot);
-  }
-
-  static List<String> conventDBGroupsToGroupIdList(String userId, QuerySnapshot groupsQuerySnapshot) {
-    List<String> myGroups = new List();
-    groupsQuerySnapshot.documents.where((doc) {
-      return userId != null && GroupUtils.generateShortGroupInfoFromObject(doc.data).members.containsKey(userId);
-    }).forEach((docSnap) {
-      myGroups.add(docSnap.data['groupID']);
-    });
-    return myGroups;
+    return GroupUtils.conventDBGroupsToGroupIdList(loggedInUser.userID, groupsQuerySnapshot);
   }
 
   @ShouldBeSync()
@@ -81,14 +60,7 @@ class GroupsManager {
   ///
   Future<List<ShortTaskInfo>> getMyGroupTasksFromDB(String groupID) async {
     DocumentSnapshot groupRef = await _firestore.document('$GROUPS/$groupID').get();
-    return conventDBGroupTaskToObjectList(groupRef);
-  }
-
-  ///
-  /// get tasksQuerySnapshot from db and return only group's tasks
-  ///
-  static List<ShortTaskInfo> conventDBGroupTaskToObjectList(DocumentSnapshot documentSnapshotTasks) {
-    return TaskUtils.generateTasksMapFromObject(documentSnapshotTasks.data['tasks']).values.toList();
+    return GroupUtils.conventDBGroupTaskToObjectList(groupRef);
   }
 
   /* ############## INSERT TO DB ############## */

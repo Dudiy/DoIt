@@ -17,12 +17,19 @@ class ShortUserInfo {
     this._photoUrl = photoUrl;
   }
 
+  // ===========================================================
+  // ========================= Getters =========================
+  // ===========================================================
   String get photoUrl => _photoUrl; // ignore: unnecessary_getters_setters
 
   String get displayName => _displayName;
 
   String get userID => _userID;
 
-  set photoUrl(String value) => _photoUrl = value; // ignore: unnecessary_getters_setters
+  // ===========================================================
+  // ========================= Setters =========================
+  // ===========================================================
+  set photoUrl(String value) =>
+      _photoUrl = value; // ignore: unnecessary_getters_setters
 
 }

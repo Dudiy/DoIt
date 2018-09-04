@@ -13,16 +13,17 @@ class ShortTaskInfo {
   DateTime _endTime;
   Map<String, ShortUserInfo> _assignedUsers;
 
-  ShortTaskInfo(
-      {@required taskID,
-      @required title,
-      @required description,
-      @required value,
-      @required parentGroupID,
-      @required parentGroupManagerID,
-      @required startTime,
-      @required endTime,
-      @required assignedUsers}) {
+  ShortTaskInfo({
+    @required taskID,
+    @required title,
+    @required description,
+    @required value,
+    @required parentGroupID,
+    @required parentGroupManagerID,
+    @required startTime,
+    @required endTime,
+    @required assignedUsers,
+  }) {
     this._taskID = taskID;
     this._title = title;
     this._description = description;
@@ -34,6 +35,9 @@ class ShortTaskInfo {
     this._assignedUsers = UserUtils.generateUsersMapFromObject(assignedUsers);
   }
 
+  // ===========================================================
+  // ========================= Getters =========================
+  // ===========================================================
   String get taskID => _taskID;
 
   String get title => _title;
@@ -56,7 +60,6 @@ class ShortTaskInfo {
   // ===========================================================
   // ========================= Setters =========================
   // ===========================================================
-
   // ignore: unnecessary_getters_setters
   set description(String value) => _description = value;
 

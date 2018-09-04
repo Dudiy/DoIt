@@ -11,7 +11,13 @@ class ShortGroupInfo {
   Map<String, int> _tasksPerUser;
   Map<String, ShortUserInfo> _members = new Map();
 
-  ShortGroupInfo({@required groupID, @required managerID, @required title, members, tasks}) {
+  ShortGroupInfo({
+    @required groupID,
+    @required managerID,
+    @required title,
+    members,
+    tasks,
+  }) {
     this._groupID = groupID;
     this._managerID = managerID;
     this._title = title;
@@ -33,7 +39,8 @@ class ShortGroupInfo {
         ShortTaskInfo asShortTaskInfo = task as ShortTaskInfo;
         tasks[asShortTaskInfo.taskID] = asShortTaskInfo;
       } else {
-        ShortTaskInfo shortTaskInfo = TaskUtils.generateShortTaskInfoFromObject(task);
+        ShortTaskInfo shortTaskInfo =
+            TaskUtils.generateShortTaskInfoFromObject(task);
         tasks[shortTaskInfo.taskID] = shortTaskInfo;
       }
     });
@@ -47,12 +54,16 @@ class ShortGroupInfo {
         if (task.assignedUsers != null && task.assignedUsers.length == 0) {
           // if a tasks user list is empty, increment task counter for all group's users
           members.keys.forEach((userID) {
-            (userID != null && tasksPerUser.containsKey(userID)) ? tasksPerUser[userID]++ : tasksPerUser[userID] = 0;
+            (userID != null && tasksPerUser.containsKey(userID))
+                ? tasksPerUser[userID]++
+                : tasksPerUser[userID] = 0;
           });
         } else {
           // if a task has a users list, increment task counter only for the relevant users
           task.assignedUsers.keys.forEach((userID) {
-            (userID != null && tasksPerUser.containsKey(userID)) ? tasksPerUser[userID]++ : tasksPerUser[userID] = 0;
+            (userID != null && tasksPerUser.containsKey(userID))
+                ? tasksPerUser[userID]++
+                : tasksPerUser[userID] = 0;
           });
         }
       }
@@ -60,6 +71,9 @@ class ShortGroupInfo {
     return tasksPerUser;
   }
 
+  // ===========================================================
+  // ========================= Getters =========================
+  // ===========================================================
   String get managerID => _managerID;
 
   String get title => _title;
@@ -67,4 +81,9 @@ class ShortGroupInfo {
   Map<String, int> get tasksPerUser => _tasksPerUser;
 
   Map<String, ShortUserInfo> get members => _members;
+
+// ===========================================================
+// ========================= Setters =========================
+// ===========================================================
+
 }

@@ -4,13 +4,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it/app.dart';
 import 'package:do_it/constants/db_constants.dart';
 import 'package:do_it/data_classes/group/group_info_short.dart';
+import 'package:do_it/data_classes/group/group_utils.dart';
 import 'package:do_it/data_classes/task/task_info_short.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
-import 'package:do_it/data_managers/groups_manager.dart';
 import 'package:do_it/widgets/custom/dialog.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:do_it/widgets/groups/group_card.dart';
-import 'package:do_it/widgets/groups/single_group_page.dart';
 import 'package:flutter/material.dart';
 
 class MyGroupsPage extends StatefulWidget {
@@ -32,7 +31,8 @@ class MyGroupsPageState extends State<MyGroupsPage> {
   void initState() {
     // listen for group list update
     super.initState();
-    _groupsStreamSubscription = app.firestore.collection(GROUPS).snapshots().listen(_updateGroupList);
+    _groupsStreamSubscription =
+        app.firestore.collection(GROUPS).snapshots().listen(_updateGroupList);
     _getMyGroupsFromDB();
   }
 
@@ -85,7 +85,8 @@ class MyGroupsPageState extends State<MyGroupsPage> {
   }
 
   Future<Widget> _getAllTasksCount() async {
-    List<ShortTaskInfo> allTasks = await App.instance.tasksManager.getAllMyTasks();
+    List<ShortTaskInfo> allTasks =
+        await App.instance.tasksManager.getAllMyTasks();
     return ListTile(
       title: Text('All Groups'),
       subtitle: Text(allTasks.length.toString()),
@@ -102,17 +103,20 @@ class MyGroupsPageState extends State<MyGroupsPage> {
   void _updateGroupList(QuerySnapshot groupsQuerySnapshot) {
     ShortUserInfo loggedInUser = App.instance.getLoggedInUser();
     if (loggedInUser == null) {
-      throw Exception('GroupManager: Cannot get all groups when a user is not logged in');
+      throw Exception(
+          'GroupManager: Cannot get all groups when a user is not logged in');
     }
-    List<ShortGroupInfo> myGroups =
-        GroupsManager.conventDBGroupsToGroupInfoList(loggedInUser.userID, groupsQuerySnapshot);
+    List<ShortGroupInfo> myGroups = GroupUtils.conventDBGroupsToGroupInfoList(
+        loggedInUser.userID, groupsQuerySnapshot);
     _getMyGroupsFromDB(myGroups);
   }
 
   List<Widget> _myGroupsWidget(BuildContext context) {
-    if (_myGroups == null || _allTasksWidget == null) return [Text('Fetching groups from server...')];
+    if (_myGroups == null || _allTasksWidget == null)
+      return [Text('Fetching groups from server...')];
 
-    if (_myGroups.length == 0) return [ListTile(title: Text("you are not in any group yet"))];
+    if (_myGroups.length == 0)
+      return [ListTile(title: Text("you are not in any group yet"))];
 
     List<Widget> list = new List();
     list.add(_allTasksWidget);
@@ -136,7 +140,8 @@ class MyGroupsPageState extends State<MyGroupsPage> {
 
   Future<void> _showAddGroupDialog() async {
     TextEditingController _groupTitleController = new TextEditingController();
-    TextEditingController _groupDescriptionController = new TextEditingController();
+    TextEditingController _groupDescriptionController =
+        new TextEditingController();
 
     DoItDialogs.showUserInputDialog(
       context: context,
@@ -162,5 +167,4 @@ class MyGroupsPageState extends State<MyGroupsPage> {
       },
     );
   }
-
 }

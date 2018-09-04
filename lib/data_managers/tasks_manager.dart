@@ -48,7 +48,7 @@ class TasksManager {
       parentGroupManagerID: parentGroupManagerID,
       startTime: startTime ?? DateTime.now(),
       endTime: endTime,
-      recurringPolicy: recurringPolicy ?? eRecurringPolicy.none,
+      recurringPolicy: recurringPolicy ?? eRecurringPolicy.NONE,
       assignedUsers: assignedUsers ?? new Map<String, String>(),
     );
     ShortTaskInfo shortTaskInfo = taskInfo.getShortTaskInfo();
@@ -145,7 +145,7 @@ class TasksManager {
 
     // complete the task (add completedTaskInfo to the groups sub-collection -> delete the original task)
     CompletedTaskInfo completedTaskInfo = taskInfo.generateCompletedTaskInfo(userWhoCompleted: userWhoCompleted);
-    if (taskInfo.recurringPolicy == eRecurringPolicy.none) {
+    if (taskInfo.recurringPolicy == eRecurringPolicy.NONE) {
       await deleteTask(taskID);
     } else {
       DateTime newStartTime = _getStartTimeFromRecurringPolicy(taskInfo.startTime, taskInfo.recurringPolicy);
@@ -278,13 +278,13 @@ class TasksManager {
 
     DateTime newStartTime = DateTime.parse(time.toString());
     switch (policy) {
-      case eRecurringPolicy.daily:
+      case eRecurringPolicy.DAILY:
         newStartTime = newStartTime.add(Duration(days: 1));
         break;
-      case eRecurringPolicy.weekly:
+      case eRecurringPolicy.WEEKLY:
         newStartTime = newStartTime.add(Duration(days: 7));
         break;
-      case eRecurringPolicy.monthly:
+      case eRecurringPolicy.MONTHLY:
         newStartTime = DateTime(
           time.month < 12 ? newStartTime.year : newStartTime.year + 1,
           (newStartTime.month + 1) % 12,
@@ -293,7 +293,7 @@ class TasksManager {
           newStartTime.minute,
         );
         break;
-      case eRecurringPolicy.yearly:
+      case eRecurringPolicy.YEARLY:
         newStartTime = DateTime(
           newStartTime.year + 1,
           newStartTime.month,

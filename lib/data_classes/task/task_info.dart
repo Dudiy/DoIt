@@ -27,7 +27,7 @@ class TaskInfo {
     @required parentGroupManagerID,
     startTime,
     endTime,
-    recurringPolicy = eRecurringPolicy.none,
+    recurringPolicy = eRecurringPolicy.NONE,
     assignedUsers,
   }) {
     this._taskID = taskID;
@@ -59,7 +59,6 @@ class TaskInfo {
   // ===========================================================
   // ========================= Getters =========================
   // ===========================================================
-
   String get taskID => _taskID;
 
   // ignore: unnecessary_getters_setters
@@ -86,7 +85,6 @@ class TaskInfo {
   // ===========================================================
   // ========================= Setters =========================
   // ===========================================================
-
   // ignore: unnecessary_getters_setters
   set description(String value) => _description = value;
 
@@ -108,7 +106,9 @@ class TaskInfo {
 
   set endTime(DateTime value) {
     DateTime newEndTime = value;
-    if (startTime != null && newEndTime != null && startTime.isAfter(newEndTime))
+    if (startTime != null &&
+        newEndTime != null &&
+        startTime.isAfter(newEndTime))
       throw ArgumentError('End time cannot be before start time');
     _endTime = value;
   }
@@ -122,7 +122,8 @@ class TaskInfo {
     }
   }
 
-  CompletedTaskInfo generateCompletedTaskInfo({@required ShortUserInfo userWhoCompleted}) {
+  CompletedTaskInfo generateCompletedTaskInfo(
+      {@required ShortUserInfo userWhoCompleted}) {
     return CompletedTaskInfo(
       taskID: App.instance.generateRandomID(),
       title: title,

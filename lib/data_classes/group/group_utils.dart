@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it/data_classes/group/group_info.dart';
 import 'package:do_it/data_classes/group/group_info_short.dart';
+import 'package:do_it/data_classes/task/task_info_short.dart';
 import 'package:do_it/data_classes/task/task_info_utils.dart';
 import 'package:do_it/data_classes/user/user_info_utils.dart';
 
@@ -31,7 +33,8 @@ class GroupUtils {
           );
   }
 
-  static Map<String, dynamic> generateObjectFromGroupsMap(Map<String, ShortGroupInfo> groups) {
+  static Map<String, dynamic> generateObjectFromGroupsMap(
+      Map<String, ShortGroupInfo> groups) {
     Map<String, dynamic> groupsMap = new Map();
     groups.map((groupID, shortGroupInfo) {
       groupsMap.putIfAbsent(groupID, () {
@@ -41,7 +44,8 @@ class GroupUtils {
     return groupsMap;
   }
 
-  static Map<String, dynamic> generateObjectFromShortGroupInfo(ShortGroupInfo shortGroupInfo) {
+  static Map<String, dynamic> generateObjectFromShortGroupInfo(
+      ShortGroupInfo shortGroupInfo) {
     return {
       'groupID': shortGroupInfo.groupID,
       'title': shortGroupInfo.title,
@@ -62,4 +66,33 @@ class GroupUtils {
 //    groupInfo.taskCompletionHistory  //TODO implement
     };
   }
+
+  ///
+  /// get groupsQuerySnapshot from db and return only user's groups
+  ///
+  static List<ShortGroupInfo> conventDBGroupsToGroupInfoList(String userId, QuerySnapshot groupsQuerySnapshot) {
+    List<ShortGroupInfo> myGroups = groupsQuerySnapshot.documents.where((doc) {
+      return userId != null && GroupUtils.generateShortGroupInfoFromObject(doc.data).members.containsKey(userId);
+    }).map((docSnap) {
+      return GroupUtils.generateShortGroupInfoFromObject(docSnap.data);
+    }).toList();
+    return myGroups;
+  }
+  static List<String> conventDBGroupsToGroupIdList(String userId, QuerySnapshot groupsQuerySnapshot) {
+    List<String> myGroups = new List();
+    groupsQuerySnapshot.documents.where((doc) {
+      return userId != null && GroupUtils.generateShortGroupInfoFromObject(doc.data).members.containsKey(userId);
+    }).forEach((docSnap) {
+      myGroups.add(docSnap.data['groupID']);
+    });
+    return myGroups;
+  }
+
+  ///
+  /// get tasksQuerySnapshot from db and return only group's tasks
+  ///
+  static List<ShortTaskInfo> conventDBGroupTaskToObjectList(DocumentSnapshot documentSnapshotTasks) {
+    return TaskUtils.generateTasksMapFromObject(documentSnapshotTasks.data['tasks']).values.toList();
+  }
+
 }

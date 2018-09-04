@@ -15,15 +15,16 @@ class GroupInfo {
   Map<String, ShortTaskInfo> _tasks; // Map<taskID, TaskInfo>
   Map<String, Object> _taskCompletionHistory;
 
-  GroupInfo(
-      {@required groupID,
-      @required managerID,
-      @required title,
-      description,
-      photoUrl,
-      members,
-      tasks,
-      taskCompletionHistory}) {
+  GroupInfo({
+    @required groupID,
+    @required managerID,
+    @required title,
+    description,
+    photoUrl,
+    members,
+    tasks,
+    taskCompletionHistory,
+  }) {
     this._groupID = groupID;
     this._managerID = managerID;
     this._title = title;
@@ -45,6 +46,9 @@ class GroupInfo {
     );
   }
 
+  // ===========================================================
+  // ========================= Getters =========================
+  // ===========================================================
   String get groupID => _groupID;
 
   String get managerID => _managerID;
@@ -64,6 +68,9 @@ class GroupInfo {
 
   Map<String, Object> get taskCompletionHistory => _taskCompletionHistory;
 
+  // ===========================================================
+  // ========================= Setters =========================
+  // ===========================================================
   // ignore: unnecessary_getters_setters
   set title(String value) => _title = value;
 

@@ -1,5 +1,3 @@
-import 'package:do_it/data_classes/group/group_utils.dart';
-import 'package:do_it/data_classes/task/task_info_utils.dart';
 import 'package:do_it/data_classes/user/user_info.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 
@@ -43,7 +41,8 @@ class UserUtils {
           );
   }
 
-  static Map<String, dynamic> generateObjectFromUsersMap(Map<String, ShortUserInfo> members) {
+  static Map<String, dynamic> generateObjectFromUsersMap(
+      Map<String, ShortUserInfo> members) {
     Map<String, dynamic> usersMap = new Map();
     members.forEach((userID, shortUserInfo) {
       usersMap.putIfAbsent(userID, () {
@@ -66,7 +65,8 @@ class UserUtils {
     };
   }
 
-  static Map<String, dynamic> generateObjectFromShortUserInfo(ShortUserInfo shortUserInfo) {
+  static Map<String, dynamic> generateObjectFromShortUserInfo(
+      ShortUserInfo shortUserInfo) {
     return {
       'userID': shortUserInfo.userID,
       'displayName': shortUserInfo.displayName,

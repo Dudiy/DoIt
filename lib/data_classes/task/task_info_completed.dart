@@ -12,15 +12,16 @@ class CompletedTaskInfo {
   DateTime _completedTime;
   ShortUserInfo _userWhoCompleted;
 
-  CompletedTaskInfo(
-      {@required taskID,
-      @required title,
-      @required description,
-      @required value,
-      @required parentGroupID,
-      @required parentGroupManagerID,
-      @required completedTime,
-      @required userWhoCompleted}) {
+  CompletedTaskInfo({
+    @required taskID,
+    @required title,
+    @required description,
+    @required value,
+    @required parentGroupID,
+    @required parentGroupManagerID,
+    @required completedTime,
+    @required userWhoCompleted,
+  }) {
     this._taskID = taskID;
     this._title = title;
     this._description = description;
@@ -33,6 +34,9 @@ class CompletedTaskInfo {
         : UserUtils.generateShortUserInfoFromObject(userWhoCompleted);
   }
 
+  // ===========================================================
+  // ========================= Getters =========================
+  // ===========================================================
   String get taskID => _taskID;
 
   String get title => _title;
@@ -48,4 +52,9 @@ class CompletedTaskInfo {
   DateTime get completedTime => _completedTime;
 
   ShortUserInfo get userWhoCompleted => _userWhoCompleted;
+
+// ===========================================================
+// ========================= Setters =========================
+// ===========================================================
+
 }

@@ -1,5 +1,3 @@
-import 'package:do_it/data_classes/group/group_info_short.dart';
-import 'package:do_it/data_classes/task/task_info_short.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:meta/meta.dart';
 
@@ -9,6 +7,7 @@ class UserInfo {
   String _photoURL;
   String _email;
   String _fcmToken;
+
 //  Map<String, ShortGroupInfo> _groups = new Map();
 //  Map<String, ShortTaskInfo> _tasks = new Map();
 
@@ -42,6 +41,9 @@ class UserInfo {
     );
   }
 
+  // ===========================================================
+  // ========================= Getters =========================
+  // ===========================================================
 //  Map<String, Object> _messages = new Map(); //Map<messageID, MessageInfo>
 
 //  Map<String, Object> get messages => _messages;
@@ -59,4 +61,9 @@ class UserInfo {
   String get displayName => _displayName;
 
   String get userID => _userID;
+
+// ===========================================================
+// ========================= Setters =========================
+// ===========================================================
+
 }
