@@ -79,17 +79,17 @@ class _LifecycleNfcWatcherState extends State<LifecycleNfcWatcher> with WidgetsB
   Future<void> _completeTask(taskId) async {
     TaskInfo taskInfo = await app.tasksManager.getTaskById(taskId);
     await app.tasksManager.completeTask(taskID: taskId, userWhoCompletedID: app.getLoggedInUserID()).then((dummyVal) {
-      print(TaskCompleteResult.SUCCESS.toString());
+      print(TaskMethodResult.SUCCESS.toString());
       DoItDialogs.showNotificationDialog(
         context: context,
         title: "NFC has trigger",
-        body: TaskCompleteResultUtils.message(TaskCompleteResult.SUCCESS, taskInfo.title),
+        body: TaskMethodResultUtils.message(TaskMethodResult.SUCCESS, taskInfo.title),
       );
     }).catchError((error) {
       print(error.toString());
       DoItDialogs.showErrorDialog(
         context: context,
-        message: TaskCompleteResultUtils.message(error.result, taskInfo.title),
+        message: TaskMethodResultUtils.message(error.result, taskInfo.title),
       );
     });
   }

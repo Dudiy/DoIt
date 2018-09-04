@@ -372,6 +372,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
               parentGroupManagerID: groupInfo.managerID,
             );
           } catch (e) {
+            // TODO catch START_TIME_AFTER_END_TIME and manage
             print(e);
           }
         });
@@ -667,8 +668,8 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       DoItDialogs.showNotificationDialog(
         context: context,
         title: "Congratulations !",
-        body: TaskCompleteResultUtils.message(
-            TaskCompleteResult.SUCCESS, taskInfo.title),
+        body: TaskMethodResultUtils.message(
+            TaskMethodResult.SUCCESS, taskInfo.title),
       );
       fetchCompletedTasksFromServer();
     }).catchError((error) {
@@ -676,7 +677,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       DoItDialogs.showErrorDialog(
           context: context,
           message:
-              TaskCompleteResultUtils.message(error.result, taskInfo.title));
+              TaskMethodResultUtils.message(error.result, taskInfo.title));
     });
   }
 }

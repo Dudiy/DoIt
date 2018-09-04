@@ -13,6 +13,7 @@ import 'package:do_it/data_classes/task/task_info_utils.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/data_managers/task_manager_exception.dart';
 import 'package:do_it/data_managers/task_manager_result.dart';
+import 'package:do_it/widgets/custom/dialog.dart';
 import 'package:meta/meta.dart';
 
 class TasksManager {
@@ -38,7 +39,12 @@ class TasksManager {
     if (!allowNonManagerAdd && parentGroupManagerID != loggedInUser.userID)
       throw Exception('only group manager can add tasks to group');
 
+
     String _taskID = App.instance.generateRandomID();
+    startTime = startTime ?? DateTime.now();
+    if(startTime.isAfter(endTime)){
+      throw TaskException(TaskMethodResult.START_TIME_AFTER_END_TIME,'start time can\'t be after end time');
+    }
     TaskInfo taskInfo = new TaskInfo(
       taskID: _taskID,
       title: title,
@@ -119,26 +125,26 @@ class TasksManager {
     ShortUserInfo loggedInUser = app.loggedInUser;
     String errorMessagePrefix = 'TasksManager: cannot complete task.';
     if (loggedInUser == null) {
-      throw TaskException(TaskCompleteResult.USER_NOT_LOGGED_IN, '$errorMessagePrefix User is not logged in');
+      throw TaskException(TaskMethodResult.USER_NOT_LOGGED_IN, '$errorMessagePrefix User is not logged in');
     }
     ShortUserInfo userWhoCompleted = await app.usersManager.getShortUserInfo(userWhoCompletedID);
     if (userWhoCompleted == null) {
-      throw TaskException(TaskCompleteResult.USER_WHO_COMPLETED_TASK_NOT_FOUND,
+      throw TaskException(TaskMethodResult.USER_WHO_COMPLETED_TASK_NOT_FOUND,
           '$errorMessagePrefix User who completed was not found in the DB');
     }
     TaskInfo taskInfo = await getTaskById(taskID);
     if (taskInfo == null) {
-      throw TaskException(TaskCompleteResult.TASK_NOT_FOUND, '$errorMessagePrefix TaskID was not found in the DB');
+      throw TaskException(TaskMethodResult.TASK_NOT_FOUND, '$errorMessagePrefix TaskID was not found in the DB');
     }
     GroupInfo parentGroupInfo = await app.groupsManager.getGroupInfoByID(taskInfo.parentGroupID);
     if (parentGroupInfo == null) {
       throw TaskException(
-          TaskCompleteResult.INNER_SYSTEM_INVALID_TASK, '$errorMessagePrefix The parent group was not found in the DB');
+          TaskMethodResult.INNER_SYSTEM_INVALID_TASK, '$errorMessagePrefix The parent group was not found in the DB');
     }
     if (!parentGroupInfo.members.containsKey(userWhoCompletedID) ||
         (taskInfo.assignedUsers.length > 0 && !taskInfo.assignedUsers.containsKey(userWhoCompletedID))) {
       throw TaskException(
-          TaskCompleteResult.USER_NOT_ASSIGNED_TO_TASK,
+          TaskMethodResult.USER_NOT_ASSIGNED_TO_TASK,
           '$errorMessagePrefix The given user is not a member of the task\'s parent group \n'
           'or user was not assigned to this task');
     }
