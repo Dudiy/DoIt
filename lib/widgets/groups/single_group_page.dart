@@ -9,6 +9,7 @@ import 'package:do_it/data_classes/task/task_info_completed.dart';
 import 'package:do_it/data_classes/task/task_info_short.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/data_managers/groups_manager.dart';
+import 'package:do_it/data_managers/task_manager_result.dart';
 import 'package:do_it/widgets/custom/dialog.dart';
 import 'package:do_it/widgets/custom/recurring_policy_field.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
@@ -77,7 +78,9 @@ class SingleGroupPageState extends State<SingleGroupPage> {
           title: Text(groupInfo.title, maxLines: 2),
           actions: [
             PopupMenuButton<String>(
-              onSelected: (String result) {/*setState(() { _selection = result; });*/},
+              onSelected: (String result) {
+                /*setState(() { _selection = result; });*/
+              },
               itemBuilder: _getPopupMenuItems,
             )
           ],
@@ -204,17 +207,11 @@ class SingleGroupPageState extends State<SingleGroupPage> {
           title: Text('${taskInfo.title} (${taskInfo.value.toString()})'),
           subtitle: Text(taskInfo.description ?? "no description", maxLines: 3),
           trailing: Checkbox(
-              value: _myTasksCheckboxes[taskInfo.taskID] ?? false,
-              onChanged: (value) {
-                setState(() {
-                  _myTasksCheckboxes[taskInfo.taskID] = true;
-                });
-                app.tasksManager
-                    .completeTask(taskID: taskInfo.taskID, userWhoCompletedID: app.loggedInUser.userID)
-                    .then((val) {
-                  fetchCompletedTasksFromServer();
-                });
-              }),
+            value: _myTasksCheckboxes[taskInfo.taskID] ?? false,
+            onChanged: (dummyVal) {
+              _completeTask(taskInfo);
+            },
+          ),
           onTap: () {
             app.tasksManager.getTaskById(taskInfo.taskID).then((taskInfo) {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetailsPage(taskInfo)));
@@ -609,5 +606,24 @@ class SingleGroupPageState extends State<SingleGroupPage> {
             leaveGroup();
           }),
     );
+  }
+
+  _completeTask (ShortTaskInfo taskInfo) {
+    setState(() {
+      _myTasksCheckboxes[taskInfo.taskID] = true;
+    });
+    app.tasksManager
+        .completeTask(taskID: taskInfo.taskID, userWhoCompletedID: app.loggedInUser.userID)
+        .then((dummyVal) {
+      DoItDialogs.showNotificationDialog(
+        context: context,
+        title: "Congratulations !",
+        body: TaskCompleteResultUtils.message(TaskCompleteResult.SUCCESS, taskInfo.title),
+      );
+      fetchCompletedTasksFromServer();
+    }).catchError((error) {
+      print(error.toString());
+      DoItDialogs.showErrorDialog(context: context, message: TaskCompleteResultUtils.message(error.result, taskInfo.title));
+    });
   }
 }

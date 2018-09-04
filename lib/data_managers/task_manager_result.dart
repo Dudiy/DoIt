@@ -15,10 +15,10 @@ enum TaskCompleteResult {
 }
 
 class TaskCompleteResultUtils {
-  static String message(TaskCompleteResult enumType, TaskInfo taskInfo) {
+  static String message(TaskCompleteResult enumType, String taskTitle) {
     switch (enumType) {
       case TaskCompleteResult.SUCCESS:
-        return "Task \""+ taskInfo.title +"\" complete !! :)";
+        return "Task \""+ taskTitle +"\" complete !! :)";
       case TaskCompleteResult.USER_NOT_LOGGED_IN:
         return "Please log in first in order to complete the task";
       case TaskCompleteResult.USER_WHO_COMPLETED_TASK_NOT_FOUND:

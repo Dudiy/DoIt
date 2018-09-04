@@ -43,6 +43,32 @@ class MyGroupsPageState extends State<MyGroupsPage> {
     super.dispose();
   }
 
+  /// update the change groups from db
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: GestureDetector(
+        onVerticalDragDown: (details) => _getMyGroupsFromDB(),
+        child: Container(
+          child: Center(
+            child: ListView(
+              // TODO change to widgets, this is just fot testing obviously
+              children: _myGroupsWidget(context),
+            ),
+          ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(
+          Icons.add,
+        ),
+        onPressed: () {
+          _showAddGroupDialog();
+        },
+      ),
+    );
+  }
+
   ///
   /// get all groups from db
   ///
@@ -137,29 +163,4 @@ class MyGroupsPageState extends State<MyGroupsPage> {
     );
   }
 
-  /// update the change groups from db
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: GestureDetector(
-        onVerticalDragDown: (details) => _getMyGroupsFromDB(),
-        child: Container(
-          child: Center(
-            child: ListView(
-              // TODO change to widgets, this is just fot testing obviously
-              children: _myGroupsWidget(context),
-            ),
-          ),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(
-          Icons.add,
-        ),
-        onPressed: () {
-          _showAddGroupDialog();
-        },
-      ),
-    );
-  }
 }

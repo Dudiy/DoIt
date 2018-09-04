@@ -83,11 +83,14 @@ class _LifecycleNfcWatcherState extends State<LifecycleNfcWatcher> with WidgetsB
       DoItDialogs.showNotificationDialog(
         context: context,
         title: "NFC has trigger",
-        body: TaskCompleteResultUtils.message(TaskCompleteResult.SUCCESS, taskInfo),
+        body: TaskCompleteResultUtils.message(TaskCompleteResult.SUCCESS, taskInfo.title),
       );
     }).catchError((error) {
       print(error.toString());
-      DoItDialogs.showErrorDialog(context: context, message: TaskCompleteResultUtils.message(error.result, taskInfo));
+      DoItDialogs.showErrorDialog(
+        context: context,
+        message: TaskCompleteResultUtils.message(error.result, taskInfo.title),
+      );
     });
   }
 
