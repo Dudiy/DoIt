@@ -22,7 +22,7 @@ class DoItRecurringPolicyField extends StatefulWidget {
 }
 
 class DoItRecurringPolicyFieldState extends State<DoItRecurringPolicyField> {
-  eRecurringPolicy selectedPolicy = eRecurringPolicy.NONE;
+  eRecurringPolicy selectedPolicy = eRecurringPolicy.none;
 
   @override
   void initState() {

@@ -1,9 +1,9 @@
 enum eRecurringPolicy {
-  NONE,
-  DAILY,
-  WEEKLY,
-  MONTHLY,
-  YEARLY,
+  none,
+  daily,
+  weekly,
+  monthly,
+  yearly,
 }
 
 class RecurringPolicyUtils {
@@ -13,15 +13,15 @@ class RecurringPolicyUtils {
 
   static String policyToString(eRecurringPolicy policy) {
     switch (policy) {
-      case eRecurringPolicy.NONE:
+      case eRecurringPolicy.none:
         return "None";
-      case eRecurringPolicy.DAILY:
+      case eRecurringPolicy.daily:
         return "Daily";
-      case eRecurringPolicy.WEEKLY:
+      case eRecurringPolicy.weekly:
         return "Weekly";
-      case eRecurringPolicy.MONTHLY:
+      case eRecurringPolicy.monthly:
         return "Monthly";
-      case eRecurringPolicy.YEARLY:
+      case eRecurringPolicy.yearly:
         return "Yearly";
       default:
         return "Invalid value";

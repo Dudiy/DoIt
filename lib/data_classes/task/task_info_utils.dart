@@ -27,7 +27,7 @@ class TaskUtils {
     if (taskObject.runtimeType == TaskInfo) return taskObject;
     eRecurringPolicy recurringPolicy =
         RecurringPolicyUtils.parse(taskObject['recurringPolicy']) ??
-            eRecurringPolicy.NONE;
+            eRecurringPolicy.none;
     return new TaskInfo(
       taskID: taskObject['taskID'],
       title: taskObject['title'],

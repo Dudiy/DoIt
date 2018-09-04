@@ -316,7 +316,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     TextEditingController _titleController = new TextEditingController();
     TextEditingController _descriptionController = new TextEditingController();
     TextEditingController _valueController = new TextEditingController();
-    eRecurringPolicy _selectedPolicy = eRecurringPolicy.NONE;
+    eRecurringPolicy _selectedPolicy = eRecurringPolicy.none;
     DateTime _selectedStartTime, _selectedEndTime;
 
     DoItDialogs.showUserInputDialog(

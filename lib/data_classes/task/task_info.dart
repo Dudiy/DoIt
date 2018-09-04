@@ -27,7 +27,7 @@ class TaskInfo {
     @required parentGroupManagerID,
     startTime,
     endTime,
-    recurringPolicy = eRecurringPolicy.NONE,
+    recurringPolicy = eRecurringPolicy.none,
     assignedUsers,
   }) {
     this._taskID = taskID;

@@ -33,7 +33,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
   Map<String, ShortUserInfo> _parentGroupMembers;
   Map<String, ShortUserInfo> _assignedUsers;
   DateTime _selectedStartDateTime, _selectedEndDateTime;
-  eRecurringPolicy _selectedPolicy = eRecurringPolicy.NONE;
+  eRecurringPolicy _selectedPolicy = eRecurringPolicy.none;
 
   @override
   void initState() {
