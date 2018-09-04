@@ -131,14 +131,17 @@ class TasksManager {
       throw TaskException(TaskCompleteResult.TASK_NOT_FOUND, '$errorMessagePrefix TaskID was not found in the DB');
     }
     GroupInfo parentGroupInfo = await app.groupsManager.getGroupInfoByID(taskInfo.parentGroupID);
-    if (parentGroupInfo == null || !parentGroupInfo.members.containsKey(userWhoCompletedID))
+    if (parentGroupInfo == null) {
       throw TaskException(
-          TaskCompleteResult.INNER_SYSTEM_INVALID_TASK,
+          TaskCompleteResult.INNER_SYSTEM_INVALID_TASK, '$errorMessagePrefix The parent group was not found in the DB');
+    }
+    if (!parentGroupInfo.members.containsKey(userWhoCompletedID) ||
+        (taskInfo.assignedUsers.length > 0 && !taskInfo.assignedUsers.containsKey(userWhoCompletedID))) {
+      throw TaskException(
+          TaskCompleteResult.USER_NOT_ASSIGNED_TO_TASK,
           '$errorMessagePrefix The given user is not a member of the task\'s parent group \n'
-          'or parent group was not found in the DB');
-    if (taskInfo.assignedUsers.length > 0 && !taskInfo.assignedUsers.containsKey(userWhoCompletedID))
-      throw TaskException(TaskCompleteResult.USER_NOT_ASSIGNED_TO_TASK,
-          '$errorMessagePrefix The given user was not assigned to this task');
+          'or user was not assigned to this task');
+    }
 
     // complete the task (add completedTaskInfo to the groups sub-collection -> delete the original task)
     CompletedTaskInfo completedTaskInfo = taskInfo.generateCompletedTaskInfo(userWhoCompleted: userWhoCompleted);

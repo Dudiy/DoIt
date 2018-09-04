@@ -8,7 +8,7 @@ import 'package:do_it/widgets/custom/dialog.dart';
 import 'package:do_it/widgets/custom/recurring_policy_field.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:do_it/widgets/custom/time_field.dart';
-import 'package:do_it/widgets/nfc_write_widget.dart';
+import 'package:do_it/widgets/nfc/nfc_write_widget.dart';
 import 'package:do_it/widgets/users/user_selector.dart';
 import 'package:flutter/material.dart';
 

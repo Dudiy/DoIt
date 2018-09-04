@@ -1,4 +1,4 @@
-import 'package:do_it/widgets/lifecycle_nfc_watcher.dart';
+import 'package:do_it/widgets/nfc/lifecycle_nfc_watcher.dart';
 import 'package:do_it/app.dart';
 import 'package:do_it/widgets/custom/dialog.dart';
 import 'package:do_it/widgets/groups/my_groups_widget.dart';
