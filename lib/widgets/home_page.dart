@@ -1,3 +1,5 @@
+import 'package:do_it/widgets/custom/imageContainer.dart';
+import 'package:do_it/widgets/custom/imageFetcher.dart';
 import 'package:do_it/widgets/nfc/lifecycle_nfc_watcher.dart';
 import 'package:do_it/app.dart';
 import 'package:do_it/widgets/custom/dialog.dart';
@@ -54,7 +56,16 @@ class HomePageState extends State<HomePage> {
             child: Padding(
               padding: const EdgeInsets.all(5.0),
               child: Stack(children: <Widget>[
-                _addProfilePicture(),
+//                ImageContainer(imagePath: photoUrl),
+                Center(
+                  child: Container(
+                      width: 65.0,
+                      height: 65.0,
+                      child: ClipOval(
+                        child: ImageFetcher.fetch(imagePath: photoUrl, defaultImagePath: DEFAULT_PICTURE),
+                      )),
+                ),
+//                _addProfilePicture(),
                 Container(child: LifecycleNfcWatcher()),
               ]),
             ),

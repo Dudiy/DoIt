@@ -12,11 +12,14 @@ import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/data_managers/task_manager_result.dart';
 import 'package:do_it/widgets/custom/imageContainer.dart';
 import 'package:do_it/widgets/custom/dialog.dart';
+import 'package:do_it/widgets/custom/loadingOverlay.dart';
 import 'package:do_it/widgets/custom/recurring_policy_field.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:do_it/widgets/custom/time_field.dart';
 import 'package:do_it/widgets/groups/group_details_page.dart';
+import 'package:do_it/widgets/loadingPage.dart';
 import 'package:do_it/widgets/tasks/task_details_page.dart';
+import 'package:do_it/widgets/test_page.dart';
 import 'package:flutter/material.dart';
 
 class SingleGroupPage extends StatefulWidget {
@@ -44,6 +47,8 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   bool _completedTasksIsExpanded = false;
   bool _futureTasksIsExpanded = false;
   int daysBeforeTodayToShowCompletedTasks;
+  OverlayEntry loadingOverlayEntry;
+  LoadingOverlay loadingOverlay = new LoadingOverlay();
 
 // for remove groups listener
   StreamSubscription<DocumentSnapshot> _streamSubscriptionTasks;
@@ -91,10 +96,25 @@ class SingleGroupPageState extends State<SingleGroupPage> {
                       ),
                 ),
                 background: Center(
-                  child: ImageContainer(
-                    imagePath: photoUrl,
-                    size: 130.0,
-                    borderColor: Colors.white,
+                  child: GestureDetector(
+                    onTap: () {
+                      App.instance.groupsManager
+//                          .uploadGroupPic(groupInfo, () => showLoadingOverlay(context))
+                          .uploadGroupPic(groupInfo,
+                              () => loadingOverlay.show(context: context, message: "Updating group photo..."))
+                          .then((val) {
+                        setState(() {
+                          photoUrl = groupInfo.photoUrl;
+                          loadingOverlay.hide();
+//                          loadingOverlayEntry.remove();
+                        });
+                      });
+                    },
+                    child: ImageContainer(
+                      imagePath: photoUrl,
+                      size: 130.0,
+                      borderColor: Colors.white,
+                    ),
                   ),
                 ),
               ),
@@ -105,41 +125,14 @@ class SingleGroupPageState extends State<SingleGroupPage> {
               ],
             ),
             SliverList(
-              delegate: SliverChildListDelegate([_groupTaskTabs(context), Container(height: 80.0)]),
+              delegate: SliverChildListDelegate([
+                _groupTaskTabs(context),
+                Container(height: 80.0), //container added so the add task button doesn't hide an expansion panel
+              ]),
             )
           ],
         ),
         floatingActionButton: _drawAddTaskButton());
-  }
-
-  Widget _shortGroupInfo() {
-    return Container(
-      color: Theme.of(context).primaryColor,
-      child: new Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Column(
-            children: <Widget>[
-              GestureDetector(
-                onTap: () => App.instance.groupsManager.uploadGroupPic(groupInfo).whenComplete(() {
-                      setState(() {
-                        photoUrl = groupInfo.photoUrl;
-                      });
-                    }),
-                child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: ImageContainer(
-                      imagePath: photoUrl,
-                      size: 125.0,
-                    ) /*_addGroupPicture(),*/
-                    ),
-              ),
-              Text("test"),
-            ],
-          ),
-        ],
-      ),
-    );
   }
 
   // callback method
@@ -211,10 +204,11 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     return (_allGroupTasks == null)
         ? null
         : _allGroupTasks.where((taskInfo) {
-          return taskInfo.startTime.isBefore(DateTime.now()) && taskInfo.assignedUsers != null &&
-              taskInfo.assignedUsers.length != 0 &&
-              !taskInfo.assignedUsers.containsKey(app.loggedInUser.userID);
-        }).length;
+            return taskInfo.startTime.isBefore(DateTime.now()) &&
+                taskInfo.assignedUsers != null &&
+                taskInfo.assignedUsers.length != 0 &&
+                !taskInfo.assignedUsers.containsKey(app.loggedInUser.userID);
+          }).length;
   }
 
   Widget getTasksAssignedToMe() {
@@ -518,7 +512,9 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     //Other's tasks
     _expansionPanels.add(ExpansionPanel(
       headerBuilder: (BuildContext context, bool isExpanded) {
-        return Center(child: Text('Tasks assigned to others $numTasksAssignedToOthersStr', style: Theme.of(context).textTheme.title));
+        return Center(
+            child: Text('Tasks assigned to others $numTasksAssignedToOthersStr',
+                style: Theme.of(context).textTheme.title));
       },
       body: getTasksAssignedToOthers(),
       isExpanded: _othersTasksIsExpanded,
@@ -533,6 +529,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     _expansionPanels.add(ExpansionPanel(
       headerBuilder: (BuildContext context, bool isExpanded) {
         return Stack(
+          alignment: Alignment.center,
           children: <Widget>[
             Center(child: Text('Completed tasks', style: Theme.of(context).textTheme.title)),
             Positioned(
@@ -642,7 +639,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     );
   }
 
-  _completeTask(ShortTaskInfo taskInfo) {
+  void _completeTask(ShortTaskInfo taskInfo) {
     setState(() {
       _myTasksCheckboxes[taskInfo.taskID] = true;
     });
@@ -660,5 +657,28 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       DoItDialogs.showErrorDialog(
           context: context, message: TaskMethodResultUtils.message(error.result, taskInfo.title));
     });
+  }
+
+  void showLoadingOverlay(BuildContext context) {
+//    Navigator.of(context).push((MaterialPageRoute(builder: (context) => LoadingPage())))
+    OverlayState overlayState = Overlay.of(context);
+    loadingOverlayEntry = OverlayEntry(builder: (context) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "Updating group photo...",
+                style: Theme.of(context).textTheme.title,
+              ),
+            ),
+            CircularProgressIndicator(),
+          ],
+        ),
+      );
+    });
+    overlayState.insert(loadingOverlayEntry);
   }
 }

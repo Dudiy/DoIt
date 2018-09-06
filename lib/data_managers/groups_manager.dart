@@ -305,10 +305,11 @@ class GroupsManager {
     return newMemberInfo;
   }
 
-  Future uploadGroupPic(GroupInfo groupInfo) async {
+  Future uploadGroupPic(GroupInfo groupInfo, Function showLoadingCallback) async {
     StorageReference storageRef = app.firebaseStorage.ref();
     File file = await ImagePicker.pickImage(source: ImageSource.gallery);
     if (file != null) {
+      showLoadingCallback();
       // TODO do we want to limit the file size?
       double fileSizeInMb = await file.length() / 1000000;
       if (fileSizeInMb > MAX_PROFILE_PIC_SIZE_MB)

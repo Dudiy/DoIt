@@ -66,7 +66,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                   FlatButton(
                       child: Icon(Icons.insert_photo),
                       onPressed: () async {
-                        await App.instance.groupsManager.uploadGroupPic(widget.groupInfo);
+                        await App.instance.groupsManager.uploadGroupPic(widget.groupInfo, ()=>{});
                         widget.setGroupInfo(widget.groupInfo);
                       }),
                 ])),
