@@ -10,7 +10,7 @@ class GroupInfo {
   String _managerID;
   String _title;
   String _description;
-  Object _photoUrl;
+  String _photoUrl;
   Map<String, ShortUserInfo> _members; // Map<userID, UserInfo>
   Map<String, ShortTaskInfo> _tasks; // Map<taskID, TaskInfo>
   Map<String, Object> _taskCompletionHistory;
@@ -41,6 +41,7 @@ class GroupInfo {
       title: title,
       managerID: managerID,
       groupID: groupID,
+      photoUrl: photoUrl,
       members: members,
       tasks: tasks,
     );
@@ -60,7 +61,7 @@ class GroupInfo {
   String get description => _description;
 
   // ignore: unnecessary_getters_setters
-  Object get photoUrl => _photoUrl;
+  String get photoUrl => _photoUrl;
 
   Map<String, ShortUserInfo> get members => _members;
 
@@ -75,7 +76,7 @@ class GroupInfo {
   set title(String value) => _title = value;
 
   // ignore: unnecessary_getters_setters
-  set photoUrl(Object value) => _photoUrl = value;
+  set photoUrl(String value) => _photoUrl = value;
 
   // ignore: unnecessary_getters_setters
   set description(String value) => _description = value;

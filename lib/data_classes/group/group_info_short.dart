@@ -8,19 +8,22 @@ class ShortGroupInfo {
   String _groupID;
   String _managerID;
   String _title;
+  String _photoUrl;
   Map<String, int> _tasksPerUser;
   Map<String, ShortUserInfo> _members = new Map();
 
   ShortGroupInfo({
-    @required groupID,
-    @required managerID,
-    @required title,
+    @required String groupID,
+    @required String managerID,
+    @required String title,
+    String photoUrl,
     members,
     tasks,
   }) {
     this._groupID = groupID;
     this._managerID = managerID;
     this._title = title;
+    this._photoUrl = photoUrl;
     // TODO check if its possible to remove the not null verifier (checked inside "generateUsersMapFromObject")
     if (members != null) {
       this._members = UserUtils.generateUsersMapFromObject(members);
@@ -39,8 +42,7 @@ class ShortGroupInfo {
         ShortTaskInfo asShortTaskInfo = task as ShortTaskInfo;
         tasks[asShortTaskInfo.taskID] = asShortTaskInfo;
       } else {
-        ShortTaskInfo shortTaskInfo =
-            TaskUtils.generateShortTaskInfoFromObject(task);
+        ShortTaskInfo shortTaskInfo = TaskUtils.generateShortTaskInfoFromObject(task);
         tasks[shortTaskInfo.taskID] = shortTaskInfo;
       }
     });
@@ -54,16 +56,12 @@ class ShortGroupInfo {
         if (task.assignedUsers != null && task.assignedUsers.length == 0) {
           // if a tasks user list is empty, increment task counter for all group's users
           members.keys.forEach((userID) {
-            (userID != null && tasksPerUser.containsKey(userID))
-                ? tasksPerUser[userID]++
-                : tasksPerUser[userID] = 0;
+            (userID != null && tasksPerUser.containsKey(userID)) ? tasksPerUser[userID]++ : tasksPerUser[userID] = 0;
           });
         } else {
           // if a task has a users list, increment task counter only for the relevant users
           task.assignedUsers.keys.forEach((userID) {
-            (userID != null && tasksPerUser.containsKey(userID))
-                ? tasksPerUser[userID]++
-                : tasksPerUser[userID] = 0;
+            (userID != null && tasksPerUser.containsKey(userID)) ? tasksPerUser[userID]++ : tasksPerUser[userID] = 0;
           });
         }
       }
@@ -82,8 +80,13 @@ class ShortGroupInfo {
 
   Map<String, ShortUserInfo> get members => _members;
 
+  // ignore: unnecessary_getters_setters
+  String get photoUrl => _photoUrl;
+
 // ===========================================================
 // ========================= Setters =========================
 // ===========================================================
 
+  // ignore: unnecessary_getters_setters
+  set photoUrl(String value) => _photoUrl = value;
 }

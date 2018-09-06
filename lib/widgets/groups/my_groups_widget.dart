@@ -31,8 +31,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
   void initState() {
     // listen for group list update
     super.initState();
-    _groupsStreamSubscription =
-        app.firestore.collection(GROUPS).snapshots().listen(_updateGroupList);
+    _groupsStreamSubscription = app.firestore.collection(GROUPS).snapshots().listen(_updateGroupList);
     _getMyGroupsFromDB();
   }
 
@@ -47,7 +46,18 @@ class MyGroupsPageState extends State<MyGroupsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GestureDetector(
+      body: RefreshIndicator(
+              child: Container(
+                child: Center(
+                  child: ListView(
+                    // TODO change to widgets, this is just fot testing obviously
+                    children: _myGroupsWidget(context),
+                  ),
+                ),
+              ),
+              onRefresh: _getMyGroupsFromDB,
+      )
+          /*GestureDetector(
         onVerticalDragDown: (details) => _getMyGroupsFromDB(),
         child: Container(
           child: Center(
@@ -57,7 +67,8 @@ class MyGroupsPageState extends State<MyGroupsPage> {
             ),
           ),
         ),
-      ),
+      )*/
+          ,
       floatingActionButton: FloatingActionButton(
         child: Icon(
           Icons.add,
@@ -72,8 +83,8 @@ class MyGroupsPageState extends State<MyGroupsPage> {
   ///
   /// get all groups from db
   ///
-  void _getMyGroupsFromDB([List<ShortGroupInfo> myGroups]) {
-    _getAllTasksCount().then((allTasksCount) async {
+  Future _getMyGroupsFromDB([List<ShortGroupInfo> myGroups]) async {
+    await _getAllTasksCount().then((allTasksCount) async {
       if (myGroups == null) {
         myGroups = await App.instance.groupsManager.getMyGroupsFromDB();
       }
@@ -85,8 +96,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
   }
 
   Future<Widget> _getAllTasksCount() async {
-    List<ShortTaskInfo> allTasks =
-        await App.instance.tasksManager.getAllMyTasks();
+    List<ShortTaskInfo> allTasks = await App.instance.tasksManager.getAllMyTasks();
     return ListTile(
       title: Text('All Groups'),
       subtitle: Text(allTasks.length.toString()),
@@ -103,45 +113,33 @@ class MyGroupsPageState extends State<MyGroupsPage> {
   void _updateGroupList(QuerySnapshot groupsQuerySnapshot) {
     ShortUserInfo loggedInUser = App.instance.getLoggedInUser();
     if (loggedInUser == null) {
-      throw Exception(
-          'GroupManager: Cannot get all groups when a user is not logged in');
+      throw Exception('GroupManager: Cannot get all groups when a user is not logged in');
     }
-    List<ShortGroupInfo> myGroups = GroupUtils.conventDBGroupsToGroupInfoList(
-        loggedInUser.userID, groupsQuerySnapshot);
+    List<ShortGroupInfo> myGroups = GroupUtils.conventDBGroupsToGroupInfoList(loggedInUser.userID, groupsQuerySnapshot);
     _getMyGroupsFromDB(myGroups);
   }
 
   List<Widget> _myGroupsWidget(BuildContext context) {
-    if (_myGroups == null || _allTasksWidget == null)
-      return [Text('Fetching groups from server...')];
+    if (_myGroups == null || _allTasksWidget == null) return [Text('Fetching groups from server...')];
 
-    if (_myGroups.length == 0)
-      return [ListTile(title: Text("you are not in any group yet"))];
+    if (_myGroups.length == 0) return [ListTile(title: Text("you are not in any group yet"))];
 
     List<Widget> list = new List();
     list.add(_allTasksWidget);
+    _myGroups.sort((a, b) =>
+        b.tasksPerUser[App.instance.getLoggedInUser().userID] - a.tasksPerUser[App.instance.getLoggedInUser().userID]);
     list.addAll(_myGroups.map((group) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: GroupCard(shortGroupInfo: group),
       );
-      /*return ListTile(
-        title: Text(group.title),
-        subtitle: Text(group.tasksPerUser[App.instance.getLoggedInUser().userID].toString()),
-        onTap: () {
-          app.groupsManager.getGroupInfoByID(group.groupID).then((groupInfo) {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => SingleGroupPage(groupInfo), settings: RouteSettings(name: '/singleGroupPage')));
-          });
-        },
-      );*/
     }).toList());
     return list;
   }
 
   Future<void> _showAddGroupDialog() async {
     TextEditingController _groupTitleController = new TextEditingController();
-    TextEditingController _groupDescriptionController =
-        new TextEditingController();
+    TextEditingController _groupDescriptionController = new TextEditingController();
 
     DoItDialogs.showUserInputDialog(
       context: context,

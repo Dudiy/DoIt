@@ -42,7 +42,7 @@ class TasksManager {
 
     String _taskID = App.instance.generateRandomID();
     startTime = startTime ?? DateTime.now();
-    if(startTime.isAfter(endTime)){
+    if(endTime != null && startTime.isAfter(endTime)){
       throw TaskException(TaskMethodResult.START_TIME_AFTER_END_TIME,'start time can\'t be after end time');
     }
     TaskInfo taskInfo = new TaskInfo(

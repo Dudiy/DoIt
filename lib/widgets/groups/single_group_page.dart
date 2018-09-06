@@ -10,6 +10,7 @@ import 'package:do_it/data_classes/task/task_info_completed.dart';
 import 'package:do_it/data_classes/task/task_info_short.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/data_managers/task_manager_result.dart';
+import 'package:do_it/widgets/custom/imageContainer.dart';
 import 'package:do_it/widgets/custom/dialog.dart';
 import 'package:do_it/widgets/custom/recurring_policy_field.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
@@ -53,11 +54,8 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   void initState() {
     String groupId = groupInfo.groupID;
     // listen for tasks list update
-    _streamSubscriptionTasks = App.instance.firestore
-        .collection('$GROUPS')
-        .document('$groupId')
-        .snapshots()
-        .listen(_updateTasksList);
+    _streamSubscriptionTasks =
+        App.instance.firestore.collection('$GROUPS').document('$groupId').snapshots().listen(_updateTasksList);
     getMyGroupTasksFromDB();
     super.initState();
   }
@@ -77,54 +75,70 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       photoUrl = DEFAULT_PICTURE;
     }
     return Scaffold(
-        appBar: AppBar(
-          title: Text(groupInfo.title, maxLines: 2),
-          actions: [
-            PopupMenuButton<String>(
-              onSelected: (String result) {
-                /*setState(() { _selection = result; });*/
-              },
-              itemBuilder: _getPopupMenuItems,
+        body: CustomScrollView(
+          slivers: <Widget>[
+            SliverAppBar(
+              expandedHeight: 220.0,
+              pinned: true,
+              flexibleSpace: FlexibleSpaceBar(
+                centerTitle: true,
+                title: Text(
+                  groupInfo.title,
+                  maxLines: 2,
+                  style: Theme.of(context).textTheme.title.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+                background: Center(
+                  child: ImageContainer(
+                    imagePath: photoUrl,
+                    size: 130.0,
+                    borderColor: Colors.white,
+                  ),
+                ),
+              ),
+              actions: [
+                PopupMenuButton<String>(
+                  itemBuilder: _getPopupMenuItems,
+                )
+              ],
+            ),
+            SliverList(
+              delegate: SliverChildListDelegate([_groupTaskTabs(context), Container(height: 80.0)]),
             )
           ],
         ),
-        body: GestureDetector(
-            onVerticalDragDown: (details) => getMyGroupTasksFromDB(),
-            child: ListView(
-              children: <Widget>[_shortGroupInfo(), _groupTaskTabs(context)],
-            )),
         floatingActionButton: _drawAddTaskButton());
   }
 
   Widget _shortGroupInfo() {
-    return new Row(
-      children: <Widget>[
-        new Expanded(
-          child: GestureDetector(
-            onTap: () => App.instance.groupsManager
-                    .uploadGroupPic(groupInfo)
-                    .then((val) {
-                  setState(() {
-                    photoUrl = groupInfo.photoUrl;
-                  });
-                }),
-            child: Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: _addGroupPicture(),
-            ),
+    return Container(
+      color: Theme.of(context).primaryColor,
+      child: new Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Column(
+            children: <Widget>[
+              GestureDetector(
+                onTap: () => App.instance.groupsManager.uploadGroupPic(groupInfo).whenComplete(() {
+                      setState(() {
+                        photoUrl = groupInfo.photoUrl;
+                      });
+                    }),
+                child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: ImageContainer(
+                      imagePath: photoUrl,
+                      size: 125.0,
+                    ) /*_addGroupPicture(),*/
+                    ),
+              ),
+              Text("test"),
+            ],
           ),
-        ),
-        new Expanded(
-          child: new Text(groupInfo.title +
-              "\n" +
-              "there are " +
-              groupInfo.members.length.toString() +
-              " members\n" +
-              "total " +
-              groupInfo.tasks.length.toString() +
-              " tasks"),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -133,15 +147,6 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     setState(() {
       this.groupInfo.photoUrl = groupInfoTest.photoUrl;
     });
-  }
-
-  _addGroupPicture() {
-    return photoUrl == DEFAULT_PICTURE
-        ? Image.asset(DEFAULT_PICTURE)
-        : FadeInImage.assetNetwork(
-            placeholder: LOADING_GIF,
-            image: photoUrl,
-          );
   }
 
   Padding _groupTaskTabs(BuildContext context) {
@@ -186,23 +191,40 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     app.groupsManager.getMyGroupTasksFromDB(groupInfo.groupID).then((tasks) {
       setState(() {
         _allGroupTasks = tasks;
-        _myTasksCheckboxes.addAll(Map.fromIterable(tasks,
-            key: (task) => (task as ShortTaskInfo).taskID,
-            value: (task) => false));
+        _myTasksCheckboxes
+            .addAll(Map.fromIterable(tasks, key: (task) => (task as ShortTaskInfo).taskID, value: (task) => false));
       });
     });
+  }
+
+  int _getNumTasksAssignedToMe() {
+    return (_allGroupTasks == null)
+        ? null
+        : _allGroupTasks.where((taskInfo) {
+            return taskInfo.startTime.isBefore(DateTime.now()) && taskInfo.assignedUsers == null ||
+                taskInfo.assignedUsers.length == 0 ||
+                taskInfo.assignedUsers.containsKey(app.loggedInUser.userID);
+          }).length;
+  }
+
+  int _getNumTasksAssignedToOthers() {
+    return (_allGroupTasks == null)
+        ? null
+        : _allGroupTasks.where((taskInfo) {
+          return taskInfo.startTime.isBefore(DateTime.now()) && taskInfo.assignedUsers != null &&
+              taskInfo.assignedUsers.length != 0 &&
+              !taskInfo.assignedUsers.containsKey(app.loggedInUser.userID);
+        }).length;
   }
 
   Widget getTasksAssignedToMe() {
     List<ShortTaskInfo> _myTasks = new List();
     if (_allGroupTasks != null) {
-      _myTasks.addAll(_allGroupTasks
-          .where((taskInfo) => taskInfo.startTime.isBefore(DateTime.now())));
+      _myTasks.addAll(_allGroupTasks.where((taskInfo) => taskInfo.startTime.isBefore(DateTime.now())));
     }
     Padding noTasksAssignedToMe = Padding(
       padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-      child: Center(
-          child: Text("There are no tasks assigned to you in this group")),
+      child: Center(child: Text("There are no tasks assigned to you in this group")),
     );
     if (_myTasks == null) return Text('Fetching tasks from server...');
     if (_myTasks.length == 0) return noTasksAssignedToMe;
@@ -222,8 +244,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
           ),
           onTap: () {
             app.tasksManager.getTaskById(taskInfo.taskID).then((taskInfo) {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => TaskDetailsPage(taskInfo)));
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetailsPage(taskInfo)));
             });
           },
         ));
@@ -237,8 +258,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   Widget getTasksAssignedToOthers() {
     Padding noTasksAssignedToOthers = Padding(
       padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-      child: Center(
-          child: Text("There are no tasks assigned to others in this group")),
+      child: Center(child: Text("There are no tasks assigned to others in this group")),
     );
     if (_allGroupTasks == null) return Text('Fetching tasks from server...');
     if (_allGroupTasks.length == 0) return noTasksAssignedToOthers;
@@ -253,8 +273,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
           onTap: () {
             if (app.loggedInUser.userID == taskInfo.parentGroupManagerID) {
               app.tasksManager.getTaskById(taskInfo.taskID).then((taskInfo) {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => TaskDetailsPage(taskInfo)));
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetailsPage(taskInfo)));
               });
             }
           },
@@ -299,8 +318,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     tasksList.add(timeSpanSelectors);
     _completedTasks.forEach((completedTask) {
       tasksList.add(ListTile(
-        title:
-            Text('${completedTask.title} (${completedTask.value.toString()})'),
+        title: Text('${completedTask.title} (${completedTask.value.toString()})'),
         subtitle: Text(
           completedTask.description ?? "no description",
           maxLines: 3,
@@ -308,8 +326,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
         trailing: _completedTaskCheckbox(completedTask),
       ));
     });
-    return Padding(
-        padding: EdgeInsets.all(20.0), child: Column(children: tasksList));
+    return Padding(padding: EdgeInsets.all(20.0), child: Column(children: tasksList));
   }
 
   Future<void> _showAddTaskDialog() async {
@@ -332,8 +349,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
             isRequired: true,
             label: 'Task value',
             keyboardType: TextInputType.numberWithOptions(),
-            fieldValidator: (value) =>
-                int.tryParse(value) != null && int.parse(value) > 0,
+            fieldValidator: (value) => int.tryParse(value) != null && int.parse(value) > 0,
             validationErrorMsg: 'Task value must be a posiyive integer',
           ),
           DoItTextField(
@@ -381,28 +397,23 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   void _updateTasksList(DocumentSnapshot documentSnapshotGroupTasks) {
     ShortUserInfo loggedInUser = App.instance.getLoggedInUser();
     if (loggedInUser == null) {
-      throw Exception(
-          'GroupManager: Cannot get all groups when a user is not logged in');
+      throw Exception('GroupManager: Cannot get all groups when a user is not logged in');
     }
     if (documentSnapshotGroupTasks.data != null) {
       setState(() {
-        _allGroupTasks = GroupUtils
-            .conventDBGroupTaskToObjectList(documentSnapshotGroupTasks);
+        _allGroupTasks = GroupUtils.conventDBGroupTaskToObjectList(documentSnapshotGroupTasks);
       });
     }
   }
 
   /// different behavior on the other user permission
   void deleteGroup() {
-    DoItDialogs
-        .showConfirmDialog(
+    DoItDialogs.showConfirmDialog(
       context: context,
-      message:
-          'Are you sure you would like to delete this group? \nThis cannot be undone',
+      message: 'Are you sure you would like to delete this group? \nThis cannot be undone',
       isWarning: true,
       actionButtonText: 'Delete',
-    )
-        .then((deleteConfirmed) {
+    ).then((deleteConfirmed) {
       if (deleteConfirmed) {
         app.groupsManager.deleteGroup(groupID: groupInfo.groupID);
         Navigator.pop(context);
@@ -411,18 +422,14 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   }
 
   void leaveGroup() {
-    DoItDialogs
-        .showConfirmDialog(
+    DoItDialogs.showConfirmDialog(
       context: context,
-      message:
-          'Are you sure you would like to leave this group? \nThis cannot be undone',
+      message: 'Are you sure you would like to leave this group? \nThis cannot be undone',
       isWarning: true,
       actionButtonText: 'Leave',
-    )
-        .then((deleteConfirmed) {
+    ).then((deleteConfirmed) {
       if (deleteConfirmed) {
-        app.groupsManager
-            .deleteUserFromGroup(groupInfo.groupID, app.loggedInUser.userID);
+        app.groupsManager.deleteUserFromGroup(groupInfo.groupID, app.loggedInUser.userID);
         Navigator.pop(context);
       }
     });
@@ -439,25 +446,18 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   }
 
   void fetchCompletedTasksFromServer() {
-    if (daysBeforeTodayToShowCompletedTasks == null ||
-        !_completedTasksIsExpanded) return;
+    if (daysBeforeTodayToShowCompletedTasks == null || !_completedTasksIsExpanded) return;
     DateTime toDate = DateTime.now();
     DateTime fromDate = daysBeforeTodayToShowCompletedTasks != 0
-        ? DateTime
-            .now()
-            .add(Duration(days: -daysBeforeTodayToShowCompletedTasks))
+        ? DateTime.now().add(Duration(days: -daysBeforeTodayToShowCompletedTasks))
         : null;
     app.groupsManager
-        .getCompletedTasks(
-            groupID: widget.groupInfo.groupID,
-            fromDate: fromDate,
-            toDate: toDate)
+        .getCompletedTasks(groupID: widget.groupInfo.groupID, fromDate: fromDate, toDate: toDate)
         .then((completedTasks) {
       setState(() {
         _completedTasks = completedTasks;
         _myTasksCheckboxes.addAll(Map.fromIterable(completedTasks,
-            key: (completedTask) => (completedTask as CompletedTaskInfo).taskID,
-            value: (completedTask) => true));
+            key: (completedTask) => (completedTask as CompletedTaskInfo).taskID, value: (completedTask) => true));
       });
     });
   }
@@ -478,9 +478,8 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   }
 
   _completedTaskCheckbox(CompletedTaskInfo completedTask) {
-    bool isEnabled =
-        app.loggedInUser.userID == completedTask.userWhoCompleted.userID ||
-            app.loggedInUser.userID == completedTask.parentGroupManagerID;
+    bool isEnabled = app.loggedInUser.userID == completedTask.userWhoCompleted.userID ||
+        app.loggedInUser.userID == completedTask.parentGroupManagerID;
     return isEnabled
         ? Checkbox(
             value: _myTasksCheckboxes[completedTask.taskID] ?? true,
@@ -488,9 +487,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
               setState(() {
                 _myTasksCheckboxes[completedTask.taskID] = false;
                 app.tasksManager
-                    .unCompleteTask(
-                        parentGroupID: completedTask.parentGroupID,
-                        taskID: completedTask.taskID)
+                    .unCompleteTask(parentGroupID: completedTask.parentGroupID, taskID: completedTask.taskID)
                     .then((val) {
                   fetchCompletedTasksFromServer();
                 });
@@ -498,20 +495,21 @@ class SingleGroupPageState extends State<SingleGroupPage> {
             })
         : Padding(
             padding: const EdgeInsets.all(4.0),
-            child:
-                Icon(Icons.check_box, color: Theme.of(context).disabledColor),
+            child: Icon(Icons.check_box, color: Theme.of(context).disabledColor),
           );
   }
 
   _getExpansionPanels(BuildContext context) {
     List<ExpansionPanel> _expansionPanels = new List();
-
+    String numTasksAssignedToMeStr =
+        _getNumTasksAssignedToMe() != null ? '(${_getNumTasksAssignedToMe().toString()})' : '(?)';
+    String numTasksAssignedToOthersStr =
+        _getNumTasksAssignedToOthers() != null ? '(${_getNumTasksAssignedToOthers().toString()})' : '(?)';
     //Tasks assigned to me
     _expansionPanels.add(ExpansionPanel(
       headerBuilder: (BuildContext context, bool isExpanded) {
         return Center(
-            child: Text('Tasks assigned to me',
-                style: Theme.of(context).textTheme.title));
+            child: Text('Tasks assigned to me $numTasksAssignedToMeStr', style: Theme.of(context).textTheme.title));
       },
       body: getTasksAssignedToMe(),
       isExpanded: _myTasksIsExpanded,
@@ -520,9 +518,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     //Other's tasks
     _expansionPanels.add(ExpansionPanel(
       headerBuilder: (BuildContext context, bool isExpanded) {
-        return Center(
-            child: Text('Tasks assigned to others',
-                style: Theme.of(context).textTheme.title));
+        return Center(child: Text('Tasks assigned to others $numTasksAssignedToOthersStr', style: Theme.of(context).textTheme.title));
       },
       body: getTasksAssignedToOthers(),
       isExpanded: _othersTasksIsExpanded,
@@ -538,9 +534,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       headerBuilder: (BuildContext context, bool isExpanded) {
         return Stack(
           children: <Widget>[
-            Center(
-                child: Text('Completed tasks',
-                    style: Theme.of(context).textTheme.title)),
+            Center(child: Text('Completed tasks', style: Theme.of(context).textTheme.title)),
             Positioned(
               child: IconButton(
                 icon: Icon(Icons.refresh),
@@ -554,16 +548,13 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       body: getCompletedTasks(),
       isExpanded: _completedTasksIsExpanded,
     ));
-
     return _expansionPanels;
   }
 
   ExpansionPanel _futureTasksExpansionPanel(BuildContext context) {
     return ExpansionPanel(
       headerBuilder: (BuildContext context, bool isExpanded) {
-        return Center(
-            child:
-                Text('Future tasks', style: Theme.of(context).textTheme.title));
+        return Center(child: Text('Future tasks', style: Theme.of(context).textTheme.title));
       },
       body: getFutureTasks(),
       isExpanded: _futureTasksIsExpanded,
@@ -573,8 +564,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   getFutureTasks() {
     List<ShortTaskInfo> _futureTasks = new List();
     if (_allGroupTasks != null) {
-      _futureTasks = List.from(_allGroupTasks
-          .where((taskInfo) => taskInfo.startTime.isAfter(DateTime.now())));
+      _futureTasks = List.from(_allGroupTasks.where((taskInfo) => taskInfo.startTime.isAfter(DateTime.now())));
     }
     Padding noFutureTasks = Padding(
       padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
@@ -589,8 +579,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
         subtitle: Text(taskInfo.description ?? "no description", maxLines: 3),
         onTap: () {
           app.tasksManager.getTaskById(taskInfo.taskID).then((taskInfo) {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => TaskDetailsPage(taskInfo)));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetailsPage(taskInfo)));
           });
         },
       ));
@@ -616,16 +605,13 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     return PopupMenuItem(
       value: 'deleteGroup',
       child: ListTile(
-          leading:
-              Icon(Icons.info_outline, color: Theme.of(context).primaryColor),
+          leading: Icon(Icons.info_outline, color: Theme.of(context).primaryColor),
           title: Text('Group info'),
           onTap: () async {
-            ShortUserInfo managerInfo =
-                await app.usersManager.getShortUserInfo(groupInfo.managerID);
+            ShortUserInfo managerInfo = await app.usersManager.getShortUserInfo(groupInfo.managerID);
             Navigator.pop(context);
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => GroupDetailsPage(
-                    groupInfo, managerInfo, _groupInfoChanged, setGroupInfo)));
+                builder: (context) => GroupDetailsPage(groupInfo, managerInfo, _groupInfoChanged, setGroupInfo)));
           }),
     );
   }
@@ -661,23 +647,18 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       _myTasksCheckboxes[taskInfo.taskID] = true;
     });
     app.tasksManager
-        .completeTask(
-            taskID: taskInfo.taskID,
-            userWhoCompletedID: app.loggedInUser.userID)
+        .completeTask(taskID: taskInfo.taskID, userWhoCompletedID: app.loggedInUser.userID)
         .then((dummyVal) {
       DoItDialogs.showNotificationDialog(
         context: context,
         title: "Congratulations !",
-        body: TaskMethodResultUtils.message(
-            TaskMethodResult.SUCCESS, taskInfo.title),
+        body: TaskMethodResultUtils.message(TaskMethodResult.SUCCESS, taskInfo.title),
       );
       fetchCompletedTasksFromServer();
     }).catchError((error) {
       print(error.toString());
       DoItDialogs.showErrorDialog(
-          context: context,
-          message:
-              TaskMethodResultUtils.message(error.result, taskInfo.title));
+          context: context, message: TaskMethodResultUtils.message(error.result, taskInfo.title));
     });
   }
 }
