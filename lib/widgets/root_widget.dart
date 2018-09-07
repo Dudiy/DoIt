@@ -2,12 +2,15 @@ import 'dart:async';
 
 import 'package:do_it/app.dart';
 import 'package:do_it/authenticator.dart';
+import 'package:do_it/private.dart';
 import 'package:do_it/widgets/custom/dialog.dart';
 import 'package:do_it/widgets/home_page.dart';
+import 'package:do_it/widgets/loadingPage.dart';
 import 'package:do_it/widgets/login/login_widget.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-enum eAuthenticationStatus { SIGNED_IN, NOT_SIGNED_IN }
+enum eAuthenticationStatus { SIGNED_IN, NOT_SIGNED_IN, NOT_INITIALIZED }
 
 class RootPage extends StatefulWidget {
   final Authenticator authenticator = App.instance.authenticator;
@@ -17,11 +20,24 @@ class RootPage extends StatefulWidget {
 }
 
 class _RootPageState extends State<RootPage> {
-  eAuthenticationStatus authStatus = eAuthenticationStatus.NOT_SIGNED_IN;
+  eAuthenticationStatus authStatus = eAuthenticationStatus.NOT_INITIALIZED;
 
   @override
   void initState() {
     super.initState();
+    _initApp();
+  }
+
+  Future<void> _initApp() async {
+    final FirebaseApp app = await FirebaseApp.configure(
+      name: 'test',
+      options: const FirebaseOptions(
+        googleAppID: Private.googleAppID,
+        apiKey: Private.apiKey,
+        projectID: 'doit-grouptaskmanager',
+      ),
+    );
+    await App.instance.init(app);
     App.instance.firebaseMessaging.configure(
       // when app is closed
       onLaunch: (Map<String, dynamic> message) {
@@ -52,6 +68,9 @@ class _RootPageState extends State<RootPage> {
   Widget build(BuildContext context) {
     Widget widgetToReturn;
     switch (authStatus) {
+      case eAuthenticationStatus.NOT_INITIALIZED:
+        widgetToReturn = LoadingPage();
+        break;
       case eAuthenticationStatus.NOT_SIGNED_IN:
         widgetToReturn = LoginPage(onSignedIn: _signedIn);
         break;

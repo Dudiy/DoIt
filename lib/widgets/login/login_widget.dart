@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it/app.dart';
 import 'package:do_it/authenticator.dart';
+import 'package:do_it/widgets/custom/loadingOverlay.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:do_it/widgets/login/register_widget.dart';
 import 'package:do_it/widgets/login/reset_password_page.dart';
@@ -23,6 +24,7 @@ class LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  final LoadingOverlay loadingOverlay = new LoadingOverlay();
 
   @override
   Widget build(BuildContext context) {
@@ -88,8 +90,7 @@ class LoginPageState extends State<LoginPage> {
               child: Text("New user?  Create an account"),
               onPressed: () {
 //                Navigator.pushNamed(context, '/Register');
-                Navigator
-                    .of(context)
+                Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) => RegisterPage(onSignedIn: widget.onSignedIn)));
               }),
           FlatButton(
@@ -118,16 +119,17 @@ class LoginPageState extends State<LoginPage> {
         ),
         onPressed: () {
           if (_formKey.currentState.validate()) {
+            loadingOverlay.show(context: context, message: "Logging in...");
             widget.authenticator
                 .signInWithEmailAndPassword(_emailController.text, _passwordController.text)
                 .then((user) {
+              loadingOverlay.hide();
               App.instance.refreshLoggedInUserFcmToken();
               print('${user.displayName} has logged in using email and password');
               widget.onSignedIn();
             }).catchError((error) {
               final snackbar = SnackBar(
-                content: Text('Error while trying to log in: \n ${error
-                    .message}'),
+                content: Text('Error while trying to log in: \n ${error.message}'),
               );
               scaffoldKey.currentState.showSnackBar(snackbar);
               print(error);
@@ -142,7 +144,9 @@ class LoginPageState extends State<LoginPage> {
     return RaisedButton(
       child: Text('log in with google'),
       onPressed: () {
+        loadingOverlay.show(context: context, message: "Logging in with google...");
         widget.authenticator.signInWithGoogle().then((signedInUser) {
+          loadingOverlay.hide();
           if (signedInUser != null) {
             widget.onSignedIn();
           }

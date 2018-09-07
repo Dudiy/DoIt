@@ -10,13 +10,13 @@ class LoadingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.white12,
+      color: Colors.black87,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CircularProgressIndicator(),
-            Text("Loading..."),
+            Text("Loading page...", style: TextStyle(color: Colors.white),),
           ],
         ),
       ),

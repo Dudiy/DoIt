@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:do_it/app.dart';
 import 'package:do_it/authenticator.dart';
+import 'package:do_it/widgets/custom/loadingOverlay.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:flutter/material.dart';
 
@@ -23,6 +24,7 @@ class RegisterPageState extends State<RegisterPage> {
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final LoadingOverlay loadingOverlay = new LoadingOverlay();
 
   @override
   Widget build(BuildContext context) {
@@ -76,11 +78,13 @@ class RegisterPageState extends State<RegisterPage> {
                             print("clicked register");
                             if (_formKey.currentState.validate()) {
                               try {
+                                loadingOverlay.show(context: context, message: "Registering new user...");
                                 await widget.auth.registerUserWithEmailAndPassword(
                                   email: _emailController.text,
                                   password: _passwordController.text,
                                   displayName: _displayNameController.text,
                                 );
+                                loadingOverlay.hide();
                                 Navigator.pop(context);
                                 widget.onSignedIn();
                               } catch (e) {
