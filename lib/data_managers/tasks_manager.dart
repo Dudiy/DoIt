@@ -39,11 +39,10 @@ class TasksManager {
     if (!allowNonManagerAdd && parentGroupManagerID != loggedInUser.userID)
       throw Exception('only group manager can add tasks to group');
 
-
     String _taskID = App.instance.generateRandomID();
     startTime = startTime ?? DateTime.now();
-    if(endTime != null && startTime.isAfter(endTime)){
-      throw TaskException(TaskMethodResult.START_TIME_AFTER_END_TIME,'start time can\'t be after end time');
+    if (endTime != null && startTime.isAfter(endTime)) {
+      throw TaskException(TaskMethodResult.START_TIME_AFTER_END_TIME, 'start time can\'t be after end time');
     }
     TaskInfo taskInfo = new TaskInfo(
       taskID: _taskID,
@@ -71,7 +70,8 @@ class TasksManager {
           .then((val) => print('TaskManager: Task \"$title\" was added succesfully to group'));
     }).catchError((e) {
       print('TasksManager: error while trying to add task');
-      throw new Exception('TasksManager: error while trying to add task. \ninner:${e.message}');
+      throw TaskException(
+          TaskMethodResult.ADD_TASK_FAIL, 'TasksManager: error while trying to add task. \ninner:${e.message}');
     });
   }
 

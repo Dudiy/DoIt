@@ -9,6 +9,7 @@ import 'package:do_it/data_classes/task/eRecurringPolicies.dart';
 import 'package:do_it/data_classes/task/task_info_completed.dart';
 import 'package:do_it/data_classes/task/task_info_short.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
+import 'package:do_it/data_managers/task_manager_exception.dart';
 import 'package:do_it/data_managers/task_manager_result.dart';
 import 'package:do_it/widgets/custom/imageContainer.dart';
 import 'package:do_it/widgets/custom/dialog.dart';
@@ -369,22 +370,27 @@ class SingleGroupPageState extends State<SingleGroupPage> {
         ],
         title: 'Add task',
         onSubmit: () {
-          try {
-            app.tasksManager.addTask(
-              title: _titleController.text,
-              description: _descriptionController.text,
-              value: int.parse(_valueController.text),
-              startTime: _selectedStartTime,
-              endTime: _selectedEndTime,
-              assignedUsers: null,
-              recurringPolicy: _selectedPolicy,
-              parentGroupID: groupInfo.groupID,
-              parentGroupManagerID: groupInfo.managerID,
-            );
-          } catch (e) {
-            // TODO catch START_TIME_AFTER_END_TIME and manage
-            print(e);
-          }
+          app.tasksManager
+              .addTask(
+            title: _titleController.text,
+            description: _descriptionController.text,
+            value: int.parse(_valueController.text),
+            startTime: _selectedStartTime,
+            endTime: _selectedEndTime,
+            assignedUsers: null,
+            recurringPolicy: _selectedPolicy,
+            parentGroupID: groupInfo.groupID,
+            parentGroupManagerID: groupInfo.managerID,
+          )
+              .catchError((error) {
+            print(error.toString());
+            if (error is TaskException) {
+              DoItDialogs.showErrorDialog(
+                context: context,
+                message: TaskMethodResultUtils.message(error.result),
+              );
+            }
+          });
         });
   }
 
@@ -649,13 +655,14 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       DoItDialogs.showNotificationDialog(
         context: context,
         title: "Congratulations !",
-        body: TaskMethodResultUtils.message(TaskMethodResult.SUCCESS, taskInfo.title),
+        body: TaskMethodResultUtils.message(TaskMethodResult.COMPLETE_SUCCESS, taskInfo.title),
       );
       fetchCompletedTasksFromServer();
     }).catchError((error) {
       print(error.toString());
-      DoItDialogs.showErrorDialog(
-          context: context, message: TaskMethodResultUtils.message(error.result, taskInfo.title));
+      if (error is TaskException) {
+        DoItDialogs.showErrorDialog(context: context, message: TaskMethodResultUtils.message(error.result));
+      }
     });
   }
 

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:do_it/app.dart';
 import 'package:do_it/constants/should_be_sync.dart';
 import 'package:do_it/data_classes/task/task_info.dart';
+import 'package:do_it/data_managers/task_manager_exception.dart';
 import 'package:do_it/data_managers/task_manager_result.dart';
 import 'package:do_it/widgets/custom/dialog.dart';
 import 'package:flutter/services.dart';
@@ -79,18 +80,20 @@ class _LifecycleNfcWatcherState extends State<LifecycleNfcWatcher> with WidgetsB
   Future<void> _completeTask(taskId) async {
     TaskInfo taskInfo = await app.tasksManager.getTaskById(taskId);
     await app.tasksManager.completeTask(taskID: taskId, userWhoCompletedID: app.getLoggedInUserID()).then((dummyVal) {
-      print(TaskMethodResult.SUCCESS.toString());
+      print(TaskMethodResult.COMPLETE_SUCCESS.toString());
       DoItDialogs.showNotificationDialog(
         context: context,
         title: "NFC has trigger",
-        body: TaskMethodResultUtils.message(TaskMethodResult.SUCCESS, taskInfo.title),
+        body: TaskMethodResultUtils.message(TaskMethodResult.COMPLETE_SUCCESS, taskInfo.title),
       );
     }).catchError((error) {
       print(error.toString());
-      DoItDialogs.showErrorDialog(
-        context: context,
-        message: TaskMethodResultUtils.message(error.result, taskInfo.title),
-      );
+      if(error is TaskException) {
+        DoItDialogs.showErrorDialog(
+          context: context,
+          message: TaskMethodResultUtils.message(error.result),
+        );
+      }
     });
   }
 

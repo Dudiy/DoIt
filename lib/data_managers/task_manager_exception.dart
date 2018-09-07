@@ -7,4 +7,11 @@ class TaskException implements Exception {
   TaskException(this._result, String message) : _exception = new Exception(message);
 
   TaskMethodResult get result => _result;
+
+  @override
+  String toString() {
+    return _exception.toString();
+  }
+
+
 }
