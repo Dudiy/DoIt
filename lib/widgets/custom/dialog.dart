@@ -77,7 +77,6 @@ class DoItDialogs {
         onPressed: () async {
           if (_formKey.currentState.validate()) {
             onSubmit();
-            Navigator.pop(context);
           }
         },
       ),

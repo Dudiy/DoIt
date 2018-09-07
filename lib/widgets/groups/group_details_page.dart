@@ -228,6 +228,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
               message: 'No user is registered with the email: ${_emailController.text} \n\n** email addresses are case sensitive **'
           );
         });
+        Navigator.pop(context);
       },
     );
   }

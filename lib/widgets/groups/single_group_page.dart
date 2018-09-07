@@ -369,8 +369,9 @@ class SingleGroupPageState extends State<SingleGroupPage> {
           }),
         ],
         title: 'Add task',
-        onSubmit: () {
-          app.tasksManager
+        onSubmit: () async {
+          bool closeDialog = true;
+          await app.tasksManager
               .addTask(
             title: _titleController.text,
             description: _descriptionController.text,
@@ -390,7 +391,11 @@ class SingleGroupPageState extends State<SingleGroupPage> {
                 message: TaskMethodResultUtils.message(error.result),
               );
             }
+            closeDialog = false;
           });
+          if (closeDialog) {
+            Navigator.pop(context);
+          }
         });
   }
 

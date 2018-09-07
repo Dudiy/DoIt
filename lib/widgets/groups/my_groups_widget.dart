@@ -162,6 +162,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
           title: _groupTitleController.text,
           description: _groupDescriptionController.text,
         );
+        Navigator.pop(context);
       },
     );
   }

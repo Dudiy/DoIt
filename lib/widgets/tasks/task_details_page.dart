@@ -198,6 +198,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
                   body: _notificationController.text,
                   destUsersFcmTokens: _tokens,
                 );
+                Navigator.pop(context);
               },
             );
           }),
