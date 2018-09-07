@@ -66,7 +66,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                   FlatButton(
                       child: Icon(Icons.insert_photo),
                       onPressed: () async {
-                        await App.instance.groupsManager.uploadGroupPic(widget.groupInfo, ()=>{});
+                        await App.instance.groupsManager.uploadGroupPic(widget.groupInfo, () => {});
                         widget.setGroupInfo(widget.groupInfo);
                       }),
                 ])),
@@ -211,6 +211,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
       ],
       title: 'Add Member',
       onSubmit: () async {
+        bool closeDialog = true;
         await app.groupsManager
             .addMember(groupID: widget.groupInfo.groupID, newMemberEmail: _emailController.text)
             .then((newMember) async {
@@ -222,13 +223,17 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
           setState(() {
             _groupMembers.putIfAbsent(newMember.userID, () => newMember);
           });
-        }).catchError((err){
+        }).catchError((err) {
+          print(err);
           DoItDialogs.showErrorDialog(
-              context:context,
-              message: 'No user is registered with the email: ${_emailController.text} \n\n** email addresses are case sensitive **'
-          );
+              context: context,
+              message:
+                  'No user is registered with the email: ${_emailController.text} \n\n** email addresses are case sensitive **');
+          closeDialog = false;
         });
-        Navigator.pop(context);
+        if (closeDialog) {
+          Navigator.pop(context);
+        }
       },
     );
   }
