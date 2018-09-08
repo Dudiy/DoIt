@@ -27,7 +27,7 @@
     <application
         android:name="io.flutter.app.FlutterApplication"
         android:label="DoIt"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/doit_icon">
         <activity
             android:name=".NfcActivity"
             android:launchMode="singleTop"

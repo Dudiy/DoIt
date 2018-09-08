@@ -41,6 +41,13 @@ flutter:
     - assets/images/unknown_profile_pic.jpg
     - assets/images/default_group_icon.jpg
     - assets/images/podium.png
+    - assets/logo.jpg
+    - assets/logo.png
+    - assets/logo_with_shadow.png
+    - assets/logo_O_with_shadow.png
+    - assets/logo_O.jpg
+    - assets/logo_O.png
+    - assets/loading_anim_high.gif
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.

@@ -35,13 +35,14 @@ class LoginPageState extends State<LoginPage> {
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              _drawLogo(context),
-              SizedBox(height: 20.0),
+              SizedBox(height: 40.0),
+              Image.asset('assets/logo_with_shadow.png', height: 120.0, width: 120.0),
               _drawLoginForm(),
-              SizedBox(height: 20.0),
               Divider(color: Colors.black),
               _drawSignInServices(),
+              SizedBox(height: 20.0),
             ],
           ),
         ),
@@ -52,16 +53,9 @@ class LoginPageState extends State<LoginPage> {
   Widget _drawLogo(BuildContext context) {
     return Column(
       children: <Widget>[
-        SizedBox(height: 40.0),
         Column(
           children: <Widget>[
-//                Image.asset('assets/diamond.png'), //TODO placeholder for logo
-            SizedBox(height: 16.0),
-            Text(
-              'DoIt',
-              style: Theme.of(context).textTheme.headline,
-            ),
-            SizedBox(height: 40.0),
+            Image.asset('assets/logo.png', height: 120.0, width: 120.0,)
           ],
         ),
       ],
@@ -79,7 +73,6 @@ class LoginPageState extends State<LoginPage> {
             controller: _emailController,
             label: 'Email',
           ),
-          SizedBox(height: 12.0),
           DoItTextField(
             controller: _passwordController,
             label: 'Password',

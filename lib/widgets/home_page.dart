@@ -28,7 +28,7 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  static const LOADING_GIF = 'assets/images/loading_profile_pic.png';
+  static const LOADING_GIF = 'assets/loading_anim_high.gif';
   static const DEFAULT_PICTURE = 'assets/images/unknown_profile_pic.jpg';
   String photoUrl = DEFAULT_PICTURE;
 

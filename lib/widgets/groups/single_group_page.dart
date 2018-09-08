@@ -35,7 +35,7 @@ class SingleGroupPage extends StatefulWidget {
 }
 
 class SingleGroupPageState extends State<SingleGroupPage> {
-  static const LOADING_GIF = 'assets/images/loading_profile_pic.png';
+  static const LOADING_GIF = 'assets/loading_anim_high.gif';
   static const DEFAULT_PICTURE = 'assets/images/default_group_icon.jpg';
   String photoUrl = DEFAULT_PICTURE;
   final App app = App.instance;

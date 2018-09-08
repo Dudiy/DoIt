@@ -73,6 +73,7 @@ class _RootPageState extends State<RootPage> {
         break;
       case eAuthenticationStatus.NOT_SIGNED_IN:
         widgetToReturn = LoginPage(onSignedIn: _signedIn);
+//        widgetToReturn = LoadingPage();
         break;
       case eAuthenticationStatus.SIGNED_IN:
         widgetToReturn = HomePage(onSignedOut: _signedOut);

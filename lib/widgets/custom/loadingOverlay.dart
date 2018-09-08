@@ -18,7 +18,7 @@ class LoadingOverlay {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              CircularProgressIndicator(),
+              Image.asset('assets/loading_anim_high.gif', height: 100.0, width: 100.0),
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Text(
