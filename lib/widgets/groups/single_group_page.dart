@@ -12,17 +12,15 @@ import 'package:do_it/data_classes/task/task_info_utils.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/data_managers/task_manager_exception.dart';
 import 'package:do_it/data_managers/task_manager_result.dart';
-import 'package:do_it/widgets/custom/imageContainer.dart';
 import 'package:do_it/widgets/custom/dialog.dart';
+import 'package:do_it/widgets/custom/imageContainer.dart';
 import 'package:do_it/widgets/custom/loadingOverlay.dart';
 import 'package:do_it/widgets/custom/recurring_policy_field.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:do_it/widgets/custom/time_field.dart';
 import 'package:do_it/widgets/groups/group_details_page.dart';
-import 'package:do_it/widgets/loadingPage.dart';
 import 'package:do_it/widgets/tasks/task_card.dart';
 import 'package:do_it/widgets/tasks/task_details_page.dart';
-import 'package:do_it/widgets/test_page.dart';
 import 'package:flutter/material.dart';
 
 class SingleGroupPage extends StatefulWidget {
@@ -44,7 +42,6 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   String photoUrl = DEFAULT_PICTURE;
   List<ShortTaskInfo> _allGroupTasks;
   List<CompletedTaskInfo> _completedTasks;
-  Map<String, bool> _myTasksCheckboxes = new Map();
   GroupInfo groupInfo;
   bool _myTasksIsExpanded = true;
   bool _othersTasksIsExpanded = false;
@@ -189,8 +186,8 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     app.groupsManager.getMyGroupTasksFromDB(groupInfo.groupID).then((tasks) {
       setState(() {
         _allGroupTasks = tasks;
-        _myTasksCheckboxes
-            .addAll(Map.fromIterable(tasks, key: (task) => (task as ShortTaskInfo).taskID, value: (task) => false));
+//        _myTasksCheckboxes
+//            .addAll(Map.fromIterable(tasks, key: (task) => (task as ShortTaskInfo).taskID, value: (task) => false));
       });
     });
   }
@@ -201,8 +198,8 @@ class SingleGroupPageState extends State<SingleGroupPage> {
         : _allGroupTasks.where((taskInfo) {
             return (taskInfo.startTime.isBefore(DateTime.now())) &&
                 (taskInfo.assignedUsers == null ||
-                taskInfo.assignedUsers.length == 0 ||
-                taskInfo.assignedUsers.containsKey(app.loggedInUser.userID));
+                    taskInfo.assignedUsers.length == 0 ||
+                    taskInfo.assignedUsers.containsKey(app.loggedInUser.userID));
           }).length;
   }
 
@@ -237,15 +234,14 @@ class SingleGroupPageState extends State<SingleGroupPage> {
         tasksList.add(Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: TaskCard(
-            taskInfo: taskInfo,
-            parentScaffoldKey: scaffoldKey,
-            onTapped: () {
-              app.tasksManager.getTaskById(taskInfo.taskID).then((taskInfo) {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetailsPage(taskInfo)));
-              });
-            },
-            onCompleted: fetchCompletedTasksFromServer
-          ),
+              taskInfo: taskInfo,
+              parentScaffoldKey: scaffoldKey,
+              onTapped: () {
+                app.tasksManager.getTaskById(taskInfo.taskID).then((taskInfo) {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetailsPage(taskInfo)));
+                });
+              },
+              onCompleted: fetchCompletedTasksFromServer),
         ));
       }
     });
@@ -279,8 +275,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
                   });
                 }
               },
-              onCompleted: fetchCompletedTasksFromServer
-          ),
+              onCompleted: fetchCompletedTasksFromServer),
         ));
       }
     });
@@ -321,14 +316,16 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     List<Widget> tasksList = new List();
     tasksList.add(timeSpanSelectors);
     _completedTasks.forEach((completedTask) {
-      tasksList.add(ListTile(
-        title: Text('${completedTask.title} (${completedTask.value.toString()})'),
-        subtitle: Text(
-          completedTask.description ?? "no description",
-          maxLines: 3,
-        ),
-        trailing: _completedTaskCheckbox(completedTask),
-      ));
+      tasksList.add(
+        TaskCard(
+            taskInfo: completedTask,
+            parentScaffoldKey: scaffoldKey,
+            showCheckbox: app.loggedInUser.userID == completedTask.userWhoCompleted.userID ||
+                app.loggedInUser.userID == completedTask.parentGroupManagerID,
+            isChecked: true,
+            onTapped: () {},
+            onCompleted: () => fetchCompletedTasksFromServer()),
+      );
     });
     return Padding(padding: EdgeInsets.all(20.0), child: Column(children: tasksList));
   }
@@ -470,8 +467,6 @@ class SingleGroupPageState extends State<SingleGroupPage> {
         .then((completedTasks) {
       setState(() {
         _completedTasks = completedTasks;
-        _myTasksCheckboxes.addAll(Map.fromIterable(completedTasks,
-            key: (completedTask) => (completedTask as CompletedTaskInfo).taskID, value: (completedTask) => true));
       });
     });
   }
@@ -491,28 +486,6 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     );
   }
 
-  _completedTaskCheckbox(CompletedTaskInfo completedTask) {
-    bool isEnabled = app.loggedInUser.userID == completedTask.userWhoCompleted.userID ||
-        app.loggedInUser.userID == completedTask.parentGroupManagerID;
-    return isEnabled
-        ? Checkbox(
-            value: _myTasksCheckboxes[completedTask.taskID] ?? true,
-            onChanged: (value) {
-              setState(() {
-                _myTasksCheckboxes[completedTask.taskID] = false;
-                app.tasksManager
-                    .unCompleteTask(parentGroupID: completedTask.parentGroupID, taskID: completedTask.taskID)
-                    .then((val) {
-                  fetchCompletedTasksFromServer();
-                });
-              });
-            })
-        : Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: Icon(Icons.check_box, color: Theme.of(context).disabledColor),
-          );
-  }
-
   _getExpansionPanels(BuildContext context) {
     List<ExpansionPanel> _expansionPanels = new List();
     String numTasksAssignedToMeStr =
@@ -523,7 +496,10 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     _expansionPanels.add(ExpansionPanel(
       headerBuilder: (BuildContext context, bool isExpanded) {
         return Center(
-            child: Text('Tasks assigned to me $numTasksAssignedToMeStr', style: Theme.of(context).textTheme.title));
+            child: Text(
+          'Tasks assigned to me $numTasksAssignedToMeStr',
+          style: Theme.of(context).textTheme.title,
+        ));
       },
       body: getTasksAssignedToMe(),
       isExpanded: _myTasksIsExpanded,
@@ -591,14 +567,20 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     if (_futureTasks.length == 0) return noFutureTasks;
     List<Widget> tasksList = new List();
     _futureTasks.forEach((taskInfo) {
-      tasksList.add(ListTile(
-        title: Text('${taskInfo.title} (${taskInfo.value.toString()})'),
-        subtitle: Text(taskInfo.description ?? "no description", maxLines: 3),
-        onTap: () {
-          app.tasksManager.getTaskById(taskInfo.taskID).then((taskInfo) {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetailsPage(taskInfo)));
-          });
-        },
+      tasksList.add(Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: TaskCard(
+          taskInfo: taskInfo,
+          parentScaffoldKey: scaffoldKey,
+          showCheckbox: false,
+          isChecked: false,
+          onTapped: () {
+            app.tasksManager.getTaskById(taskInfo.taskID).then((taskInfo) {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetailsPage(taskInfo)));
+            });
+          },
+          onCompleted: fetchCompletedTasksFromServer,
+        ),
       ));
     });
     return Column(
@@ -657,31 +639,6 @@ class SingleGroupPageState extends State<SingleGroupPage> {
             leaveGroup();
           }),
     );
-  }
-
-  void _completeTask(ShortTaskInfo taskInfo) {
-    setState(() {
-      _myTasksCheckboxes[taskInfo.taskID] = true;
-    });
-    app.tasksManager
-        .completeTask(taskID: taskInfo.taskID, userWhoCompletedID: app.loggedInUser.userID)
-        .then((dummyVal) {
-      final String successMessage = TaskMethodResultUtils.message(TaskMethodResult.COMPLETE_SUCCESS, taskInfo.title);
-      final snackBar = SnackBar(
-        content: Text(successMessage),
-      );
-      scaffoldKey.currentState.showSnackBar(snackBar);
-      print(successMessage);
-      fetchCompletedTasksFromServer();
-    }).catchError((error) {
-      print(error.toString());
-      if (error is TaskException) {
-        DoItDialogs.showErrorDialog(
-          context: context,
-          message: TaskMethodResultUtils.message(error.result),
-        );
-      }
-    });
   }
 
   void showLoadingOverlay(BuildContext context) {

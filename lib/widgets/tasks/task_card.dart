@@ -1,6 +1,8 @@
 import 'package:do_it/app.dart';
 import 'package:do_it/data_classes/task/eRecurringPolicies.dart';
+import 'package:do_it/data_classes/task/task_info_completed.dart';
 import 'package:do_it/data_classes/task/task_info_short.dart';
+import 'package:do_it/data_classes/task/task_interface.dart';
 import 'package:do_it/data_managers/task_manager_exception.dart';
 import 'package:do_it/data_managers/task_manager_result.dart';
 import 'package:do_it/widgets/custom/dialog.dart';
@@ -10,7 +12,7 @@ import 'package:do_it/widgets/tasks/task_details_page.dart';
 import 'package:flutter/material.dart';
 
 class TaskCard extends StatefulWidget {
-  final ShortTaskInfo taskInfo;
+  final Task taskInfo;
   final GlobalKey<ScaffoldState> parentScaffoldKey;
   final Function onTapped;
   final Function onCompleted;
@@ -31,7 +33,7 @@ class TaskCard extends StatefulWidget {
 
   @override
   TaskCardState createState() {
-    return new TaskCardState(isChecked: isChecked);
+    return new TaskCardState(isChecked: isChecked, taskInfo: taskInfo);
   }
 }
 
@@ -39,13 +41,22 @@ class TaskCardState extends State<TaskCard> {
   App app = App.instance;
   bool isChecked;
   bool isOverdue;
+  ShortTaskInfo shortTaskInfo;
+  CompletedTaskInfo completedTaskInfo;
 
-  TaskCardState({this.isChecked});
+  TaskCardState({@required taskInfo, this.isChecked}) {
+    assert(taskInfo.runtimeType == ShortTaskInfo || taskInfo.runtimeType == CompletedTaskInfo);
+    if (taskInfo.runtimeType == ShortTaskInfo) {
+      shortTaskInfo = taskInfo;
+    } else {
+      completedTaskInfo = taskInfo;
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    isOverdue = widget.taskInfo.endTime?.isBefore(DateTime.now()) ?? false;
+    isOverdue = shortTaskInfo?.endTime?.isBefore(DateTime.now()) ?? false;
   }
 
   @override
@@ -54,7 +65,9 @@ class TaskCardState extends State<TaskCard> {
     return Card(
       elevation: 5.0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-      color: isOverdue ? Colors.red : Theme.of(context).primaryColorLight,
+      color: (widget.taskInfo.runtimeType == CompletedTaskInfo)
+          ? Colors.greenAccent
+          : isOverdue ? Colors.red : Theme.of(context).primaryColorLight,
       child: Container(
         margin: EdgeInsets.all(4.0),
         child: RaisedButton(
@@ -62,9 +75,11 @@ class TaskCardState extends State<TaskCard> {
           color: Colors.white,
           highlightColor: Theme.of(context).primaryColorLight,
           onPressed: () {
-            App.instance.tasksManager.getTaskById(widget.taskInfo.taskID).then((taskInfo) {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetailsPage(taskInfo)));
-            });
+            if (widget.taskInfo.runtimeType == ShortTaskInfo) {
+              App.instance.tasksManager.getTaskById(widget.taskInfo.taskID).then((taskInfo) {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetailsPage(taskInfo)));
+              });
+            }
           },
           padding: EdgeInsets.all(10.0),
           child: Row(
@@ -88,7 +103,9 @@ class TaskCardState extends State<TaskCard> {
                     Text(description, maxLines: 3, overflow: TextOverflow.ellipsis),
                     // due date and recurring policy
                     Divider(height: 10.0),
-                    _generateDueDateText(),
+                    widget.taskInfo.runtimeType == ShortTaskInfo
+                        ? _generateDueDateText()
+                        : _generateUserCompletedText(),
                   ],
                 ),
               ),
@@ -101,21 +118,22 @@ class TaskCardState extends State<TaskCard> {
   }
 
   Widget _generateDueDateText() {
-    Widget reccuring = (widget.taskInfo.recurringPolicy == eRecurringPolicy.none)
+    if (shortTaskInfo == null) throw Exception('due date text is not valid for completedTask');
+    Widget recurring = (shortTaskInfo.recurringPolicy == eRecurringPolicy.none)
         ? Container(width: 0.0, height: 0.0)
         : Row(
             children: <Widget>[
               Icon(Icons.replay),
-              Text(RecurringPolicyUtils.policyToString(widget.taskInfo.recurringPolicy))
+              Text(RecurringPolicyUtils.policyToString(shortTaskInfo.recurringPolicy))
             ],
           );
 
-    String endTime = DoItTimeField.formatDateTime(widget.taskInfo.endTime);
+    String endTime = DoItTimeField.formatDateTime(shortTaskInfo.endTime);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         Text(endTime),
-        reccuring,
+        recurring,
       ],
     );
   }
@@ -128,7 +146,12 @@ class TaskCardState extends State<TaskCard> {
               Checkbox(
                 value: isChecked,
                 onChanged: (value) {
-                  _completeTask();
+                  value
+                      ? _completeTask()
+                      : app.tasksManager
+                          .unCompleteTask(
+                              parentGroupID: completedTaskInfo.parentGroupID, taskID: completedTaskInfo.taskID)
+                          .whenComplete(widget.onCompleted);
                   setState(() {
                     isChecked = value;
                   });
@@ -140,7 +163,6 @@ class TaskCardState extends State<TaskCard> {
   }
 
   void _completeTask() {
-    ShortTaskInfo shortTaskInfo = widget.taskInfo;
     app.tasksManager
         .completeTask(taskID: shortTaskInfo.taskID, userWhoCompletedID: app.loggedInUser.userID)
         .then((dummyVal) {
@@ -161,5 +183,11 @@ class TaskCardState extends State<TaskCard> {
         );
       }
     });
+  }
+
+  Text _generateUserCompletedText() {
+    if (completedTaskInfo == null) throw Exception('User completed text is not valid for shortTaskInfo');
+    String completedDateString = DoItTimeField.formatDateTime(completedTaskInfo.completedTime);
+    return Text('Completed by: ${completedTaskInfo.userWhoCompleted.displayName}, on $completedDateString');
   }
 }

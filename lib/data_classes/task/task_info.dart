@@ -2,11 +2,12 @@ import 'package:do_it/app.dart';
 import 'package:do_it/data_classes/task/eRecurringPolicies.dart';
 import 'package:do_it/data_classes/task/task_info_completed.dart';
 import 'package:do_it/data_classes/task/task_info_short.dart';
+import 'package:do_it/data_classes/task/task_interface.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/data_classes/user/user_info_utils.dart';
 import 'package:meta/meta.dart';
 
-class TaskInfo {
+class TaskInfo implements Task{
   String _taskID;
   String _title;
   String _description;

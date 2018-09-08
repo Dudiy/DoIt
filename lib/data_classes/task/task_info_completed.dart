@@ -1,8 +1,9 @@
+import 'package:do_it/data_classes/task/task_interface.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/data_classes/user/user_info_utils.dart';
 import 'package:meta/meta.dart';
 
-class CompletedTaskInfo {
+class CompletedTaskInfo implements Task {
   String _taskID;
   String _title;
   String _description;
