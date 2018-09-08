@@ -37,8 +37,9 @@ class SingleGroupPage extends StatefulWidget {
 class SingleGroupPageState extends State<SingleGroupPage> {
   static const LOADING_GIF = 'assets/images/loading_profile_pic.png';
   static const DEFAULT_PICTURE = 'assets/images/default_group_icon.jpg';
-  String photoUrl = DEFAULT_PICTURE;
   final App app = App.instance;
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  String photoUrl = DEFAULT_PICTURE;
   List<ShortTaskInfo> _allGroupTasks;
   List<CompletedTaskInfo> _completedTasks;
   Map<String, bool> _myTasksCheckboxes = new Map();
@@ -81,6 +82,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       photoUrl = DEFAULT_PICTURE;
     }
     return Scaffold(
+        key: scaffoldKey,
         body: CustomScrollView(
           slivers: <Widget>[
             SliverAppBar(
@@ -657,16 +659,20 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     app.tasksManager
         .completeTask(taskID: taskInfo.taskID, userWhoCompletedID: app.loggedInUser.userID)
         .then((dummyVal) {
-      DoItDialogs.showNotificationDialog(
-        context: context,
-        title: "Congratulations !",
-        body: TaskMethodResultUtils.message(TaskMethodResult.COMPLETE_SUCCESS, taskInfo.title),
+      final String successMessage = TaskMethodResultUtils.message(TaskMethodResult.COMPLETE_SUCCESS, taskInfo.title);
+      final snackBar = SnackBar(
+        content: Text(successMessage),
       );
+      scaffoldKey.currentState.showSnackBar(snackBar);
+      print(successMessage);
       fetchCompletedTasksFromServer();
     }).catchError((error) {
       print(error.toString());
       if (error is TaskException) {
-        DoItDialogs.showErrorDialog(context: context, message: TaskMethodResultUtils.message(error.result));
+        DoItDialogs.showErrorDialog(
+          context: context,
+          message: TaskMethodResultUtils.message(error.result),
+        );
       }
     });
   }
