@@ -7,11 +7,23 @@ class DoItTimeField extends StatefulWidget {
   final Function onDateTimeUpdated;
   final DateTime initDateTime;
   final bool enabled;
+  final Function validator;
+  final String validationMessage;
+
+  static String formatDateTime(DateTime dateTime) {
+    return dateTime == null
+        ? "Time not set"
+        : '${dateTime.day}/${dateTime.month}/${dateTime.year} - '
+        '${dateTime.hour > 9 ? dateTime.hour : '0${dateTime.hour}'}:'
+        '${dateTime.minute > 9 ? dateTime.minute : '0${dateTime.minute}'}';
+  }
 
   DoItTimeField({
     @required this.onDateTimeUpdated,
     this.initDateTime,
     this.label,
+    this.validator,
+    this.validationMessage = "value is invalid",
     this.enabled = true,
   });
 
@@ -91,6 +103,12 @@ class DoItTimeFieldState extends State<DoItTimeField> {
                       TextFormField(
                         controller: controller,
                         enabled: false,
+                        validator: (String ignoredString) {
+                          if (widget.validator != null &&
+                              !widget.validator(_selectedDate)) {
+                            return widget.validationMessage;
+                          }
+                        },
 //                        textAlign: TextAlign.center,
                         decoration: InputDecoration(
                           labelText: widget.label,
@@ -107,7 +125,9 @@ class DoItTimeFieldState extends State<DoItTimeField> {
                                   borderRadius: BorderRadius.horizontal(
                                 right: Radius.circular(16.0),
                               )),
-                              color: widget.enabled ? Theme.of(context).primaryColorLight : Theme.of(context).disabledColor,
+                              color: widget.enabled
+                                  ? Theme.of(context).primaryColorLight
+                                  : Theme.of(context).disabledColor,
                               child: Icon(Icons.date_range),
                               onPressed: () {
                                 if (widget.enabled) {

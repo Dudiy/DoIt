@@ -90,21 +90,27 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
       tooltip: 'Save changes',
       splashColor: Theme.of(context).primaryColorLight,
       onPressed: () async {
-        await app.tasksManager
-            .updateTask(
-          taskIdToChange: widget.taskInfo.taskID,
-          title: _titleController.text.isNotEmpty ? _titleController.text : null,
-          description: _descriptionController.text.isNotEmpty ? _descriptionController.text : null,
-          value: _valueController.text.isNotEmpty ? int.parse(_valueController.text) : null,
-          startTime: _selectedStartDateTime,
-          endTime: _selectedEndDateTime,
-          recurringPolicy: _selectedPolicy,
-        )
-            .then((newGroupInfo) {
-          // TODO check if we need this
-//            widget.onTaskInfoChanged(newGroupInfo);
-        });
-        Navigator.pop(context);
+        try {
+          if (_formKey.currentState.validate()) {
+            await app.tasksManager
+                .updateTask(
+              taskIdToChange: widget.taskInfo.taskID,
+              title: _titleController.text.isNotEmpty ? _titleController.text : null,
+              description: _descriptionController.text.isNotEmpty ? _descriptionController.text : null,
+              value: _valueController.text.isNotEmpty ? int.parse(_valueController.text) : null,
+              startTime: _selectedStartDateTime,
+              endTime: _selectedEndDateTime,
+              recurringPolicy: _selectedPolicy,
+            )
+                .then((newGroupInfo) {
+              // TODO check if we need this
+              //            widget.onTaskInfoChanged(newGroupInfo);
+            });
+            Navigator.pop(context);
+          }
+        } catch (e) {
+          DoItDialogs.showErrorDialog(context: context, message: e.message);
+        }
       },
     );
   }

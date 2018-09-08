@@ -43,8 +43,20 @@ class TaskUtils {
     );
   }
 
+  static int compare(ShortTaskInfo task1, ShortTaskInfo task2){
+    if (task1.endTime == null && task2.endTime == null) return 0;
+    if (task1.endTime == null) return 1;
+    if (task2.endTime == null) return -1;
+    if (task1.endTime == task2.endTime) return 0;
+    return task1.endTime.isAfter(task2.endTime) ? 1 : -1;
+
+  }
+
   static ShortTaskInfo generateShortTaskInfoFromObject(object) {
     if (object.runtimeType == ShortTaskInfo) return object;
+    eRecurringPolicy recurringPolicy =
+        RecurringPolicyUtils.parse(object['recurringPolicy']) ??
+            eRecurringPolicy.none;
     return new ShortTaskInfo(
       taskID: object['taskID'],
       title: object['title'],
@@ -52,6 +64,7 @@ class TaskUtils {
       value: object['value'],
       startTime: object['startTime'],
       endTime: object['endTime'],
+      recurringPolicy: recurringPolicy,
       parentGroupID: object['parentGroupID'],
       parentGroupManagerID: object['parentGroupManagerID'],
       assignedUsers:
@@ -81,6 +94,7 @@ class TaskUtils {
       'parentGroupManagerID': shortTaskInfo.parentGroupManagerID,
       'startTime': shortTaskInfo.startTime,
       'endTime': shortTaskInfo.endTime,
+      'recurringPolicy': shortTaskInfo.recurringPolicy.toString(),
       'assignedUsers':
           UserUtils.generateObjectFromUsersMap(shortTaskInfo.assignedUsers),
     };

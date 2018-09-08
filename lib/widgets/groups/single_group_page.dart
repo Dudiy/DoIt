@@ -8,6 +8,7 @@ import 'package:do_it/data_classes/group/group_utils.dart';
 import 'package:do_it/data_classes/task/eRecurringPolicies.dart';
 import 'package:do_it/data_classes/task/task_info_completed.dart';
 import 'package:do_it/data_classes/task/task_info_short.dart';
+import 'package:do_it/data_classes/task/task_info_utils.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/data_managers/task_manager_exception.dart';
 import 'package:do_it/data_managers/task_manager_result.dart';
@@ -19,6 +20,7 @@ import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:do_it/widgets/custom/time_field.dart';
 import 'package:do_it/widgets/groups/group_details_page.dart';
 import 'package:do_it/widgets/loadingPage.dart';
+import 'package:do_it/widgets/tasks/task_card.dart';
 import 'package:do_it/widgets/tasks/task_details_page.dart';
 import 'package:do_it/widgets/test_page.dart';
 import 'package:flutter/material.dart';
@@ -197,9 +199,10 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     return (_allGroupTasks == null)
         ? null
         : _allGroupTasks.where((taskInfo) {
-            return taskInfo.startTime.isBefore(DateTime.now()) && taskInfo.assignedUsers == null ||
+            return (taskInfo.startTime.isBefore(DateTime.now())) &&
+                (taskInfo.assignedUsers == null ||
                 taskInfo.assignedUsers.length == 0 ||
-                taskInfo.assignedUsers.containsKey(app.loggedInUser.userID);
+                taskInfo.assignedUsers.containsKey(app.loggedInUser.userID));
           }).length;
   }
 
@@ -226,24 +229,23 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     if (_myTasks == null) return Text('Fetching tasks from server...');
     if (_myTasks.length == 0) return noTasksAssignedToMe;
     List<Widget> tasksList = new List();
+    _myTasks.sort((task1, task2) => TaskUtils.compare(task1, task2));
     _myTasks.forEach((taskInfo) {
       if (taskInfo.assignedUsers == null ||
           taskInfo.assignedUsers.length == 0 ||
           taskInfo.assignedUsers.containsKey(app.loggedInUser.userID)) {
-        tasksList.add(ListTile(
-          title: Text('${taskInfo.title} (${taskInfo.value.toString()})'),
-          subtitle: Text(taskInfo.description ?? "no description", maxLines: 3),
-          trailing: Checkbox(
-            value: _myTasksCheckboxes[taskInfo.taskID] ?? false,
-            onChanged: (dummyVal) {
-              _completeTask(taskInfo);
+        tasksList.add(Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: TaskCard(
+            taskInfo: taskInfo,
+            parentScaffoldKey: scaffoldKey,
+            onTapped: () {
+              app.tasksManager.getTaskById(taskInfo.taskID).then((taskInfo) {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetailsPage(taskInfo)));
+              });
             },
+            onCompleted: fetchCompletedTasksFromServer
           ),
-          onTap: () {
-            app.tasksManager.getTaskById(taskInfo.taskID).then((taskInfo) {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetailsPage(taskInfo)));
-            });
-          },
         ));
       }
     });
@@ -264,16 +266,21 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       if (taskInfo.assignedUsers != null &&
           taskInfo.assignedUsers.length != 0 &&
           !taskInfo.assignedUsers.containsKey(app.loggedInUser.userID)) {
-        tasksList.add(ListTile(
-          title: Text('${taskInfo.title} (${taskInfo.value.toString()})'),
-          subtitle: Text(taskInfo.description ?? "no description", maxLines: 3),
-          onTap: () {
-            if (app.loggedInUser.userID == taskInfo.parentGroupManagerID) {
-              app.tasksManager.getTaskById(taskInfo.taskID).then((taskInfo) {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetailsPage(taskInfo)));
-              });
-            }
-          },
+        tasksList.add(Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: TaskCard(
+              taskInfo: taskInfo,
+              parentScaffoldKey: scaffoldKey,
+              showCheckbox: false,
+              onTapped: () {
+                if (app.loggedInUser.userID == taskInfo.parentGroupManagerID) {
+                  app.tasksManager.getTaskById(taskInfo.taskID).then((taskInfo) {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetailsPage(taskInfo)));
+                  });
+                }
+              },
+              onCompleted: fetchCompletedTasksFromServer
+          ),
         ));
       }
     });

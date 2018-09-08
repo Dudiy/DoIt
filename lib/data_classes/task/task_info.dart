@@ -52,6 +52,7 @@ class TaskInfo {
       parentGroupManagerID: parentGroupManagerID,
       startTime: startTime,
       endTime: endTime,
+      recurringPolicy: recurringPolicy,
       assignedUsers: assignedUsers,
     );
   }

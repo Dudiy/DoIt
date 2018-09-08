@@ -1,3 +1,4 @@
+import 'package:do_it/data_classes/task/eRecurringPolicies.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/data_classes/user/user_info_utils.dart';
 import 'package:meta/meta.dart';
@@ -11,6 +12,7 @@ class ShortTaskInfo {
   String _parentGroupManagerID;
   DateTime _startTime;
   DateTime _endTime;
+  eRecurringPolicy _recurringPolicy;
   Map<String, ShortUserInfo> _assignedUsers;
 
   ShortTaskInfo({
@@ -22,6 +24,7 @@ class ShortTaskInfo {
     @required parentGroupManagerID,
     @required startTime,
     @required endTime,
+    @required recurringPolicy,
     @required assignedUsers,
   }) {
     this._taskID = taskID;
@@ -32,6 +35,7 @@ class ShortTaskInfo {
     this._parentGroupManagerID = parentGroupManagerID;
     this._startTime = startTime;
     this._endTime = endTime;
+    this._recurringPolicy = recurringPolicy;
     this._assignedUsers = UserUtils.generateUsersMapFromObject(assignedUsers);
   }
 
@@ -54,6 +58,9 @@ class ShortTaskInfo {
   DateTime get startTime => _startTime;
 
   DateTime get endTime => _endTime;
+
+  // ignore: unnecessary_getters_setters
+  eRecurringPolicy get recurringPolicy => _recurringPolicy;
 
   Map<String, ShortUserInfo> get assignedUsers => _assignedUsers;
 
@@ -81,4 +88,7 @@ class ShortTaskInfo {
       throw ArgumentError('End time cannot be before start time');
     _endTime = value;
   }
+
+  // ignore: unnecessary_getters_setters
+  set recurringPolicy(eRecurringPolicy value) => _recurringPolicy = value;
 }
