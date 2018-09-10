@@ -256,7 +256,7 @@ class GroupsManager {
   Future<Map<String, Map<String, dynamic>>> getGroupScoreboard(
       {@required String groupID, DateTime fromDate, DateTime toDate}) async {
     if (toDate == null) toDate = DateTime.now();
-    Map<String, Map<String, dynamic>> scoreBoard = new Map();
+    Map<String, Map<String, dynamic>> scoreBoard = new Map(); // {userID, {userInfo, score}}
     Map<String, ShortUserInfo> allGroupMembers = await getGroupInfoByID(groupID).then((groupInfo) {
       return groupInfo.members;
     });

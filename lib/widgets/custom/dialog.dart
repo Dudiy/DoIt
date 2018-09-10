@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:do_it/data_classes/group/group_info_short.dart';
+import 'package:do_it/widgets/groups/scoreboard_widget.dart';
 import 'package:flutter/material.dart';
 
 class DoItDialogs {
@@ -126,5 +128,17 @@ class DoItDialogs {
             ],
           );
         });
+  }
+
+  static void showGroupScoreboardDialog({@required BuildContext context, @required ShortGroupInfo groupInfo}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: Text('${groupInfo.title} - scoreboard'),
+          children: [ScoreBoard(groupInfo)],
+        );
+      },
+    );
   }
 }

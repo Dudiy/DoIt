@@ -96,7 +96,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
               )),
             ),
           ),
-          ScoreBoard(widget.groupInfo),
+          ScoreBoard(widget.groupInfo.getShortGroupInfo()),
         ],
       ),
     );
@@ -172,37 +172,6 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
             );
           }).toList());
     return list;
-  }
-
-  getScoreBoard() {
-    List<StatelessWidget> list = new List();
-    list.add(Container(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Center(
-            child: Text(
-          'Score Board',
-          style: Theme.of(context).textTheme.title.copyWith(decoration: TextDecoration.underline),
-        )),
-      ),
-    ));
-    if (_scoreBoardWidget == null) {
-      list.add(Text('fetchig score board from DB...'));
-      _scoreBoardWidget = list;
-    }
-    app.groupsManager.getGroupScoreboard(groupID: widget.groupInfo.groupID).then((scoreBoard) {
-      scoreBoard.forEach((userID, userScoreMap) {
-        ShortUserInfo userInfo = userScoreMap['userInfo'];
-        list.add(ListTile(
-          title: Text(userInfo.displayName),
-          subtitle: userScoreMap['score'],
-        ));
-      });
-    }).then((val) {
-      setState(() {
-        _scoreBoardWidget = list;
-      });
-    });
   }
 
   void _showAddMemberDialog() async {

@@ -1,10 +1,11 @@
 import 'package:do_it/app.dart';
 import 'package:do_it/data_classes/group/group_info.dart';
+import 'package:do_it/data_classes/group/group_info_short.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:flutter/material.dart';
 
 class ScoreBoard extends StatefulWidget {
-  final GroupInfo groupInfo;
+  final ShortGroupInfo groupInfo;
 
   ScoreBoard(this.groupInfo);
 
@@ -26,32 +27,36 @@ class ScoreBoardState extends State<ScoreBoard> {
   @override
   Widget build(BuildContext context) {
     return Column(children: _scoreBoardBody);
-    /*[
-      Container(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Center(
-              child: Text(
-            'Score Board',
-            style: Theme.of(context).textTheme.title.copyWith(decoration: TextDecoration.underline),
-          )),
-        ),
-      ),
-      ,
-    ]);*/
   }
 
   getScoreBoard() {
-    List<StatelessWidget> list = new List();
+    int index = 1;
+    List<Widget> list = new List();
     app.groupsManager.getGroupScoreboard(groupID: widget.groupInfo.groupID).then((scoreBoard) {
-      scoreBoard.forEach((userID, userScoreMap) {
-        ShortUserInfo userInfo = userScoreMap['userInfo'];
-        list.add(ListTile(
-          title: Text(userInfo.displayName),
-          subtitle: Text(userScoreMap['score'].toString()),
+      List test = List.from(scoreBoard.values);
+      test.sort((item1, item2) => item2['score'] - item1['score']);
+      print(test);
+      test.forEach((scoreboardItem){
+        list.add(Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: ListTile(
+            title: Row(
+              children: <Widget>[
+                Text('${index.toString()})'),
+                Expanded(
+                    child: Text(
+                      '  ${scoreboardItem['userInfo'].displayName}',
+//                  style: TextStyle(fontWeight: index < 4 ? FontWeight.bold : ""),
+                    )),
+                Text(scoreboardItem['score'].toString()),
+              ],
+            ),
+//          subtitle: ,
+          ),
         ));
+        index++;
       });
-    }).then((val) {
+    }).whenComplete(() {
       setState(() {
         _scoreBoardBody = list;
       });

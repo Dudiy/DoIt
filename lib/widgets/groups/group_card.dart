@@ -1,7 +1,9 @@
 import 'package:do_it/app.dart';
 import 'package:do_it/data_classes/group/group_info_short.dart';
+import 'package:do_it/widgets/custom/dialog.dart';
 import 'package:do_it/widgets/custom/imageContainer.dart';
 import 'package:do_it/widgets/custom/vertical_divider.dart';
+import 'package:do_it/widgets/groups/scoreboard_widget.dart';
 import 'package:do_it/widgets/groups/single_group_page.dart';
 import 'package:flutter/material.dart';
 
@@ -83,12 +85,27 @@ class GroupCard extends StatelessWidget {
                   'assets/images/podium.png',
                   height: 35.0,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  DoItDialogs.showGroupScoreboardDialog(context: context, groupInfo: shortGroupInfo);
+//                  _showGroupScoreboardDialog(context);
+                },
               ),
             )
           ],
         ),
       ),
+    );
+  }
+
+  void _showGroupScoreboardDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: Text('${shortGroupInfo.title} - scoreboard'),
+          children: [ScoreBoard(shortGroupInfo)],
+        );
+      },
     );
   }
 }
