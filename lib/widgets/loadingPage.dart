@@ -10,14 +10,15 @@ class LoadingPage extends StatelessWidget {
       color: Theme.of(context).primaryColorLight,
       child: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            SizedBox(height: 80.0),
-            Image.asset('assets/logo_with_shadow.png', height: 300.0, width: 300.0),
-            SizedBox(height: 50.0),
-            Image.asset('assets/loading_anim_high.gif', height: 100.0, width: 100.0),
-            Text("Loading page...", style: TextStyle(color: Colors.white)),
-            SizedBox(height: 80.0),
+            Image.asset('assets/logo_with_shadow.png', height: 250.0, width: 250.0),
+            Column(
+              children: <Widget>[
+                Image.asset('assets/loading_anim_high.gif', height: 100.0, width: 100.0),
+                Text("Loading page..."),
+              ],
+            ),
           ],
         ),
       ),
