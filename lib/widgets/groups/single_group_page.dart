@@ -19,6 +19,7 @@ import 'package:do_it/widgets/custom/loadingOverlay.dart';
 import 'package:do_it/widgets/custom/recurring_policy_field.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:do_it/widgets/custom/time_field.dart';
+import 'package:do_it/widgets/custom/timespan_selector.dart';
 import 'package:do_it/widgets/groups/group_details_page.dart';
 import 'package:do_it/widgets/tasks/task_card.dart';
 import 'package:do_it/widgets/tasks/task_details_page.dart';
@@ -101,20 +102,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
                 ),
                 background: Center(
                   child: GestureDetector(
-                    onTap: () {
-                      App.instance.groupsManager
-//                          .uploadGroupPic(groupInfo, () => showLoadingOverlay(context))
-                          .uploadGroupPic(groupInfo,
-                              () => loadingOverlay.show(context: context, message: "Updating group photo..."))
-                          .then((newPhoto) {
-                        loadingOverlay.hide();
-                        _groupPhotoChanged(newPhoto);
-                        setState(() {
-                          photoUrl = groupInfo.photoUrl;
-//                          loadingOverlayEntry.remove();
-                        });
-                      });
-                    },
+                    onTap: () => _groupImageClicked(context),
                     child: ImageContainer(
                       imagePath: photoUrl,
                       imageFile: groupImageFile,
@@ -142,23 +130,16 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   }
 
   void _groupImageClicked(BuildContext context) {
-    groupInfo.photoUrl = null;
     App.instance.groupsManager
         .uploadGroupPic(groupInfo, () => loadingOverlay.show(context: context, message: "Updating group photo..."))
-        .then((val) {
+        .then((newPhoto) {
+      loadingOverlay.hide();
+      _groupPhotoChanged(newPhoto);
       setState(() {
         photoUrl = groupInfo.photoUrl;
-        loadingOverlay.hide();
       });
     });
   }
-
-  // callback method
-//  setGroupInfo(GroupInfo groupInfoTest) {
-//    setState(() {
-//      this.groupInfo.photoUrl = groupInfoTest.photoUrl;
-//    });
-//  }
 
   void _groupInfoChanged(GroupInfo newGroupInfo) {
     setState(() {
@@ -518,13 +499,18 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   }
 
   Widget getCompletedTasks() {
-    Row timeSpanSelectors = Row(
-      children: <Widget>[
-        _timeSpanSelector('week', 7),
-        _timeSpanSelector('month', 31),
-        _timeSpanSelector('all time', 0),
-      ],
+    Widget timeSpanSelectors = TimeSpanSelector(
+      onTimeSelectionChanged: (valueSelected) {
+        daysBeforeTodayToShowCompletedTasks = valueSelected;
+        fetchCompletedTasksFromServer();
+      },
+      timeSpans: {
+        'week': 7,
+        'month': 31,
+        'all time': 0,
+      },
     );
+
     if (_completedTasks == null) {
       return Column(
         children: <Widget>[
@@ -666,28 +652,4 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   }
 
   //endregion
-
-  Widget _timeSpanSelector(String label, int numDays) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(6.0, 0.0, 6.0, 6.0),
-        child: RaisedButton(
-          child: Text(label),
-          onPressed: () {
-            daysBeforeTodayToShowCompletedTasks = numDays;
-            fetchCompletedTasksFromServer();
-          },
-        ),
-      ),
-    );
-  }
-
-  _getGroupImage() {
-    return groupImageFile ??
-        ImageContainer(
-          imagePath: photoUrl,
-          size: 130.0,
-          borderColor: Colors.white,
-        );
-  }
 }

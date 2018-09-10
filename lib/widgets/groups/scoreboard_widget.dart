@@ -2,6 +2,8 @@ import 'package:do_it/app.dart';
 import 'package:do_it/data_classes/group/group_info.dart';
 import 'package:do_it/data_classes/group/group_info_short.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
+import 'package:do_it/widgets/custom/time_field.dart';
+import 'package:do_it/widgets/custom/timespan_selector.dart';
 import 'package:flutter/material.dart';
 
 class ScoreBoard extends StatefulWidget {
@@ -15,12 +17,27 @@ class ScoreBoard extends StatefulWidget {
 
 class ScoreBoardState extends State<ScoreBoard> {
   final App app = App.instance;
-
-  List<Widget> _scoreBoardBody = [Text('fetchig score board from DB...')];
+  int numDaysSelected = -1;
+  TimeSpanSelector _timeSpanSelector;
+  List<Widget> _scoreBoardBody = [Text('fetching score board from DB...')];
 
   @override
   void initState() {
     super.initState();
+    _timeSpanSelector = TimeSpanSelector(
+      onTimeSelectionChanged: (value) {
+        setState(() {
+          numDaysSelected = value;
+          getScoreBoard();
+        });
+      },
+      timeSpans: {
+        'day': 1,
+        'week': 7,
+        'month': 31,
+        'all time': 0,
+      },
+    );
     getScoreBoard();
   }
 
@@ -32,34 +49,62 @@ class ScoreBoardState extends State<ScoreBoard> {
   getScoreBoard() {
     int index = 1;
     List<Widget> list = new List();
-    app.groupsManager.getGroupScoreboard(groupID: widget.groupInfo.groupID).then((scoreBoard) {
-      List test = List.from(scoreBoard.values);
-      test.sort((item1, item2) => item2['score'] - item1['score']);
-      print(test);
-      test.forEach((scoreboardItem){
-        list.add(Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          child: ListTile(
-            title: Row(
-              children: <Widget>[
-                Text('${index.toString()})'),
-                Expanded(
-                    child: Text(
-                      '  ${scoreboardItem['userInfo'].displayName}',
+    list.add(_timeSpanSelector);
+    if (numDaysSelected == -1) {
+      list.add(Text('Please select a time span'));
+      setState(() => _scoreBoardBody = list);
+    } else {
+      DateTime fromDate = _calculateFromDate();
+//      DateTime fromDate = numDaysSelected == 0 ? null : DateTime.now().add(Duration(days: -numDaysSelected));
+      list.add(Text('${DoItTimeField.formatDateTime(fromDate)} - ${DoItTimeField.formatDateTime(DateTime.now())}'));
+      app.groupsManager.getGroupScoreboard(groupID: widget.groupInfo.groupID, fromDate: fromDate).then((scoreBoard) {
+        List scoreBoardAsList = List.from(scoreBoard.values);
+        scoreBoardAsList.sort((item1, item2) => item2['score'] - item1['score']);
+        scoreBoardAsList.forEach((scoreboardItem) {
+          list.add(Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: ListTile(
+              title: Row(
+                children: <Widget>[
+                  Text('${index.toString()})'),
+                  Expanded(
+                      child: Text(
+                    '  ${scoreboardItem['userInfo'].displayName}',
 //                  style: TextStyle(fontWeight: index < 4 ? FontWeight.bold : ""),
-                    )),
-                Text(scoreboardItem['score'].toString()),
-              ],
-            ),
+                  )),
+                  Text(scoreboardItem['score'].toString()),
+                ],
+              ),
 //          subtitle: ,
-          ),
-        ));
-        index++;
+            ),
+          ));
+          index++;
+        });
+      }).whenComplete(() {
+        setState(() => _scoreBoardBody = list);
       });
-    }).whenComplete(() {
-      setState(() {
-        _scoreBoardBody = list;
-      });
-    });
+    }
+  }
+
+  DateTime _calculateFromDate() {
+    int thisYear = DateTime.now().year;
+    int thisMonth = DateTime.now().month;
+    int thisDay = DateTime.now().day;
+    int thisStartOfWeek = DateTime.now().day - DateTime.now().weekday;
+    switch (numDaysSelected) {
+      case 0:
+        return null;
+      case 1:
+        return new DateTime(thisYear, thisMonth, thisDay);
+      case 7:
+        return new DateTime(thisYear, thisMonth, thisStartOfWeek);
+      case 30:
+      case 31:
+        return new DateTime(thisYear, thisMonth);
+      case 365:
+        return new DateTime(thisYear);
+      default:
+        return DateTime.now().add(Duration(days: -numDaysSelected));
+    }
   }
 }
