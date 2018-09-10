@@ -32,10 +32,10 @@ class ScoreBoardState extends State<ScoreBoard> {
         });
       },
       timeSpans: {
-        'day': 1,
-        'week': 7,
-        'month': 31,
-        'all time': 0,
+        1: 'today',
+        7: 'this week',
+        31: 'this month',
+        0: 'all time',
       },
     );
     getScoreBoard();
@@ -55,8 +55,6 @@ class ScoreBoardState extends State<ScoreBoard> {
       setState(() => _scoreBoardBody = list);
     } else {
       DateTime fromDate = _calculateFromDate();
-//      DateTime fromDate = numDaysSelected == 0 ? null : DateTime.now().add(Duration(days: -numDaysSelected));
-      list.add(Text('${DoItTimeField.formatDateTime(fromDate)} - ${DoItTimeField.formatDateTime(DateTime.now())}'));
       app.groupsManager.getGroupScoreboard(groupID: widget.groupInfo.groupID, fromDate: fromDate).then((scoreBoard) {
         List scoreBoardAsList = List.from(scoreBoard.values);
         scoreBoardAsList.sort((item1, item2) => item2['score'] - item1['score']);
@@ -69,7 +67,7 @@ class ScoreBoardState extends State<ScoreBoard> {
                   Text('${index.toString()})'),
                   Expanded(
                       child: Text(
-                    '  ${scoreboardItem['userInfo'].displayName}',
+                    '  ${scoreboardItem['userInfo'].displayName}', overflow: TextOverflow.ellipsis,
 //                  style: TextStyle(fontWeight: index < 4 ? FontWeight.bold : ""),
                   )),
                   Text(scoreboardItem['score'].toString()),

@@ -65,8 +65,8 @@ class TaskCardState extends State<TaskCard> with SingleTickerProviderStateMixin 
     );
     animation = Tween(begin: 0.0, end: 1.5708).animate(animationController)
       ..addListener(() {
-      setState(() {});
-    });
+        setState(() {});
+      });
     isOverdue = shortTaskInfo?.endTime?.isBefore(DateTime.now()) ?? false;
   }
 
@@ -99,7 +99,6 @@ class TaskCardState extends State<TaskCard> with SingleTickerProviderStateMixin 
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetailsPage(taskInfo)));
                 });
               }
-
             },
             padding: EdgeInsets.all(10.0),
             child: Row(
@@ -110,12 +109,19 @@ class TaskCardState extends State<TaskCard> with SingleTickerProviderStateMixin 
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       // title and points
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                      Wrap(
+                        alignment: WrapAlignment.start,
                         children: <Widget>[
-                          Text('${widget.taskInfo.title}',
-                              style: Theme.of(context).textTheme.title.copyWith(fontWeight: FontWeight.bold)),
-                          Text('  (${widget.taskInfo.value.toString()} point${widget.taskInfo.value > 1 ? 's' : ''})')
+                          Text(
+                            '${widget.taskInfo.title}',
+                            style: Theme.of(context).textTheme.title.copyWith(fontWeight: FontWeight.bold),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            '  (${widget.taskInfo.value.toString()} point${widget.taskInfo.value > 1 ? 's' : ''})',
+                            style: Theme.of(context).textTheme.caption,
+                          )
                         ],
                       ),
                       Divider(height: 5.0),
@@ -143,6 +149,7 @@ class TaskCardState extends State<TaskCard> with SingleTickerProviderStateMixin 
     Widget recurring = (shortTaskInfo.recurringPolicy == eRecurringPolicy.none)
         ? Container(width: 0.0, height: 0.0)
         : Row(
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Icon(Icons.replay),
               Text(RecurringPolicyUtils.policyToString(shortTaskInfo.recurringPolicy))
@@ -151,9 +158,10 @@ class TaskCardState extends State<TaskCard> with SingleTickerProviderStateMixin 
 
     String endTime = DoItTimeField.formatDateTime(shortTaskInfo.endTime);
     return Row(
+//      alignment: WrapAlignment.spaceBetween,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Text(endTime),
+        Expanded(child: Text(endTime)),
         recurring,
       ],
     );
@@ -210,6 +218,6 @@ class TaskCardState extends State<TaskCard> with SingleTickerProviderStateMixin 
   Text _generateUserCompletedText() {
     if (completedTaskInfo == null) throw Exception('User completed text is not valid for shortTaskInfo');
     String completedDateString = DoItTimeField.formatDateTime(completedTaskInfo.completedTime);
-    return Text('Completed by: ${completedTaskInfo.userWhoCompleted.displayName}, on $completedDateString');
+    return Text('Completed by: ${completedTaskInfo.userWhoCompleted.displayName}, \non $completedDateString');
   }
 }

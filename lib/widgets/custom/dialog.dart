@@ -135,7 +135,7 @@ class DoItDialogs {
       context: context,
       builder: (BuildContext context) {
         return SimpleDialog(
-          title: Text('${groupInfo.title} - scoreboard'),
+          title: Text('${groupInfo.title} - scoreboard', maxLines: 2,overflow: TextOverflow.ellipsis,),
           children: [ScoreBoard(groupInfo)],
         );
       },

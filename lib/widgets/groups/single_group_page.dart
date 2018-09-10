@@ -303,33 +303,10 @@ class SingleGroupPageState extends State<SingleGroupPage> {
 
   _getExpansionPanels(BuildContext context) {
     List<ExpansionPanel> _expansionPanels = new List();
-    String numTasksAssignedToMeStr =
-        _getNumTasksAssignedToMe() != null ? '(${_getNumTasksAssignedToMe().toString()})' : '(?)';
-    String numTasksAssignedToOthersStr =
-        _getNumTasksAssignedToOthers() != null ? '(${_getNumTasksAssignedToOthers().toString()})' : '(?)';
     //Tasks assigned to me
-    _expansionPanels.add(ExpansionPanel(
-      headerBuilder: (BuildContext context, bool isExpanded) {
-        return Center(
-            child: Text(
-          'Tasks assigned to me $numTasksAssignedToMeStr',
-          style: Theme.of(context).textTheme.title,
-        ));
-      },
-      body: getTasksAssignedToMe(),
-      isExpanded: _myTasksIsExpanded,
-    ));
-
+    _expansionPanels.add(_tasksAssignedToMePanel());
     //Other's tasks
-    _expansionPanels.add(ExpansionPanel(
-      headerBuilder: (BuildContext context, bool isExpanded) {
-        return Center(
-            child: Text('Tasks assigned to others $numTasksAssignedToOthersStr',
-                style: Theme.of(context).textTheme.title));
-      },
-      body: getTasksAssignedToOthers(),
-      isExpanded: _othersTasksIsExpanded,
-    ));
+    _expansionPanels.add(_tasksAssignedToOthersPanel());
 
     //Future tasks
     if (app.getLoggedInUserID() == groupInfo.managerID) {
@@ -339,16 +316,19 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     //Completed tasks
     _expansionPanels.add(ExpansionPanel(
       headerBuilder: (BuildContext context, bool isExpanded) {
-        return Stack(
-          alignment: Alignment.center,
+        return Row(
+//          alignment: Alignment.center,
           children: <Widget>[
-            Center(child: Text('Completed tasks', style: Theme.of(context).textTheme.title)),
-            Positioned(
-              child: IconButton(
-                icon: Icon(Icons.refresh),
-                onPressed: () => fetchCompletedTasksFromServer(),
-              ),
-              right: 0.0,
+            Expanded(
+                child: Center(
+                    child: Text(
+              'Completed tasks',
+              style: Theme.of(context).textTheme.title,
+              textAlign: TextAlign.center,
+            ))),
+            IconButton(
+              icon: Icon(Icons.refresh),
+              onPressed: () => fetchCompletedTasksFromServer(),
             ),
           ],
         );
@@ -357,6 +337,23 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       isExpanded: _completedTasksIsExpanded,
     ));
     return _expansionPanels;
+  }
+
+  ExpansionPanel _tasksAssignedToOthersPanel() {
+    String numTasksAssignedToOthersStr =
+        _getNumTasksAssignedToOthers() != null ? '(${_getNumTasksAssignedToOthers().toString()})' : '(?)';
+    return ExpansionPanel(
+      headerBuilder: (BuildContext context, bool isExpanded) {
+        return Center(
+            child: Text(
+          'Tasks assigned to others $numTasksAssignedToOthersStr',
+          style: Theme.of(context).textTheme.title,
+          textAlign: TextAlign.center,
+        ));
+      },
+      body: getTasksAssignedToOthers(),
+      isExpanded: _othersTasksIsExpanded,
+    );
   }
 
   ExpansionPanel _futureTasksExpansionPanel(BuildContext context) {
@@ -505,9 +502,9 @@ class SingleGroupPageState extends State<SingleGroupPage> {
         fetchCompletedTasksFromServer();
       },
       timeSpans: {
-        'week': 7,
-        'month': 31,
-        'all time': 0,
+        7: 'week',
+        31: 'month',
+        0: 'all time',
       },
     );
 
@@ -536,17 +533,20 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     tasksList.add(timeSpanSelectors);
     _completedTasks.forEach((completedTask) {
       tasksList.add(
-        TaskCard(
-            taskInfo: completedTask,
-            parentScaffoldKey: scaffoldKey,
-            showCheckbox: app.loggedInUser.userID == completedTask.userWhoCompleted.userID ||
-                app.loggedInUser.userID == completedTask.parentGroupManagerID,
-            isChecked: true,
-            onTapped: () {},
-            onCompleted: () => fetchCompletedTasksFromServer()),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: TaskCard(
+              taskInfo: completedTask,
+              parentScaffoldKey: scaffoldKey,
+              showCheckbox: app.loggedInUser.userID == completedTask.userWhoCompleted.userID ||
+                  app.loggedInUser.userID == completedTask.parentGroupManagerID,
+              isChecked: true,
+              onTapped: () {},
+              onCompleted: () => fetchCompletedTasksFromServer()),
+        ),
       );
     });
-    return Padding(padding: EdgeInsets.all(20.0), child: Column(children: tasksList));
+    return Column(children: tasksList);
   }
 
   void fetchCompletedTasksFromServer() {
@@ -651,5 +651,22 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     });
   }
 
+  ExpansionPanel _tasksAssignedToMePanel() {
+    String numTasksAssignedToMeStr =
+        _getNumTasksAssignedToMe() != null ? '(${_getNumTasksAssignedToMe().toString()})' : '(?)';
+
+    return ExpansionPanel(
+      headerBuilder: (BuildContext context, bool isExpanded) {
+        return Center(
+            child: Text(
+          'Tasks assigned to me $numTasksAssignedToMeStr',
+          style: Theme.of(context).textTheme.title,
+          textAlign: TextAlign.center,
+        ));
+      },
+      body: getTasksAssignedToMe(),
+      isExpanded: _myTasksIsExpanded,
+    );
+  }
   //endregion
 }

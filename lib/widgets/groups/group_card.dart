@@ -26,7 +26,7 @@ class GroupCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Icon(
                 Icons.supervisor_account,
-                size: 20.0,
+                size: 15.0,
                 color: Theme.of(context).primaryColor,
               ),
             ),
@@ -55,19 +55,14 @@ class GroupCard extends StatelessWidget {
             Expanded(
               child: Column(
                 children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      managerIcon,
-                      Text('${shortGroupInfo.title}',
-                          style: Theme.of(context).textTheme.title.copyWith(fontWeight: FontWeight.bold))
-                    ],
-                  ),
+                  Text('${shortGroupInfo.title}',
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.title.copyWith(fontWeight: FontWeight.bold)),
                   Divider(
                     height: 15.0,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  Wrap(
+                    alignment: WrapAlignment.start,
                     children: <Widget>[
                       Text('Members: ${shortGroupInfo.members.length.toString()}'),
                       VerticalDivider(),
@@ -79,33 +74,26 @@ class GroupCard extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: IconButton(
-                tooltip: 'Group scoreboard',
-                icon: Image.asset(
-                  'assets/images/podium.png',
-                  height: 35.0,
-                ),
-                onPressed: () {
-                  DoItDialogs.showGroupScoreboardDialog(context: context, groupInfo: shortGroupInfo);
+              child: Column(
+                children: <Widget>[
+                  managerIcon,
+                  IconButton(
+                    tooltip: 'Group scoreboard',
+                    icon: Image.asset(
+                      'assets/images/podium.png',
+                      height: 35.0,
+                    ),
+                    onPressed: () {
+                      DoItDialogs.showGroupScoreboardDialog(context: context, groupInfo: shortGroupInfo);
 //                  _showGroupScoreboardDialog(context);
-                },
+                    },
+                  ),
+                ],
               ),
             )
           ],
         ),
       ),
-    );
-  }
-
-  void _showGroupScoreboardDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return SimpleDialog(
-          title: Text('${shortGroupInfo.title} - scoreboard'),
-          children: [ScoreBoard(shortGroupInfo)],
-        );
-      },
     );
   }
 }
