@@ -112,6 +112,7 @@ class LoginPageState extends State<LoginPage> {
         ),
         onPressed: () {
           if (_formKey.currentState.validate()) {
+            FocusScope.of(context).requestFocus(new FocusNode());
             loadingOverlay.show(context: context, message: "Logging in...");
             widget.authenticator
                 .signInWithEmailAndPassword(_emailController.text, _passwordController.text)

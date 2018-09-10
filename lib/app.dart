@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:do_it/authenticator.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/data_managers/groups_manager.dart';
@@ -26,6 +27,7 @@ class App {
   TasksManager tasksManager;
   FirebaseStorage firebaseStorage;
   FirebaseMessaging firebaseMessaging;
+  CloudFunctions cloudFunctions = CloudFunctions.instance;
   Notifier notifier = new Notifier();
   final Authenticator authenticator = new Authenticator();
   final Uuid uuid = new Uuid();
@@ -94,6 +96,12 @@ class App {
   Future test() async {
     var app = App.instance;
     print('in test');
+//    app.cloudFunctions.call(
+//      functionName: null,
+//      parameters: <String, dynamic>{
+//        'message'
+//      }
+//    );
     print('end of test');
   }
 

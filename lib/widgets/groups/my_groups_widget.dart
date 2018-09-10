@@ -47,28 +47,15 @@ class MyGroupsPageState extends State<MyGroupsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: RefreshIndicator(
-              child: Container(
-                child: Center(
-                  child: ListView(
-                    // TODO change to widgets, this is just fot testing obviously
-                    children: _myGroupsWidget(context),
-                  ),
-                ),
-              ),
-              onRefresh: _getMyGroupsFromDB,
-      )
-          /*GestureDetector(
-        onVerticalDragDown: (details) => _getMyGroupsFromDB(),
         child: Container(
           child: Center(
             child: ListView(
-              // TODO change to widgets, this is just fot testing obviously
               children: _myGroupsWidget(context),
             ),
           ),
         ),
-      )*/
-          ,
+        onRefresh: _getMyGroupsFromDB,
+      ),
       floatingActionButton: FloatingActionButton(
         child: Icon(
           Icons.add,

@@ -13,7 +13,6 @@ import 'package:do_it/data_classes/task/task_info_utils.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/data_managers/task_manager_exception.dart';
 import 'package:do_it/data_managers/task_manager_result.dart';
-import 'package:do_it/widgets/custom/dialog.dart';
 import 'package:meta/meta.dart';
 
 class TasksManager {

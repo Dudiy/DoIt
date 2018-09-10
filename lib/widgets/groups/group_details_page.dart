@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:do_it/app.dart';
 import 'package:do_it/data_classes/group/group_info.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/widgets/custom/dialog.dart';
+import 'package:do_it/widgets/custom/loadingOverlay.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:do_it/widgets/groups/scoreboard_widget.dart';
 import 'package:flutter/material.dart';
@@ -10,9 +13,9 @@ class GroupDetailsPage extends StatefulWidget {
   final GroupInfo groupInfo;
   final ShortUserInfo groupManager;
   final Function onGroupInfoChanged;
-  final Function setGroupInfo;
+//  final Function setGroupInfo;
 
-  GroupDetailsPage(this.groupInfo, this.groupManager, this.onGroupInfoChanged, this.setGroupInfo);
+  GroupDetailsPage(this.groupInfo, this.groupManager, this.onGroupInfoChanged);
 
   @override
   GroupDetailsPageState createState() => new GroupDetailsPageState();
@@ -25,6 +28,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
   final TextEditingController _descriptionController = new TextEditingController();
   final TextEditingController _groupIDController = new TextEditingController();
   final TextEditingController _managerDisplayNameController = new TextEditingController();
+  LoadingOverlay loadingOverlay = new LoadingOverlay();
 
   Map<String, ShortUserInfo> _groupMembers;
   bool editEnabled;
@@ -66,8 +70,13 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                   FlatButton(
                       child: Icon(Icons.insert_photo),
                       onPressed: () async {
-                        await App.instance.groupsManager.uploadGroupPic(widget.groupInfo, () => {});
-                        widget.setGroupInfo(widget.groupInfo);
+                        App.instance.groupsManager
+                            .uploadGroupPic(widget.groupInfo,
+                                () => loadingOverlay.show(context: context, message: "Updating group photo"))
+                            .then((uploadedPhoto) {
+                          loadingOverlay.hide();
+                        });
+//                        widget.setGroupInfo(widget.groupInfo);
                       }),
                 ])),
           ),
@@ -104,6 +113,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
             groupIdToChange: widget.groupInfo.groupID,
             title: _titleController.text.isNotEmpty ? _titleController.text : null,
             description: _descriptionController.text.isNotEmpty ? _descriptionController.text : null,
+            photoUrl: widget.groupInfo.photoUrl,
           )
               .then((newGroupInfo) {
             widget.onGroupInfoChanged(newGroupInfo);

@@ -1,13 +1,9 @@
-import 'dart:async';
-
 import 'package:do_it/app.dart';
-import 'package:do_it/data_classes/group/group_info.dart';
 import 'package:do_it/data_classes/group/group_info_short.dart';
 import 'package:do_it/widgets/custom/imageContainer.dart';
 import 'package:do_it/widgets/custom/vertical_divider.dart';
 import 'package:do_it/widgets/groups/single_group_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class GroupCard extends StatelessWidget {
   final ShortGroupInfo shortGroupInfo;

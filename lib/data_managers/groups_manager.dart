@@ -305,7 +305,7 @@ class GroupsManager {
     return newMemberInfo;
   }
 
-  Future uploadGroupPic(GroupInfo groupInfo, Function showLoadingCallback) async {
+  Future<File> uploadGroupPic(GroupInfo groupInfo, Function showLoadingCallback) async {
     StorageReference storageRef = app.firebaseStorage.ref();
     File file = await ImagePicker.pickImage(source: ImageSource.gallery);
     if (file != null) {
@@ -319,6 +319,7 @@ class GroupsManager {
       await updateGroup(groupInfo.groupID, uploadTaskSnapshot.downloadUrl.toString());
       groupInfo.photoUrl = uploadTaskSnapshot.downloadUrl.toString();
     }
+    return file;
   }
 
   //we only want the user to be able to change his picture and not hes other data

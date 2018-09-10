@@ -9,6 +9,7 @@ import 'package:do_it/widgets/custom/dialog.dart';
 import 'package:do_it/widgets/custom/time_field.dart';
 import 'package:do_it/widgets/custom/vertical_divider.dart';
 import 'package:do_it/widgets/tasks/task_details_page.dart';
+import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 
 class TaskCard extends StatefulWidget {
@@ -37,7 +38,9 @@ class TaskCard extends StatefulWidget {
   }
 }
 
-class TaskCardState extends State<TaskCard> {
+class TaskCardState extends State<TaskCard> with SingleTickerProviderStateMixin {
+  Animation animation;
+  AnimationController animationController;
   App app = App.instance;
   bool isChecked;
   bool isOverdue;
@@ -56,61 +59,79 @@ class TaskCardState extends State<TaskCard> {
   @override
   void initState() {
     super.initState();
+    animationController = AnimationController(
+      duration: Duration(milliseconds: 500),
+      vsync: this,
+    );
+    animation = Tween(begin: 0.0, end: 1.5708).animate(animationController)
+      ..addListener(() {
+      setState(() {});
+    });
     isOverdue = shortTaskInfo?.endTime?.isBefore(DateTime.now()) ?? false;
+  }
+
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     String description = widget.taskInfo.description.isEmpty ? "No description :(" : widget.taskInfo.description;
-    return Card(
-      elevation: 5.0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-      color: (widget.taskInfo.runtimeType == CompletedTaskInfo)
-          ? Colors.greenAccent
-          : isOverdue ? Colors.red : Theme.of(context).primaryColorLight,
-      child: Container(
-        margin: EdgeInsets.all(4.0),
-        child: RaisedButton(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-          color: Colors.white,
-          highlightColor: Theme.of(context).primaryColorLight,
-          onPressed: () {
-            if (widget.taskInfo.runtimeType == ShortTaskInfo) {
-              App.instance.tasksManager.getTaskById(widget.taskInfo.taskID).then((taskInfo) {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetailsPage(taskInfo)));
-              });
-            }
-          },
-          padding: EdgeInsets.all(10.0),
-          child: Row(
-            children: <Widget>[
-              // Task Details
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    // title and points
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Text('${widget.taskInfo.title}',
-                            style: Theme.of(context).textTheme.title.copyWith(fontWeight: FontWeight.bold)),
-                        Text('  (${widget.taskInfo.value.toString()} point${widget.taskInfo.value > 1 ? 's' : ''})')
-                      ],
-                    ),
-                    Divider(height: 5.0),
-                    // description
-                    Text(description, maxLines: 3, overflow: TextOverflow.ellipsis),
-                    // due date and recurring policy
-                    Divider(height: 10.0),
-                    widget.taskInfo.runtimeType == ShortTaskInfo
-                        ? _generateDueDateText()
-                        : _generateUserCompletedText(),
-                  ],
+    return Transform(
+      transform: Matrix4.rotationY(animation.value),
+      child: Card(
+        elevation: 5.0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+        color: (widget.taskInfo.runtimeType == CompletedTaskInfo)
+            ? Colors.greenAccent
+            : isOverdue ? Colors.red : Theme.of(context).primaryColorLight,
+        child: Container(
+          margin: EdgeInsets.all(4.0),
+          child: RaisedButton(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+            color: Colors.white,
+            highlightColor: Theme.of(context).primaryColorLight,
+            onPressed: () {
+              if (widget.taskInfo.runtimeType == ShortTaskInfo) {
+                App.instance.tasksManager.getTaskById(widget.taskInfo.taskID).then((taskInfo) {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetailsPage(taskInfo)));
+                });
+              }
+
+            },
+            padding: EdgeInsets.all(10.0),
+            child: Row(
+              children: <Widget>[
+                // Task Details
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      // title and points
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Text('${widget.taskInfo.title}',
+                              style: Theme.of(context).textTheme.title.copyWith(fontWeight: FontWeight.bold)),
+                          Text('  (${widget.taskInfo.value.toString()} point${widget.taskInfo.value > 1 ? 's' : ''})')
+                        ],
+                      ),
+                      Divider(height: 5.0),
+                      // description
+                      Text(description, maxLines: 3, overflow: TextOverflow.ellipsis),
+                      // due date and recurring policy
+                      Divider(height: 10.0),
+                      widget.taskInfo.runtimeType == ShortTaskInfo
+                          ? _generateDueDateText()
+                          : _generateUserCompletedText(),
+                    ],
+                  ),
                 ),
-              ),
-              _getCheckbox(),
-            ],
+                _getCheckbox(),
+              ],
+            ),
           ),
         ),
       ),
@@ -155,6 +176,7 @@ class TaskCardState extends State<TaskCard> {
                   setState(() {
                     isChecked = value;
                   });
+                  animationController.forward();
                 },
               ),
             ],

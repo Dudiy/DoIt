@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:do_it/widgets/custom/imageFetcher.dart';
 import 'package:flutter/material.dart';
 
@@ -7,13 +9,14 @@ class ImageContainer extends StatelessWidget {
   final double size;
   final Color borderColor;
   final double borderRadius;
+  final File imageFile;
 
-  ImageContainer({
-    this.imagePath = DEFAULT_GROUP_IMAGE_PATH,
-    this.borderColor,
-    this.size = 65.0,
-    this.borderRadius = 16.0
-  });
+  ImageContainer(
+      {this.imagePath = DEFAULT_GROUP_IMAGE_PATH,
+      this.imageFile,
+      this.borderColor,
+      this.size = 65.0,
+      this.borderRadius = 16.0});
 
   @override
   Widget build(BuildContext context) {
@@ -43,18 +46,14 @@ class ImageContainer extends StatelessWidget {
           )),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16.0),
-        child: ImageFetcher.fetch(imagePath: imagePath, defaultImagePath: DEFAULT_GROUP_IMAGE_PATH),
+        child: _getImage(),
       ),
     );
   }
 
-/*  _getImage() {
-    return (imagePath == DEFAULT_IMAGE_PATH || imagePath == null)
-        ? Image.asset(DEFAULT_IMAGE_PATH)
-        : FadeInImage.assetNetwork(
-            fit: BoxFit.fill,
-            placeholder: LOADING_GIF,
-            image: imagePath,
-          );
-  }*/
+  _getImage() {
+    return imageFile == null
+        ? ImageFetcher.fetch(imagePath: imagePath, defaultImagePath: DEFAULT_GROUP_IMAGE_PATH)
+        : Image.file(imageFile, fit: BoxFit.fill,);
+  }
 }

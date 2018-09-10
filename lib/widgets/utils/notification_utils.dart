@@ -1,7 +1,8 @@
 import 'dart:convert';
+
+import 'package:do_it/private.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
-import 'package:do_it/private.dart';
 
 class Notifier {
   sendNotifications({

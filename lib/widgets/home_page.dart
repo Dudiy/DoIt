@@ -1,9 +1,8 @@
-import 'package:do_it/widgets/custom/imageContainer.dart';
-import 'package:do_it/widgets/custom/imageFetcher.dart';
-import 'package:do_it/widgets/nfc/lifecycle_nfc_watcher.dart';
 import 'package:do_it/app.dart';
 import 'package:do_it/widgets/custom/dialog.dart';
+import 'package:do_it/widgets/custom/imageFetcher.dart';
 import 'package:do_it/widgets/groups/my_groups_widget.dart';
+import 'package:do_it/widgets/nfc/lifecycle_nfc_watcher.dart';
 import 'package:do_it/widgets/users/user_settings_page.dart';
 import 'package:flutter/material.dart';
 
