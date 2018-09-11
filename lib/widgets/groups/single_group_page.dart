@@ -194,7 +194,6 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     return _assignedUsersTokens;
   }
 
-
   Future<void> _showAddTaskDialog() async {
     TextEditingController _titleController = new TextEditingController();
     TextEditingController _descriptionController = new TextEditingController();
@@ -414,7 +413,6 @@ class SingleGroupPageState extends State<SingleGroupPage> {
                 !taskInfo.assignedUsers.containsKey(app.loggedInUser.userID);
           }).length;
   }
-
   //endregion
 
   //region Expansion panel bodies
@@ -471,7 +469,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
           taskInfo.assignedUsers.containsKey(app.loggedInUser.userID)) {
         tasksList.add(Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: TaskCard(
+          child: new TaskCard(
               taskInfo: taskInfo,
               parentScaffoldKey: scaffoldKey,
               onTapped: () {
@@ -590,7 +588,6 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       });
     });
   }
-
   //endregion
 
   //region Popup menu
@@ -646,7 +643,6 @@ class SingleGroupPageState extends State<SingleGroupPage> {
           }),
     );
   }
-
   //endregion
 
   //region Popup menu actions
@@ -680,71 +676,84 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       }
     });
   }
-
   //endregion
 
+  //region Speed Dial buttons
   Widget _renderSpeedDial() {
     return SpeedDial(
       animatedIcon: AnimatedIcons.menu_close,
       animatedIconTheme: IconThemeData(size: 22.0),
       curve: Curves.bounceIn,
       children: [
-        SpeedDialChild(
-          child: Icon(Icons.check_box, color: Colors.white),
-          backgroundColor: Colors.blue,
-          onTap: _showAddTaskDialog,
-          label: 'new task',
-          labelStyle: TextStyle(fontWeight: FontWeight.w500),
-        ),
-        SpeedDialChild(
-          child: Icon(Icons.person_add, color: Colors.white),
-          backgroundColor: Colors.green,
-          onTap: () {
-            DoItDialogs.showAddMemberDialog(
-                context: context,
-                groupInfo: groupInfo,
-                onDialogSubmitted: (ShortUserInfo newMember) {
-                  scaffoldKey.currentState.showSnackBar(SnackBar(
-                      content: Text(
-                    "${newMember.displayName} has been added to this group",
-                    textAlign: TextAlign.center,
-                  )));
-                });
-          },
-          label: 'add member',
-          labelStyle: TextStyle(fontWeight: FontWeight.w500),
-        ),
-        SpeedDialChild(
-          child: Icon(Icons.message, color: Colors.white),
-          backgroundColor: Colors.deepOrange,
-          onTap: () {
-            TextEditingController _notificationController = new TextEditingController();
-            DoItTextField notificationMessage = DoItTextField(
-              label: 'notification message',
-              controller: _notificationController,
-              maxLines: 3,
-              maxLength: 30,
-              isRequired: true,
-            );
-            DoItDialogs.showUserInputDialog(
-              context: context,
-              inputWidgets: [notificationMessage],
-              title: 'Send notification',
-              onSubmit: () async {
-                List<String> _tokens = await _getGroupMembersTokens();
-                Navigator.pop(context); // hide menu items popup
-                app.notifier.sendNotifications(
-                  title: 'Notification from group \"${groupInfo.title}\"',
-                  body: _notificationController.text,
-                  destUsersFcmTokens: _tokens,
-                );
-              },
-            );
-          },
-          label: 'notify members',
-          labelStyle: TextStyle(fontWeight: FontWeight.w500),
-        ),
+        _newTaskSpeedDialChild(),
+        _addMemberSpeedDialChild(),
+        _sendNotificationSpeedDialChild(),
       ],
     );
   }
+
+  SpeedDialChild _newTaskSpeedDialChild() {
+    return SpeedDialChild(
+      child: Icon(Icons.check_box, color: Colors.white),
+      backgroundColor: Colors.blue,
+      onTap: _showAddTaskDialog,
+      label: 'new task',
+      labelStyle: TextStyle(fontWeight: FontWeight.w500),
+    );
+  }
+
+  SpeedDialChild _addMemberSpeedDialChild() {
+    return SpeedDialChild(
+      child: Icon(Icons.person_add, color: Colors.white),
+      backgroundColor: Colors.green,
+      onTap: () {
+        DoItDialogs.showAddMemberDialog(
+            context: context,
+            groupInfo: groupInfo,
+            onDialogSubmitted: (ShortUserInfo newMember) {
+              scaffoldKey.currentState.showSnackBar(SnackBar(
+                  content: Text(
+                    "${newMember.displayName} has been added to this group",
+                    textAlign: TextAlign.center,
+                  )));
+            });
+      },
+      label: 'add member',
+      labelStyle: TextStyle(fontWeight: FontWeight.w500),
+    );
+  }
+
+  SpeedDialChild _sendNotificationSpeedDialChild() {
+    return SpeedDialChild(
+      child: Icon(Icons.message, color: Colors.white),
+      backgroundColor: Colors.deepOrange,
+      onTap: () {
+        TextEditingController _notificationController = new TextEditingController();
+        DoItTextField notificationMessage = DoItTextField(
+          label: 'notification message',
+          controller: _notificationController,
+          maxLines: 3,
+          maxLength: 30,
+          isRequired: true,
+        );
+        DoItDialogs.showUserInputDialog(
+          context: context,
+          inputWidgets: [notificationMessage],
+          title: 'Send notification',
+          onSubmit: () async {
+            List<String> _tokens = await _getGroupMembersTokens();
+            Navigator.pop(context); // hide menu items popup
+            app.notifier.sendNotifications(
+              title: 'Notification from group \"${groupInfo.title}\"',
+              body: _notificationController.text,
+              destUsersFcmTokens: _tokens,
+            );
+          },
+        );
+      },
+      label: 'notify members',
+      labelStyle: TextStyle(fontWeight: FontWeight.w500),
+    );
+  }
+  //endregion
 }

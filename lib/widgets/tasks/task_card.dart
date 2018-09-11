@@ -59,7 +59,7 @@ class TaskCardState extends State<TaskCard> with SingleTickerProviderStateMixin 
   @override
   void initState() {
     super.initState();
-    animationController = AnimationController(
+    animationController = new AnimationController(
       duration: Duration(milliseconds: 500),
       vsync: this,
     );
@@ -67,7 +67,14 @@ class TaskCardState extends State<TaskCard> with SingleTickerProviderStateMixin 
       ..addListener(() {
         setState(() {});
       });
+    animationController.reset();
     isOverdue = shortTaskInfo?.endTime?.isBefore(DateTime.now()) ?? false;
+  }
+
+  @override
+  void didUpdateWidget(TaskCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    animationController.reset();
   }
 
   @override
