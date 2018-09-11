@@ -11,6 +11,7 @@ dependencies:
   firebase_auth: ^0.5.18
   firebase_messaging: ^1.0.5
   firebase_storage: any
+  flutter_speed_dial: ^1.0.8
   uuid: any
   image_picker: ^0.4.6
   path_provider: ^0.4.1

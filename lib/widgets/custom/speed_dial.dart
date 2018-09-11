@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
 class DoItSpeedDial extends StatefulWidget {
-//  final Map<IconData, VoidCallback> buttons;
   final List<FloatingActionButton> buttons;
 
   DoItSpeedDial({@required this.buttons});
@@ -14,8 +13,6 @@ class DoItSpeedDial extends StatefulWidget {
 class DoItSpeedDialState extends State<DoItSpeedDial> with TickerProviderStateMixin {
   AnimationController _controller;
 
-  static const List<IconData> icons = const [ Icons.sms, Icons.mail, Icons.phone ];
-
   @override
   void initState() {
     super.initState();
@@ -26,8 +23,6 @@ class DoItSpeedDialState extends State<DoItSpeedDial> with TickerProviderStateMi
   }
 
   Widget build(BuildContext context) {
-    Color backgroundColor = Theme.of(context).cardColor;
-    Color foregroundColor = Theme.of(context).accentColor;
     return new Column(
         mainAxisSize: MainAxisSize.min,
         children: new List.generate(widget.buttons.length, (int index) {
@@ -72,68 +67,4 @@ class DoItSpeedDialState extends State<DoItSpeedDial> with TickerProviderStateMi
         ),
       );
   }
-/*
-  AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = new AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 500),
-    );
-  }
-
-  Widget build(BuildContext context) {
-    Color backgroundColor = Theme.of(context).cardColor;
-    Color foregroundColor = Theme.of(context).accentColor;
-    return new FloatingActionButton(
-      onPressed: () {},
-      child: new Column(
-        mainAxisSize: MainAxisSize.min,
-        children: new List.generate(widget.buttons.length, (int index) {
-          Widget child = new Container(
-            height: 70.0,
-            width: 56.0,
-            alignment: FractionalOffset.topCenter,
-            child: new ScaleTransition(
-              scale: new CurvedAnimation(
-                parent: _controller,
-                curve: new Interval(0.0, 1.0 - index / widget.buttons.length / 2.0, curve: Curves.easeOut),
-              ),
-              child: new FloatingActionButton(
-                heroTag: null,
-                backgroundColor: backgroundColor,
-                mini: true,
-                child: new Icon(widget.buttons.keys.toList()[index], color: foregroundColor),
-                onPressed: widget.buttons.values.toList()[index],
-              ),
-            ),
-          );
-          return child;
-        }).toList()
-          ..add(
-            new FloatingActionButton(
-              child: new AnimatedBuilder(
-                animation: _controller,
-                builder: (BuildContext context, Widget child) {
-                  return new Transform(
-                    transform: new Matrix4.rotationZ(_controller.value * 0.5 * math.pi),
-                    alignment: FractionalOffset.center,
-                    child: new Icon(_controller.isDismissed ? Icons.add : Icons.close),
-                  );
-                },
-              ),
-              onPressed: () {
-                if (_controller.isDismissed) {
-                  _controller.forward();
-                } else {
-                  _controller.reverse();
-                }
-              },
-            ),
-          ),
-      ),
-    );
-  }*/
 }

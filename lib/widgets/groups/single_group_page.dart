@@ -17,7 +17,6 @@ import 'package:do_it/widgets/custom/dialog.dart';
 import 'package:do_it/widgets/custom/imageContainer.dart';
 import 'package:do_it/widgets/custom/loadingOverlay.dart';
 import 'package:do_it/widgets/custom/recurring_policy_field.dart';
-import 'package:do_it/widgets/custom/speed_dial.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:do_it/widgets/custom/time_field.dart';
 import 'package:do_it/widgets/custom/timespan_selector.dart';
@@ -25,6 +24,7 @@ import 'package:do_it/widgets/groups/group_details_page.dart';
 import 'package:do_it/widgets/tasks/task_card.dart';
 import 'package:do_it/widgets/tasks/task_details_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class SingleGroupPage extends StatefulWidget {
   final GroupInfo groupInfo;
@@ -64,9 +64,8 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   void initState() {
     String groupId = groupInfo.groupID;
     // listen for tasks list update
-    _streamSubscriptionTasks =
-        App.instance.firestore.collection('$GROUPS').document('$groupId').snapshots().listen(_updateTasksList);
-    getMyGroupTasksFromDB();
+    _streamSubscriptionTasks = App.instance.firestore.document('$GROUPS/$groupId').snapshots().listen(_updateTasksList);
+    getGroupTasksFromDB();
     super.initState();
   }
 
@@ -85,49 +84,62 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       photoUrl = DEFAULT_PICTURE;
     }
     return Scaffold(
-        key: scaffoldKey,
-        body: CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              expandedHeight: 220.0,
-              pinned: true,
-              flexibleSpace: FlexibleSpaceBar(
-                centerTitle: true,
-                title: Text(
-                  groupInfo.title,
-                  maxLines: 2,
-                  style: Theme.of(context).textTheme.title.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-                background: Center(
-                  child: GestureDetector(
-                    onTap: () => _groupImageClicked(context),
-                    child: ImageContainer(
-                      imagePath: photoUrl,
-                      imageFile: groupImageFile,
-                      size: 130.0,
-                      borderColor: Colors.white,
+      key: scaffoldKey,
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverAppBar(
+            expandedHeight: 220.0,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              centerTitle: true,
+              title: Text(
+                groupInfo.title,
+                maxLines: 2,
+                style: Theme.of(context).textTheme.title.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),
+              ),
+              background: Center(
+                child: GestureDetector(
+                  onTap: () => _groupImageClicked(context),
+                  child: ImageContainer(
+                    imagePath: photoUrl,
+                    imageFile: groupImageFile,
+                    size: 130.0,
+                    borderColor: Colors.white,
                   ),
                 ),
               ),
-              actions: [
-                PopupMenuButton<String>(
-                  itemBuilder: _getPopupMenuItems,
-                )
-              ],
             ),
-            SliverList(
-              delegate: SliverChildListDelegate([
-                _getExpansionPanelList(context),
-                Container(height: 80.0), //container added so the add task button doesn't hide an expansion panel
-              ]),
-            )
-          ],
-        ),
-        floatingActionButton: _drawAddTaskButton());
+            actions: [
+              PopupMenuButton<String>(
+                itemBuilder: _getPopupMenuItems,
+              )
+            ],
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate([
+              _getExpansionPanelList(context),
+              Container(height: 80.0), //container added so the add task button doesn't hide an expansion panel
+            ]),
+          )
+        ],
+      ),
+      floatingActionButton: (app.getLoggedInUserID() == groupInfo.managerID) ? _renderSpeedDial() : null,
+    );
+  }
+
+  void _updateTasksList(DocumentSnapshot documentSnapshotGroupTasks) {
+    ShortUserInfo loggedInUser = App.instance.getLoggedInUser();
+    if (loggedInUser == null) {
+      throw Exception('GroupManager: Cannot update tasks list user is not logged in');
+    }
+    if (documentSnapshotGroupTasks.data != null) {
+      setState(() {
+        _allGroupTasks = GroupUtils.conventDBGroupTaskToObjectList(documentSnapshotGroupTasks);
+      });
+    }
   }
 
   void _groupImageClicked(BuildContext context) {
@@ -157,86 +169,28 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     });
   }
 
-  void getMyGroupTasksFromDB() {
-    app.groupsManager.getMyGroupTasksFromDB(groupInfo.groupID).then((tasks) {
+  void getGroupTasksFromDB() {
+    app.groupsManager.getGroupTasksFromDB(groupInfo.groupID).then((tasks) {
       setState(() {
         _allGroupTasks = tasks;
-//        _myTasksCheckboxes
-//            .addAll(Map.fromIterable(tasks, key: (task) => (task as ShortTaskInfo).taskID, value: (task) => false));
       });
     });
   }
 
-  //region Add new task
-  // ==========================================================================================
-  // ====================================== Add new task ======================================
-  // ==========================================================================================
-  Widget _drawAddTaskButton() {
-    return (app.getLoggedInUserID() == groupInfo.managerID)
-        ? DoItSpeedDial(
-//        buttons: {Icons.add: _clicked, Icons.gesture: _clicked, Icons.style: _clicked},
-            buttons: [
-              FloatingActionButton(
-                heroTag: null,
-                backgroundColor: Theme.of(context).primaryColor,
-                mini: true,
-                child: new Icon(Icons.message, color: Colors.white),
-                tooltip: "send notification to all",
-                onPressed: () {
-                  TextEditingController _notificationController = new TextEditingController();
-                  DoItTextField notificationMessage = DoItTextField(
-                    label: 'Notification message',
-                    controller: _notificationController,
-                    maxLines: 3,
-                    maxLength: 30,
-                    isRequired: true,
-                  );
-                  DoItDialogs.showUserInputDialog(
-                    context: context,
-                    inputWidgets: [notificationMessage],
-                    title: 'Send notification',
-                    onSubmit: () async {
-                      List<String> _tokens = await _getGroupMembersTokens();
-                      Navigator.pop(context); // hide menu items popup
-                      app.notifier.sendNotifications(
-                        title: 'Notification from group \"${groupInfo.title}\"',
-                        body: _notificationController.text,
-                        destUsersFcmTokens: _tokens,
-                      );
-                    },
-                  );
-                },
-              ),
-              FloatingActionButton(
-                  heroTag: null,
-                  backgroundColor: Theme.of(context).primaryColor,
-                  mini: true,
-                  child: new Icon(Icons.person_add, color: Colors.white),
-                  tooltip: "add member",
-                  onPressed: () {
-                    DoItDialogs.showAddMemberDialog(
-                        context: context,
-                        groupInfo: groupInfo,
-                        onDialogSubmitted: (ShortUserInfo newMember) {
-                          scaffoldKey.currentState.showSnackBar(SnackBar(
-                              content: Text(
-                            "${newMember.displayName} has been added to this group",
-                            textAlign: TextAlign.center,
-                          )));
-                        });
-                  },
-                ),
-                FloatingActionButton(
-                  heroTag: null,
-                  backgroundColor: Theme.of(context).primaryColor,
-                  mini: true,
-                  child: new Icon(Icons.check_box, color: Colors.white),
-                  tooltip: "add task",
-                  onPressed: _showAddTaskDialog,
-                ),
-              ])
-        : null;
+  Future<List<String>> _getGroupMembersTokens() async {
+    List<Future> _tokenGetters = new List();
+    List<String> _assignedUsersTokens = new List();
+    groupInfo.members.values.forEach((shortUserInfo) {
+      if (shortUserInfo.userID != app.loggedInUser.userID) {
+        _tokenGetters.add((app.usersManager.getFcmToken(shortUserInfo.userID).then((token) {
+          _assignedUsersTokens.add(token);
+        })));
+      }
+    });
+    await Future.wait(_tokenGetters);
+    return _assignedUsersTokens;
   }
+
 
   Future<void> _showAddTaskDialog() async {
     TextEditingController _titleController = new TextEditingController();
@@ -320,22 +274,6 @@ class SingleGroupPageState extends State<SingleGroupPage> {
         });
   }
 
-  void _updateTasksList(DocumentSnapshot documentSnapshotGroupTasks) {
-    ShortUserInfo loggedInUser = App.instance.getLoggedInUser();
-    if (loggedInUser == null) {
-      throw Exception('GroupManager: Cannot get all groups when a user is not logged in');
-    }
-    if (documentSnapshotGroupTasks.data != null) {
-      setState(() {
-        _allGroupTasks = GroupUtils.conventDBGroupTaskToObjectList(documentSnapshotGroupTasks);
-      });
-    }
-  }
-
-  // ==========================================================================================
-  // ==========================================================================================
-  //endregion
-
   //region Expansion panels
   Padding _getExpansionPanelList(BuildContext context) {
     return Padding(
@@ -405,6 +343,24 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       isExpanded: _completedTasksIsExpanded,
     ));
     return _expansionPanels;
+  }
+
+  ExpansionPanel _tasksAssignedToMePanel() {
+    String numTasksAssignedToMeStr =
+        _getNumTasksAssignedToMe() != null ? '(${_getNumTasksAssignedToMe().toString()})' : '(?)';
+
+    return ExpansionPanel(
+      headerBuilder: (BuildContext context, bool isExpanded) {
+        return Center(
+            child: Text(
+          'Tasks assigned to me $numTasksAssignedToMeStr',
+          style: Theme.of(context).textTheme.title,
+          textAlign: TextAlign.center,
+        ));
+      },
+      body: getTasksAssignedToMe(),
+      isExpanded: _myTasksIsExpanded,
+    );
   }
 
   ExpansionPanel _tasksAssignedToOthersPanel() {
@@ -691,7 +647,6 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   //endregion
 
   //region Popup menu actions
-
   void deleteGroup() {
     DoItDialogs.showConfirmDialog(
       context: context,
@@ -723,36 +678,70 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     });
   }
 
-  ExpansionPanel _tasksAssignedToMePanel() {
-    String numTasksAssignedToMeStr =
-        _getNumTasksAssignedToMe() != null ? '(${_getNumTasksAssignedToMe().toString()})' : '(?)';
+  //endregion
 
-    return ExpansionPanel(
-      headerBuilder: (BuildContext context, bool isExpanded) {
-        return Center(
-            child: Text(
-          'Tasks assigned to me $numTasksAssignedToMeStr',
-          style: Theme.of(context).textTheme.title,
-          textAlign: TextAlign.center,
-        ));
-      },
-      body: getTasksAssignedToMe(),
-      isExpanded: _myTasksIsExpanded,
+  Widget _renderSpeedDial() {
+    return SpeedDial(
+      animatedIcon: AnimatedIcons.menu_close,
+      animatedIconTheme: IconThemeData(size: 22.0),
+      curve: Curves.bounceIn,
+      children: [
+        SpeedDialChild(
+          child: Icon(Icons.check_box, color: Colors.white),
+          backgroundColor: Colors.blue,
+          onTap: _showAddTaskDialog,
+          label: 'new task',
+          labelStyle: TextStyle(fontWeight: FontWeight.w500),
+        ),
+        SpeedDialChild(
+          child: Icon(Icons.person_add, color: Colors.white),
+          backgroundColor: Colors.green,
+          onTap: () {
+            DoItDialogs.showAddMemberDialog(
+                context: context,
+                groupInfo: groupInfo,
+                onDialogSubmitted: (ShortUserInfo newMember) {
+                  scaffoldKey.currentState.showSnackBar(SnackBar(
+                      content: Text(
+                    "${newMember.displayName} has been added to this group",
+                    textAlign: TextAlign.center,
+                  )));
+                });
+          },
+          label: 'add member',
+          labelStyle: TextStyle(fontWeight: FontWeight.w500),
+        ),
+        SpeedDialChild(
+          child: Icon(Icons.message, color: Colors.white),
+          backgroundColor: Colors.deepOrange,
+          onTap: () {
+            TextEditingController _notificationController = new TextEditingController();
+            DoItTextField notificationMessage = DoItTextField(
+              label: 'notification message',
+              controller: _notificationController,
+              maxLines: 3,
+              maxLength: 30,
+              isRequired: true,
+            );
+            DoItDialogs.showUserInputDialog(
+              context: context,
+              inputWidgets: [notificationMessage],
+              title: 'Send notification',
+              onSubmit: () async {
+                List<String> _tokens = await _getGroupMembersTokens();
+                Navigator.pop(context); // hide menu items popup
+                app.notifier.sendNotifications(
+                  title: 'Notification from group \"${groupInfo.title}\"',
+                  body: _notificationController.text,
+                  destUsersFcmTokens: _tokens,
+                );
+              },
+            );
+          },
+          label: 'notify members',
+          labelStyle: TextStyle(fontWeight: FontWeight.w500),
+        ),
+      ],
     );
   }
-
-  Future<List<String>> _getGroupMembersTokens() async {
-    List<Future> _tokenGetters = new List();
-    List<String> _assignedUsersTokens = new List();
-    groupInfo.members.values.forEach((shortUserInfo) {
-      if (shortUserInfo.userID != app.loggedInUser.userID) {
-        _tokenGetters.add((app.usersManager.getFcmToken(shortUserInfo.userID).then((token) {
-          _assignedUsersTokens.add(token);
-        })));
-      }
-    });
-    await Future.wait(_tokenGetters);
-    return _assignedUsersTokens;
-  }
-  //endregion
 }

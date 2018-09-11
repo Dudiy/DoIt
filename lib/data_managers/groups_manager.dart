@@ -58,7 +58,7 @@ class GroupsManager {
   ///
   /// get all group's tasks from db
   ///
-  Future<List<ShortTaskInfo>> getMyGroupTasksFromDB(String groupID) async {
+  Future<List<ShortTaskInfo>> getGroupTasksFromDB(String groupID) async {
     DocumentSnapshot groupRef = await _firestore.document('$GROUPS/$groupID').get();
     return GroupUtils.conventDBGroupTaskToObjectList(groupRef);
   }
