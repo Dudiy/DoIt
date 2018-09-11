@@ -85,46 +85,49 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     }
     return Scaffold(
       key: scaffoldKey,
-      body: CustomScrollView(
-        slivers: <Widget>[
-          SliverAppBar(
-            expandedHeight: 220.0,
-            pinned: true,
-            flexibleSpace: FlexibleSpaceBar(
-              centerTitle: true,
-              title: Text(
-                groupInfo.title,
-                maxLines: 2,
-                style: Theme.of(context).textTheme.title.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+      body: RefreshIndicator(
+        onRefresh: getGroupTasksFromDB,
+        child: CustomScrollView(
+          slivers: <Widget>[
+            SliverAppBar(
+              expandedHeight: 220.0,
+              pinned: true,
+              flexibleSpace: FlexibleSpaceBar(
+                centerTitle: true,
+                title: Text(
+                  groupInfo.title,
+                  maxLines: 2,
+                  style: Theme.of(context).textTheme.title.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+                background: Center(
+                  child: GestureDetector(
+                    onTap: () => _groupImageClicked(context),
+                    child: ImageContainer(
+                      imagePath: photoUrl,
+                      imageFile: groupImageFile,
+                      size: 130.0,
+                      borderColor: Colors.white,
                     ),
-              ),
-              background: Center(
-                child: GestureDetector(
-                  onTap: () => _groupImageClicked(context),
-                  child: ImageContainer(
-                    imagePath: photoUrl,
-                    imageFile: groupImageFile,
-                    size: 130.0,
-                    borderColor: Colors.white,
                   ),
                 ),
               ),
+              actions: [
+                PopupMenuButton<String>(
+                  itemBuilder: _getPopupMenuItems,
+                )
+              ],
             ),
-            actions: [
-              PopupMenuButton<String>(
-                itemBuilder: _getPopupMenuItems,
-              )
-            ],
-          ),
-          SliverList(
-            delegate: SliverChildListDelegate([
-              _getExpansionPanelList(context),
-              Container(height: 80.0), //container added so the add task button doesn't hide an expansion panel
-            ]),
-          )
-        ],
+            SliverList(
+              delegate: SliverChildListDelegate([
+                _getExpansionPanelList(context),
+                Container(height: 80.0), //container added so the add task button doesn't hide an expansion panel
+              ]),
+            )
+          ],
+        ),
       ),
       floatingActionButton: (app.getLoggedInUserID() == groupInfo.managerID) ? _renderSpeedDial() : null,
     );
@@ -169,7 +172,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     });
   }
 
-  void getGroupTasksFromDB() {
+  Future getGroupTasksFromDB() async {
     app.groupsManager.getGroupTasksFromDB(groupInfo.groupID).then((tasks) {
       setState(() {
         _allGroupTasks = tasks;

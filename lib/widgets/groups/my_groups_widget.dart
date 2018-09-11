@@ -47,24 +47,13 @@ class MyGroupsPageState extends State<MyGroupsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: RefreshIndicator(
-        child: Container(
-          child: Center(
-            child: ListView(
-              children: _myGroupsWidget(context),
+      body: _renderMyGroupBody(),
+      floatingActionButton: _myGroups == null || _allTasksWidget == null
+          ? null
+          : FloatingActionButton(
+              child: Icon(Icons.add),
+              onPressed: () => _showAddGroupDialog(),
             ),
-          ),
-        ),
-        onRefresh: _getMyGroupsFromDB,
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(
-          Icons.add,
-        ),
-        onPressed: () {
-          _showAddGroupDialog();
-        },
-      ),
     );
   }
 
@@ -108,7 +97,20 @@ class MyGroupsPageState extends State<MyGroupsPage> {
   }
 
   List<Widget> _myGroupsWidget(BuildContext context) {
-    if (_myGroups == null || _allTasksWidget == null) return [Text('Fetching groups from server...')];
+    if (_myGroups == null || _allTasksWidget == null)
+      return [
+        Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            Image.asset(
+              'assets/loading_anim_high.gif',
+              width: 50.0,
+            ),
+            Text('Fetching groups from server...'),
+          ],
+        )
+      ];
 
     if (_myGroups.length == 0) return [ListTile(title: Text("you are not in any group yet"))];
 
@@ -153,5 +155,30 @@ class MyGroupsPageState extends State<MyGroupsPage> {
         Navigator.pop(context);
       },
     );
+  }
+
+  _renderMyGroupBody() {
+//    if (true)
+    if (_myGroups == null || _allTasksWidget == null) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Container(
+            constraints: BoxConstraints.tight(Size.square(50.0)),
+            child: Image.asset('assets/loading_anim_high.gif'),
+          ),
+          SizedBox(height: 20.0),
+          Text('Fetching groups from server...', textAlign: TextAlign.center),
+        ],
+      );
+    } else {
+      return RefreshIndicator(
+        child: ListView(
+          children: _myGroupsWidget(context),
+        ),
+        onRefresh: _getMyGroupsFromDB,
+      );
+    }
   }
 }
