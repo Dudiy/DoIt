@@ -44,6 +44,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   String photoUrl = DEFAULT_PICTURE;
   List<ShortTaskInfo> _allGroupTasks;
+  Map<String, bool> _checkboxState;
   List<CompletedTaskInfo> _completedTasks;
   GroupInfo groupInfo;
   bool _myTasksIsExpanded = true;
@@ -62,6 +63,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
 
   @override
   void initState() {
+    _checkboxState = new Map();
     String groupId = groupInfo.groupID;
     // listen for tasks list update
     _streamSubscriptionTasks = App.instance.firestore.document('$GROUPS/$groupId').snapshots().listen(_updateTasksList);
@@ -436,6 +438,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
           parentScaffoldKey: scaffoldKey,
           showCheckbox: false,
           isChecked: false,
+          onCheckChanged: () => setState(() {}),
           onTapped: () {
             app.tasksManager.getTaskById(taskInfo.taskID).then((taskInfo) {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetailsPage(taskInfo)));
@@ -467,17 +470,26 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       if (taskInfo.assignedUsers == null ||
           taskInfo.assignedUsers.length == 0 ||
           taskInfo.assignedUsers.containsKey(app.loggedInUser.userID)) {
+        _checkboxState.putIfAbsent(taskInfo.taskID, () => false);
         tasksList.add(Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: new TaskCard(
               taskInfo: taskInfo,
               parentScaffoldKey: scaffoldKey,
+              isChecked: _checkboxState[taskInfo.taskID],
+              showCheckbox: true,
+              onCheckChanged: (bool value) {
+                setState(() {
+                  _checkboxState[taskInfo.taskID] = value;
+                });
+              },
               onTapped: () {
                 app.tasksManager.getTaskById(taskInfo.taskID).then((taskInfo) {
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetailsPage(taskInfo)));
                 });
               },
-              onCompleted: fetchCompletedTasksFromServer),
+              onCompleted: () => fetchCompletedTasksFromServer()
+          ),
         ));
       }
     });
@@ -504,6 +516,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
               taskInfo: taskInfo,
               parentScaffoldKey: scaffoldKey,
               showCheckbox: false,
+              onCheckChanged: () => setState(() {}),
               onTapped: () {
                 if (app.loggedInUser.userID == taskInfo.parentGroupManagerID) {
                   app.tasksManager.getTaskById(taskInfo.taskID).then((taskInfo) {
@@ -557,15 +570,21 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     List<Widget> tasksList = new List();
     tasksList.add(timeSpanSelectors);
     _completedTasks.forEach((completedTask) {
+      _checkboxState.putIfAbsent(completedTask.taskID, () => true);
       tasksList.add(
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: TaskCard(
               taskInfo: completedTask,
               parentScaffoldKey: scaffoldKey,
+              onCheckChanged: (bool value) {
+                setState(() {
+                  _checkboxState[completedTask.taskID] = value;
+                });
+              },
               showCheckbox: app.loggedInUser.userID == completedTask.userWhoCompleted.userID ||
                   app.loggedInUser.userID == completedTask.parentGroupManagerID,
-              isChecked: true,
+              isChecked: _checkboxState[completedTask.taskID],
               onTapped: () {},
               onCompleted: () => fetchCompletedTasksFromServer()),
         ),
@@ -713,9 +732,9 @@ class SingleGroupPageState extends State<SingleGroupPage> {
             onDialogSubmitted: (ShortUserInfo newMember) {
               scaffoldKey.currentState.showSnackBar(SnackBar(
                   content: Text(
-                    "${newMember.displayName} has been added to this group",
-                    textAlign: TextAlign.center,
-                  )));
+                "${newMember.displayName} has been added to this group",
+                textAlign: TextAlign.center,
+              )));
             });
       },
       label: 'add member',
