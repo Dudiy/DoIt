@@ -22,6 +22,7 @@ class LoadingOverlay {
                 padding: const EdgeInsets.all(20.0),
                 child: Text(
                   message,
+                  textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.title.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
                 ),
               ),

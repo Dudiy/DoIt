@@ -78,7 +78,7 @@ class TaskCardState extends State<TaskCard> with SingleTickerProviderStateMixin 
 
   @override
   Widget build(BuildContext context) {
-    String description = widget.taskInfo.description.isEmpty ? "No description :(" : widget.taskInfo.description;
+    String description = widget.taskInfo.description.isEmpty ? "No description entered" : widget.taskInfo.description;
     return Transform(
       transform: Matrix4.rotationY(animation.value),
       child: Card(
@@ -93,13 +93,7 @@ class TaskCardState extends State<TaskCard> with SingleTickerProviderStateMixin 
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
             color: Colors.white,
             highlightColor: Theme.of(context).primaryColorLight,
-            onPressed: () {
-              if (widget.taskInfo.runtimeType == ShortTaskInfo) {
-                App.instance.tasksManager.getTaskById(widget.taskInfo.taskID).then((taskInfo) {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetailsPage(taskInfo)));
-                });
-              }
-            },
+            onPressed: () => _cardClicked(context),
             padding: EdgeInsets.all(10.0),
             child: Row(
               children: <Widget>[
@@ -109,21 +103,7 @@ class TaskCardState extends State<TaskCard> with SingleTickerProviderStateMixin 
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       // title and points
-                      Wrap(
-                        alignment: WrapAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            '${widget.taskInfo.title}',
-                            style: Theme.of(context).textTheme.title.copyWith(fontWeight: FontWeight.bold),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          Text(
-                            '  (${widget.taskInfo.value.toString()} point${widget.taskInfo.value > 1 ? 's' : ''})',
-                            style: Theme.of(context).textTheme.caption,
-                          )
-                        ],
-                      ),
+                      _getTaskTitle(context),
                       Divider(height: 5.0),
                       // description
                       Text(description, maxLines: 3, overflow: TextOverflow.ellipsis),
@@ -142,6 +122,14 @@ class TaskCardState extends State<TaskCard> with SingleTickerProviderStateMixin 
         ),
       ),
     );
+  }
+
+  void _cardClicked(BuildContext context) {
+    if (widget.taskInfo.runtimeType == ShortTaskInfo) {
+      App.instance.tasksManager.getTaskById(widget.taskInfo.taskID).then((taskInfo) {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetailsPage(taskInfo)));
+      });
+    }
   }
 
   Widget _generateDueDateText() {
@@ -219,5 +207,23 @@ class TaskCardState extends State<TaskCard> with SingleTickerProviderStateMixin 
     if (completedTaskInfo == null) throw Exception('User completed text is not valid for shortTaskInfo');
     String completedDateString = DoItTimeField.formatDateTime(completedTaskInfo.completedTime);
     return Text('Completed by: ${completedTaskInfo.userWhoCompleted.displayName}, \non $completedDateString');
+  }
+
+  _getTaskTitle(BuildContext context) {
+    return Wrap(
+      alignment: WrapAlignment.start,
+      children: <Widget>[
+        Text(
+          '${widget.taskInfo.title}',
+          style: Theme.of(context).textTheme.title.copyWith(fontWeight: FontWeight.bold),
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
+        Text(
+          '  (${widget.taskInfo.value.toString()} point${widget.taskInfo.value > 1 ? 's' : ''})',
+          style: Theme.of(context).textTheme.caption,
+        )
+      ],
+    );
   }
 }

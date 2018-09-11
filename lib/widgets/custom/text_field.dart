@@ -13,13 +13,17 @@ class DoItTextField extends StatelessWidget {
   final String initValue;
   final Function fieldValidator;
   final String validationErrorMsg;
+  final TextStyle textStyle;
+  final EdgeInsetsGeometry padding;
 
   DoItTextField({
     @required this.label,
+    this.padding = const EdgeInsets.all(8.0),
     this.controller,
     this.maxLength,
     this.maxLines,
     this.initValue,
+    this.textStyle,
     this.keyboardType = TextInputType.text,
     this.textAlign = TextAlign.start,
     this.isRequired = false,
@@ -31,8 +35,9 @@ class DoItTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: padding,
       child: TextFormField(
+        style: textStyle,
         textAlign: textAlign,
         keyboardType: keyboardType,
         controller: controller,

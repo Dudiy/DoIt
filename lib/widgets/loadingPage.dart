@@ -7,7 +7,6 @@ class LoadingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Theme.of(context).primaryColorLight,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,

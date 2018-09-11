@@ -40,6 +40,13 @@ class UserSettingsPageState extends State<UserSettingsPage> {
             },
             child: const Text('Delete user'),
           ),
+          RaisedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              widget.onSignedOut();
+            },
+            child: const Text('Sign out'),
+          ),
 //          ImagePickerPage(),
         ]))));
   }

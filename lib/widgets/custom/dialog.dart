@@ -1,6 +1,10 @@
 import 'dart:async';
 
+import 'package:do_it/app.dart';
+import 'package:do_it/data_classes/group/group_info.dart';
 import 'package:do_it/data_classes/group/group_info_short.dart';
+import 'package:do_it/data_classes/user/user_info_short.dart';
+import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:do_it/widgets/groups/scoreboard_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -107,22 +111,28 @@ class DoItDialogs {
           return new SimpleDialog(
             title: Text(message),
             children: <Widget>[
-              ButtonBar(children: [
-                RaisedButton(
-                  child: Text('Cancel'),
-                  onPressed: () {
-                    Navigator.pop(context, false);
-                  },
-                ),
-                RaisedButton(
-                  child: Text(
-                    actionButtonText,
-                    style: TextStyle(color: Colors.white),
+              Wrap(alignment: WrapAlignment.center, children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: RaisedButton(
+                    child: Text('Cancel'),
+                    onPressed: () {
+                      Navigator.pop(context, false);
+                    },
                   ),
-                  color: isWarning ? Theme.of(context).errorColor : Theme.of(context).primaryColor,
-                  onPressed: () {
-                    Navigator.pop(context, true);
-                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: RaisedButton(
+                    child: Text(
+                      actionButtonText,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    color: isWarning ? Theme.of(context).errorColor : Theme.of(context).primaryColor,
+                    onPressed: () {
+                      Navigator.pop(context, true);
+                    },
+                  ),
                 ),
               ]),
             ],
@@ -135,9 +145,61 @@ class DoItDialogs {
       context: context,
       builder: (BuildContext context) {
         return SimpleDialog(
-          title: Text('${groupInfo.title} - scoreboard', maxLines: 2,overflow: TextOverflow.ellipsis,),
+          title: Text(
+            '${groupInfo.title} - scoreboard',
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
           children: [ScoreBoard(groupInfo)],
         );
+      },
+    );
+  }
+
+  static void showAddMemberDialog({
+    @required BuildContext context,
+    @required GroupInfo groupInfo,
+    Function onDialogSubmitted,
+  }) {
+    App app = App.instance;
+    TextEditingController _emailController = new TextEditingController();
+
+    DoItDialogs.showUserInputDialog(
+      context: context,
+      inputWidgets: [
+        DoItTextField(
+          controller: _emailController,
+          label: 'Email',
+          maxLines: 1,
+          keyboardType: TextInputType.emailAddress,
+          isRequired: true,
+        ),
+      ],
+      title: 'Add Member',
+      onSubmit: () async {
+        bool closeDialog = true;
+        await app.groupsManager
+            .addMember(groupID: groupInfo.groupID, newMemberEmail: _emailController.text)
+            .then((ShortUserInfo newMember) async {
+          app.notifier.sendNotifications(
+            title: 'Group \"${groupInfo.title}\"',
+            body: 'You have been added to this group',
+            destUsersFcmTokens: [await App.instance.usersManager.getFcmToken(newMember.userID)],
+          );
+          if (onDialogSubmitted != null) {
+            onDialogSubmitted(newMember);
+          }
+        }).catchError((err) {
+          print(err);
+          DoItDialogs.showErrorDialog(
+              context: context,
+              message:
+                  'No user is registered with the email: ${_emailController.text} \n\n** email addresses are case sensitive **');
+          closeDialog = false;
+        });
+        if (closeDialog) {
+          Navigator.pop(context);
+        }
       },
     );
   }

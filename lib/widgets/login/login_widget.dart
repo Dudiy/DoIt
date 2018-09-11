@@ -38,7 +38,7 @@ class LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
               SizedBox(height: 40.0),
-              Image.asset('assets/logo_with_shadow.png', height: 120.0, width: 120.0),
+              Image.asset('assets/logo_with_shadow.png', height: 100.0, width: 120.0),
               _drawLoginForm(),
               Divider(color: Colors.black),
               _drawSignInServices(),
@@ -50,47 +50,52 @@ class LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _drawLogo(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Column(
-          children: <Widget>[
-            Image.asset('assets/logo.png', height: 120.0, width: 120.0,)
-          ],
-        ),
-      ],
-    );
-  }
-
   Widget _drawLoginForm() {
     return Form(
       key: _formKey,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           DoItTextField(
             isRequired: true,
             controller: _emailController,
             label: 'Email',
+            textStyle: Theme.of(context).textTheme.body1,
           ),
           DoItTextField(
             controller: _passwordController,
             label: 'Password',
             isRequired: true,
+            textStyle: Theme.of(context).textTheme.body1,
           ),
           _drawLoginButton(),
-          FlatButton(
-              child: Text("New user?  Create an account"),
-              onPressed: () {
+          Column(
+            children: <Widget>[
+              SizedBox(height: 15.0),
+              GestureDetector(
+                  child: Text(
+                    "New user?  Create an account",
+                    style: Theme.of(context).textTheme.caption,
+                    textAlign: TextAlign.center,
+                  ),
+                  onTap: () {
 //                Navigator.pushNamed(context, '/Register');
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => RegisterPage(onSignedIn: widget.onSignedIn)));
-              }),
-          FlatButton(
-              child: Text("Reset password"),
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => ResetPasswordPage()));
-              }),
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) => RegisterPage(onSignedIn: widget.onSignedIn)));
+                  }),
+              SizedBox(height: 15.0),
+              GestureDetector(
+                  child: Text(
+                    "Reset password",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.caption,
+                  ),
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ResetPasswordPage()));
+                  }),
+            ],
+          ),
         ],
       ),
     );
@@ -98,9 +103,9 @@ class LoginPageState extends State<LoginPage> {
 
   Widget _drawLoginButton() {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
+      margin: EdgeInsets.symmetric(horizontal: 30.0),
       child: RaisedButton(
-        padding: EdgeInsets.symmetric(vertical: 15.0),
+        padding: EdgeInsets.symmetric(vertical: 10.0),
         color: Theme.of(context).primaryColor,
         child: Text(
           'LOGIN',
@@ -136,9 +141,20 @@ class LoginPageState extends State<LoginPage> {
 
   Widget _drawSignInServices() {
     return RaisedButton(
-      child: Text('log in with google'),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(right: 15.0),
+            child: Image.asset('assets/google_icon.png', width: 18.0,),
+          ),
+          Text('log in with google'),
+        ],
+      ),
+      color: Colors.white,
       onPressed: () {
-        loadingOverlay.show(context: context, message: "Logging in with google...");
+        loadingOverlay.show(context: context, message: "logging in with google...");
         widget.authenticator.signInWithGoogle().then((signedInUser) {
           loadingOverlay.hide();
           if (signedInUser != null) {
@@ -146,6 +162,7 @@ class LoginPageState extends State<LoginPage> {
           }
         }).catchError((e) {
           print('Error while trying to log in with google: \n${e.message}');
+          loadingOverlay.hide();
         });
       },
     );

@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:do_it/app.dart';
 import 'package:do_it/widgets/custom/dialog.dart';
 import 'package:do_it/widgets/custom/imageFetcher.dart';
+import 'package:do_it/widgets/custom/loadingOverlay.dart';
 import 'package:do_it/widgets/groups/my_groups_widget.dart';
 import 'package:do_it/widgets/nfc/lifecycle_nfc_watcher.dart';
 import 'package:do_it/widgets/users/user_settings_page.dart';
@@ -29,7 +32,9 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   static const LOADING_GIF = 'assets/loading_anim_high.gif';
   static const DEFAULT_PICTURE = 'assets/images/unknown_profile_pic.jpg';
+  LoadingOverlay loadingOverlay = new LoadingOverlay();
   String photoUrl = DEFAULT_PICTURE;
+  File userProfilePicFile;
 
   @override
   void initState() {
@@ -47,11 +52,19 @@ class HomePageState extends State<HomePage> {
     return Scaffold(
         appBar: AppBar(
           leading: GestureDetector(
-            onTap: () => App.instance.usersManager.uploadProfilePic().then((val) {
-                  setState(() {
-                    photoUrl = App.instance.loggedInUser.photoUrl;
-                  });
-                }),
+            onTap: () {
+              App.instance.usersManager
+                  .uploadProfilePic(() => loadingOverlay.show(context: context, message: "Uploading image..."))
+                  .then((uploadedPhoto) {
+                loadingOverlay.hide();
+                setState(() {
+                  photoUrl = App.instance.loggedInUser.photoUrl;
+                  if (uploadedPhoto != null) {
+                    userProfilePicFile = uploadedPhoto;
+                  }
+                });
+              });
+            },
             child: Padding(
               padding: const EdgeInsets.all(5.0),
               child: Stack(children: <Widget>[
@@ -61,7 +74,7 @@ class HomePageState extends State<HomePage> {
                       width: 65.0,
                       height: 65.0,
                       child: ClipOval(
-                        child: ImageFetcher.fetch(imagePath: photoUrl, defaultImagePath: DEFAULT_PICTURE),
+                        child: _getProfilePic(),
                       )),
                 ),
 //                _addProfilePicture(),
@@ -69,37 +82,29 @@ class HomePageState extends State<HomePage> {
               ]),
             ),
           ),
-          title: Text("DoIt"),
+          title: Text(App.instance.loggedInUser.displayName),
           actions: <Widget>[
-            FlatButton(
-              child: Icon(Icons.exit_to_app, color: Colors.white),
-              onPressed: widget._signOut,
-            ),
-            FlatButton(
-                child: Icon(Icons.mood, color: Colors.white),
-                onPressed: () {
-//                Navigator.of(context).push(MaterialPageRoute(builder: (context) => TestPage()));
-                  DoItDialogs.showNotificationDialog(context: context, title: 'test', body: 'hello');
-                  App.instance.test();
-                }),
-            FlatButton(
-              child: Icon(Icons.settings, color: Colors.white),
-              onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => UserSettingsPage(widget.onSignedOut)));
-              },
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 20.0),
+              child: GestureDetector(
+                child: Icon(Icons.settings, color: Colors.white),
+                onTap: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) => UserSettingsPage(widget.onSignedOut)));
+                },
+              ),
             ),
           ],
         ),
         body: MyGroupsPage());
   }
 
-  _addProfilePicture() {
-    return photoUrl == DEFAULT_PICTURE
-        ? Image.asset(DEFAULT_PICTURE)
-        : FadeInImage.assetNetwork(
-            placeholder: LOADING_GIF,
-            image: photoUrl,
+  _getProfilePic() {
+    return userProfilePicFile == null
+        ? ImageFetcher.fetch(imagePath: photoUrl, defaultImagePath: DEFAULT_PICTURE)
+        : Image.file(
+            userProfilePicFile,
+            fit: BoxFit.fill,
           );
   }
 }

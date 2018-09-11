@@ -78,10 +78,11 @@ class UsersManager {
     return UserUtils.generateFullUserInfoFromObject(userDoc.data);
   }
 
-  Future uploadProfilePic() async {
+  Future<File> uploadProfilePic(Function showLoadingCallback) async {
     StorageReference storageRef = app.firebaseStorage.ref();
     File file = await ImagePicker.pickImage(source: ImageSource.gallery);
     if (file != null) {
+      showLoadingCallback();
       // TODO do we want to limit the file size?
       double fileSizeInMb = await file.length() / 1000000;
       if (fileSizeInMb > MAX_PROFILE_PIC_SIZE_MB)
@@ -91,6 +92,7 @@ class UsersManager {
       updateUser(app.loggedInUser.userID, uploadTaskSnapshot.downloadUrl.toString());
       App.instance.loggedInUser.photoUrl = uploadTaskSnapshot.downloadUrl.toString();
     }
+    return file;
   }
 
   // returns null if given email is not found
