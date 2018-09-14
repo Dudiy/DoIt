@@ -61,6 +61,7 @@ class LoginPageState extends State<LoginPage> {
           DoItTextField(
             isRequired: true,
             controller: _emailController,
+            keyboardType: TextInputType.emailAddress,
             label: 'Email',
             textStyle: Theme.of(context).textTheme.body1,
           ),
@@ -117,7 +118,8 @@ class LoginPageState extends State<LoginPage> {
                           } else {
                             loadingOverlay.hide();
 
-                            DoItDialogs.showErrorDialog(context: context, message: "There is no registered user with the givan Email address");
+                            DoItDialogs.showErrorDialog(
+                                context: context, message: "There is no registered user with the givan Email address");
                           }
                         });
                       },
@@ -157,11 +159,12 @@ class LoginPageState extends State<LoginPage> {
               print('${user.displayName} has logged in using email and password');
               widget.onSignedIn();
             }).catchError((error) {
-              final snackbar = SnackBar(
-                content: Text('Error while trying to log in: \n ${error.message}'),
+              loadingOverlay.hide();
+              DoItDialogs.showErrorDialog(
+                context: context,
+                message: 'Error while trying to log in: \n${error.message}',
               );
-              scaffoldKey.currentState.showSnackBar(snackbar);
-              print(error);
+              print('Error while trying to log in: \n${error.message}');
             });
           }
         },

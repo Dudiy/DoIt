@@ -79,6 +79,7 @@ class RegisterPageState extends State<RegisterPage> {
                     onPressed: () async {
                       if (_formKey.currentState.validate()) {
                         try {
+                          FocusScope.of(context).requestFocus(new FocusNode());
                           loadingOverlay.show(context: context, message: "Registering new user...");
                           await widget.auth.registerUserWithEmailAndPassword(
                             email: _emailController.text,
