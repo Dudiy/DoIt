@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:do_it/app.dart';
 import 'package:do_it/authenticator.dart';
 import 'package:do_it/private.dart';
-import 'package:do_it/widgets/custom/dialog.dart';
+import 'package:do_it/widgets/custom/dialog_generator.dart';
 import 'package:do_it/widgets/home_page.dart';
 import 'package:do_it/widgets/loadingPage.dart';
 import 'package:do_it/widgets/login/login_widget.dart';

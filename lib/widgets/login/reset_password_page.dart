@@ -1,4 +1,5 @@
 import 'package:do_it/app.dart';
+import 'package:do_it/widgets/custom/loadingOverlay.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +14,8 @@ class ResetPasswordPageState extends State<ResetPasswordPage> {
   final TextEditingController _emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final LoadingOverlay loadingOverlay = new LoadingOverlay();
+  final App app = App.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +44,17 @@ class ResetPasswordPageState extends State<ResetPasswordPage> {
             FlatButton(
                 child: Text("Reset password"),
                 onPressed: () {
-                  App.instance.authenticator.sendPasswordResetEmail(_emailController.text);
-                  Navigator.pop(context);
+                  loadingOverlay.show(context: context, message: "sending reset password mail...");
+                  app.usersManager.getShortUserInfoByEmail(_emailController.text).then((userInfo) {
+                    if (userInfo != null) {
+                      app.authenticator.sendPasswordResetEmail(_emailController.text);
+                      loadingOverlay.hide();
+                      Navigator.pop(context);
+                    }
+                    else {
+                    }
+                  });
+
                 }),
           ],
         ),

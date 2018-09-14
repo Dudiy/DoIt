@@ -7,7 +7,7 @@ import 'package:do_it/data_classes/group/group_info_short.dart';
 import 'package:do_it/data_classes/group/group_utils.dart';
 import 'package:do_it/data_classes/task/task_info_short.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
-import 'package:do_it/widgets/custom/dialog.dart';
+import 'package:do_it/widgets/custom/dialog_generator.dart';
 import 'package:do_it/widgets/custom/speed_dial.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:do_it/widgets/groups/group_card.dart';

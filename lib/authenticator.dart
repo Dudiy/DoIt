@@ -7,6 +7,7 @@ import 'package:meta/meta.dart';
 
 class Authenticator {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final App app = App.instance;
 
   Future<FirebaseUser> getCurrentUser() async {
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
@@ -55,14 +56,15 @@ class Authenticator {
   Future<FirebaseUser> registerUserWithEmailAndPassword(
       {@required String email, @required String password, @required String displayName, String photoUrl}) async {
     FirebaseUser user = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
+
     try {
-      await App.instance.usersManager.addUser(user, displayName, photoUrl);
+      await app.usersManager.addUser(user, displayName, photoUrl);
     } catch (e) {
       await user.delete();
       throw new Exception('The user was not added - error while adding to DB. \n inner exception: $e');
     }
 
-    await App.instance.setLoggedInUser(user);
+    await app.setLoggedInUser(user);
     return user;
   }
 

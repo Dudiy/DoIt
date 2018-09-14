@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:do_it/app.dart';
 import 'package:do_it/authenticator.dart';
+import 'package:do_it/widgets/custom/dialog_generator.dart';
 import 'package:do_it/widgets/custom/loadingOverlay.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:flutter/material.dart';
@@ -33,88 +34,73 @@ class RegisterPageState extends State<RegisterPage> {
       appBar: new AppBar(
         title: Text("Register"),
       ),
+      resizeToAvoidBottomPadding: false,
       body: Container(
         padding: EdgeInsets.all(20.0),
-        child: ListView(
-          children: <Widget>[
-            Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    DoItTextField(
-                      controller: _emailController,
-                      label: 'Email',
-                      isRequired: true,
-                      keyboardType: TextInputType.emailAddress,
+        child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(height: 15.0),
+                DoItTextField(
+                  controller: _emailController,
+                  label: 'Email',
+                  isRequired: true,
+                  keyboardType: TextInputType.emailAddress,
+                ),
+                DoItTextField(
+                  controller: _displayNameController,
+                  label: 'Name',
+                  isRequired: true,
+                ),
+                DoItTextField(
+                  controller: _passwordController,
+                  label: 'Password',
+                  isRequired: true,
+                  fieldValidator: (String value) => value.length >= 6,
+                  validationErrorMsg: 'Password must be at least 6 characters long',
+                ),
+                SizedBox(height: 30.0),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  constraints: const BoxConstraints(minWidth: double.infinity),
+                  child: RaisedButton(
+                  padding: EdgeInsets.symmetric(vertical: 15.0),
+                    color: Theme.of(context).primaryColor,
+                    child: Text(
+                      'Register',
+                      style: TextStyle(color: Colors.white),
                     ),
-                    DoItTextField(
-                      controller: _displayNameController,
-                      label: 'Name',
-                      isRequired: true,
+                    elevation: 8.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(7.0)),
                     ),
-                    DoItTextField(
-                      controller: _passwordController,
-                      label: 'Password',
-                      isRequired: true,
-                      fieldValidator: (String value) => value.length >= 6,
-                      validationErrorMsg: 'Password must be at least 6 characters long',
-                    ),
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
-                      child: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-                        return RaisedButton(
-                          padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 100.0),
-                          color: Theme.of(context).primaryColor,
-                          child: Text(
-                            'Register',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          elevation: 8.0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(7.0)),
-                          ),
-                          onPressed: () async {
-                            print("clicked register");
-                            if (_formKey.currentState.validate()) {
-                              try {
-                                loadingOverlay.show(context: context, message: "Registering new user...");
-                                await widget.auth.registerUserWithEmailAndPassword(
-                                  email: _emailController.text,
-                                  password: _passwordController.text,
-                                  displayName: _displayNameController.text,
-                                );
-                                loadingOverlay.hide();
-                                Navigator.pop(context);
-                                widget.onSignedIn();
-                              } catch (e) {
-                                _showErrorDialog(e.message);
-                              }
-                            } else {
-                              print("register form is invalid");
-                            }
-                          },
-                        );
-                      }),
-                    ),
-                  ],
-                )),
-          ],
-        ),
+                    onPressed: () async {
+                      if (_formKey.currentState.validate()) {
+                        try {
+                          loadingOverlay.show(context: context, message: "Registering new user...");
+                          await widget.auth.registerUserWithEmailAndPassword(
+                            email: _emailController.text,
+                            password: _passwordController.text,
+                            displayName: _displayNameController.text,
+                          );
+                          loadingOverlay.hide();
+                          Navigator.pop(context);
+                          widget.onSignedIn();
+                        } catch (e) {
+                          loadingOverlay.hide();
+                          DoItDialogs.showErrorDialog(context: context, message: e.message);
+                        }
+                      } else {
+                        print("register form is invalid");
+                      }
+                    },
+                  ),
+                ),
+              ],
+            )),
       ),
     );
-  }
-
-  Future<void> _showErrorDialog(String message) async {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return new AlertDialog(title: Text('Oops...'), content: Text(message), actions: <Widget>[
-            new SimpleDialogOption(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Ok'),
-            ),
-          ]);
-        });
   }
 }

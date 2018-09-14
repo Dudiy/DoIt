@@ -5,7 +5,7 @@ import 'package:do_it/constants/should_be_sync.dart';
 import 'package:do_it/data_classes/task/task_info.dart';
 import 'package:do_it/data_managers/task_manager_exception.dart';
 import 'package:do_it/data_managers/task_manager_result.dart';
-import 'package:do_it/widgets/custom/dialog.dart';
+import 'package:do_it/widgets/custom/dialog_generator.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 

@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:do_it/app.dart';
-import 'package:do_it/widgets/custom/dialog.dart';
+import 'package:do_it/widgets/custom/dialog_generator.dart';
 import 'package:do_it/widgets/custom/imageFetcher.dart';
 import 'package:do_it/widgets/custom/loadingOverlay.dart';
 import 'package:do_it/widgets/groups/my_groups_widget.dart';

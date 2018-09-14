@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it/app.dart';
 import 'package:do_it/authenticator.dart';
+import 'package:do_it/widgets/custom/dialog_generator.dart';
 import 'package:do_it/widgets/custom/loadingOverlay.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:do_it/widgets/login/register_widget.dart';
@@ -25,6 +26,7 @@ class LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final LoadingOverlay loadingOverlay = new LoadingOverlay();
+  final App app = App.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +94,36 @@ class LoginPageState extends State<LoginPage> {
                     style: Theme.of(context).textTheme.caption,
                   ),
                   onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ResetPasswordPage()));
+                    TextEditingController _emailController = new TextEditingController();
+                    DoItDialogs.showUserInputDialog(
+                      context: context,
+                      inputWidgets: [
+                        DoItTextField(
+                          label: "Email",
+                          controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          isRequired: true,
+                          maxLines: 1,
+                        )
+                      ],
+                      title: 'Reset password',
+                      onSubmit: () {
+                        FocusScope.of(context).requestFocus(new FocusNode());
+                        loadingOverlay.show(context: context, message: "sending reset password mail...");
+                        app.usersManager.getShortUserInfoByEmail(_emailController.text).then((userInfo) {
+                          if (userInfo != null) {
+                            app.authenticator.sendPasswordResetEmail(_emailController.text);
+                            loadingOverlay.hide();
+                            Navigator.pop(context);
+                          } else {
+                            loadingOverlay.hide();
+
+                            DoItDialogs.showErrorDialog(context: context, message: "There is no registered user with the givan Email address");
+                          }
+                        });
+                      },
+                    );
+//                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ResetPasswordPage()));
                   }),
             ],
           ),
@@ -147,7 +178,10 @@ class LoginPageState extends State<LoginPage> {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(right: 15.0),
-            child: Image.asset('assets/google_icon.png', width: 18.0,),
+            child: Image.asset(
+              'assets/google_icon.png',
+              width: 18.0,
+            ),
           ),
           Text('log in with google'),
         ],

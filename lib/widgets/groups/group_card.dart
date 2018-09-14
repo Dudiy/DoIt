@@ -1,6 +1,6 @@
 import 'package:do_it/app.dart';
 import 'package:do_it/data_classes/group/group_info_short.dart';
-import 'package:do_it/widgets/custom/dialog.dart';
+import 'package:do_it/widgets/custom/dialog_generator.dart';
 import 'package:do_it/widgets/custom/imageContainer.dart';
 import 'package:do_it/widgets/custom/vertical_divider.dart';
 import 'package:do_it/widgets/groups/scoreboard_widget.dart';
