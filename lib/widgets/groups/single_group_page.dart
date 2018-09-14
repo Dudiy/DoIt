@@ -488,8 +488,9 @@ class SingleGroupPageState extends State<SingleGroupPage> {
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetailsPage(taskInfo)));
                 });
               },
-              onCompleted: () => fetchCompletedTasksFromServer()
-          ),
+              onCompleted: () {
+                fetchCompletedTasksFromServer();
+              }),
         ));
       }
     });

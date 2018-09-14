@@ -155,7 +155,7 @@ class TasksManager {
     } else {
       DateTime newStartTime = _getStartTimeFromRecurringPolicy(taskInfo.startTime, taskInfo.recurringPolicy);
       DateTime newEndTime = _getStartTimeFromRecurringPolicy(taskInfo.endTime, taskInfo.recurringPolicy);
-      updateTask(taskIdToChange: taskInfo.taskID, startTime: newStartTime, endTime: newEndTime);
+      updateTask(taskIdToChange: taskInfo.taskID, startTime: newStartTime, endTime: newEndTime, allowNonManagerUpdate: true);
     }
     await app.groupsManager.addCompletedTaskToGroup(
       groupID: parentGroupInfo.groupID,

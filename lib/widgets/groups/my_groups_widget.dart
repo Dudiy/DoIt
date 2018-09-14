@@ -96,23 +96,35 @@ class MyGroupsPageState extends State<MyGroupsPage> {
     _getMyGroupsFromDB(myGroups);
   }
 
-  List<Widget> _myGroupsWidget(BuildContext context) {
+  Widget _myGroupsWidget(BuildContext context) {
     if (_myGroups == null || _allTasksWidget == null)
-      return [
-        Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            Image.asset(
-              'assets/loading_anim_high.gif',
-              width: 50.0,
-            ),
-            Text('Fetching groups from server...'),
-          ],
-        )
-      ];
+      return Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          Image.asset(
+            'assets/loading_anim_high.gif',
+            width: 50.0,
+          ),
+          Text('Fetching groups from server...'),
+        ],
+      );
 
-    if (_myGroups.length == 0) return [ListTile(title: Text("you are not in any group yet"))];
+    if (_myGroups.length == 0)
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          Expanded(child: Container()),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Image.asset("assets/images/minion_sad.png", height: 120.0),
+          ),
+          Text("You are not in any group yet", style: Theme.of(context).textTheme.title,textAlign: TextAlign.center),
+          Expanded(child: Container()),
+          Image.asset("assets/images/ClickToCreateGroup.png", height: 170.0),
+        ],
+      );
 
     List<Widget> list = new List();
     list.add(_allTasksWidget);
@@ -124,7 +136,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
         child: GroupCard(shortGroupInfo: group),
       );
     }).toList());
-    return list;
+    return ListView(children: list);
   }
 
   Future<void> _showAddGroupDialog() async {
@@ -174,9 +186,10 @@ class MyGroupsPageState extends State<MyGroupsPage> {
       );
     } else {
       return RefreshIndicator(
-        child: ListView(
+        child: _myGroupsWidget(context),
+        /*child: ListView(
           children: _myGroupsWidget(context),
-        ),
+        ),*/
         onRefresh: _getMyGroupsFromDB,
       );
     }
