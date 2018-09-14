@@ -5,7 +5,6 @@ import 'package:do_it/widgets/custom/dialog_generator.dart';
 import 'package:do_it/widgets/custom/loadingOverlay.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:do_it/widgets/login/register_widget.dart';
-import 'package:do_it/widgets/login/reset_password_page.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
