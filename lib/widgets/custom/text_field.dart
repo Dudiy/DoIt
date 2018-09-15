@@ -48,6 +48,9 @@ class DoItTextField extends StatelessWidget {
         decoration: InputDecoration(
           labelText: label,
           enabled: enabled,
+          labelStyle: TextStyle(height: 1.5),
+          filled: true,
+          fillColor: Colors.white70,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
         ),
         validator: (value) {

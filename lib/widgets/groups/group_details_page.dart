@@ -54,17 +54,25 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
         titleSpacing: 5.0,
         actions: drawActions(),
       ),
-      body: ListView(
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              _groupImage(),
-              _groupManagerAndID(context),
-            ],
-          ),
-          _editableDetails(),
-          _groupMembersDisplay(),
-        ],
+      body: Container(
+        decoration: app.getBackgroundImage(),
+        padding: EdgeInsets.all(8.0),
+        child: ListView(
+          children: <Widget>[
+            Card(
+              color: Theme.of(context).primaryColorLight.withAlpha(200),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+              child: Row(
+                children: <Widget>[
+                  _groupImage(),
+                  _groupManagerAndID(context),
+                ],
+              ),
+            ),
+            _editableDetails(),
+            _groupMembersDisplay(),
+          ],
+        ),
       ),
     );
   }
@@ -120,6 +128,13 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
 
     List<Widget> list = new List();
     list.add(Container(
+//      color: Theme.of(context).primaryColorLight,
+      decoration: ShapeDecoration(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(8.0)),
+        ),
+        color: Theme.of(context).primaryColorLight,
+      ),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Stack(
@@ -187,27 +202,25 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
 
   Widget _groupImage() {
     const double GROUP_IMAGE_SIZE = 100.0;
-    var editImageText = editEnabled
-        ? <Widget>[
-            Expanded(
-              child: Container(),
-            ),
-            Container(
-              width: GROUP_IMAGE_SIZE - 2,
-              padding: EdgeInsets.all(5.0),
-              decoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.vertical(bottom: Radius.circular(16.0)),
-                color: Colors.black54,
-              ),
-              child: Text(
-                'tap to change',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white, fontSize: 13.0),
-              ),
-            ),
-          ]
-        : [Container(width: 0.0, height: 0.0)];
+    var editImageText = <Widget>[
+      Expanded(
+        child: Container(),
+      ),
+      Container(
+        width: GROUP_IMAGE_SIZE - 2,
+        padding: EdgeInsets.all(5.0),
+        decoration: BoxDecoration(
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(16.0)),
+          color: Colors.black54,
+        ),
+        child: Text(
+          'tap to change',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.white, fontSize: 13.0),
+        ),
+      ),
+    ];
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -285,15 +298,8 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
         Text(
           'Group manager:\n ${widget.groupManager.displayName}',
           style: Theme.of(context).textTheme.caption,
-        ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Text(
-              '  ',
-              style: Theme.of(context).textTheme.caption,
-            ),
-          ),
+          overflow: TextOverflow.ellipsis,
+          maxLines: 2,
         ),
       ],
     );
@@ -327,6 +333,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
         decoration: BoxDecoration(
           border: Border.all(color: Colors.black38),
           borderRadius: BorderRadius.circular(10.0),
+          color: Colors.white70,
         ),
         child: Column(
           children: getAllMembers(),

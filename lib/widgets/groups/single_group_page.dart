@@ -87,48 +87,55 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     }
     return Scaffold(
       key: scaffoldKey,
-      body: RefreshIndicator(
-        onRefresh: getGroupTasksFromDB,
-        child: CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              expandedHeight: 220.0,
-              pinned: true,
-              flexibleSpace: FlexibleSpaceBar(
-                centerTitle: true,
-                title: Text(
-                  groupInfo.title,
-                  maxLines: 2,
-                  style: Theme.of(context).textTheme.title.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+      body: Container(
+        decoration: app.getBackgroundImage(),
+        child: RefreshIndicator(
+          onRefresh: getGroupTasksFromDB,
+          child: CustomScrollView(
+            slivers: <Widget>[
+              SliverAppBar(
+                backgroundColor: Theme.of(context).primaryColor.withOpacity(0.65),
+                expandedHeight: 220.0,
+                pinned: true,
+                flexibleSpace: FlexibleSpaceBar(
+                  centerTitle: true,
+                  title: Text(
+                    groupInfo.title,
+                    maxLines: 2,
+                    style: Theme.of(context).textTheme.title.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                  background: Container(
+                    color: Colors.transparent,
+                    child: Center(
+                      child: GestureDetector(
+                        onTap: () => _groupImageClicked(context),
+                        child: ImageContainer(
+                          imagePath: photoUrl,
+                          imageFile: groupImageFile,
+                          size: 130.0,
+                          borderColor: Colors.white,
+                        ),
                       ),
-                ),
-                background: Center(
-                  child: GestureDetector(
-                    onTap: () => _groupImageClicked(context),
-                    child: ImageContainer(
-                      imagePath: photoUrl,
-                      imageFile: groupImageFile,
-                      size: 130.0,
-                      borderColor: Colors.white,
                     ),
                   ),
                 ),
+                actions: [
+                  PopupMenuButton<String>(
+                    itemBuilder: _getPopupMenuItems,
+                  )
+                ],
               ),
-              actions: [
-                PopupMenuButton<String>(
-                  itemBuilder: _getPopupMenuItems,
-                )
-              ],
-            ),
-            SliverList(
-              delegate: SliverChildListDelegate([
-                _getExpansionPanelList(context),
-                Container(height: 80.0), //container added so the add task button doesn't hide an expansion panel
-              ]),
-            )
-          ],
+              SliverList(
+                delegate: SliverChildListDelegate([
+                  _getExpansionPanelList(context),
+                  Container(height: 80.0), //container added so the add task button doesn't hide an expansion panel
+                ]),
+              )
+            ],
+          ),
         ),
       ),
       floatingActionButton: (app.getLoggedInUserID() == groupInfo.managerID) ? _renderSpeedDial() : null,
@@ -283,6 +290,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     return Padding(
       padding: EdgeInsets.all(10.0),
       child: ExpansionPanelList(
+        animationDuration: Duration(milliseconds: 600),
         expansionCallback: (int index, bool isExpanded) {
           setState(() {
             switch (index) {
@@ -356,11 +364,12 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     return ExpansionPanel(
       headerBuilder: (BuildContext context, bool isExpanded) {
         return Center(
-            child: Text(
-          'Tasks assigned to me $numTasksAssignedToMeStr',
-          style: Theme.of(context).textTheme.title,
-          textAlign: TextAlign.center,
-        ));
+          child: Text(
+            'Tasks assigned to me $numTasksAssignedToMeStr',
+            style: Theme.of(context).textTheme.title,
+            textAlign: TextAlign.center,
+          ),
+        );
       },
       body: getTasksAssignedToMe(),
       isExpanded: _myTasksIsExpanded,
@@ -494,8 +503,12 @@ class SingleGroupPageState extends State<SingleGroupPage> {
         ));
       }
     });
-    return Column(
-      children: tasksList.length > 0 ? tasksList : [noTasksAssignedToMe],
+    tasksList.add(SizedBox(height: 15.0));
+    return Container(
+      color: Colors.transparent,
+      child: Column(
+        children: tasksList.length > 0 ? tasksList : [noTasksAssignedToMe],
+      ),
     );
   }
 
@@ -614,7 +627,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   List<PopupMenuEntry<String>> _getPopupMenuItems(BuildContext context) {
     List<PopupMenuEntry<String>> _menuItems = new List();
     _menuItems.add(_getGroupInfoMenuItem(context));
-    _menuItems.add(PopupMenuDivider());
+//    _menuItems.add(PopupMenuDivider());
     if (app.loggedInUser.userID == groupInfo.managerID) {
       _menuItems.add(_getDeleteGroupMenuItem(context));
     } else {
@@ -626,41 +639,53 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   PopupMenuEntry<String> _getGroupInfoMenuItem(BuildContext context) {
     return PopupMenuItem(
       value: 'deleteGroup',
-      child: ListTile(
-          leading: Icon(Icons.info_outline, color: Theme.of(context).primaryColor),
-          title: Text('Group info'),
-          onTap: () async {
-            ShortUserInfo managerInfo = await app.usersManager.getShortUserInfo(groupInfo.managerID);
-            Navigator.pop(context);
-            Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => GroupDetailsPage(groupInfo, managerInfo, _groupInfoChanged)));
-          }),
+      child: Container(
+        color: Colors.white70,
+        child: ListTile(
+            leading: Icon(Icons.info_outline, color: Theme.of(context).primaryColor),
+            title: Text(
+              'Group info',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            onTap: () async {
+              ShortUserInfo managerInfo = await app.usersManager.getShortUserInfo(groupInfo.managerID);
+              Navigator.pop(context);
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => GroupDetailsPage(groupInfo, managerInfo, _groupInfoChanged)));
+            }),
+      ),
     );
   }
 
   PopupMenuEntry<String> _getDeleteGroupMenuItem(BuildContext context) {
     return PopupMenuItem(
       value: 'deleteGroup',
-      child: ListTile(
-          leading: Icon(Icons.delete, color: Colors.red),
-          title: Text('Delete group'),
-          onTap: () async {
-            Navigator.pop(context); // close popup dialog
-            deleteGroup();
-          }),
+      child: Container(
+        color: Colors.white70,
+        child: ListTile(
+            leading: Icon(Icons.delete, color: Colors.red),
+            title: Text('Delete group', style: TextStyle(fontWeight: FontWeight.bold)),
+            onTap: () async {
+              Navigator.pop(context); // close popup dialog
+              deleteGroup();
+            }),
+      ),
     );
   }
 
   PopupMenuEntry<String> _getLeaveGroupMenuItem(BuildContext context) {
     return PopupMenuItem(
       value: 'leaveGroup',
-      child: ListTile(
-          leading: Icon(Icons.exit_to_app, color: Colors.red),
-          title: Text('Leave group'),
-          onTap: () {
-            Navigator.pop(context); // close popup dialog
-            leaveGroup();
-          }),
+      child: Container(
+        color: Colors.white70,
+        child: ListTile(
+            leading: Icon(Icons.exit_to_app, color: Colors.red),
+            title: Text('Leave group'),
+            onTap: () {
+              Navigator.pop(context); // close popup dialog
+              leaveGroup();
+            }),
+      ),
     );
   }
   //endregion

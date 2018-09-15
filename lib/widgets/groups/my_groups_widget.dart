@@ -47,7 +47,17 @@ class MyGroupsPageState extends State<MyGroupsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _renderMyGroupBody(),
+      body: Container(
+        child: _renderMyGroupBody(),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            fit: BoxFit.cover,
+            image: AssetImage(
+              app.bgImagePath
+            ),
+          ),
+        ),
+      ),
       floatingActionButton: _myGroups == null || _allTasksWidget == null
           ? null
           : FloatingActionButton(
@@ -120,7 +130,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
             padding: const EdgeInsets.all(20.0),
             child: Image.asset("assets/images/minion_sad.png", height: 120.0),
           ),
-          Text("You are not in any group yet", style: Theme.of(context).textTheme.title,textAlign: TextAlign.center),
+          Text("You are not in any group yet", style: Theme.of(context).textTheme.title, textAlign: TextAlign.center),
           Expanded(child: Container()),
           Image.asset("assets/images/ClickToCreateGroup.png", height: 170.0),
         ],

@@ -75,9 +75,9 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
     if (editEnabled) {
       _menuItems.addAll([
         _getWriteToNfcMenuItem(context),
-        PopupMenuDivider(),
+//        PopupMenuDivider(),
         _getNotifyUsersMenuItem(context),
-        PopupMenuDivider(),
+//        PopupMenuDivider(),
         _getDeleteTaskMenuItem(context),
       ]);
     }
@@ -118,26 +118,29 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
   Widget _getSaveMenuItem(context) {
     return PopupMenuItem(
       value: 'save',
-      child: ListTile(
-        leading: Icon(Icons.save, color: Theme.of(context).primaryColor),
-        title: Text('Save'),
-        onTap: () async {
-          await app.tasksManager
-              .updateTask(
-            taskIdToChange: widget.taskInfo.taskID,
-            title: _titleController.text.isNotEmpty ? _titleController.text : null,
-            description: _descriptionController.text.isNotEmpty ? _descriptionController.text : null,
-            value: _valueController.text.isNotEmpty ? int.parse(_valueController.text) : null,
-            startTime: _selectedStartDateTime,
-            endTime: _selectedEndDateTime,
-            recurringPolicy: _selectedPolicy,
-          )
-              .then((newGroupInfo) {
-            // TODO check if we need this
+      child: Container(
+        color: Colors.white70,
+        child: ListTile(
+          leading: Icon(Icons.save, color: Theme.of(context).primaryColor),
+          title: Text('Save'),
+          onTap: () async {
+            await app.tasksManager
+                .updateTask(
+              taskIdToChange: widget.taskInfo.taskID,
+              title: _titleController.text.isNotEmpty ? _titleController.text : null,
+              description: _descriptionController.text.isNotEmpty ? _descriptionController.text : null,
+              value: _valueController.text.isNotEmpty ? int.parse(_valueController.text) : null,
+              startTime: _selectedStartDateTime,
+              endTime: _selectedEndDateTime,
+              recurringPolicy: _selectedPolicy,
+            )
+                .then((newGroupInfo) {
+              // TODO check if we need this
 //            widget.onTaskInfoChanged(newGroupInfo);
-          });
-          Navigator.popUntil(context, ModalRoute.withName('/singleGroupPage'));
-        },
+            });
+            Navigator.popUntil(context, ModalRoute.withName('/singleGroupPage'));
+          },
+        ),
       ),
     );
   }
@@ -145,35 +148,41 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
   Widget _getDeleteTaskMenuItem(context) {
     return PopupMenuItem(
       value: 'deleteTask',
-      child: ListTile(
-          leading: Icon(Icons.delete, color: Colors.red),
-          title: Text('Delete task'),
-          onTap: () async {
-            DoItDialogs.showConfirmDialog(
-              context: context,
-              message: 'Are you sure you would like to delete this task? \nThis cannot be undone',
-              isWarning: true,
-              actionButtonText: 'Delete',
-            ).then((deleteConfirmed) {
-              if (deleteConfirmed) {
-                app.tasksManager.deleteTask(widget.taskInfo.taskID);
-                Navigator.popUntil(context, ModalRoute.withName('/singleGroupPage'));
-              }
-            });
-          }),
+      child: Container(
+        color: Colors.white70,
+        child: ListTile(
+            leading: Icon(Icons.delete, color: Colors.red),
+            title: Text('Delete task'),
+            onTap: () async {
+              DoItDialogs.showConfirmDialog(
+                context: context,
+                message: 'Are you sure you would like to delete this task? \nThis cannot be undone',
+                isWarning: true,
+                actionButtonText: 'Delete',
+              ).then((deleteConfirmed) {
+                if (deleteConfirmed) {
+                  app.tasksManager.deleteTask(widget.taskInfo.taskID);
+                  Navigator.popUntil(context, ModalRoute.withName('/singleGroupPage'));
+                }
+              });
+            }),
+      ),
     );
   }
 
   Widget _getWriteToNfcMenuItem(context) {
     return PopupMenuItem(
       value: 'writeToNfc',
-      child: ListTile(
-          leading: Icon(Icons.nfc, color: Theme.of(context).primaryColor),
-          title: Text('Write to NFC'),
-          onTap: () {
-            Navigator.pop(context); // hide the popup
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => NfcWritePage(widget.taskInfo.taskID)));
-          }),
+      child: Container(
+        color: Colors.white70,
+        child: ListTile(
+            leading: Icon(Icons.nfc, color: Theme.of(context).primaryColor),
+            title: Text('Write to NFC'),
+            onTap: () {
+              Navigator.pop(context); // hide the popup
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => NfcWritePage(widget.taskInfo.taskID)));
+            }),
+      ),
     );
   }
 
@@ -188,26 +197,29 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
     );
     return PopupMenuItem(
       value: 'notify',
-      child: ListTile(
-          leading: Icon(Icons.comment, color: Theme.of(context).primaryColor),
-          title: Text('Notify users'),
-          onTap: () {
-            DoItDialogs.showUserInputDialog(
-              context: context,
-              inputWidgets: [notificationMessage],
-              title: 'Send notification',
-              onSubmit: () async {
-                List<String> _tokens = await _getAssignedUsersTokens();
-                Navigator.pop(context); // hide menu items popup
-                app.notifier.sendNotifications(
-                  title: 'Notification from task \"${widget.taskInfo.title}\"',
-                  body: _notificationController.text,
-                  destUsersFcmTokens: _tokens,
-                );
-                Navigator.pop(context);
-              },
-            );
-          }),
+      child: Container(
+        color: Colors.white70,
+        child: ListTile(
+            leading: Icon(Icons.comment, color: Theme.of(context).primaryColor),
+            title: Text('Notify users'),
+            onTap: () {
+              DoItDialogs.showUserInputDialog(
+                context: context,
+                inputWidgets: [notificationMessage],
+                title: 'Send notification',
+                onSubmit: () async {
+                  List<String> _tokens = await _getAssignedUsersTokens();
+                  Navigator.pop(context); // hide menu items popup
+                  app.notifier.sendNotifications(
+                    title: 'Notification from task \"${widget.taskInfo.title}\"',
+                    body: _notificationController.text,
+                    destUsersFcmTokens: _tokens,
+                  );
+                  Navigator.pop(context);
+                },
+              );
+            }),
+      ),
     );
   }
 
@@ -228,17 +240,25 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
     List<Widget> widgetsList = new List();
     List<ShortUserInfo> assignedUsers = _getAssignedUsers();
     widgetsList.add(Container(
-      color: Theme.of(context).primaryColorLight,
+      decoration: ShapeDecoration(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(8.0)),
+          ),
+          color: Theme.of(context).primaryColorLight),
       child: Stack(
         children: <Widget>[
           _drawEditAssignedUsersButton(),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Center(
-                child: Text(
-              'Assigned users',
-              style: Theme.of(context).textTheme.title.copyWith(decoration: TextDecoration.underline),
-            )),
+          Container(
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Container(
+                child: Center(
+                    child: Text(
+                  'Assigned users',
+                  style: Theme.of(context).textTheme.subhead.copyWith(decoration: TextDecoration.underline),
+                )),
+              ),
+            ),
           ),
         ],
       ),
@@ -249,7 +269,11 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
       assignedUsers.forEach((shortUserInfo) {
         widgetsList.add(ListTile(
           // TODO display with a nicer widget
-          title: Text(shortUserInfo.displayName),
+          title: Text(
+            shortUserInfo.displayName,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.body1,
+          ),
         ));
       });
     }
@@ -338,69 +362,74 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
         titleSpacing: 0.0,
         actions: _drawActionsBar(),
       ),
-      body: ListView(
-        children: <Widget>[
-          Container(
-            child: Form(
-                key: _formKey,
-                child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-                  DoItTextField(label: 'Task ID', controller: _taskIDController, enabled: false),
-                  DoItTextField(
-                    controller: _titleController,
-                    label: 'Title',
-                    enabled: editEnabled,
-                  ),
-                  DoItTextField(
-                    controller: _descriptionController,
-                    label: 'Description',
-                    enabled: editEnabled,
-                    maxLines: 3,
-                  ),
-                  DoItTextField(
-                    keyboardType: TextInputType.number,
-                    controller: _valueController,
-                    label: 'Value',
-                    enabled: editEnabled,
-                  ),
-                  DoItRecurringPolicyField(
-                    enabled: editEnabled,
-                    initPolicy: widget.taskInfo.recurringPolicy,
-                    onPolicyUpdated: (selected) => _selectedPolicy = selected,
-                  ),
-                  DoItTimeField(
-                    label: 'Start time',
-                    initDateTime: widget.taskInfo.startTime,
-                    enabled: editEnabled,
-                    onDateTimeUpdated: (selectedDateTime) {
-                      _selectedStartDateTime = selectedDateTime;
-                    },
-                  ),
-                  DoItTimeField(
-                    label: 'End time',
-                    initDateTime: widget.taskInfo.endTime,
-                    enabled: editEnabled,
-                    onDateTimeUpdated: (selectedDateTime) {
-                      setState(() {
-                        _selectedEndDateTime = selectedDateTime;
-                      });
-                    },
-                  ),
-                ])),
-          ),
-          Divider(),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.black38),
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Column(
-                children: _getAssignedUsersWidgets(),
+      body: Container(
+        padding: EdgeInsets.all(8.0),
+        decoration: app.getBackgroundImage(),
+        child: ListView(
+          children: <Widget>[
+            Container(
+              child: Form(
+                  key: _formKey,
+                  child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+                    DoItTextField(label: 'Task ID', controller: _taskIDController, enabled: false),
+                    DoItTextField(
+                      controller: _titleController,
+                      label: 'Title',
+                      enabled: editEnabled,
+                    ),
+                    DoItTextField(
+                      controller: _descriptionController,
+                      label: 'Description',
+                      enabled: editEnabled,
+                      maxLines: 3,
+                    ),
+                    DoItTextField(
+                      keyboardType: TextInputType.number,
+                      controller: _valueController,
+                      label: 'Value',
+                      enabled: editEnabled,
+                    ),
+                    DoItRecurringPolicyField(
+                      enabled: editEnabled,
+                      initPolicy: widget.taskInfo.recurringPolicy,
+                      onPolicyUpdated: (selected) => _selectedPolicy = selected,
+                    ),
+                    DoItTimeField(
+                      label: 'Start time',
+                      initDateTime: widget.taskInfo.startTime,
+                      enabled: editEnabled,
+                      onDateTimeUpdated: (selectedDateTime) {
+                        _selectedStartDateTime = selectedDateTime;
+                      },
+                    ),
+                    DoItTimeField(
+                      label: 'End time',
+                      initDateTime: widget.taskInfo.endTime,
+                      enabled: editEnabled,
+                      onDateTimeUpdated: (selectedDateTime) {
+                        setState(() {
+                          _selectedEndDateTime = selectedDateTime;
+                        });
+                      },
+                    ),
+                  ])),
+            ),
+            Divider(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black38),
+                  borderRadius: BorderRadius.circular(10.0),
+                  color: Colors.white70,
+                ),
+                child: Column(
+                  children: _getAssignedUsersWidgets(),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

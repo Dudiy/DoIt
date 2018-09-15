@@ -63,9 +63,9 @@ class UsersManager {
     String pathToDelete = "$USERS/$userID/profile.jpg";
     StorageReference storageRef = App.instance.firebaseStorage.ref().child(pathToDelete);
     storageRef.delete().whenComplete(() {
-      print("delete profile picture from firebase storage in path: " + pathToDelete);
+      print("UsersManager: deleted profile picture from firebase storage in path: " + pathToDelete);
     }).catchError(() {
-      print("fail to delete profile picture from firebase storage in path: " + pathToDelete);
+      print("UsersManager: failed to delete profile picture from firebase storage in path: " + pathToDelete);
     });
   }
 

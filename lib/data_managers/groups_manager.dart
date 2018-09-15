@@ -135,9 +135,9 @@ class GroupsManager {
     String pathToDelete = "$GROUPS/$groupID/profile.jpg";
     StorageReference storageRef = App.instance.firebaseStorage.ref().child(pathToDelete);
     storageRef.delete().whenComplete(() {
-      print("delete group picture from firebase storage in path: " + pathToDelete);
+      print("GroupManager: deleted group picture from firebase storage in path: " + pathToDelete);
     }).catchError(() {
-      print("fail to delete group picture from firebase storage in path: " + pathToDelete);
+      print("GroupManager: failed to delete group picture from firebase storage in path: " + pathToDelete);
     });
   }
 

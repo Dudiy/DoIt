@@ -112,6 +112,9 @@ class DoItTimeFieldState extends State<DoItTimeField> {
 //                        textAlign: TextAlign.center,
                         decoration: InputDecoration(
                           labelText: widget.label,
+                          labelStyle: TextStyle(height: 1.7),
+                          filled: true,
+                          fillColor: Colors.white70,
                           border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(16.0))),
                         ),
                       ),
@@ -127,8 +130,11 @@ class DoItTimeFieldState extends State<DoItTimeField> {
                               )),
                               color: widget.enabled
                                   ? Theme.of(context).primaryColorLight
-                                  : Theme.of(context).disabledColor,
-                              child: Icon(Icons.date_range),
+                                  : Theme.of(context).disabledColor.withAlpha(35),
+                              child: Icon(Icons.date_range,
+                                color: widget.enabled
+                                    ? Colors.black
+                                    : Theme.of(context).disabledColor.withAlpha(100)),
                               onPressed: () {
                                 if (widget.enabled) {
                                   _setTime(context).then((selectedDateTime) {

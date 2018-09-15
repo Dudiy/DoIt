@@ -54,7 +54,7 @@ class TaskCard extends StatelessWidget {
       elevation: 5.0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       color: (taskInfo.runtimeType == CompletedTaskInfo)
-          ? Colors.greenAccent
+          ? Colors.greenAccent[100]
           : _isOverdue() ? Colors.red : Theme.of(context).primaryColorLight,
       child: Container(
         margin: EdgeInsets.all(4.0),

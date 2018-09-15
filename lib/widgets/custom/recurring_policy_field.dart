@@ -32,53 +32,54 @@ class DoItRecurringPolicyFieldState extends State<DoItRecurringPolicyField> {
 
   @override
   Widget build(BuildContext context) {
-    var selector = widget.enabled
-        ? Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.black38),
-              borderRadius: BorderRadius.circular(10.0),
+    var selector = Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.black38),
+        borderRadius: BorderRadius.circular(10.0),
+        color: Colors.white70,
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 10.0),
+      child: DropdownButton(
+        value: selectedPolicy,
+        items: eRecurringPolicy.values.map((policy) {
+          return DropdownMenuItem(
+            value: policy,
+            child: Text(
+              RecurringPolicyUtils.policyToString(policy),
+              textAlign: TextAlign.center,
             ),
-            padding: EdgeInsets.symmetric(horizontal: 10.0),
-            child: DropdownButton(
-              value: selectedPolicy,
-              items: eRecurringPolicy.values.map((policy) {
-                return DropdownMenuItem(
-                  value: policy,
-                  child: Text(
-                    RecurringPolicyUtils.policyToString(policy),
-                    textAlign: TextAlign.center,
-                  ),
-                );
-              }).toList(),
-              onChanged: (selected) {
-                if (widget.enabled) {
-                  setState(() {
-                    selectedPolicy = selected;
-                  });
-                  widget.onPolicyUpdated(selected);
-                }
-              },
-            ),
-          )
+          );
+        }).toList(),
+        onChanged: (selected) {
+          if (widget.enabled) {
+            setState(() {
+              selectedPolicy = selected;
+            });
+            widget.onPolicyUpdated(selected);
+          }
+        },
+      ),
+    );
+
+    return widget.enabled
+        ? Padding(
+            padding: const EdgeInsets.only(left: 16.0),
+            child: Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              alignment: WrapAlignment.center,
+              children: <Widget>[
+                Text('Repeat: '),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: selector,
+                ),
+              ],
+            ))
         : DoItTextField(
             label: 'Repeat',
             textAlign: TextAlign.center,
             enabled: false,
             initValue: RecurringPolicyUtils.policyToString(selectedPolicy),
           );
-    return Padding(
-      padding: const EdgeInsets.only(left: 16.0),
-      child: Wrap(
-        crossAxisAlignment: WrapCrossAlignment.center,
-        alignment: WrapAlignment.center,
-        children: <Widget>[
-          Text('Repeat: '),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: selector,
-          ),
-        ],
-      ),
-    );
   }
 }

@@ -13,6 +13,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 ///
@@ -29,6 +30,7 @@ class App {
   Notifier notifier = new Notifier();
   final Authenticator authenticator = new Authenticator();
   final Uuid uuid = new Uuid();
+  String bgImagePath = "assets/images/bg_images/leaves.jpg";
 
   // disabling the default ctor
   App._internalCtor();
@@ -58,6 +60,15 @@ class App {
 
   String getLoggedInUserID() {
     return _loggedInUser.userID;
+  }
+
+  BoxDecoration getBackgroundImage(){
+    return BoxDecoration(
+      image: DecorationImage(
+        fit: BoxFit.cover,
+        image: AssetImage(bgImagePath),
+      ),
+    );
   }
 
   Future<void> init(FirebaseApp app) async {

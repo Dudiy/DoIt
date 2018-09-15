@@ -33,12 +33,13 @@ class GroupCard extends StatelessWidget {
           )
         : Container(height: 0.0, width: 0.0);
     return Card(
+      color: Colors.transparent,
       elevation: 5.0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       margin: EdgeInsets.all(8.0),
       child: RaisedButton(
         highlightColor: Theme.of(context).primaryColorLight,
-        color: Colors.white,
+        color: Theme.of(context).primaryColorLight.withAlpha(200),
         padding: EdgeInsets.all(0.0),
         onPressed: () {
           App.instance.groupsManager.getGroupInfoByID(shortGroupInfo.groupID).then((groupInfo) {
@@ -66,7 +67,7 @@ class GroupCard extends StatelessWidget {
                     children: <Widget>[
                       Text('Members: ${shortGroupInfo.members.length.toString()}'),
                       VerticalDivider(),
-                      Text('Tasks: ${shortGroupInfo.tasksPerUser[App.instance.loggedInUser.userID].toString()}'),
+                      Text('Tasks: ${shortGroupInfo.tasksPerUser[App.instance.getLoggedInUser().userID].toString()}'),
                     ],
                   )
                 ],

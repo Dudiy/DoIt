@@ -38,6 +38,7 @@ class TimeSpanSelectorState extends State<TimeSpanSelector> {
         decoration: BoxDecoration(
           border: Border.all(color: Colors.black38),
           borderRadius: BorderRadius.circular(10.0),
+          color: Colors.white70,
         ),
         alignment: Alignment.center,
         child: _createTimeSpanSelectors(),

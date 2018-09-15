@@ -43,15 +43,20 @@ class UserSettingsPageState extends State<UserSettingsPage> {
       appBar: AppBar(title: Text("user info"), actions: <Widget>[]),
       body: SafeArea(
         child: Container(
+          decoration: app.getBackgroundImage(),
           padding: EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Row(
-                children: <Widget>[
-                  _profilePicture(),
-                  _userDetails(context),
-                ],
+              Card(
+                color: Theme.of(context).primaryColorLight.withAlpha(200),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+                child: Row(
+                  children: <Widget>[
+                    _profilePicture(),
+                    _userDetails(context),
+                  ],
+                ),
               ),
               Divider(),
               Expanded(
@@ -61,7 +66,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
                       RaisedButton(
-                        child: const Text('reset password'),
+                        child: const Text('Reset password'),
                         onPressed: () async {
                           final Auth.FirebaseUser currentUser = await App.instance.authenticator.getCurrentUser();
                           app.authenticator.sendPasswordResetEmail(currentUser.email);
