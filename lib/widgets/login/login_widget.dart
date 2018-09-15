@@ -181,7 +181,7 @@ class LoginPageState extends State<LoginPage> {
           Padding(
             padding: const EdgeInsets.only(right: 15.0),
             child: Image.asset(
-              'assets/google_icon.png',
+              'assets/icons_and_buttons/google_icon.png',
               width: 18.0,
             ),
           ),

@@ -33,7 +33,7 @@ class TasksManager {
     Map<String, ShortUserInfo> assignedUsers,
     bool allowNonManagerAdd = false,
   }) async {
-    ShortUserInfo loggedInUser = app.getLoggedInUser();
+    ShortUserInfo loggedInUser = app.loggedInUser;
     if (loggedInUser == null) throw Exception('TaskManager: Cannot add a task when a user is not logged in');
     if (!allowNonManagerAdd && parentGroupManagerID != loggedInUser.userID)
       throw Exception('only group manager can add tasks to group');

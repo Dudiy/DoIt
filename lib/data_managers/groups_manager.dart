@@ -30,7 +30,7 @@ class GroupsManager {
   /// get all current user's groups from db
   ///
   Future<List<ShortGroupInfo>> getMyGroupsFromDB() async {
-    ShortUserInfo loggedInUser = app.getLoggedInUser();
+    ShortUserInfo loggedInUser = app.loggedInUser;
     if (loggedInUser == null) {
       throw Exception('GroupManager: Cannot get all groups when a user is not logged in');
     }
@@ -40,7 +40,7 @@ class GroupsManager {
 
 
   Future<List<String>> getMyGroupsIDsFromDB() async {
-    ShortUserInfo loggedInUser = app.getLoggedInUser();
+    ShortUserInfo loggedInUser = app.loggedInUser;
     if (loggedInUser == null) {
       throw Exception('GroupManager: Cannot get all groups when a user is not logged in');
     }
@@ -69,7 +69,7 @@ class GroupsManager {
     @required String description,
     String photoURL,
   }) async {
-    ShortUserInfo loggedInUser = app.getLoggedInUser();
+    ShortUserInfo loggedInUser = app.loggedInUser;
     if (loggedInUser == null) {
       throw Exception('GroupManager: Cannot add a new group when a user is not logged in');
     }
@@ -98,7 +98,7 @@ class GroupsManager {
     String description,
     String photoUrl,
   }) async {
-    ShortUserInfo loggedInUser = app.getLoggedInUser();
+    ShortUserInfo loggedInUser = app.loggedInUser;
     if (loggedInUser == null) throw Exception('GroupManager: Cannot update group when a user is not logged in');
     GroupInfo groupInfo = await getGroupInfoByID(groupIdToChange);
     if (groupInfo == null) throw Exception('GroupManager: cannot update group, groupID was not found in the DB');
@@ -145,7 +145,7 @@ class GroupsManager {
   }
 
   void joinGroup(String groupID) async {
-    ShortUserInfo loggedInUser = app.getLoggedInUser();
+    ShortUserInfo loggedInUser = app.loggedInUser;
     if (loggedInUser == null) throw Exception('GroupManager: Cannot join a new group when a user is not logged in');
     GroupInfo groupInfo = await getGroupInfoByID(groupID);
     if (groupInfo == null)
@@ -176,8 +176,8 @@ class GroupsManager {
   Future<void> addTaskToGroup(
       {@required String groupID, @required ShortTaskInfo shortTaskInfo, bool allowNonManagerAdd = false}) async {
     DocumentSnapshot groupSnapshot = await _firestore.document('$GROUPS/$groupID').get();
-    if (app.getLoggedInUser() == null) throw Exception('GroupsManager: cannot add task when user is not logged in');
-    if (!allowNonManagerAdd && app.getLoggedInUser().userID != groupSnapshot.data['managerID']) {
+    if (app.loggedInUser == null) throw Exception('GroupsManager: cannot add task when user is not logged in');
+    if (!allowNonManagerAdd && app.loggedInUser.userID != groupSnapshot.data['managerID']) {
       throw Exception('GroupsManager: only manager can add tasks to a group');
     }
 
@@ -192,7 +192,7 @@ class GroupsManager {
     @required String groupID,
     @required CompletedTaskInfo completedTaskInfo,
   }) async {
-    if (app.getLoggedInUser() == null) throw Exception('GroupsManager: cannot add task when user is not logged in');
+    if (app.loggedInUser == null) throw Exception('GroupsManager: cannot add task when user is not logged in');
     await _firestore
         .document('$GROUPS/$groupID/$COMPLETED_TASKS/${completedTaskInfo.taskID}')
         .setData(TaskUtils.generateObjectFromCompletedTaskInfo(completedTaskInfo));

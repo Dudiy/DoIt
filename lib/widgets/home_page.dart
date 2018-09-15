@@ -30,7 +30,7 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  static const LOADING_GIF = 'assets/loading_anim_high.gif';
+  static const LOADING_GIF = 'assets/doit_logo/loading_animation.gif';
   static const DEFAULT_PICTURE = 'assets/images/unknown_profile_pic.jpg';
   LoadingOverlay loadingOverlay = new LoadingOverlay();
   String photoUrl = DEFAULT_PICTURE;
@@ -90,13 +90,19 @@ class HomePageState extends State<HomePage> {
                 child: Icon(Icons.settings, color: Colors.white),
                 onTap: () {
                   Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => UserSettingsPage(widget.onSignedOut)));
+                      .push(MaterialPageRoute(builder: (context) => UserSettingsPage(widget.onSignedOut, profilePicChanged)));
                 },
               ),
             ),
           ],
         ),
         body: MyGroupsPage());
+  }
+
+  void profilePicChanged(File newProfilePic){
+    setState(() {
+      userProfilePicFile = newProfilePic;
+    });
   }
 
   _getProfilePic() {

@@ -1,14 +1,19 @@
+import 'dart:io';
+
 import 'package:do_it/app.dart';
+import 'package:do_it/data_classes/user/user_info.dart';
 import 'package:do_it/widgets/custom/dialog_generator.dart';
+import 'package:do_it/widgets/custom/imageContainer.dart';
 import 'package:do_it/widgets/custom/loadingOverlay.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as Auth;
 import 'package:flutter/material.dart';
 //import 'package:do_it/widgets/image_picker.dart';
 
 class UserSettingsPage extends StatefulWidget {
   final VoidCallback onSignedOut;
+  final Function onProfilePicChanged;
 
-  UserSettingsPage(this.onSignedOut);
+  UserSettingsPage(this.onSignedOut, this.onProfilePicChanged);
 
   @override
   UserSettingsPageState createState() {
@@ -19,6 +24,18 @@ class UserSettingsPage extends StatefulWidget {
 class UserSettingsPageState extends State<UserSettingsPage> {
   final app = App.instance;
   final LoadingOverlay loadingOverlay = new LoadingOverlay();
+  UserInfo userInfo;
+  File uploadedImageFile;
+
+  @override
+  void initState() {
+    app.usersManager.getFullUserInfo(app.loggedInUser.userID).then((retrievedUserInfo) {
+      setState(() {
+        userInfo = retrievedUserInfo;
+      });
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,45 +47,175 @@ class UserSettingsPageState extends State<UserSettingsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              RaisedButton(
-                onPressed: () async {
-                  final FirebaseUser currentUser = await App.instance.authenticator.getCurrentUser();
-                  app.authenticator.sendPasswordResetEmail(currentUser.email);
-                },
-                child: const Text('reset password'),
-              ),
-              RaisedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  widget.onSignedOut();
-                },
-                child: const Text('Sign out'),
+              Row(
+                children: <Widget>[
+                  _profilePicture(),
+                  _userDetails(context),
+                ],
               ),
               Divider(),
-              RaisedButton(
-                color: Theme.of(context).errorColor,
-                child: const Text('Delete user', style: TextStyle(color: Colors.white)),
-                onPressed: () {
-                  DoItDialogs.showConfirmDialog(
-                    context: context,
-                    message: "are you sure you want to delete this account? this cannot be undone",
-                    isWarning: true,
-                    actionButtonText: "Delete accout",
-                  ).then((deleteConfirmed) {
-                    if (deleteConfirmed) {
-                      loadingOverlay.show(context: context, message: "deleting this account...");
-                      app.usersManager.deleteUser().then((val) {
-                        loadingOverlay.hide();
-                        widget.onSignedOut();
-                        Navigator.pop(context);
-                      });
-                    }
-                  });
-                },
+              Expanded(
+                child: Container(
+                  padding: EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      RaisedButton(
+                        child: const Text('reset password'),
+                        onPressed: () async {
+                          final Auth.FirebaseUser currentUser = await App.instance.authenticator.getCurrentUser();
+                          app.authenticator.sendPasswordResetEmail(currentUser.email);
+                          DoItDialogs.showNotificationDialog(
+                            context: context,
+                            title: "Reset password",
+                            body: "Reset password email has been sent to ${userInfo?.email}",
+                          );
+                        },
+                      ),
+                      RaisedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          widget.onSignedOut();
+                        },
+                        child: const Text('Sign out'),
+                      ),
+                      Expanded(child: Container()),
+                      Divider(),
+                      RaisedButton(
+                        color: Theme.of(context).errorColor,
+                        child: const Text('Delete user', style: TextStyle(color: Colors.white)),
+                        onPressed: () {
+                          DoItDialogs.showConfirmDialog(
+                            context: context,
+                            message: "are you sure you want to delete this account? this cannot be undone",
+                            isWarning: true,
+                            actionButtonText: "Delete accout",
+                          ).then((deleteConfirmed) {
+                            if (deleteConfirmed) {
+                              loadingOverlay.show(context: context, message: "deleting this account...");
+                              app.usersManager.deleteUser().then((val) {
+                                loadingOverlay.hide();
+                                widget.onSignedOut();
+                                Navigator.pop(context);
+                              });
+                            }
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
               ),
-//          ImagePickerPage(),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _profilePicture() {
+    const double PROFILE_PIC_SIZE = 100.0;
+    var editImageText = <Widget>[
+      Expanded(
+        child: Container(),
+      ),
+      Container(
+        width: PROFILE_PIC_SIZE - 2,
+        padding: EdgeInsets.all(5.0),
+        decoration: BoxDecoration(
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(16.0)),
+          color: Colors.black54,
+        ),
+        child: Text(
+          'tap to change',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.white, fontSize: 13.0),
+        ),
+      ),
+    ];
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: GestureDetector(
+        onTap: () {
+          App.instance.usersManager
+              .uploadProfilePic(() => loadingOverlay.show(context: context, message: "Updating profile picture..."))
+              .then((uploadedPhoto) {
+            setState(() {
+              uploadedImageFile = uploadedPhoto;
+            });
+            widget.onProfilePicChanged(uploadedPhoto);
+            loadingOverlay.hide();
+          });
+        },
+        child: Stack(
+          children: <Widget>[
+            ImageContainer(
+              size: PROFILE_PIC_SIZE,
+              imagePath: app.loggedInUser.photoUrl,
+              imageFile: uploadedImageFile,
+            ),
+            Container(
+              height: PROFILE_PIC_SIZE,
+              width: PROFILE_PIC_SIZE,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
+//                    mainAxisSize: MainAxisSize.max,
+                children: editImageText,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _userDetails(BuildContext context) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  'Display name: ${app.loggedInUser.displayName}',
+                  style: Theme.of(context).textTheme.caption,
+                ),
+              ],
+            ),
+            SizedBox(height: 10.0),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  'Email: ${userInfo == null ? "" : userInfo.email}',
+                  style: Theme.of(context).textTheme.caption,
+                ),
+              ],
+            ),
+            SizedBox(height: 10.0),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  'User ID: ',
+                  style: Theme.of(context).textTheme.caption,
+                ),
+                Text(
+                  '${app.loggedInUser.userID}',
+                  style: Theme.of(context).textTheme.caption,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

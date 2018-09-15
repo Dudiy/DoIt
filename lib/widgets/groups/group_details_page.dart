@@ -76,7 +76,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: podiumPadding, vertical: 10.0),
         child: Image.asset(
-          'assets/images/podium.png',
+          'assets/icons_and_buttons/podium.png',
           color: Colors.white,
           height: 25.0,
           width: 25.0,
@@ -193,7 +193,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
               child: Container(),
             ),
             Container(
-              width: GROUP_IMAGE_SIZE,
+              width: GROUP_IMAGE_SIZE - 2,
               padding: EdgeInsets.all(5.0),
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
@@ -201,9 +201,9 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                 color: Colors.black54,
               ),
               child: Text(
-                'Tap to change',
+                'tap to change',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.white, fontSize: 13.0),
               ),
             ),
           ]

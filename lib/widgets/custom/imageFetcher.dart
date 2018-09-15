@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class ImageFetcher {
   static const String DEFAULT_IMAGE_PATH = 'assets/images/default_group_icon.jpg';
-  static const String LOADING_GIF = 'assets/loading_anim_high.gif';
+  static const String LOADING_GIF = 'assets/doit_logo/loading_animation.gif';
 
   static fetch({@required String imagePath, String defaultImagePath = DEFAULT_IMAGE_PATH}) {
     if (imagePath == null || imagePath == defaultImagePath) {

@@ -17,7 +17,7 @@ class LoadingOverlay {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Image.asset('assets/loading_anim_high.gif', height: 100.0, width: 100.0),
+              Image.asset('assets/doit_logo/loading_animation.gif', height: 100.0, width: 100.0),
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Text(

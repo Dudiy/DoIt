@@ -38,7 +38,7 @@ class SingleGroupPage extends StatefulWidget {
 }
 
 class SingleGroupPageState extends State<SingleGroupPage> {
-  static const LOADING_GIF = 'assets/loading_anim_high.gif';
+  static const LOADING_GIF = 'assets/doit_logo/loading_animation.gif';
   static const DEFAULT_PICTURE = 'assets/images/default_group_icon.jpg';
   final App app = App.instance;
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -136,7 +136,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   }
 
   void _updateTasksList(DocumentSnapshot documentSnapshotGroupTasks) {
-    ShortUserInfo loggedInUser = App.instance.getLoggedInUser();
+    ShortUserInfo loggedInUser = App.instance.loggedInUser;
     if (loggedInUser == null) {
       throw Exception('GroupManager: Cannot update tasks list user is not logged in');
     }

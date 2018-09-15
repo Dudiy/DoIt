@@ -41,15 +41,10 @@ flutter:
     - assets/images/loading_profile_pic.png
     - assets/images/unknown_profile_pic.jpg
     - assets/images/default_group_icon.jpg
-    - assets/images/podium.png
-    - assets/logo.jpg
-    - assets/logo.png
+    - assets/icons_and_buttons/podium.png
+    - assets/doit_logo/loading_animation.gif
     - assets/logo_with_shadow.png
-    - assets/logo_O_with_shadow.png
-    - assets/logo_O.jpg
-    - assets/logo_O.png
-    - assets/loading_anim_high.gif
-    - assets/google_icon.png
+    - assets/icons_and_buttons/google_icon.png
     - assets/images/ClickToCreateGroup.png
     - assets/images/minion_sad.png
 

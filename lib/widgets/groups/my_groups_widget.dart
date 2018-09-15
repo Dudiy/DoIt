@@ -88,7 +88,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
   }
 
   void _updateGroupList(QuerySnapshot groupsQuerySnapshot) {
-    ShortUserInfo loggedInUser = App.instance.getLoggedInUser();
+    ShortUserInfo loggedInUser = App.instance.loggedInUser;
     if (loggedInUser == null) {
       throw Exception('GroupManager: Cannot get all groups when a user is not logged in');
     }
@@ -103,7 +103,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           Image.asset(
-            'assets/loading_anim_high.gif',
+            'assets/doit_logo/loading_animation.gif',
             width: 50.0,
           ),
           Text('Fetching groups from server...'),
@@ -129,7 +129,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
     List<Widget> list = new List();
     list.add(_allTasksWidget);
     _myGroups.sort((a, b) =>
-        b.tasksPerUser[App.instance.getLoggedInUser().userID] - a.tasksPerUser[App.instance.getLoggedInUser().userID]);
+        b.tasksPerUser[App.instance.getLoggedInUser().userID] - a.tasksPerUser[App.instance.loggedInUser.userID]);
     list.addAll(_myGroups.map((group) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -178,7 +178,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
         children: <Widget>[
           Container(
             constraints: BoxConstraints.tight(Size.square(50.0)),
-            child: Image.asset('assets/loading_anim_high.gif'),
+            child: Image.asset('assets/doit_logo/loading_animation.gif'),
           ),
           SizedBox(height: 20.0),
           Text('Fetching groups from server...', textAlign: TextAlign.center),
