@@ -44,6 +44,7 @@ class UsersManager {
   }
 
   Future<void> deleteUser() async {
+    /* delete from firebase db */
     if (app.loggedInUser == null) throw Exception('UserManager: Cannot delete - no user is logged in');
     String userID = app.loggedInUser.userID;
     await App.instance.groupsManager.deleteAllGroupsUserIsManagerOf(userID);
@@ -57,6 +58,15 @@ class UsersManager {
     print('userId: $userID - deleting user from Auth'); //TODO delete
     await App.instance.authenticator.deleteUser();
     print('userId: $userID - user deleted from Auth'); //TODO delete
+
+    /* delete from firebase storage */
+    String pathToDelete = "$USERS/$userID/profile.jpg";
+    StorageReference storageRef = App.instance.firebaseStorage.ref().child(pathToDelete);
+    storageRef.delete().whenComplete(() {
+      print("delete profile picture from firebase storage in path: " + pathToDelete);
+    }).catchError(() {
+      print("fail to delete profile picture from firebase storage in path: " + pathToDelete);
+    });
   }
 
   //we only want the user to be able to change his picture and not hes other data
@@ -118,7 +128,7 @@ class UsersManager {
 
   Future<void> updateFcmToken(String userID, String newToken) async {
     App.instance.firestore.document('$USERS/$userID').updateData({
-      'fcmToken' : newToken,
+      'fcmToken': newToken,
     });
   }
 }
