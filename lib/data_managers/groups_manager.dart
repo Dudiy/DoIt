@@ -116,6 +116,7 @@ class GroupsManager {
   }
 
   Future<void> deleteGroup({@required String groupID}) async {
+    /* delete from firebase db */
     print('groupID:$groupID - in deleteGroup'); //TODO delete
     GroupInfo groupInfo = await getGroupInfoByID(groupID);
     String loggedInUserID = app.getLoggedInUserID();
@@ -129,6 +130,15 @@ class GroupsManager {
       print('GroupsManager: groupID:$groupID deleted');
     });
     print('groupID:$groupID - returning from deleteGroup'); //TODO delete
+
+    /* delete from firebase storage */
+    String pathToDelete = "$GROUPS/$groupID/profile.jpg";
+    StorageReference storageRef = App.instance.firebaseStorage.ref().child(pathToDelete);
+    storageRef.delete().whenComplete(() {
+      print("delete group picture from firebase storage in path: " + pathToDelete);
+    }).catchError(() {
+      print("fail to delete group picture from firebase storage in path: " + pathToDelete);
+    });
   }
 
   Future<void> deleteAllCompletedTasksFromGroup({@required groupID}) async {
