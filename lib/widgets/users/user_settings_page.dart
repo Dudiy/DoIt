@@ -43,7 +43,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: App.instance.themeData.primaryColor,
-        title: Text("user info"),
+        title: Text("App settings"),
       ),
       body: SafeArea(
         child: Container(
@@ -111,7 +111,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
                                                   Navigator.of(context).pop();
                                                 },
                                                 textOverlay: backgroundImages.keys.toList()[i],
-                                                fontSize: 20.0,
+                                                fontSize: 15.0,
                                                 fontColor: Colors.black,
                                                 textBackgroundColor:
                                                     (backgroundImages.values.toList()[i]["themeData"] as ThemeData)

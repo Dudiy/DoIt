@@ -78,4 +78,11 @@ final Map<String, dynamic> backgroundImages = {
       primaryColorLight: Colors.greenAccent[100],
     )
   },
+  "Red Sun": {
+    "assetPath": 'assets/images/bg_images/red_sun.jpg',
+    "themeData": ThemeData(
+      primaryColor: Colors.red[700],
+      primaryColorLight: Colors.redAccent[100],
+    )
+  },
 };

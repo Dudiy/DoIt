@@ -47,6 +47,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       body: Container(
         child: _renderMyGroupBody(),
         decoration: BoxDecoration(
@@ -83,16 +84,22 @@ class MyGroupsPageState extends State<MyGroupsPage> {
 
   Future<Widget> _getAllTasksCount() async {
     List<ShortTaskInfo> allTasks = await App.instance.tasksManager.getAllMyTasks();
-    return ListTile(
-      title: Text('All Groups'),
-      subtitle: Text(allTasks.length.toString()),
-      onTap: () {
-        // TODO go to all tasks page
-        print('not implemented yet - going to all tasks page');
-//          widget.app.groupsManager.getGroupInfoByID(k.groupID).then((groupInfo) {
-//            Navigator.of(context).push(MaterialPageRoute(builder: (context) => GroupDetailsPage(groupInfo)));
-//          });
-      },
+    String tasksRemainingString = allTasks.length > 0
+        ? 'Hi ${app.loggedInUser.displayName}! \nYou have a total of ${allTasks.length.toString()} tasks remaining in all groups, lets get to work...'
+        : "Awsome! you have no tasks to do :)";
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text(
+            tasksRemainingString,
+            style: Theme.of(context).textTheme.title,
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ),
     );
   }
 
@@ -120,18 +127,33 @@ class MyGroupsPageState extends State<MyGroupsPage> {
       );
 
     if (_myGroups.length == 0)
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.max,
+      return Stack(
+        fit: StackFit.expand,
+//        crossAxisAlignment: CrossAxisAlignment.stretch,
+//        mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          Expanded(child: Container()),
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Image.asset("assets/images/minion_sad.png", height: 120.0),
+//          Expanded(child: Container()),
+          Center(
+            child: Column(
+              children: <Widget>[
+                Expanded(child: Container()),
+                Image.asset("assets/images/minion_sad.png", scale: 1.5),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("You are not in any group yet",
+                      style: Theme.of(context).textTheme.title, textAlign: TextAlign.center),
+                ),
+                SizedBox(height: 100.0),
+                Expanded(child: Container()),
+              ],
+            ),
           ),
-          Text("You are not in any group yet", style: Theme.of(context).textTheme.title, textAlign: TextAlign.center),
-          Expanded(child: Container()),
-          Image.asset("assets/images/ClickToCreateGroup.png", height: 170.0),
+//          Expanded(child: Container()),
+          Positioned(
+            bottom: 0.0,
+            right: 80.0,
+            child: Image.asset("assets/images/ClickToCreateGroup.png", height: 170.0),
+          ),
         ],
       );
 
@@ -196,9 +218,6 @@ class MyGroupsPageState extends State<MyGroupsPage> {
     } else {
       return RefreshIndicator(
         child: _myGroupsWidget(context),
-        /*child: ListView(
-          children: _myGroupsWidget(context),
-        ),*/
         onRefresh: _getMyGroupsFromDB,
       );
     }
