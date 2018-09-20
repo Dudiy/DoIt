@@ -39,7 +39,7 @@ class DoItDialogs {
           actions: <Widget>[
             new RaisedButton(
               onPressed: () => Navigator.pop(context),
-              color: Theme.of(context).primaryColor,
+              color: App.instance.themeData.primaryColor,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
               child: Row(
                 children: <Widget>[
@@ -79,7 +79,7 @@ class DoItDialogs {
       padding: const EdgeInsets.all(8.0),
       child: RaisedButton(
         child: const Text('Submit', style: TextStyle(color: Colors.white)),
-        color: Theme.of(context).primaryColor,
+        color: App.instance.themeData.primaryColor,
         onPressed: () async {
           if (_formKey.currentState.validate()) {
             onSubmit();
@@ -128,7 +128,7 @@ class DoItDialogs {
                       actionButtonText,
                       style: TextStyle(color: Colors.white),
                     ),
-                    color: isWarning ? Theme.of(context).errorColor : Theme.of(context).primaryColor,
+                    color: isWarning ? Theme.of(context).errorColor : App.instance.themeData.primaryColor,
                     onPressed: () {
                       Navigator.pop(context, true);
                     },

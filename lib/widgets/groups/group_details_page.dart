@@ -47,6 +47,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: App.instance.themeData.primaryColor,
         title: Text(
           '${widget.groupInfo.title} details',
           maxLines: 2,
@@ -60,7 +61,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
         child: ListView(
           children: <Widget>[
             Card(
-              color: Theme.of(context).primaryColorLight.withAlpha(200),
+              color: app.themeData.primaryColorLight.withAlpha(200),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
               child: Row(
                 children: <Widget>[
@@ -133,7 +134,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(8.0)),
         ),
-        color: Theme.of(context).primaryColorLight,
+        color: app.themeData.primaryColorLight,
       ),
       child: Padding(
         padding: const EdgeInsets.all(8.0),

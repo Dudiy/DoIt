@@ -1,3 +1,4 @@
+import 'package:do_it/constants/background_images.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:meta/meta.dart';
 
@@ -7,6 +8,7 @@ class UserInfo {
   String _photoURL;
   String _email;
   String _fcmToken;
+  String _bgImage;
 
 //  Map<String, ShortGroupInfo> _groups = new Map();
 //  Map<String, ShortTaskInfo> _tasks = new Map();
@@ -17,6 +19,7 @@ class UserInfo {
     @required String fcmToken,
     @required String email,
     photoUrl,
+    bgImage,
   }) {
     assert(userID != null && userID.isNotEmpty);
     assert(displayName != null && displayName.isNotEmpty);
@@ -27,6 +30,7 @@ class UserInfo {
     this._photoURL = photoUrl;
     this._fcmToken = fcmToken;
     this._email = email;
+    this._bgImage = bgImage;
   }
 
 //  addTask(String taskID, ShortTaskInfo shortTaskInfo) {
@@ -62,8 +66,13 @@ class UserInfo {
 
   String get userID => _userID;
 
+  String get bgImage => _bgImage;
+
 // ===========================================================
 // ========================= Setters =========================
 // ===========================================================
 
+  set bgImage(String value) {
+    _bgImage = backgroundImages.containsKey(value) ? value : null;
+  }
 }

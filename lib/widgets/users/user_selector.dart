@@ -1,3 +1,4 @@
+import 'package:do_it/app.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/widgets/custom/dialog_generator.dart';
 import 'package:flutter/material.dart';
@@ -73,7 +74,7 @@ class UserSelectorState extends State<UserSelector> {
           padding: const EdgeInsets.all(16.0),
           child: RaisedButton(
             child: Text('Update'),
-            color: Theme.of(context).primaryColor,
+            color: App.instance.themeData.primaryColor,
             textColor: Colors.white,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
             onPressed: () {

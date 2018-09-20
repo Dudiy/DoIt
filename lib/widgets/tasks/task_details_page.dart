@@ -88,7 +88,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
     return IconButton(
       icon: Icon(Icons.save, color: Colors.white),
       tooltip: 'Save changes',
-      splashColor: Theme.of(context).primaryColorLight,
+      splashColor: app.themeData.primaryColorLight,
       onPressed: () async {
         try {
           if (_formKey.currentState.validate()) {
@@ -121,7 +121,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
       child: Container(
         color: Colors.white70,
         child: ListTile(
-          leading: Icon(Icons.save, color: Theme.of(context).primaryColor),
+          leading: Icon(Icons.save, color: app.themeData.primaryColor),
           title: Text('Save'),
           onTap: () async {
             await app.tasksManager
@@ -176,7 +176,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
       child: Container(
         color: Colors.white70,
         child: ListTile(
-            leading: Icon(Icons.nfc, color: Theme.of(context).primaryColor),
+            leading: Icon(Icons.nfc, color: app.themeData.primaryColor),
             title: Text('Write to NFC'),
             onTap: () {
               Navigator.pop(context); // hide the popup
@@ -200,7 +200,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
       child: Container(
         color: Colors.white70,
         child: ListTile(
-            leading: Icon(Icons.comment, color: Theme.of(context).primaryColor),
+            leading: Icon(Icons.comment, color: app.themeData.primaryColor),
             title: Text('Notify users'),
             onTap: () {
               DoItDialogs.showUserInputDialog(
@@ -244,7 +244,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(8.0)),
           ),
-          color: Theme.of(context).primaryColorLight),
+          color: app.themeData.primaryColorLight),
       child: Stack(
         children: <Widget>[
           _drawEditAssignedUsersButton(),
@@ -355,6 +355,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: App.instance.themeData.primaryColor,
         title: Text(
           'Task \"${widget.taskInfo.title}\" details',
           maxLines: 2,

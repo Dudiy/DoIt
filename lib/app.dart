@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it/authenticator.dart';
+import 'package:do_it/constants/background_images.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/data_managers/groups_manager.dart';
 import 'package:do_it/data_managers/tasks_manager.dart';
@@ -30,12 +31,24 @@ class App {
   Notifier notifier = new Notifier();
   final Authenticator authenticator = new Authenticator();
   final Uuid uuid = new Uuid();
-  String bgImagePath = "assets/images/bg_images/leaves.jpg";
+  String bgImagePath = "assets/images/bg_images/blue.jpg";
+  ThemeData themeData = new ThemeData(
+    primaryColor: Colors.blue,
+    primaryColorLight: Colors.blueAccent[100],
+  );
 
   // disabling the default ctor
   App._internalCtor();
 
   static final App instance = new App._internalCtor();
+
+  void resetThemeData() {
+    bgImagePath = "assets/images/bg_images/blue.jpg";
+    themeData = new ThemeData(
+      primaryColor: Colors.blue,
+      primaryColorLight: Colors.blueAccent[100],
+    );
+  }
 
   ShortUserInfo get loggedInUser => _loggedInUser;
 
@@ -48,6 +61,14 @@ class App {
       throw Exception('App: cannot set logged in user when user is already logged in');
     }
     _loggedInUser = user == null ? null : await usersManager.getShortUserInfo(user.uid);
+    if (user != null) {
+      usersManager.getFullUserInfo(user.uid).then((userInfo) {
+        if (backgroundImages[userInfo.bgImage] != null) {
+          bgImagePath = backgroundImages[userInfo.bgImage]["assetPath"];
+          themeData = backgroundImages[userInfo.bgImage]["themeData"];
+        }
+      });
+    }
   }
 
   updateLoggedInUserPhotoUrl(String url) {
@@ -62,7 +83,7 @@ class App {
     return _loggedInUser.userID;
   }
 
-  BoxDecoration getBackgroundImage(){
+  BoxDecoration getBackgroundImage() {
     return BoxDecoration(
       image: DecorationImage(
         fit: BoxFit.cover,
@@ -80,14 +101,18 @@ class App {
     firebaseMessaging = new FirebaseMessaging();
     await authenticator.getCurrentUser().then((user) async {
       if (user != null) {
-        await usersManager.getShortUserInfo(user.uid).then((shortUserInfo) {
+        await usersManager.getFullUserInfo(user.uid).then((userInfo) {
           // if the current logged in user is no longer in the DB sign out and delete the user
-          if (shortUserInfo == null) {
+          if (userInfo == null) {
             FirebaseAuth.instance.signOut();
           } else {
             refreshLoggedInUserFcmToken();
+            if (backgroundImages[userInfo.bgImage] != null) {
+              bgImagePath = backgroundImages[userInfo.bgImage]["assetPath"];
+              themeData = backgroundImages[userInfo.bgImage]["themeData"];
+            }
           }
-          _loggedInUser = shortUserInfo;
+          _loggedInUser = userInfo.getShortUserInfo();
         });
       }
     });

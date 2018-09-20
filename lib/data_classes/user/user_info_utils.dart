@@ -38,11 +38,11 @@ class UserUtils {
             email: userInfoObject['email'],
             fcmToken: userInfoObject['fcmToken'],
             photoUrl: userInfoObject['photoUrl'],
+            bgImage: userInfoObject['bgImage'],
           );
   }
 
-  static Map<String, dynamic> generateObjectFromUsersMap(
-      Map<String, ShortUserInfo> members) {
+  static Map<String, dynamic> generateObjectFromUsersMap(Map<String, ShortUserInfo> members) {
     Map<String, dynamic> usersMap = new Map();
     members.forEach((userID, shortUserInfo) {
       usersMap.putIfAbsent(userID, () {
@@ -59,14 +59,14 @@ class UserUtils {
       'photoUrl': userInfo.photoURL,
       'email': userInfo.email,
       'fcmToken': userInfo.fcmToken,
+      'bgImage': userInfo.bgImage,
 //      'groups': GroupUtils.generateObjectFromGroupsMap(userInfo.groups),
 //      'tasks': TaskUtils.generateObjectFromTasksMap(userInfo.tasks),
 //      'messages': userInfo._messages,
     };
   }
 
-  static Map<String, dynamic> generateObjectFromShortUserInfo(
-      ShortUserInfo shortUserInfo) {
+  static Map<String, dynamic> generateObjectFromShortUserInfo(ShortUserInfo shortUserInfo) {
     return {
       'userID': shortUserInfo.userID,
       'displayName': shortUserInfo.displayName,

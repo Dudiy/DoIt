@@ -27,6 +27,7 @@ class UsersManager {
     } else if (user.photoUrl != null) {
       photoUrl = user.photoUrl;
     }
+    String bgImage = documentSnapshot.data['bgImage'];
 
     //TODO implement message handlers
 
@@ -39,6 +40,7 @@ class UsersManager {
       fcmToken: fcmToken,
       email: user.email,
       photoUrl: photoUrl,
+      bgImage: bgImage,
     );
     await _firestore.document('$USERS/${user.uid}').setData(UserUtils.generateObjectFromUserInfo(userInfo));
   }
@@ -129,6 +131,12 @@ class UsersManager {
   Future<void> updateFcmToken(String userID, String newToken) async {
     App.instance.firestore.document('$USERS/$userID').updateData({
       'fcmToken': newToken,
+    });
+  }
+
+  Future<void> updateBgImage(String userID, String newImageName) async {
+    App.instance.firestore.document('$USERS/$userID').updateData({
+      'bgImage': newImageName,
     });
   }
 }

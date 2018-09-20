@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:do_it/app.dart';
 import 'package:do_it/widgets/custom/imageFetcher.dart';
 import 'package:flutter/material.dart';
 
@@ -10,10 +11,14 @@ class ImageContainer extends StatelessWidget {
   final Color borderColor;
   final double borderRadius;
   final File imageFile;
+  final String assetPath;
+  final String defaultImagePath;
 
   ImageContainer(
       {this.imagePath = DEFAULT_GROUP_IMAGE_PATH,
+      this.defaultImagePath= DEFAULT_GROUP_IMAGE_PATH,
       this.imageFile,
+      this.assetPath,
       this.borderColor,
       this.size = 65.0,
       this.borderRadius = 16.0});
@@ -39,7 +44,7 @@ class ImageContainer extends StatelessWidget {
           gradient: LinearGradient(
             colors: [
               Colors.white,
-              Theme.of(context).primaryColorLight,
+              App.instance.themeData.primaryColorLight,
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -52,8 +57,15 @@ class ImageContainer extends StatelessWidget {
   }
 
   _getImage() {
-    return imageFile == null
-        ? ImageFetcher.fetch(imagePath: imagePath, defaultImagePath: DEFAULT_GROUP_IMAGE_PATH)
-        : Image.file(imageFile, fit: BoxFit.fill,);
+    if (imageFile != null) {
+      return Image.file(
+        imageFile,
+        fit: BoxFit.cover,
+      );
+    } else if (assetPath != null) {
+      return Image.asset(assetPath, fit: BoxFit.cover);
+    } else {
+      return ImageFetcher.fetch(imagePath: imagePath, defaultImagePath: defaultImagePath);
+    }
   }
 }

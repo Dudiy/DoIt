@@ -90,6 +90,7 @@ class _RootPageState extends State<RootPage> {
 
   Future _signedOut() async {
     App.instance.authenticator.signOut();
+    App.instance.resetThemeData();
     await App.instance.setLoggedInUser(null);
     setState(() {
       authStatus = eAuthenticationStatus.NOT_SIGNED_IN;

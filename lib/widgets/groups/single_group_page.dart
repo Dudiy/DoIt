@@ -94,7 +94,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
           child: CustomScrollView(
             slivers: <Widget>[
               SliverAppBar(
-                backgroundColor: Theme.of(context).primaryColor.withOpacity(0.65),
+                backgroundColor: app.themeData.primaryColor.withOpacity(0.65),
                 expandedHeight: 220.0,
                 pinned: true,
                 flexibleSpace: FlexibleSpaceBar(
@@ -642,7 +642,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       child: Container(
         color: Colors.white70,
         child: ListTile(
-            leading: Icon(Icons.info_outline, color: Theme.of(context).primaryColor),
+            leading: Icon(Icons.info_outline, color: app.themeData.primaryColor),
             title: Text(
               'Group info',
               style: TextStyle(fontWeight: FontWeight.bold),
@@ -726,6 +726,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   //region Speed Dial buttons
   Widget _renderSpeedDial() {
     return SpeedDial(
+      backgroundColor: App.instance.themeData.primaryColor,
       animatedIcon: AnimatedIcons.menu_close,
       animatedIconTheme: IconThemeData(size: 22.0),
       curve: Curves.bounceIn,

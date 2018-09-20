@@ -52,15 +52,14 @@ class MyGroupsPageState extends State<MyGroupsPage> {
         decoration: BoxDecoration(
           image: DecorationImage(
             fit: BoxFit.cover,
-            image: AssetImage(
-              app.bgImagePath
-            ),
+            image: AssetImage(app.bgImagePath),
           ),
         ),
       ),
       floatingActionButton: _myGroups == null || _allTasksWidget == null
           ? null
           : FloatingActionButton(
+              backgroundColor: App.instance.themeData.primaryColor,
               child: Icon(Icons.add),
               onPressed: () => _showAddGroupDialog(),
             ),

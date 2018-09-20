@@ -27,7 +27,7 @@ class GroupCard extends StatelessWidget {
               child: Icon(
                 Icons.supervisor_account,
                 size: 15.0,
-                color: Theme.of(context).primaryColor,
+                color: App.instance.themeData.primaryColor,
               ),
             ),
           )
@@ -35,11 +35,11 @@ class GroupCard extends StatelessWidget {
     return Card(
       color: Colors.transparent,
       elevation: 5.0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       margin: EdgeInsets.all(8.0),
       child: RaisedButton(
-        highlightColor: Theme.of(context).primaryColorLight,
-        color: Theme.of(context).primaryColorLight.withAlpha(200),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+        highlightColor: App.instance.themeData.primaryColorLight,
+        color: App.instance.themeData.primaryColorLight.withAlpha(200),
         padding: EdgeInsets.all(0.0),
         onPressed: () {
           App.instance.groupsManager.getGroupInfoByID(shortGroupInfo.groupID).then((groupInfo) {

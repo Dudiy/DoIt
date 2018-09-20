@@ -138,7 +138,7 @@ class LoginPageState extends State<LoginPage> {
       margin: EdgeInsets.symmetric(horizontal: 30.0),
       child: RaisedButton(
         padding: EdgeInsets.symmetric(vertical: 10.0),
-        color: Theme.of(context).primaryColor,
+        color: app.themeData.primaryColor,
         child: Text(
           'LOGIN',
           style: TextStyle(color: Colors.white),
@@ -156,6 +156,7 @@ class LoginPageState extends State<LoginPage> {
                 .then((user) {
               loadingOverlay.hide();
               App.instance.refreshLoggedInUserFcmToken();
+
               print('${user.displayName} has logged in using email and password');
               widget.onSignedIn();
             }).catchError((error) {

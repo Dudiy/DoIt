@@ -55,13 +55,13 @@ class TaskCard extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       color: (taskInfo.runtimeType == CompletedTaskInfo)
           ? Colors.greenAccent[100]
-          : _isOverdue() ? Colors.red : Theme.of(context).primaryColorLight,
+          : _isOverdue() ? Colors.red : app.themeData.primaryColorLight,
       child: Container(
         margin: EdgeInsets.all(4.0),
         child: RaisedButton(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
           color: Colors.white,
-          highlightColor: Theme.of(context).primaryColorLight,
+          highlightColor: app.themeData.primaryColorLight,
           onPressed: () => _cardClicked(context),
           padding: EdgeInsets.all(10.0),
           child: Row(

@@ -48,9 +48,9 @@ class HomePageState extends State<HomePage> {
     } else {
       photoUrl = DEFAULT_PICTURE;
     }
-
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: App.instance.themeData.primaryColor,
           leading: GestureDetector(
             onTap: () {
               App.instance.usersManager

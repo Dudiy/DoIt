@@ -67,7 +67,7 @@ class RegisterPageState extends State<RegisterPage> {
                   constraints: const BoxConstraints(minWidth: double.infinity),
                   child: RaisedButton(
                   padding: EdgeInsets.symmetric(vertical: 15.0),
-                    color: Theme.of(context).primaryColor,
+                    color: App.instance.themeData.primaryColor,
                     child: Text(
                       'Register',
                       style: TextStyle(color: Colors.white),

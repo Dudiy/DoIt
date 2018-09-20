@@ -47,14 +47,17 @@ flutter:
     - assets/icons_and_buttons/google_icon.png
     - assets/images/ClickToCreateGroup.png
     - assets/images/minion_sad.png
-    - assets/images/bg.jpg
+    - assets/images/bg_images/blue.jpg
     - assets/images/bg_images/colorful.jpg
     - assets/images/bg_images/leaves.jpg
     - assets/images/bg_images/lights.jpg
+    - assets/images/bg_images/orange_sky.jpg
+    - assets/images/bg_images/paper.jpg
+    - assets/images/bg_images/pink.jpg
     - assets/images/bg_images/polygons.jpg
-    - assets/images/bg_images/polygons2.jpg
     - assets/images/bg_images/underwater.jpg
     - assets/images/bg_images/wood.jpg
+    - assets/images/bg_images/green_circuit.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

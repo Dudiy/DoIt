@@ -31,6 +31,7 @@ class NfcWritePageState extends State<NfcWritePage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: new AppBar(
+        backgroundColor: App.instance.themeData.primaryColor,
         title: Text("Write task to NFC"),
       ),
       body: Container(

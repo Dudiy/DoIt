@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:do_it/app.dart';
 import 'package:flutter/material.dart';
 
 class DoItTimeField extends StatefulWidget {
@@ -129,7 +130,7 @@ class DoItTimeFieldState extends State<DoItTimeField> {
                                 right: Radius.circular(16.0),
                               )),
                               color: widget.enabled
-                                  ? Theme.of(context).primaryColorLight
+                                  ? App.instance.themeData.primaryColorLight
                                   : Theme.of(context).disabledColor.withAlpha(35),
                               child: Icon(Icons.date_range,
                                 color: widget.enabled

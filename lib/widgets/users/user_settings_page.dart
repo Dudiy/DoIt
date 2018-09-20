@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:do_it/app.dart';
+import 'package:do_it/constants/background_images.dart';
 import 'package:do_it/data_classes/user/user_info.dart';
 import 'package:do_it/widgets/custom/dialog_generator.dart';
 import 'package:do_it/widgets/custom/imageContainer.dart';
@@ -40,7 +41,10 @@ class UserSettingsPageState extends State<UserSettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("user info"), actions: <Widget>[]),
+      appBar: AppBar(
+        backgroundColor: App.instance.themeData.primaryColor,
+        title: Text("user info"),
+      ),
       body: SafeArea(
         child: Container(
           decoration: app.getBackgroundImage(),
@@ -49,7 +53,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Card(
-                color: Theme.of(context).primaryColorLight.withAlpha(200),
+                color: app.themeData.primaryColorLight.withAlpha(200),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
                 child: Row(
                   children: <Widget>[
@@ -65,6 +69,65 @@ class UserSettingsPageState extends State<UserSettingsPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
+                      RaisedButton(
+                        child: const Text('Change theme'),
+                        onPressed: () async {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return Dialog(
+                                child: Container(
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Text(
+                                          "Select Theme",
+                                          style: Theme.of(context).textTheme.title.copyWith(
+                                              fontWeight: FontWeight.bold, decoration: TextDecoration.underline),
+                                        ),
+                                      ),
+                                      new Expanded(
+                                        child: GridView.count(
+                                          primary: true,
+                                          padding: EdgeInsets.all(20.0),
+                                          crossAxisCount: 2,
+                                          childAspectRatio: 1.0,
+                                          mainAxisSpacing: 20.0,
+                                          crossAxisSpacing: 20.0,
+                                          children: List.generate(backgroundImages.length, (i) {
+                                            return _imageContainerWithText(
+                                                imageContainer: ImageContainer(
+                                                    assetPath: backgroundImages.values.toList()[i]["assetPath"],
+                                                    size: 25.0),
+                                                imageSize: 50.0,
+                                                onTap: () {
+                                                  app.usersManager.updateBgImage(
+                                                      userInfo.userID, backgroundImages.keys.toList()[i]);
+                                                  setState(() {
+                                                    app.bgImagePath = backgroundImages.values.toList()[i]["assetPath"];
+                                                    app.themeData = backgroundImages.values.toList()[i]["themeData"];
+                                                  });
+                                                  Navigator.of(context).pop();
+                                                },
+                                                textOverlay: backgroundImages.keys.toList()[i],
+                                                fontSize: 20.0,
+                                                fontColor: Colors.black,
+                                                textBackgroundColor:
+                                                    (backgroundImages.values.toList()[i]["themeData"] as ThemeData)
+                                                        .primaryColorLight);
+                                          }),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                              /**/
+                            },
+                          );
+                        },
+                      ),
                       RaisedButton(
                         child: const Text('Reset password'),
                         onPressed: () async {
@@ -160,6 +223,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
               size: PROFILE_PIC_SIZE,
               imagePath: app.loggedInUser.photoUrl,
               imageFile: uploadedImageFile,
+              defaultImagePath: "assets/images/unknown_profile_pic.jpg",
             ),
             Container(
               height: PROFILE_PIC_SIZE,
@@ -222,6 +286,54 @@ class UserSettingsPageState extends State<UserSettingsPage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  _imageContainerWithText({
+    @required ImageContainer imageContainer,
+    Color textBackgroundColor = Colors.black54,
+    double imageSize = 25.0,
+    String textOverlay = "",
+    VoidCallback onTap,
+    double fontSize = 16.0,
+    Color fontColor = Colors.white70,
+  }) {
+    var editImageText = <Widget>[
+      Expanded(
+        child: Container(),
+      ),
+      Container(
+        width: imageSize - 2,
+        padding: EdgeInsets.all(5.0),
+        decoration: BoxDecoration(
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(16.0)),
+          color: textBackgroundColor,
+        ),
+        child: Text(
+          textOverlay,
+          textAlign: TextAlign.center,
+          style: TextStyle(color: fontColor, fontSize: fontSize),
+        ),
+      ),
+    ];
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          imageContainer,
+          Container(
+            height: imageSize,
+            width: imageSize,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: editImageText,
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -5,7 +5,7 @@ class ImageFetcher {
   static const String LOADING_GIF = 'assets/doit_logo/loading_animation.gif';
 
   static fetch({@required String imagePath, String defaultImagePath = DEFAULT_IMAGE_PATH}) {
-    if (imagePath == null || imagePath == defaultImagePath) {
+    if (imagePath == null || imagePath == "" || imagePath == defaultImagePath) {
       return Image.asset(defaultImagePath);
     }
 

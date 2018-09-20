@@ -10,8 +10,8 @@ class DoItApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        cardColor: Theme.of(context).primaryColorLight.withAlpha(180),
-        dialogBackgroundColor: Theme.of(context).primaryColorLight.withAlpha(220),
+        cardColor: Colors.white.withOpacity(0.75),
+        dialogBackgroundColor: Colors.white.withOpacity(0.75),
       ),
       debugShowCheckedModeBanner: false,
       title: 'DoIt',
