@@ -82,6 +82,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
     });
   }
 
+  /// tasks count message on the top of home screen
   Future<Widget> _getAllTasksCount() async {
     List<ShortTaskInfo> allTasks = await App.instance.tasksManager.getAllMyTasks();
     String tasksRemainingString = allTasks.length > 0
@@ -216,6 +217,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
         ],
       );
     } else {
+      _getMyGroupsFromDB();
       return RefreshIndicator(
         child: _myGroupsWidget(context),
         onRefresh: _getMyGroupsFromDB,
