@@ -111,8 +111,8 @@ class App {
               bgImagePath = backgroundImages[userInfo.bgImage]["assetPath"];
               themeData = backgroundImages[userInfo.bgImage]["themeData"];
             }
+            _loggedInUser = userInfo.getShortUserInfo();
           }
-          _loggedInUser = userInfo.getShortUserInfo();
         });
       }
     });
