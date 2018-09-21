@@ -87,7 +87,7 @@ class _LifecycleNfcWatcherState extends State<LifecycleNfcWatcher> with WidgetsB
       print(TaskMethodResult.COMPLETE_SUCCESS.toString());
       DoItDialogs.showNotificationDialog(
         context: context,
-        title: "NFC has trigger",
+        title: "NFC tag scanned",
         body: TaskMethodResultUtils.message(TaskMethodResult.COMPLETE_SUCCESS, taskInfo.title),
       );
       widget._renderHomePage();

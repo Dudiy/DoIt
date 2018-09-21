@@ -56,38 +56,37 @@ public class NfcActivity extends FlutterActivity {
         // set channel to call class method from flutter
         GeneratedPluginRegistrant.registerWith(this);
         new MethodChannel(getFlutterView(), CLASS_PATH).setMethodCallHandler(
-            new MethodCallHandler() {
-                @Override
-                public void onMethodCall(MethodCall call, Result result) {
-                    switch (call.method) {
-                        case GET_LAST_TEXT_READ_AND_RESET:
-                            result.success(textRead);
-                            textRead = null;
-                            break;
-                        case SET_STATE:
-                            String nfcStateString = call.argument("state");
-                            nfcState = nfcStateString.equals(NfcState.READ.getId()) ?
-                                NfcState.READ :
-                                NfcState.WRITE;
-                            result.success(nfcState.getId());
-                            break;
-                        case GET_STATE:
-                            result.success(nfcState.getId());
-                            break;
-                        case SET_TEXT_TO_WRITE:
-                            textToWrite = call.argument("textToWrite");
-                            result.success(textToWrite);
-                            break;
-                        case GET_TEXT_TO_WRITE:
-                            result.success(textToWrite);
-                            break;
-                        default:
-                            result.notImplemented();
-                            break;
-
+                new MethodCallHandler() {
+                    @Override
+                    public void onMethodCall(MethodCall call, Result result) {
+                        switch (call.method) {
+                            case GET_LAST_TEXT_READ_AND_RESET:
+                                result.success(textRead);
+                                textRead = null;
+                                break;
+                            case SET_STATE:
+                                String nfcStateString = call.argument("state");
+                                nfcState = nfcStateString.equals(NfcState.READ.getId()) ?
+                                        NfcState.READ :
+                                        NfcState.WRITE;
+                                result.success(nfcState.getId());
+                                break;
+                            case GET_STATE:
+                                result.success(nfcState.getId());
+                                break;
+                            case SET_TEXT_TO_WRITE:
+                                textToWrite = call.argument("textToWrite");
+                                result.success(textToWrite);
+                                break;
+                            case GET_TEXT_TO_WRITE:
+                                result.success(textToWrite);
+                                break;
+                            default:
+                                result.notImplemented();
+                                break;
+                        }
                     }
-                }
-            });
+                });
     }
 
     @Override
@@ -110,7 +109,6 @@ public class NfcActivity extends FlutterActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         if (intent.hasExtra(NfcAdapter.EXTRA_TAG)) {
-            Toast.makeText(this, "NfcIntent!", Toast.LENGTH_SHORT).show();
             if (nfcState == NfcState.READ) {
                 System.out.println("NFC: in read state");
                 Parcelable[] parcelables = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
@@ -122,11 +120,13 @@ public class NfcActivity extends FlutterActivity {
                 } else {
                     Toast.makeText(this, "No NDEF messages found!", Toast.LENGTH_SHORT).show();
                 }
+                Toast.makeText(this, "NFC tag scanned", Toast.LENGTH_SHORT).show();
             } else if (nfcState == NfcState.WRITE) {
                 System.out.println("NFC: in write state");
                 Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
                 NdefMessage ndefMessage = createNdefMessage(textToWrite);
                 writeNdefMessage(tag, ndefMessage);
+                Toast.makeText(this, "NFC tag updated", Toast.LENGTH_SHORT).show();
             } else {
                 throw new NotImplementedError("unknown nfc state");
             }
@@ -164,7 +164,7 @@ public class NfcActivity extends FlutterActivity {
             ndefFormatable.connect();
             ndefFormatable.format(ndefMessage);
             ndefFormatable.close();
-            Toast.makeText(this, "Tag writen!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Tag written", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             Log.e("formatTag", e.getMessage());
         }
@@ -219,7 +219,7 @@ public class NfcActivity extends FlutterActivity {
 
     private NdefMessage createNdefMessage(String content) {
         NdefRecord appRecord = NdefRecord.createApplicationRecord("com.dudior.doit");
-        NdefRecord textRecord = NdefRecord.createTextRecord("en",textToWrite);
+        NdefRecord textRecord = NdefRecord.createTextRecord("en", textToWrite);
         NdefMessage ndefMessage = new NdefMessage(textRecord, appRecord);
         return ndefMessage;
     }
@@ -231,7 +231,7 @@ public class NfcActivity extends FlutterActivity {
             String textEncoding = ((payload[0] & 128) == 0) ? "UTF-8" : "UTF-16";
             int languageSize = payload[0] & 0063;
             tagContent = new String(payload, languageSize + 1,
-                payload.length - languageSize - 1, textEncoding);
+                    payload.length - languageSize - 1, textEncoding);
         } catch (UnsupportedEncodingException e) {
             Log.e("getTextFromNdefRecord", e.getMessage(), e);
         }

@@ -68,7 +68,6 @@ class HomePageState extends State<HomePage> {
             child: Padding(
               padding: const EdgeInsets.all(5.0),
               child: Stack(children: <Widget>[
-//                ImageContainer(imagePath: photoUrl),
                 Center(
                   child: Container(
                       width: 65.0,
@@ -77,7 +76,6 @@ class HomePageState extends State<HomePage> {
                         child: _getProfilePic(),
                       )),
                 ),
-//                _addProfilePicture(),
                 Container(child: LifecycleNfcWatcher(_nfcTriggerRender)),
               ]),
             ),
