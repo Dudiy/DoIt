@@ -1,8 +1,5 @@
 import 'package:do_it/app.dart';
-import 'package:do_it/data_classes/group/group_info.dart';
 import 'package:do_it/data_classes/group/group_info_short.dart';
-import 'package:do_it/data_classes/user/user_info_short.dart';
-import 'package:do_it/widgets/custom/time_field.dart';
 import 'package:do_it/widgets/custom/timespan_selector.dart';
 import 'package:flutter/material.dart';
 
@@ -61,19 +58,20 @@ class ScoreBoardState extends State<ScoreBoard> {
         scoreBoardAsList.forEach((scoreboardItem) {
           list.add(Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: ListTile(
-              title: Row(
-                children: <Widget>[
-                  Text('${index.toString()})'),
-                  Expanded(
-                      child: Text(
-                    '  ${scoreboardItem['userInfo'].displayName}', overflow: TextOverflow.ellipsis,
-//                  style: TextStyle(fontWeight: index < 4 ? FontWeight.bold : ""),
-                  )),
-                  Text(scoreboardItem['score'].toString()),
-                ],
+            child: Container(
+              color: Colors.white,
+              child: ListTile(
+                title: Row(
+                  children: <Widget>[
+                    Text('${index.toString()})'),
+                    Expanded(
+                        child: Text(
+                      '  ${scoreboardItem['userInfo'].displayName}', overflow: TextOverflow.ellipsis,
+                    )),
+                    Text(scoreboardItem['score'].toString()),
+                  ],
+                ),
               ),
-//          subtitle: ,
             ),
           ));
           index++;

@@ -145,10 +145,13 @@ class DoItDialogs {
       context: context,
       builder: (BuildContext context) {
         return SimpleDialog(
-          title: Text(
-            '${groupInfo.title} - scoreboard',
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
+          title: Center(
+            child: Text(
+              '${groupInfo.title} - scoreboard',
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.title.copyWith(decoration: TextDecoration.underline),
+            ),
           ),
           children: [ScoreBoard(groupInfo)],
         );

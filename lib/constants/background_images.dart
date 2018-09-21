@@ -4,21 +4,22 @@ final Map<String, dynamic> backgroundImages = {
   "Orange Sky": {
     "assetPath": 'assets/images/bg_images/orange_sky.jpg',
     "themeData": ThemeData(
-      primaryColor: Colors.orangeAccent[200],
-      primaryColorLight: Colors.orangeAccent[100],
+      primaryColor: Colors.orange[400],
+      primaryColorLight: Colors.orange[100],
     )
   },
   "Blue": {
     "assetPath": 'assets/images/bg_images/blue.jpg',
     "themeData": ThemeData(
-      primaryColor: Colors.blueAccent[200],
-      primaryColorLight: Colors.lightBlueAccent[100],
+      primaryColor: Colors.blue[400],
+//      primaryColorLight: Colors.lightBlueAccent[100],
+      primaryColorLight: Colors.blue[100],
     )
   },
   "Colorful": {
     "assetPath": 'assets/images/bg_images/colorful.jpg',
     "themeData": ThemeData(
-      primaryColor: Colors.pink[200],
+      primaryColor: Colors.pink[400],
       primaryColorLight: Colors.pink[100],
     )
   },
@@ -32,22 +33,22 @@ final Map<String, dynamic> backgroundImages = {
   "Lights": {
     "assetPath": 'assets/images/bg_images/lights.jpg',
     "themeData": ThemeData(
-      primaryColor: Colors.tealAccent[200],
-      primaryColorLight: Colors.tealAccent[100],
+      primaryColor: Colors.teal[300],
+      primaryColorLight: Colors.teal[100],
     )
   },
   "Pink": {
     "assetPath": 'assets/images/bg_images/pink.jpg',
     "themeData": ThemeData(
-      primaryColor: Colors.pink[200],
+      primaryColor: Colors.pink[300],
       primaryColorLight: Colors.pink[100],
     )
   },
   "Polygons": {
     "assetPath": 'assets/images/bg_images/polygons.jpg',
     "themeData": ThemeData(
-      primaryColor: Colors.blueAccent[200],
-      primaryColorLight: Colors.lightBlueAccent[100],
+      primaryColor: Colors.blue[400],
+      primaryColorLight: Colors.blue[100],
     )
   },
   "Paper": {
@@ -60,8 +61,8 @@ final Map<String, dynamic> backgroundImages = {
   "Underwater": {
     "assetPath": 'assets/images/bg_images/underwater.jpg',
     "themeData": ThemeData(
-      primaryColor: Colors.cyanAccent[400],
-      primaryColorLight: Colors.cyanAccent[100],
+      primaryColor: Colors.cyan[400],
+      primaryColorLight: Colors.cyan[100],
     )
   },
   "Wood": {
@@ -75,14 +76,14 @@ final Map<String, dynamic> backgroundImages = {
     "assetPath": 'assets/images/bg_images/green_circuit.png',
     "themeData": ThemeData(
       primaryColor: Colors.green[400],
-      primaryColorLight: Colors.greenAccent[100],
+      primaryColorLight: Colors.green[100],
     )
   },
   "Red Sun": {
     "assetPath": 'assets/images/bg_images/red_sun.jpg',
     "themeData": ThemeData(
       primaryColor: Colors.red[400],
-      primaryColorLight: Colors.redAccent[100],
+      primaryColorLight: Colors.red[100],
     )
   },
 };

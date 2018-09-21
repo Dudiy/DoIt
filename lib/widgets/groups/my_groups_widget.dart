@@ -8,7 +8,6 @@ import 'package:do_it/data_classes/group/group_utils.dart';
 import 'package:do_it/data_classes/task/task_info_short.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/widgets/custom/dialog_generator.dart';
-import 'package:do_it/widgets/custom/speed_dial.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:do_it/widgets/groups/group_card.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +37,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
 
   @override
   void dispose() {
-    // stop listen for group list update
+    // stop listening for group list updates
     _groupsStreamSubscription.cancel();
     super.dispose();
   }
@@ -130,10 +129,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
     if (_myGroups.length == 0)
       return Stack(
         fit: StackFit.expand,
-//        crossAxisAlignment: CrossAxisAlignment.stretch,
-//        mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-//          Expanded(child: Container()),
           Center(
             child: Column(
               children: <Widget>[
@@ -149,7 +145,6 @@ class MyGroupsPageState extends State<MyGroupsPage> {
               ],
             ),
           ),
-//          Expanded(child: Container()),
           Positioned(
             bottom: 0.0,
             right: 80.0,
