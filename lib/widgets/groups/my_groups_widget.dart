@@ -168,6 +168,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
         child: GroupCard(shortGroupInfo: group),
       );
     }).toList());
+    list.add(SizedBox(height: 80.0)); // this is so the "add group" button doesn't hide the last card
     return ListView(children: list);
   }
 
@@ -202,7 +203,6 @@ class MyGroupsPageState extends State<MyGroupsPage> {
   }
 
   _renderMyGroupBody() {
-//    if (true)
     if (_myGroups == null || _allTasksWidget == null) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
