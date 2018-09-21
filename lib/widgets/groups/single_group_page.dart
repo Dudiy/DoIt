@@ -338,12 +338,15 @@ class SingleGroupPageState extends State<SingleGroupPage> {
 //          alignment: Alignment.center,
           children: <Widget>[
             Expanded(
-                child: Center(
-                    child: Text(
-              'Completed tasks',
-              style: Theme.of(context).textTheme.title,
-              textAlign: TextAlign.center,
-            ))),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  'Completed tasks',
+                  style: Theme.of(context).textTheme.title,
+                  textAlign: TextAlign.start,
+                ),
+              ),
+            ),
             IconButton(
               icon: Icon(Icons.refresh),
               onPressed: () => fetchCompletedTasksFromServer(),
@@ -363,11 +366,12 @@ class SingleGroupPageState extends State<SingleGroupPage> {
 
     return ExpansionPanel(
       headerBuilder: (BuildContext context, bool isExpanded) {
-        return Center(
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
           child: Text(
             'Tasks assigned to me $numTasksAssignedToMeStr',
             style: Theme.of(context).textTheme.title,
-            textAlign: TextAlign.center,
+            textAlign: TextAlign.start,
           ),
         );
       },
@@ -381,12 +385,14 @@ class SingleGroupPageState extends State<SingleGroupPage> {
         _getNumTasksAssignedToOthers() != null ? '(${_getNumTasksAssignedToOthers().toString()})' : '(?)';
     return ExpansionPanel(
       headerBuilder: (BuildContext context, bool isExpanded) {
-        return Center(
-            child: Text(
-          'Tasks assigned to others $numTasksAssignedToOthersStr',
-          style: Theme.of(context).textTheme.title,
-          textAlign: TextAlign.center,
-        ));
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text(
+            'Tasks assigned to others $numTasksAssignedToOthersStr',
+            style: Theme.of(context).textTheme.title,
+            textAlign: TextAlign.start,
+          ),
+        );
       },
       body: getTasksAssignedToOthers(),
       isExpanded: _othersTasksIsExpanded,
@@ -396,7 +402,10 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   ExpansionPanel _futureTasksExpansionPanel(BuildContext context) {
     return ExpansionPanel(
       headerBuilder: (BuildContext context, bool isExpanded) {
-        return Center(child: Text('Future tasks', style: Theme.of(context).textTheme.title));
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text('Future tasks', style: Theme.of(context).textTheme.title),
+        );
       },
       body: getFutureTasks(),
       isExpanded: _futureTasksIsExpanded,
@@ -716,8 +725,15 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       actionButtonText: 'Leave',
     ).then((deleteConfirmed) {
       if (deleteConfirmed) {
-        app.groupsManager.deleteUserFromGroup(groupInfo.groupID, app.loggedInUser.userID);
-        Navigator.pop(context);
+        loadingOverlay.show(context: context, message: "Leaving group...");
+        app.groupsManager.deleteUserFromGroup(groupInfo.groupID, app.loggedInUser.userID).whenComplete(() {
+          loadingOverlay.hide();
+          Navigator.pop(context);
+        }).catchError((error){
+          loadingOverlay.hide();
+          Navigator.pop(context);
+          DoItDialogs.showErrorDialog(context: context, message: "Error while trying to leave group, please try again.\nInner exception: ${error.message}");
+        });
       }
     });
   }
@@ -762,6 +778,9 @@ class SingleGroupPageState extends State<SingleGroupPage> {
                 "${newMember.displayName} has been added to this group",
                 textAlign: TextAlign.center,
               )));
+              setState(() {
+                groupInfo.members.putIfAbsent(newMember.userID, () => newMember);
+              });
             });
       },
       label: 'add member',

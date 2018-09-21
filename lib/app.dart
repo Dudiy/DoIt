@@ -65,7 +65,7 @@ class App {
       _loggedInUser = null;
     } else {
       ShortUserInfo userFromDB = await usersManager.getShortUserInfo(user.uid);
-      // user is authenticated but not in the DB (error while deleting)
+      // user is authenticated but not in the DB (can happen after error while deleting)
       if (userFromDB == null) {
         authenticator.deleteUser();
         throw Exception("Cannot log in, user was not found in the DB");
