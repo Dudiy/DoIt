@@ -25,11 +25,11 @@ class TaskMethodResultUtils {
       case TaskMethodResult.USER_WHO_COMPLETED_TASK_NOT_FOUND:
         return "Please reconnect to the application in order to complete the task";
       case TaskMethodResult.TASK_NOT_FOUND:
-        return "The task does not exist anymore";
+        return "The task associated with this tag does not exist anymore";
       case TaskMethodResult.USER_NOT_ASSIGNED_TO_TASK:
-        return "You aren't assigned to this task";
+        return "You aren't assigned to the task associated with this tag";
       case TaskMethodResult.INNER_SYSTEM_INVALID_TASK:
-        return "The task does not exist anymore";
+        return "The task associated with this tag does not exist anymore";
       case TaskMethodResult.START_TIME_AFTER_END_TIME:
         return "Start time can\'t be later than end time";
       case TaskMethodResult.ADD_TASK_FAIL:

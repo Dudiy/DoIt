@@ -93,7 +93,7 @@ class _LifecycleNfcWatcherState extends State<LifecycleNfcWatcher> with WidgetsB
       widget._renderHomePage();
     }).catchError((error) {
       print(error.toString());
-      if(error is TaskException) {
+      if (error is TaskException) {
         DoItDialogs.showErrorDialog(
           context: context,
           message: TaskMethodResultUtils.message(error.result),
@@ -106,13 +106,13 @@ class _LifecycleNfcWatcherState extends State<LifecycleNfcWatcher> with WidgetsB
   /// write to nfc already done
   /// switch to read NFC mode
   ///
-  void _writeToNfc() {
-    platform.invokeMethod(SET_STATE, <String, dynamic>{
+  Future<void> _writeToNfc() async {
+    await platform.invokeMethod(SET_STATE, <String, dynamic>{
       'state': READ_STATE,
     }).then((returnVal) {
       print("NFC status: " + returnVal);
+      Navigator.pop(context);
     });
-    Navigator.pop(context);
   }
 
   @override

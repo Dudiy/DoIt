@@ -179,8 +179,19 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
             leading: Icon(Icons.nfc, color: app.themeData.primaryColor),
             title: Text('Write to NFC'),
             onTap: () {
-              Navigator.pop(context); // hide the popup
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => NfcWritePage(widget.taskInfo.taskID)));
+              NfcWriter nfcWriter = new NfcWriter(widget.taskInfo.taskID);
+              nfcWriter.enableWrite();
+              showDialog(context: context, builder: (context){
+                return SimpleDialog(
+                  title: Center(child: Text("Ready to write")),
+                  children: <Widget>[
+                    Image.asset("assets/images/scan_nfc.png"),
+                    Center(child: Text("Hold phone over NFC tag")),
+                  ],
+                );
+              }).whenComplete((){
+                nfcWriter.disableWrite();
+              });
             }),
       ),
     );

@@ -507,6 +507,9 @@ class SingleGroupPageState extends State<SingleGroupPage> {
                 });
               },
               onCompleted: () {
+                if (taskInfo.recurringPolicy != eRecurringPolicy.none){
+                  _checkboxState[taskInfo.taskID] = false;
+                }
                 fetchCompletedTasksFromServer();
               }),
         ));

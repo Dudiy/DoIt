@@ -181,6 +181,7 @@ public class NfcActivity extends FlutterActivity {
                 // format tag with the ndef format and writes the message.
                 formatTag(tag, ndefMessage);
             } else {
+                Toast.makeText(this, "Writing to tag...", Toast.LENGTH_SHORT).show();
                 ndef.connect();
                 if (!ndef.isWritable()) {
                     Toast.makeText(this, "Tag is not writable!", Toast.LENGTH_SHORT).show();
@@ -190,7 +191,6 @@ public class NfcActivity extends FlutterActivity {
                 }
                 ndef.writeNdefMessage(ndefMessage);
                 ndef.close();
-                Toast.makeText(this, "Tag writen!", Toast.LENGTH_SHORT).show();
             }
 
         } catch (Exception e) {

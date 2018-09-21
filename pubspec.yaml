@@ -59,6 +59,7 @@ flutter:
     - assets/images/bg_images/wood.jpg
     - assets/images/bg_images/green_circuit.png
     - assets/images/bg_images/red_sun.jpg
+    - assets/images/scan_nfc.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
