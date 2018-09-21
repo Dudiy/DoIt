@@ -151,22 +151,31 @@ class LoginPageState extends State<LoginPage> {
           if (_formKey.currentState.validate()) {
             FocusScope.of(context).requestFocus(new FocusNode());
             loadingOverlay.show(context: context, message: "Logging in...");
-            widget.authenticator
-                .signInWithEmailAndPassword(_emailController.text, _passwordController.text)
-                .then((user) {
-              loadingOverlay.hide();
-              App.instance.refreshLoggedInUserFcmToken();
+            try{
+              widget.authenticator
+                  .signInWithEmailAndPassword(_emailController.text, _passwordController.text)
+                  .then((user) {
+                loadingOverlay.hide();
+                App.instance.refreshLoggedInUserFcmToken();
 
-              print('${user.displayName} has logged in using email and password');
-              widget.onSignedIn();
-            }).catchError((error) {
+                print('${user.displayName} has logged in using email and password');
+                widget.onSignedIn();
+              }).catchError((error){
+                loadingOverlay.hide();
+                DoItDialogs.showErrorDialog(
+                  context: context,
+                  message: 'Error while trying to log in: \n${error.message}',
+                );
+                print('Error while trying to log in: \n${error.message}');
+              });
+            } catch (error) {
               loadingOverlay.hide();
               DoItDialogs.showErrorDialog(
                 context: context,
                 message: 'Error while trying to log in: \n${error.message}',
               );
               print('Error while trying to log in: \n${error.message}');
-            });
+            }
           }
         },
       ),

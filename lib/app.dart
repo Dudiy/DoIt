@@ -60,8 +60,19 @@ class App {
     if (_loggedInUser != null && user != null) {
       throw Exception('App: cannot set logged in user when user is already logged in');
     }
-    _loggedInUser = user == null ? null : await usersManager.getShortUserInfo(user.uid);
-    if (user != null) {
+    if (user == null){
+      // user logged out
+      _loggedInUser = null;
+    } else {
+      ShortUserInfo userFromDB = await usersManager.getShortUserInfo(user.uid);
+      // user is authenticated but not in the DB (error while deleting)
+      if (userFromDB == null) {
+        authenticator.deleteUser();
+        throw Exception("Cannot log in, user was not found in the DB");
+      }
+      // login success
+      _loggedInUser = userFromDB;
+      // after login success get user's theme
       usersManager.getFullUserInfo(user.uid).then((userInfo) {
         if (backgroundImages[userInfo.bgImage] != null) {
           bgImagePath = backgroundImages[userInfo.bgImage]["assetPath"];
@@ -69,6 +80,7 @@ class App {
         }
       });
     }
+//    _loggedInUser = user == null ? null : await usersManager.getShortUserInfo(user.uid);
   }
 
   updateLoggedInUserPhotoUrl(String url) {

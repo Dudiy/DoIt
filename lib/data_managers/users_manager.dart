@@ -27,7 +27,7 @@ class UsersManager {
     } else if (user.photoUrl != null) {
       photoUrl = user.photoUrl;
     }
-    String bgImage = documentSnapshot.data['bgImage'];
+    String bgImage = isUserAlreadyInDB ? documentSnapshot.data['bgImage'] : null;
 
     //TODO implement message handlers
 

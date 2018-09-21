@@ -41,13 +41,17 @@ class Authenticator {
     final FirebaseUser user = await _firebaseAuth.signInWithEmailAndPassword(
       email: email,
       password: password,
-    );
+    ).catchError((error) => throw error);
     assert(user.email != null);
 
     final FirebaseUser currentUser = await _firebaseAuth.currentUser();
     assert(user.uid == currentUser.uid);
 
-    await App.instance.setLoggedInUser(user);
+    try {
+      await App.instance.setLoggedInUser(user);
+    } catch (e) {
+      throw e;
+    }
     print('$user has signed in using email and password');
     return user;
   }
