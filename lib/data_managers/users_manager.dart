@@ -46,29 +46,28 @@ class UsersManager {
   }
 
   Future<void> deleteUser() async {
-    /* delete from firebase db */
     if (app.loggedInUser == null) throw Exception('UserManager: Cannot delete - no user is logged in');
     String userID = app.loggedInUser.userID;
-    await App.instance.groupsManager.deleteAllGroupsUserIsManagerOf(userID);
-    await App.instance.groupsManager.deleteUserFromAllGroups(userID);
-    // unnecessary because user is removed from all tasks when he is removed from all groups
-    // TODO delete after commit
-//    await App.instance.tasksManager.removeUserFromAllAssignedTasks(userID);
-    print('userId: $userID - deleting user from DB'); //TODO delete
-    await _firestore.document('$USERS/$userID').delete();
-    print('userId: $userID - user deleted from DB'); //TODO delete
-    print('userId: $userID - deleting user from Auth'); //TODO delete
-    await App.instance.authenticator.deleteUser();
-    print('userId: $userID - user deleted from Auth'); //TODO delete
 
     /* delete from firebase storage */
     String pathToDelete = "$USERS/$userID/profile.jpg";
-    StorageReference storageRef = App.instance.firebaseStorage.ref().child(pathToDelete);
+    StorageReference storageRef = app.firebaseStorage.ref().child(pathToDelete);
     storageRef.delete().whenComplete(() {
       print("UsersManager: deleted profile picture from firebase storage in path: " + pathToDelete);
     }).catchError(() {
       print("UsersManager: failed to delete profile picture from firebase storage in path: " + pathToDelete);
     });
+
+    /* delete from firebase db */
+    await app.groupsManager.deleteAllGroupsUserIsManagerOf(userID);
+    await app.groupsManager.deleteUserFromAllGroups(userID);
+    print('userId: $userID - deleting user from DB'); //TODO delete
+    await _firestore.document('$USERS/$userID').delete();
+    print('userId: $userID - user deleted from DB'); //TODO delete
+    print('userId: $userID - deleting user from Auth'); //TODO delete
+    await app.authenticator.deleteUser();
+    print('userId: $userID - user deleted from Auth'); //TODO delete
+
   }
 
   //we only want the user to be able to change his picture and not hes other data

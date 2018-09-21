@@ -26,7 +26,7 @@ final Map<String, dynamic> backgroundImages = {
     "assetPath": 'assets/images/bg_images/leaves.jpg',
     "themeData": ThemeData(
       primaryColor: Colors.purple[400],
-      primaryColorLight: Colors.purpleAccent[100],
+      primaryColorLight: Colors.purpleAccent[100].withAlpha(100),
     )
   },
   "Lights": {
