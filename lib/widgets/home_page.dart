@@ -78,7 +78,7 @@ class HomePageState extends State<HomePage> {
                       )),
                 ),
 //                _addProfilePicture(),
-                Container(child: LifecycleNfcWatcher()),
+                Container(child: LifecycleNfcWatcher(_nfcTriggerRender)),
               ]),
             ),
           ),
@@ -112,5 +112,11 @@ class HomePageState extends State<HomePage> {
             userProfilePicFile,
             fit: BoxFit.fill,
           );
+  }
+
+  _nfcTriggerRender(){
+    setState(() {
+      // empty implementation in order to render that widget
+    });
   }
 }

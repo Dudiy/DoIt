@@ -10,6 +10,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 class LifecycleNfcWatcher extends StatefulWidget {
+  final Function _renderHomePage;
+
+  LifecycleNfcWatcher(this._renderHomePage);
+
   @override
   _LifecycleNfcWatcherState createState() => _LifecycleNfcWatcherState();
 }
@@ -86,6 +90,7 @@ class _LifecycleNfcWatcherState extends State<LifecycleNfcWatcher> with WidgetsB
         title: "NFC has trigger",
         body: TaskMethodResultUtils.message(TaskMethodResult.COMPLETE_SUCCESS, taskInfo.title),
       );
+      widget._renderHomePage();
     }).catchError((error) {
       print(error.toString());
       if(error is TaskException) {
