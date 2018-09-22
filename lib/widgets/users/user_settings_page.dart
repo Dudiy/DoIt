@@ -1,11 +1,15 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:do_it/app.dart';
 import 'package:do_it/constants/background_images.dart';
 import 'package:do_it/data_classes/user/user_info.dart';
+import 'package:do_it/data_classes/user/user_info_utils.dart';
 import 'package:do_it/widgets/custom/dialog_generator.dart';
 import 'package:do_it/widgets/custom/imageContainer.dart';
 import 'package:do_it/widgets/custom/loadingOverlay.dart';
+import 'package:do_it/widgets/custom/raised_button_with_icon.dart';
+import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Auth;
 import 'package:flutter/material.dart';
 //import 'package:do_it/widgets/image_picker.dart';
@@ -25,6 +29,8 @@ class UserSettingsPage extends StatefulWidget {
 class UserSettingsPageState extends State<UserSettingsPage> {
   final app = App.instance;
   final LoadingOverlay loadingOverlay = new LoadingOverlay();
+  final TextEditingController _messageBodyController = new TextEditingController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   UserInfo userInfo;
   File uploadedImageFile;
 
@@ -41,6 +47,8 @@ class UserSettingsPageState extends State<UserSettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         backgroundColor: App.instance.themeData.primaryColor,
         title: Text("App settings"),
@@ -58,7 +66,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
                 child: Row(
                   children: <Widget>[
                     _profilePicture(),
-                    _userDetails(context),
+                    _userDetails(),
                   ],
                 ),
               ),
@@ -69,67 +77,19 @@ class UserSettingsPageState extends State<UserSettingsPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      RaisedButton(
-                        child: const Text('Change theme'),
-                        onPressed: () async {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return Dialog(
-                                child: Container(
-                                  child: Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(16.0),
-                                        child: Text(
-                                          "Select Theme",
-                                          style: Theme.of(context).textTheme.title.copyWith(
-                                              fontWeight: FontWeight.bold, decoration: TextDecoration.underline),
-                                        ),
-                                      ),
-                                      new Expanded(
-                                        child: GridView.count(
-                                          primary: true,
-                                          padding: EdgeInsets.all(20.0),
-                                          crossAxisCount: 2,
-                                          childAspectRatio: 1.0,
-                                          mainAxisSpacing: 20.0,
-                                          crossAxisSpacing: 20.0,
-                                          children: List.generate(backgroundImages.length, (i) {
-                                            return _imageContainerWithText(
-                                                imageContainer: ImageContainer(
-                                                    assetPath: backgroundImages.values.toList()[i]["assetPath"],
-                                                    size: 25.0),
-                                                imageSize: 50.0,
-                                                onTap: () {
-                                                  app.usersManager.updateBgImage(
-                                                      userInfo.userID, backgroundImages.keys.toList()[i]);
-                                                  setState(() {
-                                                    app.bgImagePath = backgroundImages.values.toList()[i]["assetPath"];
-                                                    app.themeData = backgroundImages.values.toList()[i]["themeData"];
-                                                  });
-                                                  Navigator.of(context).pop();
-                                                },
-                                                textOverlay: backgroundImages.keys.toList()[i],
-                                                fontSize: 15.0,
-                                                fontColor: Colors.black,
-                                                textBackgroundColor:
-                                                    (backgroundImages.values.toList()[i]["themeData"] as ThemeData)
-                                                        .primaryColorLight);
-                                          }),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                              /**/
-                            },
-                          );
-                        },
+                      DoItRaisedButtonWithIcon(
+                        icon: Icon(Icons.color_lens, color: app.themeData.primaryColor),
+                        text: const Text('Change theme'),
+                        onPressed: () async => _changeThemeClicked(context),
                       ),
-                      RaisedButton(
-                        child: const Text('Reset password'),
+                      DoItRaisedButtonWithIcon(
+                        icon: Icon(Icons.email, color: app.themeData.primaryColor),
+                        text: const Text('Message the developers'),
+                        onPressed: () => _sendMessageToDevsClicked(context),
+                      ),
+                      DoItRaisedButtonWithIcon(
+                        icon: Icon(Icons.autorenew, color: app.themeData.primaryColor),
+                        text: const Text('Reset password'),
                         onPressed: () async {
                           final Auth.FirebaseUser currentUser = await App.instance.authenticator.getCurrentUser();
                           app.authenticator.sendPasswordResetEmail(currentUser.email);
@@ -140,35 +100,25 @@ class UserSettingsPageState extends State<UserSettingsPage> {
                           );
                         },
                       ),
-                      RaisedButton(
+                      DoItRaisedButtonWithIcon(
+                        icon: Icon(Icons.exit_to_app, color: app.themeData.primaryColor),
+                        text: const Text('Sign out'),
                         onPressed: () {
-                          Navigator.pop(context);
-                          widget.onSignedOut();
-                        },
-                        child: const Text('Sign out'),
-                      ),
-                      Expanded(child: Container()),
-                      Divider(),
-                      RaisedButton(
-                        color: Theme.of(context).errorColor,
-                        child: const Text('Delete user', style: TextStyle(color: Colors.white)),
-                        onPressed: () {
-                          DoItDialogs.showConfirmDialog(
-                            context: context,
-                            message: "are you sure you want to delete this account? this cannot be undone",
-                            isWarning: true,
-                            actionButtonText: "Delete accout",
-                          ).then((deleteConfirmed) {
-                            if (deleteConfirmed) {
-                              loadingOverlay.show(context: context, message: "deleting this account...");
-                              app.usersManager.deleteUser().then((val) {
-                                loadingOverlay.hide();
-                                widget.onSignedOut();
-                                Navigator.pop(context);
-                              });
+                          DoItDialogs.showConfirmDialog(context: context, message: "Sign out?").then((confirmed) {
+                            if (confirmed) {
+                              Navigator.pop(context);
+                              widget.onSignedOut();
                             }
                           });
                         },
+                      ),
+                      Expanded(child: Container()),
+                      Divider(),
+                      DoItRaisedButtonWithIcon(
+                        text: const Text('Delete user', style: TextStyle(color: Colors.white)),
+                        icon: Icon(Icons.delete, color: Colors.white),
+                        color: Theme.of(context).errorColor,
+                        onPressed: () => _deleteUserClicked(context),
                       ),
                     ],
                   ),
@@ -178,6 +128,100 @@ class UserSettingsPageState extends State<UserSettingsPage> {
           ),
         ),
       ),
+    );
+  }
+
+  void _changeThemeClicked(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: Container(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    "Select Theme",
+                    style: Theme.of(context)
+                        .textTheme
+                        .title
+                        .copyWith(fontWeight: FontWeight.bold, decoration: TextDecoration.underline),
+                  ),
+                ),
+                new Expanded(
+                  child: GridView.count(
+                    primary: true,
+                    padding: EdgeInsets.all(20.0),
+                    crossAxisCount: 2,
+                    childAspectRatio: 1.0,
+                    mainAxisSpacing: 20.0,
+                    crossAxisSpacing: 20.0,
+                    children: List.generate(backgroundImages.length, (i) {
+                      return _imageContainerWithText(
+                          imageContainer:
+                              ImageContainer(assetPath: backgroundImages.values.toList()[i]["assetPath"], size: 25.0),
+                          imageSize: 50.0,
+                          onTap: () {
+                            app.usersManager.updateBgImage(userInfo.userID, backgroundImages.keys.toList()[i]);
+                            setState(() {
+                              app.bgImagePath = backgroundImages.values.toList()[i]["assetPath"];
+                              app.themeData = backgroundImages.values.toList()[i]["themeData"];
+                            });
+                            Navigator.of(context).pop();
+                          },
+                          textOverlay: backgroundImages.keys.toList()[i],
+                          fontSize: 15.0,
+                          fontColor: Colors.black,
+                          textBackgroundColor:
+                              (backgroundImages.values.toList()[i]["themeData"] as ThemeData).primaryColorLight);
+                    }),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+        /**/
+      },
+    );
+  }
+
+  void _sendMessageToDevsClicked(BuildContext context) {
+    DoItDialogs.showUserInputDialog(
+      context: context,
+      title: 'What would you like to tell us?',
+      inputWidgets: [
+        DoItTextField(
+          label: '',
+          isRequired: true,
+          maxLines: 8,
+          controller: _messageBodyController,
+        ),
+      ],
+      onSubmit: () {
+        _sendMessageToDevs(_messageBodyController.text);
+      },
+    ).whenComplete(() => _messageBodyController.clear());
+  }
+
+  void _deleteUserClicked(BuildContext context) {
+    DoItDialogs.showConfirmDialog(
+      context: context,
+      message: "are you sure you want to delete this account? this cannot be undone",
+      isWarning: true,
+      actionButtonText: "Delete accout",
+    ).then(
+      (deleteConfirmed) {
+        if (deleteConfirmed) {
+          loadingOverlay.show(context: context, message: "deleting this account...");
+          app.usersManager.deleteUser().then((val) {
+            loadingOverlay.hide();
+            widget.onSignedOut();
+            Navigator.pop(context);
+          });
+        }
+      },
     );
   }
 
@@ -207,15 +251,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
         onTap: () {
-          App.instance.usersManager
-              .uploadProfilePic(() => loadingOverlay.show(context: context, message: "Updating profile picture..."))
-              .then((uploadedPhoto) {
-            setState(() {
-              uploadedImageFile = uploadedPhoto;
-            });
-            widget.onProfilePicChanged(uploadedPhoto);
-            loadingOverlay.hide();
-          });
+          _profilePicClicked();
         },
         child: Stack(
           children: <Widget>[
@@ -241,7 +277,19 @@ class UserSettingsPageState extends State<UserSettingsPage> {
     );
   }
 
-  _userDetails(BuildContext context) {
+  void _profilePicClicked() {
+    App.instance.usersManager
+        .uploadProfilePic(() => loadingOverlay.show(context: context, message: "Updating profile picture..."))
+        .then((uploadedPhoto) {
+      setState(() {
+        uploadedImageFile = uploadedPhoto;
+      });
+      widget.onProfilePicChanged(uploadedPhoto);
+      loadingOverlay.hide();
+    });
+  }
+
+  Widget _userDetails() {
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -336,5 +384,27 @@ class UserSettingsPageState extends State<UserSettingsPage> {
         ],
       ),
     );
+  }
+
+  Future<void> _sendMessageToDevs(String message) async {
+    assert(message != null || message.isNotEmpty);
+    String response;
+    Navigator.pop(context);
+    await App.instance.firestore
+        .collection('userMessages')
+        .add({
+          'sender': UserUtils.generateObjectFromShortUserInfo(userInfo.getShortUserInfo()),
+          'message': message,
+          'sentTime': DateTime.now(),
+        })
+        .whenComplete(() => response = 'Your message has been sent to the developers. Thank you :)')
+        .catchError((error) => response = 'Error while sending message: ${error.toString()}');
+
+    if (!mounted) return;
+
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+      content: Text(response),
+      duration: Duration(seconds: 2),
+    ));
   }
 }

@@ -270,6 +270,8 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
+            _groupManager(context),
+            SizedBox(height: 20.0),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -285,8 +287,6 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                 ),
               ],
             ),
-            SizedBox(height: 20.0),
-            _groupManager(context),
           ],
         ),
       ),

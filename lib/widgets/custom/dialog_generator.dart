@@ -4,6 +4,7 @@ import 'package:do_it/app.dart';
 import 'package:do_it/data_classes/group/group_info.dart';
 import 'package:do_it/data_classes/group/group_info_short.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
+import 'package:do_it/widgets/custom/raised_button_with_icon.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:do_it/widgets/groups/scoreboard_widget.dart';
 import 'package:flutter/material.dart';
@@ -109,7 +110,7 @@ class DoItDialogs {
         context: context,
         builder: (BuildContext context) {
           return new SimpleDialog(
-            title: Text(message),
+            title: Center(child: Text(message)),
             children: <Widget>[
               Wrap(alignment: WrapAlignment.center, children: [
                 Padding(
@@ -197,12 +198,201 @@ class DoItDialogs {
           DoItDialogs.showErrorDialog(
               context: context,
               message:
-                  'No user is registered with the email: ${_emailController.text} \n\n** email addresses are case sensitive **');
+                  'No user is registered to DoIt with the email: ${_emailController.text} \n\n** Email addresses are case sensitive **');
           closeDialog = false;
         });
         if (closeDialog) {
           Navigator.pop(context);
         }
+      },
+    );
+  }
+
+  static void showSingleGroupPageHelp(BuildContext context){
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text("Single group details page",
+                    style: Theme.of(context).textTheme.title.copyWith(decoration: TextDecoration.underline)),
+              ),
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.all(16.0),
+                  children: <Widget>[
+                    Text("This page is where a user can see all the tasks of the selected group.\n\n"
+                        "The group picture can be changed by any group member by clicking on the group image at the top of the page\n\n"
+                        "Every task in the group is shown on a task card, clicking on the card will show the task details page\n"
+                        "This is where the group manager can also update the task\n\n"
+                        "The group tasks are seperated into the following sections:\n"),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Text(
+                        "- Tasks assigned to me (the active user):",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0),
+                      child: Text(
+                        "These tasks are the tasks that the user can complete.\n "
+                            "When a task is completed it is moved to the completed tasks section.\n"
+                            "If a task is a recurring task then after it is completed a new task with the updated start\\end date will be generated.\n"
+                            "* If the new date of a recurring task is after the current time it will show up in the future tasks section *\n",
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Text(
+                        "- Tasks assigned to other users:",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0),
+                      child: Text(
+                          "These tasks are assigned to other members of the group but not the active user.\n "
+                              "These tasks cannot be completed by the active user\n"),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Text(
+                        "- Future tasks (visible to group manager only):",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0),
+                      child: Text("These tasks have a starting date that is lated than the current time.\n "),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Text(
+                        "- Completed tasks:",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0),
+                      child: Text("To see completed tasks a time span must be selected.\n "
+                          "Only the group manager or the member who completed a task can \"uncomplete\" a task\n"),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.all(16.0),
+                child: DoItRaisedButtonWithIcon(
+                  icon: Icon(Icons.thumb_up, color: Colors.white, size: 15.0,),
+                  text: const Text("Got it...", style: TextStyle(color: Colors.white),),
+                  color: App.instance.themeData.primaryColor,
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  static void showTaskDetailsHelp(BuildContext context){
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text("Task details page",
+                    style: Theme.of(context).textTheme.title.copyWith(decoration: TextDecoration.underline)),
+              ),
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.all(16.0),
+                  children: <Widget>[
+                    Text("This page is where all the details of a selected task are.\n\n"
+                        "Only the group manager can update the details of a task.\n\n"
+                        "Task fields:\n"),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Text(
+                        "- Value:",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0),
+                      child: Text(
+                        "The amount of points a member will get for completing this task.\n",
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Text(
+                        "- Repeat:",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0),
+                      child: Text(
+                          "When should the task re-appear after completion.\n"),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Text(
+                        "- Start Time:",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0),
+                      child: Text("The task will be visible to the group members only after the current time is after this value.\n "),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Text(
+                        "- End time:",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0),
+                      child: Text("The due date of the task, after this time the task background will be colored red.\n"),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Text(
+                        "- Assigned members:",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0),
+                      child: Text("The group members who are assigned to this task - only they are able to complete it.\n"
+                          "By default tasks are assigned to all members of the group.\n"),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.all(16.0),
+                child: DoItRaisedButtonWithIcon(
+                  icon: Icon(Icons.thumb_up, color: Colors.white, size: 15.0,),
+                  text: const Text("Got it...", style: TextStyle(color: Colors.white),),
+                  color: App.instance.themeData.primaryColor,
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ),
+            ],
+          ),
+        );
       },
     );
   }

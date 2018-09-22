@@ -77,6 +77,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
         _getWriteToNfcMenuItem(context),
 //        PopupMenuDivider(),
         _getNotifyUsersMenuItem(context),
+        _getHelpMenuItem(context),
 //        PopupMenuDivider(),
         _getDeleteTaskMenuItem(context),
       ]);
@@ -112,36 +113,6 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
           DoItDialogs.showErrorDialog(context: context, message: e.message);
         }
       },
-    );
-  }
-
-  Widget _getSaveMenuItem(context) {
-    return PopupMenuItem(
-      value: 'save',
-      child: Container(
-        color: Colors.white70,
-        child: ListTile(
-          leading: Icon(Icons.save, color: app.themeData.primaryColor),
-          title: Text('Save'),
-          onTap: () async {
-            await app.tasksManager
-                .updateTask(
-              taskIdToChange: widget.taskInfo.taskID,
-              title: _titleController.text.isNotEmpty ? _titleController.text : null,
-              description: _descriptionController.text.isNotEmpty ? _descriptionController.text : null,
-              value: _valueController.text.isNotEmpty ? int.parse(_valueController.text) : null,
-              startTime: _selectedStartDateTime,
-              endTime: _selectedEndDateTime,
-              recurringPolicy: _selectedPolicy,
-            )
-                .then((newGroupInfo) {
-              // TODO check if we need this
-//            widget.onTaskInfoChanged(newGroupInfo);
-            });
-            Navigator.popUntil(context, ModalRoute.withName('/singleGroupPage'));
-          },
-        ),
-      ),
     );
   }
 
@@ -234,6 +205,22 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
     );
   }
 
+  Widget _getHelpMenuItem(context) {
+    return PopupMenuItem(
+      value: 'help',
+      child: Container(
+        color: Colors.white70,
+        child: ListTile(
+            leading: Icon(Icons.help_outline, color: app.themeData.primaryColor),
+            title: Text('Help'),
+            onTap: () {
+              Navigator.pop(context);
+              DoItDialogs.showTaskDetailsHelp(context);
+            }),
+      ),
+    );
+  }
+
   // returns null if users have'nt been fetched from the DB
   List<ShortUserInfo> _getAssignedUsers() {
     List<ShortUserInfo> list = new List();
@@ -275,7 +262,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
       ),
     ));
     if (assignedUsers == null) {
-      widgetsList.add(Center(child: Text(('Fetching assigned users from DB...'))));
+      widgetsList.add(Center(child: Text(('Fetching assigned members from DB...'))));
     } else {
       assignedUsers.forEach((shortUserInfo) {
         widgetsList.add(ListTile(
@@ -367,8 +354,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: App.instance.themeData.primaryColor,
-        title: Text(
-          'Task \"${widget.taskInfo.title}\" details',
+        title: Text(widget.taskInfo.title,
           maxLines: 2,
         ),
         titleSpacing: 0.0,
@@ -383,7 +369,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
               child: Form(
                   key: _formKey,
                   child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-                    DoItTextField(label: 'Task ID', controller: _taskIDController, enabled: false),
+//                    DoItTextField(label: 'Task ID', controller: _taskIDController, enabled: false),
                     DoItTextField(
                       controller: _titleController,
                       label: 'Title',

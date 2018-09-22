@@ -29,6 +29,7 @@ class ShortUserInfo {
   // ===========================================================
   // ========================= Setters =========================
   // ===========================================================
+  // ignore: unnecessary_getters_setters
   set photoUrl(String value) =>
       _photoUrl = value; // ignore: unnecessary_getters_setters
 

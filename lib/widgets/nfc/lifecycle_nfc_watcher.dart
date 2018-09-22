@@ -28,7 +28,6 @@ class _LifecycleNfcWatcherState extends State<LifecycleNfcWatcher> with WidgetsB
   static const NA_STATE = "0";
   static const platform = const MethodChannel(CLASS_PATH);
   final App app = App.instance;
-  AppLifecycleState _lastLifecycleState;
 
   @override
   void initState() {
@@ -45,7 +44,6 @@ class _LifecycleNfcWatcherState extends State<LifecycleNfcWatcher> with WidgetsB
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     setState(() {
-      _lastLifecycleState = state;
       _handleNfc();
     });
   }

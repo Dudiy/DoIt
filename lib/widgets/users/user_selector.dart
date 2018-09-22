@@ -31,7 +31,7 @@ class UserSelectorState extends State<UserSelector> {
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Text('Select assigned users', style: Theme.of(context).textTheme.title),
+          child: Text('Select assigned members', style: Theme.of(context).textTheme.title),
         ),
         Divider(color: Colors.black),
         Expanded(

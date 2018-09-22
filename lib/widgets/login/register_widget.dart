@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:do_it/app.dart';
 import 'package:do_it/authenticator.dart';
 import 'package:do_it/widgets/custom/dialog_generator.dart';

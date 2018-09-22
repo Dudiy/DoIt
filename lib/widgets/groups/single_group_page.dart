@@ -507,7 +507,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
                 });
               },
               onCompleted: () {
-                if (taskInfo.recurringPolicy != eRecurringPolicy.none){
+                if (taskInfo.recurringPolicy != eRecurringPolicy.none) {
                   _checkboxState[taskInfo.taskID] = false;
                 }
                 fetchCompletedTasksFromServer();
@@ -639,6 +639,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   List<PopupMenuEntry<String>> _getPopupMenuItems(BuildContext context) {
     List<PopupMenuEntry<String>> _menuItems = new List();
     _menuItems.add(_getGroupInfoMenuItem(context));
+    _menuItems.add(_getHelpMenuItem(context));
 //    _menuItems.add(PopupMenuDivider());
     if (app.loggedInUser.userID == groupInfo.managerID) {
       _menuItems.add(_getDeleteGroupMenuItem(context));
@@ -664,6 +665,25 @@ class SingleGroupPageState extends State<SingleGroupPage> {
               Navigator.pop(context);
               Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => GroupDetailsPage(groupInfo, managerInfo, _groupInfoChanged)));
+            }),
+      ),
+    );
+  }
+
+  PopupMenuEntry<String> _getHelpMenuItem(BuildContext context) {
+    return PopupMenuItem(
+      value: 'help',
+      child: Container(
+        color: Colors.white70,
+        child: ListTile(
+            leading: Icon(Icons.help_outline, color: app.themeData.primaryColor),
+            title: Text(
+              'Help',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            onTap: () async {
+              Navigator.pop(context);
+              DoItDialogs.showSingleGroupPageHelp(context);
             }),
       ),
     );
@@ -732,10 +752,12 @@ class SingleGroupPageState extends State<SingleGroupPage> {
         app.groupsManager.deleteUserFromGroup(groupInfo.groupID, app.loggedInUser.userID).whenComplete(() {
           loadingOverlay.hide();
           Navigator.pop(context);
-        }).catchError((error){
+        }).catchError((error) {
           loadingOverlay.hide();
           Navigator.pop(context);
-          DoItDialogs.showErrorDialog(context: context, message: "Error while trying to leave group, please try again.\nInner exception: ${error.message}");
+          DoItDialogs.showErrorDialog(
+              context: context,
+              message: "Error while trying to leave group, please try again.\nInner exception: ${error.message}");
         });
       }
     });

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it/authenticator.dart';
@@ -136,32 +135,5 @@ class App {
     if (loggedInUserToken != currentToken) {
       usersManager.updateFcmToken(loggedInUser.userID, currentToken);
     }
-  }
-
-  // TODO delete
-  Future test() async {
-    var app = App.instance;
-    print('in test');
-//    app.cloudFunctions.call(
-//      functionName: null,
-//      parameters: <String, dynamic>{
-//        'message'
-//      }
-//    );
-    print('end of test');
-  }
-
-  Future<void> testAsync() async {
-    print('starting func');
-    await App.instance.firebaseStorage
-        .ref()
-        .child("users/${App.instance.loggedInUser.userID}/profile.jpg")
-        .getData(5000000)
-        .whenComplete(() {
-      print('download complete');
-      sleep(Duration(seconds: 3));
-      print('after sleep');
-    });
-    print('testAsync function returning');
   }
 }

@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:do_it/app.dart';
-import 'package:do_it/widgets/custom/dialog_generator.dart';
 import 'package:do_it/widgets/custom/imageFetcher.dart';
 import 'package:do_it/widgets/custom/loadingOverlay.dart';
 import 'package:do_it/widgets/groups/my_groups_widget.dart';
@@ -14,14 +13,6 @@ class HomePage extends StatefulWidget {
   final App app = App.instance;
 
   HomePage({this.onSignedOut});
-
-  void _signOut() async {
-    try {
-      onSignedOut();
-    } catch (e) {
-      print('Error while trying to sign out: \n${e.message}');
-    }
-  }
 
   @override
   HomePageState createState() {
@@ -82,22 +73,19 @@ class HomePageState extends State<HomePage> {
           ),
           title: Text(App.instance.loggedInUser.displayName),
           actions: <Widget>[
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 20.0),
-              child: GestureDetector(
-                child: Icon(Icons.settings, color: Colors.white),
-                onTap: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => UserSettingsPage(widget.onSignedOut, profilePicChanged)));
-                },
-              ),
+            IconButton(
+              icon: Icon(Icons.settings, color: Colors.white),
+              onPressed: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => UserSettingsPage(widget.onSignedOut, profilePicChanged)));
+              },
             ),
           ],
         ),
         body: MyGroupsPage());
   }
 
-  void profilePicChanged(File newProfilePic){
+  void profilePicChanged(File newProfilePic) {
     setState(() {
       userProfilePicFile = newProfilePic;
     });
@@ -112,7 +100,7 @@ class HomePageState extends State<HomePage> {
           );
   }
 
-  _nfcTriggerRender(){
+  _nfcTriggerRender() {
     setState(() {
       // empty implementation in order to render that widget
     });

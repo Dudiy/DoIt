@@ -1,6 +1,6 @@
-import 'package:do_it/app.dart';
-import 'package:flutter/material.dart';
 import 'dart:math' as math;
+
+import 'package:flutter/material.dart';
 
 class DoItSpeedDial extends StatefulWidget {
   final List<FloatingActionButton> buttons;
