@@ -115,9 +115,13 @@ class LoginPageState extends State<LoginPage> {
                             app.authenticator.sendPasswordResetEmail(_emailController.text);
                             loadingOverlay.hide();
                             Navigator.pop(context);
+                            DoItDialogs.showNotificationDialog(
+                              context: context,
+                              title: "Reset password",
+                              body: "Reset password email has been sent to ${_emailController.text}",
+                            );
                           } else {
                             loadingOverlay.hide();
-
                             DoItDialogs.showErrorDialog(
                                 context: context, message: "There is no registered user with the givan Email address");
                           }
@@ -151,7 +155,7 @@ class LoginPageState extends State<LoginPage> {
           if (_formKey.currentState.validate()) {
             FocusScope.of(context).requestFocus(new FocusNode());
             loadingOverlay.show(context: context, message: "Logging in...");
-            try{
+            try {
               widget.authenticator
                   .signInWithEmailAndPassword(_emailController.text, _passwordController.text)
                   .then((user) {
@@ -160,7 +164,7 @@ class LoginPageState extends State<LoginPage> {
 
                 print('${user.displayName} has logged in using email and password');
                 widget.onSignedIn();
-              }).catchError((error){
+              }).catchError((error) {
                 loadingOverlay.hide();
                 DoItDialogs.showErrorDialog(
                   context: context,
@@ -195,7 +199,7 @@ class LoginPageState extends State<LoginPage> {
               width: 18.0,
             ),
           ),
-          Text('log in with google'),
+          Text('Log in with google'),
         ],
       ),
       color: Colors.white,

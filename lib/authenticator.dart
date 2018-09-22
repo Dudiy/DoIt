@@ -72,8 +72,8 @@ class Authenticator {
     return user;
   }
 
-  void sendPasswordResetEmail(String email) {
-    _firebaseAuth.sendPasswordResetEmail(email: email).whenComplete(() {
+  Future<void> sendPasswordResetEmail(String email) async{
+    await _firebaseAuth.sendPasswordResetEmail(email: email).whenComplete(() {
       print("password reset successfully, email sent");
     });
   }

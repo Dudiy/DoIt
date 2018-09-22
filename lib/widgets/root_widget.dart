@@ -9,6 +9,7 @@ import 'package:do_it/widgets/loadingPage.dart';
 import 'package:do_it/widgets/login/login_widget.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 enum eAuthenticationStatus { SIGNED_IN, NOT_SIGNED_IN, NOT_INITIALIZED }
 
@@ -66,6 +67,11 @@ class _RootPageState extends State<RootPage> {
 
   @override
   Widget build(BuildContext context) {
+    // disable landscape orientation
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     Widget widgetToReturn;
     switch (authStatus) {
       case eAuthenticationStatus.NOT_INITIALIZED:
