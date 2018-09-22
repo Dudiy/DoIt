@@ -200,7 +200,7 @@ class LoginPageState extends State<LoginPage> {
       ),
       color: Colors.white,
       onPressed: () {
-        loadingOverlay.show(context: context, message: "logging in with google...");
+        loadingOverlay.show(context: context, message: "Logging in with google...");
         widget.authenticator.signInWithGoogle().then((signedInUser) {
           loadingOverlay.hide();
           if (signedInUser != null) {
