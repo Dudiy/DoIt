@@ -7,7 +7,7 @@ class TimeSpanSelector extends StatefulWidget {
   TimeSpanSelector({
     this.onTimeSelectionChanged,
     this.timeSpans,
-  }){
+  }) {
     timeSpans.putIfAbsent(-1, () => 'please select');
   }
 
@@ -62,11 +62,13 @@ class TimeSpanSelectorState extends State<TimeSpanSelector> {
         return _timeSpanSelector(numDays);
       }).toList(),
       onChanged: (selected) {
-        setState(() {
-          timeSpans.remove(-1);
-          numDaysSelected = selected;
-        });
-        widget.onTimeSelectionChanged(numDaysSelected);
+        if (selected != -1) {
+          setState(() {
+            timeSpans.remove(-1);
+            numDaysSelected = selected;
+          });
+          widget.onTimeSelectionChanged(numDaysSelected);
+        }
       },
     );
   }
