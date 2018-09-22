@@ -126,6 +126,11 @@ class GroupsManager {
     await Future.forEach(groupInfo.tasks.keys, (taskID) async {
       await app.tasksManager.deleteTask(taskID, false);
     });
+    await _firestore.collection('$GROUPS/$groupID/$COMPLETED_TASKS').getDocuments().then((docSnapshots){
+      docSnapshots.documents.forEach((doc){
+        _firestore.document('$GROUPS/$groupID/$COMPLETED_TASKS/${doc.data['taskID']}').delete();
+      });
+    });
     await _firestore.document('$GROUPS/$groupID').delete().whenComplete(() {
       print('GroupsManager: groupID:$groupID deleted');
     });
