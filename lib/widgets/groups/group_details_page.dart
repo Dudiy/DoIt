@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:do_it/app.dart';
+import 'package:do_it/constants/asset_paths.dart';
 import 'package:do_it/data_classes/group/group_info.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/widgets/custom/dialog_generator.dart';
@@ -85,7 +86,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: podiumPadding, vertical: 10.0),
         child: Image.asset(
-          'assets/icons_and_buttons/podium.png',
+          PODIUM_ICON,
           color: Colors.white,
           height: 25.0,
           width: 25.0,

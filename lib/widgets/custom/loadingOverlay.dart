@@ -1,3 +1,4 @@
+import 'package:do_it/constants/asset_paths.dart';
 import 'package:flutter/material.dart';
 
 class LoadingOverlay {
@@ -17,7 +18,7 @@ class LoadingOverlay {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Image.asset('assets/doit_logo/loading_animation.gif', height: 100.0, width: 100.0),
+              Image.asset(LOADING_ANIMATION, height: 100.0, width: 100.0),
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Text(

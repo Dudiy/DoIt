@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:do_it/app.dart';
+import 'package:do_it/constants/asset_paths.dart';
 import 'package:do_it/constants/background_images.dart';
 import 'package:do_it/data_classes/user/user_info.dart';
 import 'package:do_it/data_classes/user/user_info_utils.dart';
@@ -259,7 +260,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
               size: PROFILE_PIC_SIZE,
               imagePath: app.loggedInUser.photoUrl,
               imageFile: uploadedImageFile,
-              defaultImagePath: "assets/images/unknown_profile_pic.jpg",
+              defaultImagePath: UNKNOWN_PROFILE_PIC,
             ),
             Container(
               height: PROFILE_PIC_SIZE,

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it/app.dart';
+import 'package:do_it/constants/asset_paths.dart';
 import 'package:do_it/constants/db_constants.dart';
 import 'package:do_it/data_classes/group/group_info.dart';
 import 'package:do_it/data_classes/group/group_utils.dart';
@@ -38,8 +39,8 @@ class SingleGroupPage extends StatefulWidget {
 }
 
 class SingleGroupPageState extends State<SingleGroupPage> {
-  static const LOADING_GIF = 'assets/doit_logo/loading_animation.gif';
-  static const DEFAULT_PICTURE = 'assets/images/default_group_icon.jpg';
+  static const LOADING_GIF = LOADING_ANIMATION;
+  static const DEFAULT_PICTURE = DEFAULT_GROUP_IMAGE;
   final App app = App.instance;
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   String photoUrl = DEFAULT_PICTURE;

@@ -1,11 +1,12 @@
 import 'dart:io';
 
 import 'package:do_it/app.dart';
+import 'package:do_it/constants/asset_paths.dart';
 import 'package:do_it/widgets/custom/imageFetcher.dart';
 import 'package:flutter/material.dart';
 
 class ImageContainer extends StatelessWidget {
-  static const String DEFAULT_GROUP_IMAGE_PATH = 'assets/images/default_group_icon.jpg';
+  static const String DEFAULT_GROUP_IMAGE_PATH = DEFAULT_GROUP_IMAGE;
   final String imagePath;
   final double size;
   final Color borderColor;

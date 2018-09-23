@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it/app.dart';
 import 'package:do_it/authenticator.dart';
+import 'package:do_it/constants/asset_paths.dart';
 import 'package:do_it/widgets/custom/dialog_generator.dart';
 import 'package:do_it/widgets/custom/loadingOverlay.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
@@ -39,7 +40,7 @@ class LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
               SizedBox(height: 40.0),
-              Image.asset('assets/logo_with_shadow.png', height: 100.0, width: 120.0),
+              Image.asset(LOGO_WITH_SHADOW, height: 100.0, width: 120.0),
               _drawLoginForm(),
               Divider(color: Colors.black),
               _drawSignInServices(),
@@ -195,7 +196,7 @@ class LoginPageState extends State<LoginPage> {
           Padding(
             padding: const EdgeInsets.only(right: 15.0),
             child: Image.asset(
-              'assets/icons_and_buttons/google_icon.png',
+              GOOGLE_ICON,
               width: 18.0,
             ),
           ),

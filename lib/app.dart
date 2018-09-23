@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it/authenticator.dart';
+import 'package:do_it/constants/asset_paths.dart';
 import 'package:do_it/constants/background_images.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/data_managers/groups_manager.dart';
@@ -30,7 +31,7 @@ class App {
   Notifier notifier = new Notifier();
   final Authenticator authenticator = new Authenticator();
   final Uuid uuid = new Uuid();
-  String bgImagePath = "assets/images/bg_images/blue.jpg";
+  String bgImagePath = BG_IMAGE_BLUE;
   ThemeData themeData = new ThemeData(
     primaryColor: Colors.blue,
     primaryColorLight: Colors.blueAccent[100],
@@ -42,7 +43,7 @@ class App {
   static final App instance = new App._internalCtor();
 
   void resetThemeData() {
-    bgImagePath = "assets/images/bg_images/blue.jpg";
+    bgImagePath = BG_IMAGE_BLUE;
     themeData = new ThemeData(
       primaryColor: Colors.blue,
       primaryColorLight: Colors.blueAccent[100],

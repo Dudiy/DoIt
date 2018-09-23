@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it/app.dart';
+import 'package:do_it/constants/asset_paths.dart';
 import 'package:do_it/constants/db_constants.dart';
 import 'package:do_it/data_classes/group/group_info_short.dart';
 import 'package:do_it/data_classes/group/group_utils.dart';
@@ -119,7 +120,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           Image.asset(
-            'assets/doit_logo/loading_animation.gif',
+            LOADING_ANIMATION,
             width: 50.0,
           ),
           Text('Fetching groups from server...'),
@@ -134,7 +135,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
             child: Column(
               children: <Widget>[
                 Expanded(child: Container()),
-                Image.asset("assets/images/minion_sad.png", scale: 1.5),
+                Image.asset(MINION_SAD, scale: 1.5),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text("You are not in any group yet",
@@ -148,7 +149,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
           Positioned(
             bottom: 0.0,
             right: 80.0,
-            child: Image.asset("assets/images/ClickToCreateGroup.png", height: 170.0),
+            child: Image.asset(CLICK_TO_CREATE_GROUP, height: 170.0),
           ),
         ],
       );
@@ -205,7 +206,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
         children: <Widget>[
           Container(
             constraints: BoxConstraints.tight(Size.square(50.0)),
-            child: Image.asset('assets/doit_logo/loading_animation.gif'),
+            child: Image.asset(LOADING_ANIMATION),
           ),
           SizedBox(height: 20.0),
           Text('Fetching groups from server...', textAlign: TextAlign.center),

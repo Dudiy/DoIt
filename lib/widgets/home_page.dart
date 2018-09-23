@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:do_it/app.dart';
+import 'package:do_it/constants/asset_paths.dart';
 import 'package:do_it/widgets/custom/imageFetcher.dart';
 import 'package:do_it/widgets/custom/loadingOverlay.dart';
 import 'package:do_it/widgets/groups/my_groups_widget.dart';
@@ -21,8 +22,8 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  static const LOADING_GIF = 'assets/doit_logo/loading_animation.gif';
-  static const DEFAULT_PICTURE = 'assets/images/unknown_profile_pic.jpg';
+  static const LOADING_GIF = LOADING_ANIMATION;
+  static const DEFAULT_PICTURE = UNKNOWN_PROFILE_PIC;
   LoadingOverlay loadingOverlay = new LoadingOverlay();
   String photoUrl = DEFAULT_PICTURE;
   File userProfilePicFile;

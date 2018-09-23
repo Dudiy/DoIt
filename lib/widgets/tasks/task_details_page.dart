@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:do_it/app.dart';
+import 'package:do_it/constants/asset_paths.dart';
 import 'package:do_it/data_classes/task/eRecurringPolicies.dart';
 import 'package:do_it/data_classes/task/task_info.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
@@ -156,7 +157,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
                 return SimpleDialog(
                   title: Center(child: Text("Ready to write")),
                   children: <Widget>[
-                    Image.asset("assets/images/scan_nfc.png"),
+                    Image.asset(SCAN_NFC),
                     Center(child: Text("Hold phone over NFC tag")),
                   ],
                 );

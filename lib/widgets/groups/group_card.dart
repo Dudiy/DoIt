@@ -1,4 +1,5 @@
 import 'package:do_it/app.dart';
+import 'package:do_it/constants/asset_paths.dart';
 import 'package:do_it/data_classes/group/group_info_short.dart';
 import 'package:do_it/widgets/custom/dialog_generator.dart';
 import 'package:do_it/widgets/custom/imageContainer.dart';
@@ -80,7 +81,7 @@ class GroupCard extends StatelessWidget {
                   IconButton(
                     tooltip: 'Group scoreboard',
                     icon: Image.asset(
-                      'assets/icons_and_buttons/podium.png',
+                      PODIUM_ICON,
                       height: 35.0,
                     ),
                     onPressed: () {
