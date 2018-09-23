@@ -252,7 +252,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
               child: Container(
                 child: Center(
                     child: Text(
-                  'Assigned users',
+                  'Assigned members',
                   style: Theme.of(context).textTheme.subhead.copyWith(decoration: TextDecoration.underline),
                 )),
               ),

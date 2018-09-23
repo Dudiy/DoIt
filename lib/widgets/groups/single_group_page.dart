@@ -240,6 +240,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
           ),
           DoItTimeField(
             label: 'Start time',
+            initDateTime: DateTime.now(),
             onDateTimeUpdated: (selectedDateTime) {
               _selectedStartTime = selectedDateTime;
             },
