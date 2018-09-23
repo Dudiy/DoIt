@@ -24,7 +24,6 @@ class ShortGroupInfo {
     this._managerID = managerID;
     this._title = title;
     this._photoUrl = photoUrl;
-    // TODO check if its possible to remove the not null verifier (checked inside "generateUsersMapFromObject")
     if (members != null) {
       this._members = UserUtils.generateUsersMapFromObject(members);
       // getTasksPerUser has to be after initializing members

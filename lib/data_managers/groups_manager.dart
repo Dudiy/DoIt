@@ -38,7 +38,6 @@ class GroupsManager {
     return GroupUtils.conventDBGroupsToGroupInfoList(loggedInUser.userID, groupsQuerySnapshot);
   }
 
-
   Future<List<String>> getMyGroupsIDsFromDB() async {
     ShortUserInfo loggedInUser = app.loggedInUser;
     if (loggedInUser == null) {
@@ -126,8 +125,8 @@ class GroupsManager {
     await Future.forEach(groupInfo.tasks.keys, (taskID) async {
       await app.tasksManager.deleteTask(taskID, false);
     });
-    await _firestore.collection('$GROUPS/$groupID/$COMPLETED_TASKS').getDocuments().then((docSnapshots){
-      docSnapshots.documents.forEach((doc){
+    await _firestore.collection('$GROUPS/$groupID/$COMPLETED_TASKS').getDocuments().then((docSnapshots) {
+      docSnapshots.documents.forEach((doc) {
         _firestore.document('$GROUPS/$groupID/$COMPLETED_TASKS/${doc.data['taskID']}').delete();
       });
     });
@@ -327,8 +326,8 @@ class GroupsManager {
       showLoadingCallback();
       // TODO do we want to limit the file size?
       double fileSizeInMb = await file.length() / 1000000;
-      if (fileSizeInMb > MAX_PROFILE_PIC_SIZE_MB)
-        throw Exception('UsersManager: cannot upload profile pic, max file size is $MAX_PROFILE_PIC_SIZE_MB Mb');
+      if (fileSizeInMb > MAX_PIC_UPLOAD_SIZE_MB)
+        throw Exception('Maximum file size is $MAX_PIC_UPLOAD_SIZE_MB Mb');
       StorageUploadTask uploadTask = storageRef.child("$GROUPS/${groupInfo.groupID}/profile.jpg").putFile(file);
       UploadTaskSnapshot uploadTaskSnapshot = await uploadTask.future;
       await updateGroup(groupInfo.groupID, uploadTaskSnapshot.downloadUrl.toString());

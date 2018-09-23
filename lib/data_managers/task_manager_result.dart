@@ -1,5 +1,3 @@
-
-
 ///
 /// message for UI
 ///
@@ -16,7 +14,7 @@ enum TaskMethodResult {
 }
 
 class TaskMethodResultUtils {
-  static String message(TaskMethodResult enumType, [String taskTitle =""]) {
+  static String message(TaskMethodResult enumType, [String taskTitle = ""]) {
     switch (enumType) {
       case TaskMethodResult.COMPLETE_SUCCESS:
         return "Task \"" + taskTitle + "\" completed!! :)";

@@ -33,8 +33,7 @@ class GroupUtils {
           );
   }
 
-  static Map<String, dynamic> generateObjectFromGroupsMap(
-      Map<String, ShortGroupInfo> groups) {
+  static Map<String, dynamic> generateObjectFromGroupsMap(Map<String, ShortGroupInfo> groups) {
     Map<String, dynamic> groupsMap = new Map();
     groups.map((groupID, shortGroupInfo) {
       groupsMap.putIfAbsent(groupID, () {
@@ -44,8 +43,7 @@ class GroupUtils {
     return groupsMap;
   }
 
-  static Map<String, dynamic> generateObjectFromShortGroupInfo(
-      ShortGroupInfo shortGroupInfo) {
+  static Map<String, dynamic> generateObjectFromShortGroupInfo(ShortGroupInfo shortGroupInfo) {
     return {
       'groupID': shortGroupInfo.groupID,
       'title': shortGroupInfo.title,
@@ -64,7 +62,6 @@ class GroupUtils {
       'photoUrl': groupInfo.photoUrl,
       'members': UserUtils.generateObjectFromUsersMap(groupInfo.members),
       'tasks': TaskUtils.generateObjectFromTasksMap(groupInfo.tasks),
-//    groupInfo.taskCompletionHistory  //TODO implement
     };
   }
 
@@ -79,6 +76,7 @@ class GroupUtils {
     }).toList();
     return myGroups;
   }
+
   static List<String> conventDBGroupsToGroupIdList(String userId, QuerySnapshot groupsQuerySnapshot) {
     List<String> myGroups = new List();
     groupsQuerySnapshot.documents.where((doc) {
@@ -95,5 +93,4 @@ class GroupUtils {
   static List<ShortTaskInfo> conventDBGroupTaskToObjectList(DocumentSnapshot documentSnapshotTasks) {
     return TaskUtils.generateTasksMapFromObject(documentSnapshotTasks.data['tasks']).values.toList();
   }
-
 }

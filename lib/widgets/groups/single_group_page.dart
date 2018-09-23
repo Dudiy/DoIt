@@ -164,6 +164,10 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       setState(() {
         photoUrl = groupInfo.photoUrl;
       });
+    }).catchError((e){
+      loadingOverlay.hide();
+      DoItDialogs.showErrorDialog(
+          context: context, message: "Error while uploading group photo:\n${e.message}");
     });
   }
 

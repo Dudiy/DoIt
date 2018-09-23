@@ -28,9 +28,6 @@ class UsersManager {
       photoUrl = user.photoUrl;
     }
     String bgImage = isUserAlreadyInDB ? documentSnapshot.data['bgImage'] : null;
-
-    //TODO implement message handlers
-
     String fcmToken = await app.firebaseMessaging.getToken();
 
     // create new userInfo from parameters
@@ -67,7 +64,6 @@ class UsersManager {
     print('userId: $userID - deleting user from Auth'); //TODO delete
     await app.authenticator.deleteUser();
     print('userId: $userID - user deleted from Auth'); //TODO delete
-
   }
 
   //we only want the user to be able to change his picture and not hes other data
@@ -94,10 +90,9 @@ class UsersManager {
     File file = await ImagePicker.pickImage(source: ImageSource.gallery);
     if (file != null) {
       showLoadingCallback();
-      // TODO do we want to limit the file size?
       double fileSizeInMb = await file.length() / 1000000;
-      if (fileSizeInMb > MAX_PROFILE_PIC_SIZE_MB)
-        throw Exception('UsersManager: cannot upload profile pic, max file size is $MAX_PROFILE_PIC_SIZE_MB Mb');
+      if (fileSizeInMb > MAX_PIC_UPLOAD_SIZE_MB)
+        throw Exception('Maximum file size is $MAX_PIC_UPLOAD_SIZE_MB Mb');
       StorageUploadTask uploadTask = storageRef.child("users/${app.loggedInUser.userID}/profile.jpg").putFile(file);
       UploadTaskSnapshot uploadTaskSnapshot = await uploadTask.future;
       updateUser(app.loggedInUser.userID, uploadTaskSnapshot.downloadUrl.toString());

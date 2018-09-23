@@ -53,9 +53,4 @@ class CompletedTaskInfo implements Task {
   DateTime get completedTime => _completedTime;
 
   ShortUserInfo get userWhoCompleted => _userWhoCompleted;
-
-// ===========================================================
-// ========================= Setters =========================
-// ===========================================================
-
 }

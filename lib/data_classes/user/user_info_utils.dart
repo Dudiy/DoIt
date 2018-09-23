@@ -60,9 +60,6 @@ class UserUtils {
       'email': userInfo.email,
       'fcmToken': userInfo.fcmToken,
       'bgImage': userInfo.bgImage,
-//      'groups': GroupUtils.generateObjectFromGroupsMap(userInfo.groups),
-//      'tasks': TaskUtils.generateObjectFromTasksMap(userInfo.tasks),
-//      'messages': userInfo._messages,
     };
   }
 

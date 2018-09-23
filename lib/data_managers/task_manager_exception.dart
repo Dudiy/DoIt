@@ -12,6 +12,4 @@ class TaskException implements Exception {
   String toString() {
     return _exception.toString();
   }
-
-
 }

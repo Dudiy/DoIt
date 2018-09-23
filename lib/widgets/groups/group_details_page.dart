@@ -229,15 +229,19 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
       child: GestureDetector(
         onTap: () {
           if (editEnabled) {
-            App.instance.groupsManager
-                .uploadGroupPic(
-                    widget.groupInfo, () => loadingOverlay.show(context: context, message: "Updating group photo"))
-                .then((uploadedPhoto) {
-              setState(() {
-                uploadedImageFile = uploadedPhoto;
+              App.instance.groupsManager
+                  .uploadGroupPic(
+                      widget.groupInfo, () => loadingOverlay.show(context: context, message: "Updating group photo"))
+                  .then((uploadedPhoto) {
+                setState(() {
+                  uploadedImageFile = uploadedPhoto;
+                });
+                loadingOverlay.hide();
+              }).catchError((e){
+                loadingOverlay.hide();
+                DoItDialogs.showErrorDialog(
+                    context: context, message: "Error while uploading group photo:\n${e.message}");
               });
-              loadingOverlay.hide();
-            });
           }
         },
         child: Stack(

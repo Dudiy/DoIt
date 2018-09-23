@@ -287,6 +287,10 @@ class UserSettingsPageState extends State<UserSettingsPage> {
       });
       widget.onProfilePicChanged(uploadedPhoto);
       loadingOverlay.hide();
+    }).catchError((e){
+      loadingOverlay.hide();
+      DoItDialogs.showErrorDialog(
+          context: context, message: "Error while uploading profile photo:\n${e.message}");
     });
   }
 

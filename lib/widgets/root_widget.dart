@@ -39,6 +39,7 @@ class _RootPageState extends State<RootPage> {
       ),
     );
     await App.instance.init(app);
+    // TODO implement handlerss
     App.instance.firebaseMessaging.configure(
       // when app is closed
       onLaunch: (Map<String, dynamic> message) {

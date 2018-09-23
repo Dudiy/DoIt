@@ -155,7 +155,8 @@ class TasksManager {
     } else {
       DateTime newStartTime = _getStartTimeFromRecurringPolicy(taskInfo.startTime, taskInfo.recurringPolicy);
       DateTime newEndTime = _getStartTimeFromRecurringPolicy(taskInfo.endTime, taskInfo.recurringPolicy);
-      updateTask(taskIdToChange: taskInfo.taskID, startTime: newStartTime, endTime: newEndTime, allowNonManagerUpdate: true);
+      updateTask(
+          taskIdToChange: taskInfo.taskID, startTime: newStartTime, endTime: newEndTime, allowNonManagerUpdate: true);
     }
     await app.groupsManager.addCompletedTaskToGroup(
       groupID: parentGroupInfo.groupID,
@@ -191,8 +192,6 @@ class TasksManager {
     String errorMessagePrefix = 'TasksManager: cannot update task.';
     if (shortUserInfo == null) throw Exception('$errorMessagePrefix user was not found in the DB');
     if (taskInfo == null) throw Exception('$errorMessagePrefix the task was not found in the DB');
-//    if (taskInfo.parentGroupManagerID != app.loggedInUser.userID)
-//      throw Exception('$errorMessagePrefix only the parentGroup manager can assign usrs to tasks');
     //add user to "tasks" collection
     taskInfo.assignedUsers.putIfAbsent(userID, () => shortUserInfo);
     await updateTask(

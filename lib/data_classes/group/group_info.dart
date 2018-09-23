@@ -11,9 +11,8 @@ class GroupInfo {
   String _title;
   String _description;
   String _photoUrl;
-  Map<String, ShortUserInfo> _members; // Map<userID, UserInfo>
-  Map<String, ShortTaskInfo> _tasks; // Map<taskID, TaskInfo>
-  Map<String, Object> _taskCompletionHistory;
+  Map<String, ShortUserInfo> _members;
+  Map<String, ShortTaskInfo> _tasks;
 
   GroupInfo({
     @required groupID,
@@ -23,7 +22,6 @@ class GroupInfo {
     photoUrl,
     members,
     tasks,
-    taskCompletionHistory,
   }) {
     this._groupID = groupID;
     this._managerID = managerID;
@@ -32,8 +30,6 @@ class GroupInfo {
     this._photoUrl = photoUrl;
     this._members = UserUtils.generateUsersMapFromObject(members);
     this._tasks = TaskUtils.generateTasksMapFromObject(tasks);
-    taskCompletionHistory = new Map(); // TODO implement map generation
-//        Map.from(taskCompletionHistory); //Map<TaskID, CompletedTaskInfo>
   }
 
   ShortGroupInfo getShortGroupInfo() {
@@ -66,8 +62,6 @@ class GroupInfo {
   Map<String, ShortUserInfo> get members => _members;
 
   Map<String, ShortTaskInfo> get tasks => _tasks;
-
-  Map<String, Object> get taskCompletionHistory => _taskCompletionHistory;
 
   // ===========================================================
   // ========================= Setters =========================

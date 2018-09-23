@@ -7,7 +7,7 @@ import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/data_classes/user/user_info_utils.dart';
 import 'package:meta/meta.dart';
 
-class TaskInfo implements Task{
+class TaskInfo implements Task {
   String _taskID;
   String _title;
   String _description;
@@ -108,9 +108,7 @@ class TaskInfo implements Task{
 
   set endTime(DateTime value) {
     DateTime newEndTime = value;
-    if (startTime != null &&
-        newEndTime != null &&
-        startTime.isAfter(newEndTime))
+    if (startTime != null && newEndTime != null && startTime.isAfter(newEndTime))
       throw ArgumentError('End time cannot be before start time');
     _endTime = value;
   }
@@ -124,8 +122,7 @@ class TaskInfo implements Task{
     }
   }
 
-  CompletedTaskInfo generateCompletedTaskInfo(
-      {@required ShortUserInfo userWhoCompleted}) {
+  CompletedTaskInfo generateCompletedTaskInfo({@required ShortUserInfo userWhoCompleted}) {
     return CompletedTaskInfo(
       taskID: App.instance.generateRandomID(),
       title: title,

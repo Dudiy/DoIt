@@ -10,9 +10,6 @@ class UserInfo {
   String _fcmToken;
   String _bgImage;
 
-//  Map<String, ShortGroupInfo> _groups = new Map();
-//  Map<String, ShortTaskInfo> _tasks = new Map();
-
   UserInfo({
     @required String userID,
     @required String displayName,
@@ -33,10 +30,6 @@ class UserInfo {
     this._bgImage = bgImage;
   }
 
-//  addTask(String taskID, ShortTaskInfo shortTaskInfo) {
-//    _tasks.putIfAbsent(taskID, () => shortTaskInfo);
-//  }
-
   ShortUserInfo getShortUserInfo() {
     return new ShortUserInfo(
       userID: _userID,
@@ -48,13 +41,6 @@ class UserInfo {
   // ===========================================================
   // ========================= Getters =========================
   // ===========================================================
-//  Map<String, Object> _messages = new Map(); //Map<messageID, MessageInfo>
-
-//  Map<String, Object> get messages => _messages;
-
-//  Map<String, ShortTaskInfo> get tasks => _tasks;
-
-//  Map<String, ShortGroupInfo> get groups => _groups;
 
   String get fcmToken => _fcmToken;
 

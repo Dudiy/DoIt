@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:do_it/app.dart';
 import 'package:do_it/constants/asset_paths.dart';
+import 'package:do_it/widgets/custom/dialog_generator.dart';
 import 'package:do_it/widgets/custom/imageFetcher.dart';
 import 'package:do_it/widgets/custom/loadingOverlay.dart';
 import 'package:do_it/widgets/groups/my_groups_widget.dart';
@@ -55,6 +56,10 @@ class HomePageState extends State<HomePage> {
                     userProfilePicFile = uploadedPhoto;
                   }
                 });
+              }).catchError((e){
+                loadingOverlay.hide();
+                DoItDialogs.showErrorDialog(
+                    context: context, message: "Error while uploading profile photo:\n${e.message}");
               });
             },
             child: Padding(

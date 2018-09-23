@@ -10,13 +10,10 @@ class TaskUtils {
     Map<String, ShortTaskInfo> tasks = new Map();
     if (tasksObject != null) {
       (tasksObject as Map<dynamic, dynamic>).values.forEach((taskObject) {
-        ShortTaskInfo shortTaskInfo =
-            generateShortTaskInfoFromObject(taskObject);
-//        if (shortTaskInfo.startTime.isBefore(DateTime.now())) {
+        ShortTaskInfo shortTaskInfo = generateShortTaskInfoFromObject(taskObject);
         tasks.putIfAbsent(shortTaskInfo.taskID, () {
           return shortTaskInfo;
         });
-//        }
       });
     }
     return tasks;
@@ -26,8 +23,7 @@ class TaskUtils {
     if (taskObject == null) return null;
     if (taskObject.runtimeType == TaskInfo) return taskObject;
     eRecurringPolicy recurringPolicy =
-        RecurringPolicyUtils.parse(taskObject['recurringPolicy']) ??
-            eRecurringPolicy.none;
+        RecurringPolicyUtils.parse(taskObject['recurringPolicy']) ?? eRecurringPolicy.none;
     return new TaskInfo(
       taskID: taskObject['taskID'],
       title: taskObject['title'],
@@ -37,26 +33,22 @@ class TaskUtils {
       endTime: taskObject['endTime'],
       parentGroupID: taskObject['parentGroupID'],
       parentGroupManagerID: taskObject['parentGroupManagerID'],
-      assignedUsers:
-          UserUtils.generateUsersMapFromObject(taskObject['assignedUsers']),
+      assignedUsers: UserUtils.generateUsersMapFromObject(taskObject['assignedUsers']),
       recurringPolicy: recurringPolicy,
     );
   }
 
-  static int compare(ShortTaskInfo task1, ShortTaskInfo task2){
+  static int compare(ShortTaskInfo task1, ShortTaskInfo task2) {
     if (task1.endTime == null && task2.endTime == null) return 0;
     if (task1.endTime == null) return 1;
     if (task2.endTime == null) return -1;
     if (task1.endTime == task2.endTime) return 0;
     return task1.endTime.isAfter(task2.endTime) ? 1 : -1;
-
   }
 
   static ShortTaskInfo generateShortTaskInfoFromObject(object) {
     if (object.runtimeType == ShortTaskInfo) return object;
-    eRecurringPolicy recurringPolicy =
-        RecurringPolicyUtils.parse(object['recurringPolicy']) ??
-            eRecurringPolicy.none;
+    eRecurringPolicy recurringPolicy = RecurringPolicyUtils.parse(object['recurringPolicy']) ?? eRecurringPolicy.none;
     return new ShortTaskInfo(
       taskID: object['taskID'],
       title: object['title'],
@@ -67,13 +59,11 @@ class TaskUtils {
       recurringPolicy: recurringPolicy,
       parentGroupID: object['parentGroupID'],
       parentGroupManagerID: object['parentGroupManagerID'],
-      assignedUsers:
-          UserUtils.generateUsersMapFromObject(object['assignedUsers']),
+      assignedUsers: UserUtils.generateUsersMapFromObject(object['assignedUsers']),
     );
   }
 
-  static Map<String, dynamic> generateObjectFromTasksMap(
-      Map<String, ShortTaskInfo> tasks) {
+  static Map<String, dynamic> generateObjectFromTasksMap(Map<String, ShortTaskInfo> tasks) {
     Map<String, dynamic> tasksMapObject = new Map();
     tasks.forEach((taskID, shortTaskInfo) {
       tasksMapObject.putIfAbsent(taskID, () {
@@ -83,8 +73,7 @@ class TaskUtils {
     return tasksMapObject;
   }
 
-  static Map<String, dynamic> generateObjectFromShortTaskInfo(
-      ShortTaskInfo shortTaskInfo) {
+  static Map<String, dynamic> generateObjectFromShortTaskInfo(ShortTaskInfo shortTaskInfo) {
     return {
       'taskID': shortTaskInfo.taskID,
       'title': shortTaskInfo.title,
@@ -95,8 +84,7 @@ class TaskUtils {
       'startTime': shortTaskInfo.startTime,
       'endTime': shortTaskInfo.endTime,
       'recurringPolicy': shortTaskInfo.recurringPolicy.toString(),
-      'assignedUsers':
-          UserUtils.generateObjectFromUsersMap(shortTaskInfo.assignedUsers),
+      'assignedUsers': UserUtils.generateObjectFromUsersMap(shortTaskInfo.assignedUsers),
     };
   }
 
@@ -110,14 +98,12 @@ class TaskUtils {
       'parentGroupManagerID': taskInfo.parentGroupManagerID,
       'startTime': taskInfo.startTime,
       'endTime': taskInfo.endTime,
-      'assignedUsers':
-          UserUtils.generateObjectFromUsersMap(taskInfo.assignedUsers),
+      'assignedUsers': UserUtils.generateObjectFromUsersMap(taskInfo.assignedUsers),
       'recurringPolicy': taskInfo.recurringPolicy.toString(),
     };
   }
 
-  static Map<String, dynamic> generateObjectFromCompletedTaskInfo(
-      CompletedTaskInfo completedTaskInfo) {
+  static Map<String, dynamic> generateObjectFromCompletedTaskInfo(CompletedTaskInfo completedTaskInfo) {
     return {
       'taskID': completedTaskInfo.taskID,
       'title': completedTaskInfo.title,
@@ -126,8 +112,7 @@ class TaskUtils {
       'parentGroupID': completedTaskInfo.parentGroupID,
       'parentGroupManagerID': completedTaskInfo.parentGroupManagerID,
       'completedTime': completedTaskInfo.completedTime,
-      'userWhoCompleted': UserUtils
-          .generateObjectFromShortUserInfo(completedTaskInfo.userWhoCompleted),
+      'userWhoCompleted': UserUtils.generateObjectFromShortUserInfo(completedTaskInfo.userWhoCompleted),
     };
   }
 
@@ -141,8 +126,7 @@ class TaskUtils {
       parentGroupID: object['parentGroupID'],
       parentGroupManagerID: object['parentGroupManagerID'],
       completedTime: object['completedTime'],
-      userWhoCompleted:
-          UserUtils.generateShortUserInfoFromObject(object['userWhoCompleted']),
+      userWhoCompleted: UserUtils.generateShortUserInfoFromObject(object['userWhoCompleted']),
     );
   }
 }

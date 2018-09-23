@@ -20,7 +20,8 @@ class ShortUserInfo {
   // ===========================================================
   // ========================= Getters =========================
   // ===========================================================
-  String get photoUrl => _photoUrl; // ignore: unnecessary_getters_setters
+  // ignore: unnecessary_getters_setters
+  String get photoUrl => _photoUrl;
 
   String get displayName => _displayName;
 
@@ -30,7 +31,5 @@ class ShortUserInfo {
   // ========================= Setters =========================
   // ===========================================================
   // ignore: unnecessary_getters_setters
-  set photoUrl(String value) =>
-      _photoUrl = value; // ignore: unnecessary_getters_setters
-
+  set photoUrl(String value) => _photoUrl = value;
 }
