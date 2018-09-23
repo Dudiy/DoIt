@@ -38,10 +38,12 @@ class Authenticator {
   }
 
   Future<FirebaseUser> signInWithEmailAndPassword(String email, String password) async {
-    final FirebaseUser user = await _firebaseAuth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    ).catchError((error) => throw error);
+    final FirebaseUser user = await _firebaseAuth
+        .signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        )
+        .catchError((error) => throw error);
     assert(user.email != null);
 
     final FirebaseUser currentUser = await _firebaseAuth.currentUser();
@@ -72,7 +74,7 @@ class Authenticator {
     return user;
   }
 
-  Future<void> sendPasswordResetEmail(String email) async{
+  Future<void> sendPasswordResetEmail(String email) async {
     await _firebaseAuth.sendPasswordResetEmail(email: email).whenComplete(() {
       print("password reset successfully, email sent");
     });

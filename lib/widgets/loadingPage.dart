@@ -3,8 +3,6 @@ import 'package:do_it/constants/asset_paths.dart';
 import 'package:flutter/material.dart';
 
 class LoadingPage extends StatelessWidget {
-  final App app = App.instance;
-
   @override
   Widget build(BuildContext context) {
     return Material(

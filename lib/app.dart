@@ -60,7 +60,7 @@ class App {
     if (_loggedInUser != null && user != null) {
       throw Exception('App: cannot set logged in user when user is already logged in');
     }
-    if (user == null){
+    if (user == null) {
       // user logged out
       _loggedInUser = null;
     } else {
@@ -80,7 +80,6 @@ class App {
         }
       });
     }
-//    _loggedInUser = user == null ? null : await usersManager.getShortUserInfo(user.uid);
   }
 
   updateLoggedInUserPhotoUrl(String url) {

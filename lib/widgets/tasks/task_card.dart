@@ -133,9 +133,6 @@ class TaskCard extends StatelessWidget {
                 value: isChecked,
                 onChanged: (value) {
                   value ? _completeTask(shortTaskInfo, context) : _unCompleteTask(completedTaskInfo);
-                  /*setState(() {
-                    isChecked = value;
-                  });*/
                 },
               ),
             ],

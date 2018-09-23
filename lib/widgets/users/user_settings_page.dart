@@ -51,7 +51,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
       key: _scaffoldKey,
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-        backgroundColor: App.instance.themeData.primaryColor,
+        backgroundColor: app.themeData.primaryColor,
         title: Text("App settings"),
       ),
       body: SafeArea(
@@ -92,7 +92,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
                         icon: Icon(Icons.autorenew, color: app.themeData.primaryColor),
                         text: const Text('Reset password'),
                         onPressed: () async {
-                          final Auth.FirebaseUser currentUser = await App.instance.authenticator.getCurrentUser();
+                          final Auth.FirebaseUser currentUser = await app.authenticator.getCurrentUser();
                           app.authenticator.sendPasswordResetEmail(currentUser.email);
                           DoItDialogs.showNotificationDialog(
                             context: context,
@@ -220,6 +220,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
             loadingOverlay.hide();
             widget.onSignedOut();
             Navigator.pop(context);
+            Navigator.pop(context);
           });
         }
       },
@@ -279,7 +280,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
   }
 
   void _profilePicClicked() {
-    App.instance.usersManager
+    app.usersManager
         .uploadProfilePic(() => loadingOverlay.show(context: context, message: "Updating profile picture..."))
         .then((uploadedPhoto) {
       setState(() {
@@ -287,10 +288,9 @@ class UserSettingsPageState extends State<UserSettingsPage> {
       });
       widget.onProfilePicChanged(uploadedPhoto);
       loadingOverlay.hide();
-    }).catchError((e){
+    }).catchError((e) {
       loadingOverlay.hide();
-      DoItDialogs.showErrorDialog(
-          context: context, message: "Error while uploading profile photo:\n${e.message}");
+      DoItDialogs.showErrorDialog(context: context, message: "Error while uploading profile photo:\n${e.message}");
     });
   }
 
@@ -395,7 +395,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
     assert(message != null || message.isNotEmpty);
     String response;
     Navigator.pop(context);
-    await App.instance.firestore
+    await app.firestore
         .collection('userMessages')
         .add({
           'sender': UserUtils.generateObjectFromShortUserInfo(userInfo.getShortUserInfo()),

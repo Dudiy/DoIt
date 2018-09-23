@@ -56,7 +56,7 @@ class HomePageState extends State<HomePage> {
                     userProfilePicFile = uploadedPhoto;
                   }
                 });
-              }).catchError((e){
+              }).catchError((e) {
                 loadingOverlay.hide();
                 DoItDialogs.showErrorDialog(
                     context: context, message: "Error while uploading profile photo:\n${e.message}");
@@ -67,11 +67,12 @@ class HomePageState extends State<HomePage> {
               child: Stack(children: <Widget>[
                 Center(
                   child: Container(
-                      width: 65.0,
-                      height: 65.0,
-                      child: ClipOval(
-                        child: _getProfilePic(),
-                      )),
+                    width: 65.0,
+                    height: 65.0,
+                    child: ClipOval(
+                      child: _getProfilePic(),
+                    ),
+                  ),
                 ),
                 Container(child: LifecycleNfcWatcher(_nfcTriggerRender)),
               ]),
@@ -97,7 +98,7 @@ class HomePageState extends State<HomePage> {
     });
   }
 
-  _getProfilePic() {
+  Widget _getProfilePic() {
     return userProfilePicFile == null
         ? ImageFetcher.fetch(imagePath: photoUrl, defaultImagePath: DEFAULT_PICTURE)
         : Image.file(
@@ -106,9 +107,6 @@ class HomePageState extends State<HomePage> {
           );
   }
 
-  _nfcTriggerRender() {
-    setState(() {
-      // empty implementation in order to render that widget
-    });
-  }
+  // empty implementation in order to render that widget
+  _nfcTriggerRender() => setState(() {});
 }

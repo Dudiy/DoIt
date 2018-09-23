@@ -16,8 +16,7 @@ import 'package:flutter/material.dart';
 class TaskDetailsPage extends StatefulWidget {
   final TaskInfo taskInfo;
 
-//  final Function onGroupInfoChanged;
-  TaskDetailsPage(this.taskInfo /*, this.onGroupInfoChanged*/);
+  TaskDetailsPage(this.taskInfo);
 
   @override
   TaskDetailsPageState createState() => new TaskDetailsPageState();
@@ -63,7 +62,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
     if (editEnabled) {
       actions.add(_getSaveButton());
       actions.add(new PopupMenuButton<String>(
-        onSelected: (String result) {/*setState(() { _selection = result; });*/},
+        onSelected: (String result) {},
         itemBuilder: _getPopupMenuItems,
       ));
     }
@@ -76,10 +75,8 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
     if (editEnabled) {
       _menuItems.addAll([
         _getWriteToNfcMenuItem(context),
-//        PopupMenuDivider(),
         _getNotifyUsersMenuItem(context),
         _getHelpMenuItem(context),
-//        PopupMenuDivider(),
         _getDeleteTaskMenuItem(context),
       ]);
     }
@@ -94,8 +91,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
       onPressed: () async {
         try {
           if (_formKey.currentState.validate()) {
-            await app.tasksManager
-                .updateTask(
+            await app.tasksManager.updateTask(
               taskIdToChange: widget.taskInfo.taskID,
               title: _titleController.text.isNotEmpty ? _titleController.text : null,
               description: _descriptionController.text.isNotEmpty ? _descriptionController.text : null,
@@ -103,11 +99,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
               startTime: _selectedStartDateTime,
               endTime: _selectedEndDateTime,
               recurringPolicy: _selectedPolicy,
-            )
-                .then((newGroupInfo) {
-              // TODO check if we need this
-              //            widget.onTaskInfoChanged(newGroupInfo);
-            });
+            );
             Navigator.pop(context);
           }
         } catch (e) {
@@ -153,15 +145,17 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
             onTap: () {
               NfcWriter nfcWriter = new NfcWriter(widget.taskInfo.taskID);
               nfcWriter.enableWrite();
-              showDialog(context: context, builder: (context){
-                return SimpleDialog(
-                  title: Center(child: Text("Ready to write")),
-                  children: <Widget>[
-                    Image.asset(SCAN_NFC),
-                    Center(child: Text("Hold phone over NFC tag")),
-                  ],
-                );
-              }).whenComplete((){
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return SimpleDialog(
+                      title: Center(child: Text("Ready to write")),
+                      children: <Widget>[
+                        Image.asset(SCAN_NFC),
+                        Center(child: Text("Hold phone over NFC tag")),
+                      ],
+                    );
+                  }).whenComplete(() {
                 nfcWriter.disableWrite();
               });
             }),
@@ -354,8 +348,9 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: App.instance.themeData.primaryColor,
-        title: Text(widget.taskInfo.title,
+        backgroundColor: app.themeData.primaryColor,
+        title: Text(
+          widget.taskInfo.title,
           maxLines: 2,
         ),
         titleSpacing: 0.0,
@@ -370,7 +365,6 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
               child: Form(
                   key: _formKey,
                   child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-//                    DoItTextField(label: 'Task ID', controller: _taskIDController, enabled: false),
                     DoItTextField(
                       controller: _titleController,
                       label: 'Title',
