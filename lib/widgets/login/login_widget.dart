@@ -1,6 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it/app.dart';
-import 'package:do_it/authenticator.dart';
 import 'package:do_it/constants/asset_paths.dart';
 import 'package:do_it/widgets/custom/dialog_generator.dart';
 import 'package:do_it/widgets/custom/loadingOverlay.dart';
@@ -9,8 +7,6 @@ import 'package:do_it/widgets/login/register_widget.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
-  final Firestore firestore = App.instance.firestore;
-  final Authenticator authenticator = App.instance.authenticator;
   final VoidCallback onSignedIn;
 
   LoginPage({this.onSignedIn});
@@ -20,7 +16,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginPageState extends State<LoginPage> {
-//  CollectionReference get users => widget.firestore.collection('users');
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -83,7 +78,6 @@ class LoginPageState extends State<LoginPage> {
                     textAlign: TextAlign.center,
                   ),
                   onTap: () {
-//                Navigator.pushNamed(context, '/Register');
                     Navigator.of(context)
                         .push(MaterialPageRoute(builder: (context) => RegisterPage(onSignedIn: widget.onSignedIn)));
                   }),
@@ -129,7 +123,6 @@ class LoginPageState extends State<LoginPage> {
                         });
                       },
                     );
-//                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ResetPasswordPage()));
                   }),
             ],
           ),
@@ -157,11 +150,11 @@ class LoginPageState extends State<LoginPage> {
             FocusScope.of(context).requestFocus(new FocusNode());
             loadingOverlay.show(context: context, message: "Logging in...");
             try {
-              widget.authenticator
+              app.authenticator
                   .signInWithEmailAndPassword(_emailController.text, _passwordController.text)
                   .then((user) {
                 loadingOverlay.hide();
-                App.instance.refreshLoggedInUserFcmToken();
+                app.refreshLoggedInUserFcmToken();
 
                 print('${user.displayName} has logged in using email and password');
                 widget.onSignedIn();
@@ -206,7 +199,7 @@ class LoginPageState extends State<LoginPage> {
       color: Colors.white,
       onPressed: () {
         loadingOverlay.show(context: context, message: "Logging in with google...");
-        widget.authenticator.signInWithGoogle().then((signedInUser) {
+        app.authenticator.signInWithGoogle().then((signedInUser) {
           loadingOverlay.hide();
           if (signedInUser != null) {
             widget.onSignedIn();

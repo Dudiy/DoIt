@@ -25,26 +25,23 @@ class DoItSpeedDialState extends State<DoItSpeedDial> with TickerProviderStateMi
 
   Widget build(BuildContext context) {
     return new Column(
-        mainAxisSize: MainAxisSize.min,
-        children: new List.generate(widget.buttons.length, (int index) {
-          Widget child = new Container(
-            height: 70.0,
-            width: 56.0,
-            alignment: FractionalOffset.topCenter,
-            child: new ScaleTransition(
-              scale: new CurvedAnimation(
-                parent: _controller,
-                curve: new Interval(
-                    0.0,
-                    1.0 - index / widget.buttons.length / 2.0,
-                    curve: Curves.easeOut
-                ),
-              ),
-              child: widget.buttons[index],
+      mainAxisSize: MainAxisSize.min,
+      children: new List.generate(widget.buttons.length, (int index) {
+        Widget child = new Container(
+          height: 70.0,
+          width: 56.0,
+          alignment: FractionalOffset.topCenter,
+          child: new ScaleTransition(
+            scale: new CurvedAnimation(
+              parent: _controller,
+              curve: new Interval(0.0, 1.0 - index / widget.buttons.length / 2.0, curve: Curves.easeOut),
             ),
-          );
-          return child;
-        }).toList()..add(
+            child: widget.buttons[index],
+          ),
+        );
+        return child;
+      }).toList()
+        ..add(
           new FloatingActionButton(
             heroTag: null,
             child: new AnimatedBuilder(
@@ -66,6 +63,6 @@ class DoItSpeedDialState extends State<DoItSpeedDial> with TickerProviderStateMi
             },
           ),
         ),
-      );
+    );
   }
 }

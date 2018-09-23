@@ -31,7 +31,7 @@ class _RootPageState extends State<RootPage> {
 
   Future<void> _initApp() async {
     final FirebaseApp app = await FirebaseApp.configure(
-      name: 'test',
+      name: 'DoIt',
       options: const FirebaseOptions(
         googleAppID: Private.googleAppID,
         apiKey: Private.apiKey,
@@ -39,7 +39,7 @@ class _RootPageState extends State<RootPage> {
       ),
     );
     await App.instance.init(app);
-    // TODO implement handlerss
+    // TODO implement handlers
     App.instance.firebaseMessaging.configure(
       // when app is closed
       onLaunch: (Map<String, dynamic> message) {

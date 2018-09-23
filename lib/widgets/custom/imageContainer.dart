@@ -17,7 +17,7 @@ class ImageContainer extends StatelessWidget {
 
   ImageContainer(
       {this.imagePath = DEFAULT_GROUP_IMAGE_PATH,
-      this.defaultImagePath= DEFAULT_GROUP_IMAGE_PATH,
+      this.defaultImagePath = DEFAULT_GROUP_IMAGE_PATH,
       this.imageFile,
       this.assetPath,
       this.borderColor,

@@ -22,10 +22,7 @@ class DoItRaisedButtonWithIcon extends RaisedButton {
         child: Stack(
           alignment: AlignmentDirectional.center,
           children: <Widget>[
-            Positioned(
-              left: 0.0,
-              child: icon
-            ),
+            Positioned(left: 0.0, child: icon),
             text,
           ],
         ),

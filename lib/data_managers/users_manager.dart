@@ -49,11 +49,12 @@ class UsersManager {
     /* delete from firebase storage */
     String pathToDelete = "$USERS/$userID/profile.jpg";
     StorageReference storageRef = app.firebaseStorage.ref().child(pathToDelete);
-    storageRef.delete().whenComplete(() {
-      print("UsersManager: deleted profile picture from firebase storage in path: " + pathToDelete);
-    }).catchError(() {
-      print("UsersManager: failed to delete profile picture from firebase storage in path: " + pathToDelete);
-    });
+    try {
+      await storageRef.delete();
+      print("GroupManager: deleted profile picture from firebase storage in path: " + pathToDelete);
+    } catch (e) {
+      print("GroupManager: failed to delete profile picture from firebase storage in path: " + pathToDelete);
+    }
 
     /* delete from firebase db */
     await app.groupsManager.deleteAllGroupsUserIsManagerOf(userID);
@@ -91,8 +92,7 @@ class UsersManager {
     if (file != null) {
       showLoadingCallback();
       double fileSizeInMb = await file.length() / 1000000;
-      if (fileSizeInMb > MAX_PIC_UPLOAD_SIZE_MB)
-        throw Exception('Maximum file size is $MAX_PIC_UPLOAD_SIZE_MB Mb');
+      if (fileSizeInMb > MAX_PIC_UPLOAD_SIZE_MB) throw Exception('Maximum file size is $MAX_PIC_UPLOAD_SIZE_MB Mb');
       StorageUploadTask uploadTask = storageRef.child("users/${app.loggedInUser.userID}/profile.jpg").putFile(file);
       UploadTaskSnapshot uploadTaskSnapshot = await uploadTask.future;
       updateUser(app.loggedInUser.userID, uploadTaskSnapshot.downloadUrl.toString());

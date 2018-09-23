@@ -1,5 +1,4 @@
 import 'package:do_it/app.dart';
-import 'package:do_it/authenticator.dart';
 import 'package:do_it/widgets/custom/dialog_generator.dart';
 import 'package:do_it/widgets/custom/loadingOverlay.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
@@ -7,7 +6,6 @@ import 'package:flutter/material.dart';
 
 class RegisterPage extends StatefulWidget {
   final VoidCallback onSignedIn;
-  final Authenticator auth = App.instance.authenticator;
 
   RegisterPage({@required this.onSignedIn});
 
@@ -18,6 +16,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class RegisterPageState extends State<RegisterPage> {
+  final App app = App.instance;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _displayNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -64,8 +63,8 @@ class RegisterPageState extends State<RegisterPage> {
                   padding: EdgeInsets.symmetric(horizontal: 8.0),
                   constraints: const BoxConstraints(minWidth: double.infinity),
                   child: RaisedButton(
-                  padding: EdgeInsets.symmetric(vertical: 15.0),
-                    color: App.instance.themeData.primaryColor,
+                    padding: EdgeInsets.symmetric(vertical: 15.0),
+                    color: app.themeData.primaryColor,
                     child: Text(
                       'Register',
                       style: TextStyle(color: Colors.white),
@@ -79,7 +78,7 @@ class RegisterPageState extends State<RegisterPage> {
                         try {
                           FocusScope.of(context).requestFocus(new FocusNode());
                           loadingOverlay.show(context: context, message: "Registering new user...");
-                          await widget.auth.registerUserWithEmailAndPassword(
+                          await app.authenticator.registerUserWithEmailAndPassword(
                             email: _emailController.text,
                             password: _passwordController.text,
                             displayName: _displayNameController.text,

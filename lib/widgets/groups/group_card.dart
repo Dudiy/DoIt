@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 class GroupCard extends StatelessWidget {
   final ShortGroupInfo shortGroupInfo;
   final Function onTapped;
+  final app = App.instance;
 
   GroupCard({
     @required this.shortGroupInfo,
@@ -20,14 +21,14 @@ class GroupCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Container managerIcon = App.instance.loggedInUser.userID == shortGroupInfo.managerID
+    Container managerIcon = app.loggedInUser.userID == shortGroupInfo.managerID
         ? Container(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Icon(
                 Icons.supervisor_account,
                 size: 15.0,
-                color: App.instance.themeData.primaryColor,
+                color: app.themeData.primaryColor,
               ),
             ),
           )
@@ -38,11 +39,11 @@ class GroupCard extends StatelessWidget {
       margin: EdgeInsets.all(8.0),
       child: RaisedButton(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-        highlightColor: App.instance.themeData.primaryColorLight,
-        color: App.instance.themeData.primaryColorLight.withAlpha(200),
+        highlightColor: app.themeData.primaryColorLight,
+        color: app.themeData.primaryColorLight.withAlpha(200),
         padding: EdgeInsets.all(0.0),
         onPressed: () {
-          App.instance.groupsManager.getGroupInfoByID(shortGroupInfo.groupID).then((groupInfo) {
+          app.groupsManager.getGroupInfoByID(shortGroupInfo.groupID).then((groupInfo) {
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => SingleGroupPage(groupInfo), settings: RouteSettings(name: '/singleGroupPage')));
           });
@@ -67,7 +68,7 @@ class GroupCard extends StatelessWidget {
                     children: <Widget>[
                       Text('Members: ${shortGroupInfo.members.length.toString()}'),
                       VerticalDivider(),
-                      Text('Tasks: ${shortGroupInfo.tasksPerUser[App.instance.getLoggedInUser().userID].toString()}'),
+                      Text('Tasks: ${shortGroupInfo.tasksPerUser[app.getLoggedInUser().userID].toString()}'),
                     ],
                   )
                 ],
@@ -86,7 +87,6 @@ class GroupCard extends StatelessWidget {
                     ),
                     onPressed: () {
                       DoItDialogs.showGroupScoreboardDialog(context: context, groupInfo: shortGroupInfo);
-//                  _showGroupScoreboardDialog(context);
                     },
                   ),
                 ],

@@ -9,7 +9,6 @@ class LoadingOverlay {
     @required BuildContext context,
     String message = "Loading...",
   }) {
-//    Navigator.of(context).push((MaterialPageRoute(builder: (context) => LoadingPage())))
     overlayState = Overlay.of(context);
     entry = OverlayEntry(builder: (context) {
       return Container(

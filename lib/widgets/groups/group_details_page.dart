@@ -48,7 +48,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: App.instance.themeData.primaryColor,
+        backgroundColor: app.themeData.primaryColor,
         title: Text(
           '${widget.groupInfo.title} details',
           maxLines: 2,
@@ -182,7 +182,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
           app.notifier.sendNotifications(
             title: 'Group \"${widget.groupInfo.title}\"',
             body: 'You have been added to this group by ${widget.groupManager.displayName}',
-            destUsersFcmTokens: [await App.instance.usersManager.getFcmToken(newMember.userID)],
+            destUsersFcmTokens: [await app.usersManager.getFcmToken(newMember.userID)],
           );
           setState(() {
             _groupMembers.putIfAbsent(newMember.userID, () => newMember);
@@ -229,19 +229,19 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
       child: GestureDetector(
         onTap: () {
           if (editEnabled) {
-              App.instance.groupsManager
-                  .uploadGroupPic(
-                      widget.groupInfo, () => loadingOverlay.show(context: context, message: "Updating group photo"))
-                  .then((uploadedPhoto) {
-                setState(() {
-                  uploadedImageFile = uploadedPhoto;
-                });
-                loadingOverlay.hide();
-              }).catchError((e){
-                loadingOverlay.hide();
-                DoItDialogs.showErrorDialog(
-                    context: context, message: "Error while uploading group photo:\n${e.message}");
+            app.groupsManager
+                .uploadGroupPic(
+                    widget.groupInfo, () => loadingOverlay.show(context: context, message: "Updating group photo"))
+                .then((uploadedPhoto) {
+              setState(() {
+                uploadedImageFile = uploadedPhoto;
               });
+              loadingOverlay.hide();
+            }).catchError((e) {
+              loadingOverlay.hide();
+              DoItDialogs.showErrorDialog(
+                  context: context, message: "Error while uploading group photo:\n${e.message}");
+            });
           }
         },
         child: Stack(

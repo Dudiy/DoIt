@@ -138,11 +138,12 @@ class GroupsManager {
     /* delete from firebase storage */
     String pathToDelete = "$GROUPS/$groupID/profile.jpg";
     StorageReference storageRef = App.instance.firebaseStorage.ref().child(pathToDelete);
-    storageRef.delete().whenComplete(() {
+    try {
+      await storageRef.delete();
       print("GroupManager: deleted group picture from firebase storage in path: " + pathToDelete);
-    }).catchError(() {
+    } catch (e) {
       print("GroupManager: failed to delete group picture from firebase storage in path: " + pathToDelete);
-    });
+    }
   }
 
   Future<void> deleteAllCompletedTasksFromGroup({@required groupID}) async {
@@ -326,8 +327,7 @@ class GroupsManager {
       showLoadingCallback();
       // TODO do we want to limit the file size?
       double fileSizeInMb = await file.length() / 1000000;
-      if (fileSizeInMb > MAX_PIC_UPLOAD_SIZE_MB)
-        throw Exception('Maximum file size is $MAX_PIC_UPLOAD_SIZE_MB Mb');
+      if (fileSizeInMb > MAX_PIC_UPLOAD_SIZE_MB) throw Exception('Maximum file size is $MAX_PIC_UPLOAD_SIZE_MB Mb');
       StorageUploadTask uploadTask = storageRef.child("$GROUPS/${groupInfo.groupID}/profile.jpg").putFile(file);
       UploadTaskSnapshot uploadTaskSnapshot = await uploadTask.future;
       await updateGroup(groupInfo.groupID, uploadTaskSnapshot.downloadUrl.toString());

@@ -67,14 +67,14 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     _checkboxState = new Map();
     String groupId = groupInfo.groupID;
     // listen for tasks list update
-    _streamSubscriptionTasks = App.instance.firestore.document('$GROUPS/$groupId').snapshots().listen(_updateTasksList);
+    _streamSubscriptionTasks = app.firestore.document('$GROUPS/$groupId').snapshots().listen(_updateTasksList);
     getGroupTasksFromDB();
     super.initState();
   }
 
   @override
   void dispose() {
-// stop listen for group list update
+    // stop listening for group list update
     _streamSubscriptionTasks.cancel();
     super.dispose();
   }
@@ -144,7 +144,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   }
 
   void _updateTasksList(DocumentSnapshot documentSnapshotGroupTasks) {
-    ShortUserInfo loggedInUser = App.instance.loggedInUser;
+    ShortUserInfo loggedInUser = app.loggedInUser;
     if (loggedInUser == null) {
       throw Exception('GroupManager: Cannot update tasks list user is not logged in');
     }
@@ -156,7 +156,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   }
 
   void _groupImageClicked(BuildContext context) {
-    App.instance.groupsManager
+    app.groupsManager
         .uploadGroupPic(groupInfo, () => loadingOverlay.show(context: context, message: "Updating group photo..."))
         .then((newPhoto) {
       loadingOverlay.hide();
@@ -164,10 +164,9 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       setState(() {
         photoUrl = groupInfo.photoUrl;
       });
-    }).catchError((e){
+    }).catchError((e) {
       loadingOverlay.hide();
-      DoItDialogs.showErrorDialog(
-          context: context, message: "Error while uploading group photo:\n${e.message}");
+      DoItDialogs.showErrorDialog(context: context, message: "Error while uploading group photo:\n${e.message}");
     });
   }
 
@@ -341,7 +340,6 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     _expansionPanels.add(ExpansionPanel(
       headerBuilder: (BuildContext context, bool isExpanded) {
         return Row(
-//          alignment: Alignment.center,
           children: <Widget>[
             Expanded(
               child: Padding(
@@ -646,7 +644,6 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     List<PopupMenuEntry<String>> _menuItems = new List();
     _menuItems.add(_getGroupInfoMenuItem(context));
     _menuItems.add(_getHelpMenuItem(context));
-//    _menuItems.add(PopupMenuDivider());
     if (app.loggedInUser.userID == groupInfo.managerID) {
       _menuItems.add(_getDeleteGroupMenuItem(context));
     } else {
@@ -773,7 +770,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   //region Speed Dial buttons
   Widget _renderSpeedDial() {
     return SpeedDial(
-      backgroundColor: App.instance.themeData.primaryColor,
+      backgroundColor: app.themeData.primaryColor,
       animatedIcon: AnimatedIcons.menu_close,
       animatedIconTheme: IconThemeData(size: 22.0),
       curve: Curves.bounceIn,

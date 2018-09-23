@@ -97,56 +97,54 @@ class DoItTimeFieldState extends State<DoItTimeField> {
       child: Row(
         children: <Widget>[
           Expanded(
-              child: Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: Stack(
-                    children: [
-                      TextFormField(
-                        controller: controller,
-                        enabled: false,
-                        validator: (String ignoredString) {
-                          if (widget.validator != null &&
-                              !widget.validator(_selectedDate)) {
-                            return widget.validationMessage;
-                          }
-                        },
-//                        textAlign: TextAlign.center,
-                        decoration: InputDecoration(
-                          labelText: widget.label,
-                          labelStyle: TextStyle(height: 1.7),
-                          filled: true,
-                          fillColor: Colors.white70,
-                          border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(16.0))),
-                        ),
-                      ),
-                      Positioned(
-                        right: 0.0,
-                        child: ButtonTheme(
-                          height: 60.0,
-                          minWidth: 20.0,
-                          child: FlatButton(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.horizontal(
-                                right: Radius.circular(16.0),
-                              )),
-                              color: widget.enabled
-                                  ? App.instance.themeData.primaryColorLight
-                                  : Theme.of(context).disabledColor.withAlpha(35),
-                              child: Icon(Icons.date_range,
-                                color: widget.enabled
-                                    ? Colors.black
-                                    : Theme.of(context).disabledColor.withAlpha(100)),
-                              onPressed: () {
-                                if (widget.enabled) {
-                                  _setTime(context).then((selectedDateTime) {
-                                    widget.onDateTimeUpdated(selectedDateTime);
-                                  });
-                                }
-                              }),
-                        ),
-                      ),
-                    ],
-                  ))),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Stack(
+                children: [
+                  TextFormField(
+                    controller: controller,
+                    enabled: false,
+                    validator: (String ignoredString) {
+                      if (widget.validator != null && !widget.validator(_selectedDate)) {
+                        return widget.validationMessage;
+                      }
+                    },
+                    decoration: InputDecoration(
+                      labelText: widget.label,
+                      labelStyle: TextStyle(height: 1.7),
+                      filled: true,
+                      fillColor: Colors.white70,
+                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(16.0))),
+                    ),
+                  ),
+                  Positioned(
+                    right: 0.0,
+                    child: ButtonTheme(
+                      height: 60.0,
+                      minWidth: 20.0,
+                      child: FlatButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.horizontal(
+                            right: Radius.circular(16.0),
+                          )),
+                          color: widget.enabled
+                              ? App.instance.themeData.primaryColorLight
+                              : Theme.of(context).disabledColor.withAlpha(35),
+                          child: Icon(Icons.date_range,
+                              color: widget.enabled ? Colors.black : Theme.of(context).disabledColor.withAlpha(100)),
+                          onPressed: () {
+                            if (widget.enabled) {
+                              _setTime(context).then((selectedDateTime) {
+                                widget.onDateTimeUpdated(selectedDateTime);
+                              });
+                            }
+                          }),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );

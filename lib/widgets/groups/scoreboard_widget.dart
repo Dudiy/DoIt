@@ -66,7 +66,8 @@ class ScoreBoardState extends State<ScoreBoard> {
                     Text('${index.toString()})'),
                     Expanded(
                         child: Text(
-                      '  ${scoreboardItem['userInfo'].displayName}', overflow: TextOverflow.ellipsis,
+                      '  ${scoreboardItem['userInfo'].displayName}',
+                      overflow: TextOverflow.ellipsis,
                     )),
                     Text(scoreboardItem['score'].toString()),
                   ],

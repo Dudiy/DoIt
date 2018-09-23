@@ -15,15 +15,20 @@ class DoItDialogs {
     @required String message,
   }) async {
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return new AlertDialog(title: Text('Oops...'), content: Text(message), actions: <Widget>[
+      context: context,
+      builder: (BuildContext context) {
+        return new AlertDialog(
+          title: Text('Oops...'),
+          content: Text(message),
+          actions: <Widget>[
             new SimpleDialogOption(
               onPressed: () => Navigator.pop(context),
               child: const Text('Ok'),
             ),
-          ]);
-        });
+          ],
+        );
+      },
+    );
   }
 
   static Future<void> showNotificationDialog({
@@ -76,28 +81,31 @@ class DoItDialogs {
       key: _formKey,
       child: Column(children: inputWidgets),
     ));
-    dialogBody.add(Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: RaisedButton(
-        child: const Text('Submit', style: TextStyle(color: Colors.white)),
-        color: App.instance.themeData.primaryColor,
-        onPressed: () async {
-          if (_formKey.currentState.validate()) {
-            onSubmit();
-          }
-        },
+    dialogBody.add(
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: RaisedButton(
+          child: const Text('Submit', style: TextStyle(color: Colors.white)),
+          color: App.instance.themeData.primaryColor,
+          onPressed: () async {
+            if (_formKey.currentState.validate()) {
+              onSubmit();
+            }
+          },
+        ),
       ),
-    ));
+    );
 
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return new SimpleDialog(
-            title: Center(child: Text(title)),
-            children: dialogBody,
-            contentPadding: EdgeInsets.all(16.0),
-          );
-        });
+      context: context,
+      builder: (BuildContext context) {
+        return new SimpleDialog(
+          title: Center(child: Text(title)),
+          children: dialogBody,
+          contentPadding: EdgeInsets.all(16.0),
+        );
+      },
+    );
   }
 
   static Future<bool> showConfirmDialog({
@@ -107,38 +115,37 @@ class DoItDialogs {
     String actionButtonText = 'Confirm',
   }) async {
     return showDialog<bool>(
-        context: context,
-        builder: (BuildContext context) {
-          return new SimpleDialog(
-            title: Center(child: Text(message)),
-            children: <Widget>[
-              Wrap(alignment: WrapAlignment.center, children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: RaisedButton(
-                    child: Text('Cancel'),
-                    onPressed: () {
-                      Navigator.pop(context, false);
-                    },
-                  ),
+      context: context,
+      builder: (BuildContext context) {
+        return new SimpleDialog(
+          title: Center(child: Text(message)),
+          children: <Widget>[
+            Wrap(alignment: WrapAlignment.center, children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: RaisedButton(
+                  child: Text('Cancel'),
+                  onPressed: () {
+                    Navigator.pop(context, false);
+                  },
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: RaisedButton(
-                    child: Text(
-                      actionButtonText,
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    color: isWarning ? Theme.of(context).errorColor : App.instance.themeData.primaryColor,
-                    onPressed: () {
-                      Navigator.pop(context, true);
-                    },
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: RaisedButton(
+                  child: Text(
+                    actionButtonText,
+                    style: TextStyle(color: Colors.white),
                   ),
+                  color: isWarning ? Theme.of(context).errorColor : App.instance.themeData.primaryColor,
+                  onPressed: () => Navigator.pop(context, true),
                 ),
-              ]),
-            ],
-          );
-        });
+              ),
+            ]),
+          ],
+        );
+      },
+    );
   }
 
   static void showGroupScoreboardDialog({@required BuildContext context, @required ShortGroupInfo groupInfo}) {
@@ -208,7 +215,7 @@ class DoItDialogs {
     );
   }
 
-  static void showSingleGroupPageHelp(BuildContext context){
+  static void showSingleGroupPageHelp(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) {
@@ -254,9 +261,8 @@ class DoItDialogs {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 16.0),
-                      child: Text(
-                          "These tasks are assigned to other members of the group but not the active user.\n "
-                              "These tasks cannot be completed by the active user\n"),
+                      child: Text("These tasks are assigned to other members of the group but not the active user.\n "
+                          "These tasks cannot be completed by the active user\n"),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 8.0),
@@ -287,8 +293,15 @@ class DoItDialogs {
               Container(
                 padding: EdgeInsets.all(16.0),
                 child: DoItRaisedButtonWithIcon(
-                  icon: Icon(Icons.thumb_up, color: Colors.white, size: 15.0,),
-                  text: const Text("Got it...", style: TextStyle(color: Colors.white),),
+                  icon: Icon(
+                    Icons.thumb_up,
+                    color: Colors.white,
+                    size: 15.0,
+                  ),
+                  text: const Text(
+                    "Got it...",
+                    style: TextStyle(color: Colors.white),
+                  ),
                   color: App.instance.themeData.primaryColor,
                   onPressed: () => Navigator.pop(context),
                 ),
@@ -300,7 +313,7 @@ class DoItDialogs {
     );
   }
 
-  static void showTaskDetailsHelp(BuildContext context){
+  static void showTaskDetailsHelp(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) {
@@ -341,8 +354,7 @@ class DoItDialogs {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 16.0),
-                      child: Text(
-                          "When should the task re-appear after completion.\n"),
+                      child: Text("When should the task re-appear after completion.\n"),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 8.0),
@@ -353,7 +365,8 @@ class DoItDialogs {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 16.0),
-                      child: Text("The task will be visible to the group members only after the current time is after this value.\n "),
+                      child: Text(
+                          "The task will be visible to the group members only after the current time is after this value.\n "),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 8.0),
@@ -364,7 +377,8 @@ class DoItDialogs {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 16.0),
-                      child: Text("The due date of the task, after this time the task background will be colored red.\n"),
+                      child:
+                          Text("The due date of the task, after this time the task background will be colored red.\n"),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 8.0),
@@ -375,8 +389,9 @@ class DoItDialogs {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 16.0),
-                      child: Text("The group members who are assigned to this task - only they are able to complete it.\n"
-                          "By default tasks are assigned to all members of the group.\n"),
+                      child:
+                          Text("The group members who are assigned to this task - only they are able to complete it.\n"
+                              "By default tasks are assigned to all members of the group.\n"),
                     ),
                   ],
                 ),
@@ -384,8 +399,15 @@ class DoItDialogs {
               Container(
                 padding: EdgeInsets.all(16.0),
                 child: DoItRaisedButtonWithIcon(
-                  icon: Icon(Icons.thumb_up, color: Colors.white, size: 15.0,),
-                  text: const Text("Got it...", style: TextStyle(color: Colors.white),),
+                  icon: Icon(
+                    Icons.thumb_up,
+                    color: Colors.white,
+                    size: 15.0,
+                  ),
+                  text: const Text(
+                    "Got it...",
+                    style: TextStyle(color: Colors.white),
+                  ),
                   color: App.instance.themeData.primaryColor,
                   onPressed: () => Navigator.pop(context),
                 ),

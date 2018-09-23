@@ -60,7 +60,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
       floatingActionButton: _myGroups == null || _allTasksWidget == null
           ? null
           : FloatingActionButton(
-              backgroundColor: App.instance.themeData.primaryColor,
+              backgroundColor: app.themeData.primaryColor,
               child: Icon(Icons.add),
               onPressed: () => _showAddGroupDialog(),
             ),
@@ -70,24 +70,31 @@ class MyGroupsPageState extends State<MyGroupsPage> {
   ///
   /// get all groups from db
   ///
-  Future _getMyGroupsFromDB([List<ShortGroupInfo> myGroups]) async {
+  Future<void> _getMyGroupsFromDB([List<ShortGroupInfo> myGroups]) async {
     await _getAllTasksCount().then((allTasksCount) async {
       if (myGroups == null) {
-        myGroups = await App.instance.groupsManager.getMyGroupsFromDB();
+        myGroups = await app.groupsManager.getMyGroupsFromDB().catchError((e) {
+          print("Error while getting groups from server: ${e.message}");
+          // if no groups were fetched from the db, return null
+          return null;
+        });
       }
-      setState(() {
-        _myGroups = List.from(myGroups);
-        _allTasksWidget = allTasksCount;
-      });
+      if (myGroups != null) {
+        setState(() {
+          _myGroups = List.from(myGroups);
+          _allTasksWidget = allTasksCount;
+        });
+      }
     });
   }
 
   /// tasks count message on the top of home screen
   Future<Widget> _getAllTasksCount() async {
-    List<ShortTaskInfo> allTasks = await App.instance.tasksManager.getAllMyTasks();
+    List<ShortTaskInfo> allTasks = await app.tasksManager.getAllMyTasks();
     String tasksRemainingString = allTasks.length > 0
         ? 'Hi ${app.loggedInUser.displayName}! \nYou have a total of ${allTasks.length.toString()} tasks remaining in all groups, lets get to work...'
         : "Awsome! you have no tasks to do :)";
+    if (!mounted) return null;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Card(
@@ -105,7 +112,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
   }
 
   void _updateGroupList(QuerySnapshot groupsQuerySnapshot) {
-    ShortUserInfo loggedInUser = App.instance.loggedInUser;
+    ShortUserInfo loggedInUser = app.loggedInUser;
     if (loggedInUser == null) {
       throw Exception('GroupManager: Cannot get all groups when a user is not logged in');
     }
@@ -149,15 +156,14 @@ class MyGroupsPageState extends State<MyGroupsPage> {
           Positioned(
             bottom: 0.0,
             right: 80.0,
-            child: Image.asset(CLICK_TO_CREATE_GROUP, height: 170.0),
+            child: Image.asset("assets/images/click_to_create_group.png", height: 170.0),
           ),
         ],
       );
 
     List<Widget> list = new List();
     list.add(_allTasksWidget);
-    _myGroups.sort((a, b) =>
-        b.tasksPerUser[App.instance.getLoggedInUser().userID] - a.tasksPerUser[App.instance.loggedInUser.userID]);
+    _myGroups.sort((a, b) => b.tasksPerUser[app.getLoggedInUser().userID] - a.tasksPerUser[app.loggedInUser.userID]);
     list.addAll(_myGroups.map((group) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -189,7 +195,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
       ],
       title: 'New Group',
       onSubmit: () async {
-        await App.instance.groupsManager.addNewGroup(
+        await app.groupsManager.addNewGroup(
           title: _groupTitleController.text,
           description: _groupDescriptionController.text,
         );
