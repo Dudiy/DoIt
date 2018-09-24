@@ -29,6 +29,7 @@ class App {
   FirebaseStorage firebaseStorage;
   FirebaseMessaging firebaseMessaging;
   Notifier notifier = new Notifier();
+  Locale locale;
   final Authenticator authenticator = new Authenticator();
   final Uuid uuid = new Uuid();
   String bgImagePath = BG_IMAGE_BLUE;
@@ -41,6 +42,8 @@ class App {
   App._internalCtor();
 
   static final App instance = new App._internalCtor();
+
+  TextDirection get textDirection => locale.languageCode == "he" ? TextDirection.rtl : TextDirection.ltr;
 
   void resetThemeData() {
     bgImagePath = BG_IMAGE_BLUE;

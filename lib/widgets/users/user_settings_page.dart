@@ -13,7 +13,6 @@ import 'package:do_it/widgets/custom/raised_button_with_icon.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Auth;
 import 'package:flutter/material.dart';
-//import 'package:do_it/widgets/image_picker.dart';
 
 class UserSettingsPage extends StatefulWidget {
   final VoidCallback onSignedOut;
@@ -216,11 +215,10 @@ class UserSettingsPageState extends State<UserSettingsPage> {
       (deleteConfirmed) {
         if (deleteConfirmed) {
           loadingOverlay.show(context: context, message: "deleting this account...");
-          app.usersManager.deleteUser().then((val) {
+          app.usersManager.deleteUser().whenComplete(() {
             loadingOverlay.hide();
             widget.onSignedOut();
-            Navigator.pop(context);
-            Navigator.pop(context);
+            Navigator.popUntil(context, ModalRoute.withName('/'));
           });
         }
       },

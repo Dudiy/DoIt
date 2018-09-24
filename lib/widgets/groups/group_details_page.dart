@@ -324,9 +324,10 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
             ),
             DoItTextField(
               controller: _descriptionController,
+              keyboardType: TextInputType.multiline,
               label: 'Description',
               enabled: editEnabled,
-              maxLines: 3,
+              maxLength: 512,
             ),
           ])),
     );

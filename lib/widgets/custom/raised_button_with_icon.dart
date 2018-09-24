@@ -1,3 +1,4 @@
+import 'package:do_it/app.dart';
 import 'package:flutter/material.dart';
 
 class DoItRaisedButtonWithIcon extends RaisedButton {
@@ -5,6 +6,7 @@ class DoItRaisedButtonWithIcon extends RaisedButton {
   final VoidCallback onPressed;
   final Text text;
   final Color color;
+  final App app = App.instance;
 
   DoItRaisedButtonWithIcon({
     @required this.text,
@@ -15,6 +17,7 @@ class DoItRaisedButtonWithIcon extends RaisedButton {
 
   @override
   Widget build(BuildContext context) {
+  bool isRtl = app.textDirection == TextDirection.rtl;
     return RaisedButton(
       color: color ?? Theme.of(context).buttonColor,
       child: Container(
@@ -22,7 +25,11 @@ class DoItRaisedButtonWithIcon extends RaisedButton {
         child: Stack(
           alignment: AlignmentDirectional.center,
           children: <Widget>[
-            Positioned(left: 0.0, child: icon),
+            Positioned(
+              left: !isRtl ? 0.0 : null,
+              right: isRtl ? 0.0 : null,
+              child: icon,
+            ),
             text,
           ],
         ),

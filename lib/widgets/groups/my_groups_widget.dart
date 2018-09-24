@@ -92,7 +92,9 @@ class MyGroupsPageState extends State<MyGroupsPage> {
   Future<Widget> _getAllTasksCount() async {
     List<ShortTaskInfo> allTasks = await app.tasksManager.getAllMyTasks();
     String tasksRemainingString = allTasks.length > 0
-        ? 'Hi ${app.loggedInUser.displayName}! \nYou have a total of ${allTasks.length.toString()} tasks remaining in all groups, lets get to work...'
+        ? allTasks.length == 1
+            ? 'Hi ${app.loggedInUser.displayName}! \nYou only have one task remaining in all groups, lets get to work...'
+            : 'Hi ${app.loggedInUser.displayName}! \nYou have a total of ${allTasks.length.toString()} tasks remaining in all groups, lets get to work...'
         : "Awsome! you have no tasks to do :)";
     if (!mounted) return null;
     return Padding(

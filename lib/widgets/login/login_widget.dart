@@ -186,13 +186,11 @@ class LoginPageState extends State<LoginPage> {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(right: 15.0),
-            child: Image.asset(
-              GOOGLE_ICON,
-              width: 18.0,
-            ),
+          Image.asset(
+            GOOGLE_ICON,
+            width: 18.0,
           ),
+          SizedBox(width: 15.0),
           Text('Log in with google'),
         ],
       ),

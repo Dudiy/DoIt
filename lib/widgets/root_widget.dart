@@ -68,6 +68,7 @@ class _RootPageState extends State<RootPage> {
 
   @override
   Widget build(BuildContext context) {
+    App.instance.locale = Localizations.localeOf(context);
     // disable landscape orientation
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,

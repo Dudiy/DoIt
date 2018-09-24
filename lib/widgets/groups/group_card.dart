@@ -51,9 +51,8 @@ class GroupCard extends StatelessWidget {
         child: Row(
           children: <Widget>[
             //Picture,
-            Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: ImageContainer(imagePath: shortGroupInfo.photoUrl, size: 80.0)),
+            ImageContainer(imagePath: shortGroupInfo.photoUrl, size: 80.0),
+            SizedBox(width: 8.0),
             Expanded(
               child: Column(
                 children: <Widget>[

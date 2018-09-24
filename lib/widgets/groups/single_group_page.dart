@@ -679,7 +679,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       child: Container(
         color: Colors.white70,
         child: ListTile(
-            leading: Icon(Icons.help_outline, color: app.themeData.primaryColor),
+            leading: Icon(Icons.help_outline, color: app.themeData.primaryColor, textDirection: TextDirection.ltr),
             title: Text(
               'Help',
               style: TextStyle(fontWeight: FontWeight.bold),

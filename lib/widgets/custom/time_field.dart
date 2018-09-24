@@ -35,12 +35,15 @@ class DoItTimeField extends StatefulWidget {
 }
 
 class DoItTimeFieldState extends State<DoItTimeField> {
+  App app = App.instance;
   TextEditingController controller = new TextEditingController();
   DateTime _selectedDate;
+  bool isRtl;
 
   @override
   void initState() {
     super.initState();
+    isRtl = app.textDirection == TextDirection.rtl;
     if (widget.initDateTime != null) {
       _selectedDate = widget.initDateTime;
       controller.text = _formatDateTime(_selectedDate);
@@ -118,17 +121,20 @@ class DoItTimeFieldState extends State<DoItTimeField> {
                     ),
                   ),
                   Positioned(
-                    right: 0.0,
+                    right: !isRtl ? 0.0 : null,
+                    left: isRtl ? 0.0 : null,
                     child: ButtonTheme(
                       height: 60.0,
                       minWidth: 20.0,
                       child: FlatButton(
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.horizontal(
-                            right: Radius.circular(16.0),
-                          )),
+                            borderRadius: BorderRadius.horizontal(
+                              right: !isRtl ? Radius.circular(16.0) : Radius.zero,
+                              left: isRtl ? Radius.circular(16.0) : Radius.zero,
+                            ),
+                          ),
                           color: widget.enabled
-                              ? App.instance.themeData.primaryColorLight
+                              ? app.themeData.primaryColorLight
                               : Theme.of(context).disabledColor.withAlpha(35),
                           child: Icon(Icons.date_range,
                               color: widget.enabled ? Colors.black : Theme.of(context).disabledColor.withAlpha(100)),

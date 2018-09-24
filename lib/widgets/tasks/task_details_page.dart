@@ -34,6 +34,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
   Map<String, ShortUserInfo> _assignedUsers;
   DateTime _selectedStartDateTime, _selectedEndDateTime;
   eRecurringPolicy _selectedPolicy = eRecurringPolicy.none;
+  bool _isRtl;
 
   @override
   void initState() {
@@ -46,6 +47,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
     _selectedStartDateTime = taskInfo.startTime;
     _selectedEndDateTime = taskInfo.endTime;
     _selectedPolicy = taskInfo.recurringPolicy;
+    _isRtl = app.textDirection == TextDirection.rtl;
     app.groupsManager.getGroupInfoByID(taskInfo.parentGroupID).then((parentGroupInfo) {
       setState(() {
         _parentGroupMembers = parentGroupInfo.members;
@@ -206,7 +208,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
       child: Container(
         color: Colors.white70,
         child: ListTile(
-            leading: Icon(Icons.help_outline, color: app.themeData.primaryColor),
+            leading: Icon(Icons.help_outline, color: app.themeData.primaryColor, textDirection: TextDirection.ltr),
             title: Text('Help'),
             onTap: () {
               Navigator.pop(context);
@@ -260,12 +262,14 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
       widgetsList.add(Center(child: Text(('Fetching assigned members from DB...'))));
     } else {
       assignedUsers.forEach((shortUserInfo) {
-        widgetsList.add(ListTile(
-          // TODO display with a nicer widget
-          title: Text(
-            shortUserInfo.displayName,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.body1,
+        widgetsList.add(Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ListTile(
+            title: Text(
+              ' - ${shortUserInfo.displayName}',
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.body1,
+            ),
           ),
         ));
       });
@@ -284,9 +288,10 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
   _drawEditAssignedUsersButton() {
     return app.loggedInUser.userID == widget.taskInfo.parentGroupManagerID
         ? Positioned(
-            right: 10.0,
+            right: !_isRtl ? 10.0 : null,
+            left: _isRtl ? 10.0 : null,
             child: IconButton(
-              icon: Icon(Icons.edit),
+              icon: Icon(Icons.edit, textDirection: TextDirection.ltr),
               onPressed: () {
                 _showEditAssignedUsersDialog();
               },
