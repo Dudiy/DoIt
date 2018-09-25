@@ -146,7 +146,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   void _updateTasksList(DocumentSnapshot documentSnapshotGroupTasks) {
     ShortUserInfo loggedInUser = app.loggedInUser;
     if (loggedInUser == null) {
-      throw Exception('GroupManager: Cannot update tasks list user is not logged in');
+      throw Exception('GroupManager: Cannot update tasks list when user is not logged in');
     }
     if (documentSnapshotGroupTasks.data != null) {
       setState(() {
@@ -157,7 +157,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
 
   void _groupImageClicked(BuildContext context) {
     app.groupsManager
-        .uploadGroupPic(groupInfo, () => loadingOverlay.show(context: context, message: "Updating group photo..."))
+        .uploadGroupPic(groupInfo, () => loadingOverlay.show(context: context, message: app.strings.updatingGroupPhoto))
         .then((newPhoto) {
       loadingOverlay.hide();
       _groupPhotoChanged(newPhoto);
@@ -166,7 +166,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       });
     }).catchError((e) {
       loadingOverlay.hide();
-      DoItDialogs.showErrorDialog(context: context, message: "Error while uploading group photo:\n${e.message}");
+      DoItDialogs.showErrorDialog(context: context, message: '${app.strings.loadingPhotoErrMsgPrefix}\n${e.message}');
     });
   }
 
@@ -193,13 +193,13 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     });
   }
 
-  Future<List<String>> _getGroupMembersTokens() async {
+  Future<Map<String, String>> _getGroupMembersTokens() async {
     List<Future> _tokenGetters = new List();
-    List<String> _assignedUsersTokens = new List();
+    Map<String, String> _assignedUsersTokens = new Map();
     groupInfo.members.values.forEach((shortUserInfo) {
       if (shortUserInfo.userID != app.loggedInUser.userID) {
         _tokenGetters.add((app.usersManager.getFcmToken(shortUserInfo.userID).then((token) {
-          _assignedUsersTokens.add(token);
+          _assignedUsersTokens.putIfAbsent(token, () => shortUserInfo.displayName);
         })));
       }
     });
@@ -220,7 +220,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
         inputWidgets: [
           DoItTextField(
             controller: _titleController,
-            label: 'Title',
+            label: app.strings.titleLabel,
             isRequired: true,
             textStyle: Theme.of(context).textTheme.body1,
             padding: padding,
@@ -228,29 +228,29 @@ class SingleGroupPageState extends State<SingleGroupPage> {
           DoItTextField(
             controller: _valueController,
             isRequired: true,
-            label: 'Task value',
+            label: app.strings.taskValueLabel,
             keyboardType: TextInputType.numberWithOptions(),
             fieldValidator: (value) => int.tryParse(value) != null && int.parse(value) > 0,
-            validationErrorMsg: 'Task value must be a posiyive integer',
+            validationErrorMsg: app.strings.taskValueIntegerValidationMsg,
             textStyle: Theme.of(context).textTheme.body1,
             padding: padding,
           ),
           DoItTextField(
             controller: _descriptionController,
-            label: 'Description',
+            label: app.strings.description,
             isRequired: false,
             textStyle: Theme.of(context).textTheme.body1,
             padding: padding,
           ),
           DoItTimeField(
-            label: 'Start time',
+            label: app.strings.startTime,
             initDateTime: DateTime.now(),
             onDateTimeUpdated: (selectedDateTime) {
               _selectedStartTime = selectedDateTime;
             },
           ),
           DoItTimeField(
-            label: 'End time',
+            label: app.strings.dueTime,
             onDateTimeUpdated: (selectedDateTime) {
               _selectedEndTime = selectedDateTime;
             },
@@ -259,7 +259,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
             _selectedPolicy = selectedPolicy;
           }),
         ],
-        title: 'Add task',
+        title: app.strings.addTaskTitle,
         onSubmit: () async {
           bool closeDialog = true;
           await app.tasksManager
@@ -345,7 +345,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
-                  'Completed tasks',
+                  app.strings.completedTasksTitle,
                   style: Theme.of(context).textTheme.title,
                   textAlign: TextAlign.start,
                 ),
@@ -373,7 +373,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
         return Padding(
           padding: const EdgeInsets.all(16.0),
           child: Text(
-            'Tasks assigned to me $numTasksAssignedToMeStr',
+            '${app.strings.tasksAssignedToMeTitle} $numTasksAssignedToMeStr',
             style: Theme.of(context).textTheme.title,
             textAlign: TextAlign.start,
           ),
@@ -392,7 +392,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
         return Padding(
           padding: const EdgeInsets.all(16.0),
           child: Text(
-            'Tasks assigned to others $numTasksAssignedToOthersStr',
+            '${app.strings.tasksAssignedToOthersTitle} $numTasksAssignedToOthersStr',
             style: Theme.of(context).textTheme.title,
             textAlign: TextAlign.start,
           ),
@@ -408,7 +408,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       headerBuilder: (BuildContext context, bool isExpanded) {
         return Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Text('Future tasks', style: Theme.of(context).textTheme.title),
+          child: Text(app.strings.futureTasks, style: Theme.of(context).textTheme.title),
         );
       },
       body: getFutureTasks(),
@@ -447,9 +447,9 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     }
     Padding noFutureTasks = Padding(
       padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-      child: Center(child: Text("There are no future tasks in this group")),
+      child: Center(child: Text(app.strings.noFutureTasks)),
     );
-    if (_futureTasks == null) return Text('Fetching tasks from server...');
+    if (_futureTasks == null) return Text(app.strings.fetchingTasksFromServer);
     if (_futureTasks.length == 0) return noFutureTasks;
     List<Widget> tasksList = new List();
     _futureTasks.forEach((taskInfo) {
@@ -482,9 +482,9 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     }
     Padding noTasksAssignedToMe = Padding(
       padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-      child: Center(child: Text("There are no tasks assigned to you in this group")),
+      child: Center(child: Text(app.strings.noTasksAssignetToYou)),
     );
-    if (_myTasks == null) return Text('Fetching tasks from server...');
+    if (_myTasks == null) return Text(app.strings.fetchingTasksFromServer);
     if (_myTasks.length == 0) return noTasksAssignedToMe;
     List<Widget> tasksList = new List();
     _myTasks.sort((task1, task2) => TaskUtils.compare(task1, task2));
@@ -531,9 +531,9 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   Widget getTasksAssignedToOthers() {
     Padding noTasksAssignedToOthers = Padding(
       padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-      child: Center(child: Text("There are no tasks assigned to others in this group")),
+      child: Center(child: Text(app.strings.noTasksAssignedToOthers)),
     );
-    if (_allGroupTasks == null) return Text('Fetching tasks from server...');
+    if (_allGroupTasks == null) return Text(app.strings.fetchingTasksFromServer);
     if (_allGroupTasks.length == 0) return noTasksAssignedToOthers;
     List<Widget> tasksList = new List();
     _allGroupTasks.forEach((taskInfo) {
@@ -570,9 +570,9 @@ class SingleGroupPageState extends State<SingleGroupPage> {
         fetchCompletedTasksFromServer();
       },
       timeSpans: {
-        7: 'week',
-        31: 'month',
-        0: 'all time',
+        7: app.strings.week,
+        31: app.strings.month,
+        0: app.strings.allTime,
       },
     );
 
@@ -582,7 +582,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
           timeSpanSelectors,
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Center(child: Text("Please select a timespan")),
+            child: Center(child: Text(app.strings.selectTimespanPrompt)),
           ),
         ],
       );
@@ -593,7 +593,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
           timeSpanSelectors,
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Center(child: Text("No completed tasks")),
+            child: Center(child: Text(app.strings.noCompletedTasks)),
           ),
         ],
       );
@@ -660,7 +660,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
         child: ListTile(
             leading: Icon(Icons.info_outline, color: app.themeData.primaryColor),
             title: Text(
-              'Group info',
+              app.strings.groupInfo,
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             onTap: () async {
@@ -681,7 +681,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
         child: ListTile(
             leading: Icon(Icons.help_outline, color: app.themeData.primaryColor, textDirection: TextDirection.ltr),
             title: Text(
-              'Help',
+              app.strings.help,
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             onTap: () async {
@@ -699,7 +699,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
         color: Colors.white70,
         child: ListTile(
             leading: Icon(Icons.delete, color: Colors.red),
-            title: Text('Delete group', style: TextStyle(fontWeight: FontWeight.bold)),
+            title: Text(app.strings.deleteGroupLabel, style: TextStyle(fontWeight: FontWeight.bold)),
             onTap: () async {
               Navigator.pop(context); // close popup dialog
               deleteGroup();
@@ -715,7 +715,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
         color: Colors.white70,
         child: ListTile(
             leading: Icon(Icons.exit_to_app, color: Colors.red),
-            title: Text('Leave group'),
+            title: Text(app.strings.leaveGroupLabel),
             onTap: () {
               Navigator.pop(context); // close popup dialog
               leaveGroup();
@@ -729,12 +729,12 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   void deleteGroup() {
     DoItDialogs.showConfirmDialog(
       context: context,
-      message: 'Are you sure you would like to delete this group? \nThis cannot be undone',
+      message: app.strings.deleteGroupConfirmMsg,
       isWarning: true,
-      actionButtonText: 'Delete',
+      actionButtonText: app.strings.delete,
     ).then((deleteConfirmed) {
       if (deleteConfirmed) {
-        loadingOverlay.show(context: context, message: "Deleting group...");
+        loadingOverlay.show(context: context, message: app.strings.deletingGroup);
         app.groupsManager.deleteGroup(groupID: groupInfo.groupID).whenComplete(() {
           loadingOverlay.hide();
           Navigator.pop(context);
@@ -746,12 +746,12 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   void leaveGroup() {
     DoItDialogs.showConfirmDialog(
       context: context,
-      message: 'Are you sure you would like to leave this group? \nThis cannot be undone',
+      message: app.strings.leaveGroupConfirmMsg,
       isWarning: true,
-      actionButtonText: 'Leave',
+      actionButtonText: app.strings.leave,
     ).then((deleteConfirmed) {
       if (deleteConfirmed) {
-        loadingOverlay.show(context: context, message: "Leaving group...");
+        loadingOverlay.show(context: context, message: app.strings.leavingGroup);
         app.groupsManager.deleteUserFromGroup(groupInfo.groupID, app.loggedInUser.userID).whenComplete(() {
           loadingOverlay.hide();
           Navigator.pop(context);
@@ -760,7 +760,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
           Navigator.pop(context);
           DoItDialogs.showErrorDialog(
               context: context,
-              message: "Error while trying to leave group, please try again.\nInner exception: ${error.message}");
+              message: '${app.strings.leaveGroupErrorPrefixMsg} ${error.message}');
         });
       }
     });
@@ -787,7 +787,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       child: Icon(Icons.check_box, color: Colors.white),
       backgroundColor: Colors.blue,
       onTap: _showAddTaskDialog,
-      label: 'new task',
+      label: app.strings.newTaskLabel,
       labelStyle: TextStyle(fontWeight: FontWeight.w500),
     );
   }
@@ -803,7 +803,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
             onDialogSubmitted: (ShortUserInfo newMember) {
               scaffoldKey.currentState.showSnackBar(SnackBar(
                   content: Text(
-                "${newMember.displayName} has been added to this group",
+                '${newMember.displayName} ${app.strings.hasBeenAddedToThisGroup}',
                 textAlign: TextAlign.center,
               )));
               setState(() {
@@ -811,7 +811,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
               });
             });
       },
-      label: 'add member',
+      label: app.strings.addMemberTitle,
       labelStyle: TextStyle(fontWeight: FontWeight.w500),
     );
   }
@@ -823,7 +823,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       onTap: () {
         TextEditingController _notificationController = new TextEditingController();
         DoItTextField notificationMessage = DoItTextField(
-          label: 'notification message',
+          label: app.strings.notificationMessageLable,
           controller: _notificationController,
           maxLines: 3,
           maxLength: 30,
@@ -832,19 +832,24 @@ class SingleGroupPageState extends State<SingleGroupPage> {
         DoItDialogs.showUserInputDialog(
           context: context,
           inputWidgets: [notificationMessage],
-          title: 'Send notification',
+          title: app.strings.sendNotificationTitle,
           onSubmit: () async {
-            List<String> _tokens = await _getGroupMembersTokens();
+            Map<String, String> _tokens = await _getGroupMembersTokens();
             Navigator.pop(context); // hide menu items popup
             app.notifier.sendNotifications(
-              title: 'Notification from group \"${groupInfo.title}\"',
+              title: '${app.strings.groupNotificationTitle} "${groupInfo.title}"',
               body: _notificationController.text,
               destUsersFcmTokens: _tokens,
-            );
+            ).catchError((error) {
+              DoItDialogs.showErrorDialog(
+                context: context,
+                message: error.message,
+              );
+            });
           },
         );
       },
-      label: 'notify members',
+      label: app.strings.notifyMembersLabel,
       labelStyle: TextStyle(fontWeight: FontWeight.w500),
     );
   }

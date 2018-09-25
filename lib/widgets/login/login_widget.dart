@@ -58,14 +58,15 @@ class LoginPageState extends State<LoginPage> {
             isRequired: true,
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
-            label: 'Email',
+            label: app.strings.email,
             textStyle: Theme.of(context).textTheme.body1,
           ),
           DoItTextField(
             controller: _passwordController,
-            label: 'Password',
+            label: app.strings.password,
             isRequired: true,
             textStyle: Theme.of(context).textTheme.body1,
+            obscureText: true,
           ),
           _drawLoginButton(),
           Column(
@@ -73,7 +74,7 @@ class LoginPageState extends State<LoginPage> {
               SizedBox(height: 15.0),
               GestureDetector(
                   child: Text(
-                    "New user?  Create an account",
+                    app.strings.newUserButton,
                     style: Theme.of(context).textTheme.caption,
                     textAlign: TextAlign.center,
                   ),
@@ -84,7 +85,7 @@ class LoginPageState extends State<LoginPage> {
               SizedBox(height: 15.0),
               GestureDetector(
                   child: Text(
-                    "Reset password",
+                    app.strings.resetPassword,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.caption,
                   ),
@@ -94,17 +95,17 @@ class LoginPageState extends State<LoginPage> {
                       context: context,
                       inputWidgets: [
                         DoItTextField(
-                          label: "Email",
+                          label: app.strings.email,
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
                           isRequired: true,
                           maxLines: 1,
                         )
                       ],
-                      title: 'Reset password',
+                      title: app.strings.resetPassword,
                       onSubmit: () {
                         FocusScope.of(context).requestFocus(new FocusNode());
-                        loadingOverlay.show(context: context, message: "sending reset password mail...");
+                        loadingOverlay.show(context: context, message: app.strings.sendingResetPasswordMsg);
                         app.usersManager.getShortUserInfoByEmail(_emailController.text).then((userInfo) {
                           if (userInfo != null) {
                             app.authenticator.sendPasswordResetEmail(_emailController.text);
@@ -112,13 +113,13 @@ class LoginPageState extends State<LoginPage> {
                             Navigator.pop(context);
                             DoItDialogs.showNotificationDialog(
                               context: context,
-                              title: "Reset password",
-                              body: "Reset password email has been sent to ${_emailController.text}",
+                              title: app.strings.resetPassword,
+                              body: '${app.strings.resetPasswordSentMsg} ${_emailController.text}',
                             );
                           } else {
                             loadingOverlay.hide();
                             DoItDialogs.showErrorDialog(
-                                context: context, message: "There is no registered user with the givan Email address");
+                                context: context, message: app.strings.noRegisteredUserWithEmailMsg);
                           }
                         });
                       },
@@ -138,7 +139,7 @@ class LoginPageState extends State<LoginPage> {
         padding: EdgeInsets.symmetric(vertical: 10.0),
         color: app.themeData.primaryColor,
         child: Text(
-          'LOGIN',
+          app.strings.loginButtonText,
           style: TextStyle(color: Colors.white),
         ),
         elevation: 8.0,
@@ -148,7 +149,7 @@ class LoginPageState extends State<LoginPage> {
         onPressed: () {
           if (_formKey.currentState.validate()) {
             FocusScope.of(context).requestFocus(new FocusNode());
-            loadingOverlay.show(context: context, message: "Logging in...");
+            loadingOverlay.show(context: context, message: app.strings.loggingIn);
             try {
               app.authenticator
                   .signInWithEmailAndPassword(_emailController.text, _passwordController.text)
@@ -162,7 +163,7 @@ class LoginPageState extends State<LoginPage> {
                 loadingOverlay.hide();
                 DoItDialogs.showErrorDialog(
                   context: context,
-                  message: 'Error while trying to log in: \n${error.message}',
+                  message: '${app.strings.loginErrMsg} \n${error.message}',
                 );
                 print('Error while trying to log in: \n${error.message}');
               });
@@ -170,7 +171,7 @@ class LoginPageState extends State<LoginPage> {
               loadingOverlay.hide();
               DoItDialogs.showErrorDialog(
                 context: context,
-                message: 'Error while trying to log in: \n${error.message}',
+                message: '${app.strings.loginErrMsg} \n${error.message}',
               );
               print('Error while trying to log in: \n${error.message}');
             }
@@ -191,19 +192,19 @@ class LoginPageState extends State<LoginPage> {
             width: 18.0,
           ),
           SizedBox(width: 15.0),
-          Text('Log in with google'),
+          Text(app.strings.loginWithGoogle),
         ],
       ),
       color: Colors.white,
       onPressed: () {
-        loadingOverlay.show(context: context, message: "Logging in with google...");
+        loadingOverlay.show(context: context, message: app.strings.loggingInWithGoogle);
         app.authenticator.signInWithGoogle().then((signedInUser) {
           loadingOverlay.hide();
           if (signedInUser != null) {
             widget.onSignedIn();
           }
         }).catchError((e) {
-          print('Error while trying to log in with google: \n${e.message}');
+          print('${app.strings.loginWithGoogleErrMsg} \n${e.message}');
           loadingOverlay.hide();
         });
       },

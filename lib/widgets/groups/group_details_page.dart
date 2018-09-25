@@ -124,13 +124,20 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
         ? IconButton(
             icon: Icon(Icons.group_add),
             onPressed: () {
-              _showAddMemberDialog();
+              DoItDialogs.showAddMemberDialog(
+                  context: context,
+                  groupInfo: widget.groupInfo,
+                  onDialogSubmitted: (newMember) {
+                    setState(() {
+                      _groupMembers.putIfAbsent(newMember.userID, () => newMember);
+                    });
+                  });
             })
         : Container(width: 0.0, height: 0.0);
 
+    bool isRtl = app.textDirection == TextDirection.rtl;
     List<Widget> list = new List();
     list.add(Container(
-//      color: Theme.of(context).primaryColorLight,
       decoration: ShapeDecoration(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(8.0)),
@@ -146,7 +153,12 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
               'Group Members',
               style: Theme.of(context).textTheme.subhead.copyWith(decoration: TextDecoration.underline),
             )),
-            Positioned(right: 10.0, top: -11.0, child: addMemberIcon),
+            Positioned(
+              right: !isRtl ? 10.0 : null,
+              left: isRtl ? 10.0 : null,
+              top: -11.0,
+              child: addMemberIcon,
+            ),
           ],
         ),
       ),
@@ -157,49 +169,6 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
             return _singleMemberDisplay(shortUserInfo);
           }).toList());
     return list;
-  }
-
-  void _showAddMemberDialog() async {
-    TextEditingController _emailController = new TextEditingController();
-
-    DoItDialogs.showUserInputDialog(
-      context: context,
-      inputWidgets: [
-        DoItTextField(
-          controller: _emailController,
-          label: 'Email',
-          maxLines: 1,
-          keyboardType: TextInputType.emailAddress,
-          isRequired: true,
-        ),
-      ],
-      title: 'Add Member',
-      onSubmit: () async {
-        bool closeDialog = true;
-        await app.groupsManager
-            .addMember(groupID: widget.groupInfo.groupID, newMemberEmail: _emailController.text)
-            .then((newMember) async {
-          app.notifier.sendNotifications(
-            title: 'Group \"${widget.groupInfo.title}\"',
-            body: 'You have been added to this group by ${widget.groupManager.displayName}',
-            destUsersFcmTokens: [await app.usersManager.getFcmToken(newMember.userID)],
-          );
-          setState(() {
-            _groupMembers.putIfAbsent(newMember.userID, () => newMember);
-          });
-        }).catchError((err) {
-          print(err);
-          DoItDialogs.showErrorDialog(
-              context: context,
-              message:
-                  'No user is registered with the email: ${_emailController.text} \n\n** email addresses are case sensitive **');
-          closeDialog = false;
-        });
-        if (closeDialog) {
-          Navigator.pop(context);
-        }
-      },
-    );
   }
 
   Widget _groupImage() {
@@ -231,7 +200,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
           if (editEnabled) {
             app.groupsManager
                 .uploadGroupPic(
-                    widget.groupInfo, () => loadingOverlay.show(context: context, message: "Updating group photo"))
+                    widget.groupInfo, () => loadingOverlay.show(context: context, message: 'Updating group photo'))
                 .then((uploadedPhoto) {
               setState(() {
                 uploadedImageFile = uploadedPhoto;
@@ -240,7 +209,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
             }).catchError((e) {
               loadingOverlay.hide();
               DoItDialogs.showErrorDialog(
-                  context: context, message: "Error while uploading group photo:\n${e.message}");
+                  context: context, message: 'Error while uploading group photo:\n${e.message}');
             });
           }
         },
@@ -362,8 +331,8 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
               onTap: () {
                 DoItDialogs.showConfirmDialog(
                   context: context,
-                  message: "Are you sure you would like to remove ${shortUserInfo.displayName} from the group?",
-                  actionButtonText: "Remove user",
+                  message: 'Are you sure you would like to remove ${shortUserInfo.displayName} from the group?',
+                  actionButtonText: 'Remove user',
                   isWarning: true,
                 ).then((userConfirmed) {
                   if (userConfirmed) {

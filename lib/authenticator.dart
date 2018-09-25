@@ -32,7 +32,11 @@ class Authenticator {
 
     print('$user has signed in using google \n Adding to firebase...');
     await App.instance.usersManager.addUser(user);
-    await App.instance.setLoggedInUser(user);
+    try {
+      await App.instance.setLoggedInUser(user);
+    } catch (e) {
+      throw e;
+    }
     print('${user.displayName} wass added to firebase');
     return user;
   }
@@ -65,12 +69,12 @@ class Authenticator {
 
     try {
       await app.usersManager.addUser(user, displayName, photoUrl);
+      await app.setLoggedInUser(user);
     } catch (e) {
       await user.delete();
       throw new Exception('The user was not added - error while adding to DB. \n inner exception: $e');
     }
 
-    await app.setLoggedInUser(user);
     return user;
   }
 

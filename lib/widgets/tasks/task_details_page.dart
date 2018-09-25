@@ -151,10 +151,10 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
                   context: context,
                   builder: (context) {
                     return SimpleDialog(
-                      title: Center(child: Text("Ready to write")),
+                      title: Center(child: Text('Ready to write')),
                       children: <Widget>[
                         Image.asset(SCAN_NFC),
-                        Center(child: Text("Hold phone over NFC tag")),
+                        Center(child: Text('Hold phone over NFC tag')),
                       ],
                     );
                   }).whenComplete(() {
@@ -187,13 +187,18 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
                 inputWidgets: [notificationMessage],
                 title: 'Send notification',
                 onSubmit: () async {
-                  List<String> _tokens = await _getAssignedUsersTokens();
+                  Map<String, String> _tokens = await _getAssignedUsersTokens();
                   Navigator.pop(context); // hide menu items popup
                   app.notifier.sendNotifications(
-                    title: 'Notification from task \"${widget.taskInfo.title}\"',
+                    title: 'Notification from task "${widget.taskInfo.title}"',
                     body: _notificationController.text,
                     destUsersFcmTokens: _tokens,
-                  );
+                  ).catchError((error) {
+                    DoItDialogs.showErrorDialog(
+                      context: context,
+                      message: error.message,
+                    );
+                  });
                   Navigator.pop(context);
                 },
               );
@@ -432,14 +437,14 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
     );
   }
 
-  Future<List<String>> _getAssignedUsersTokens() async {
+  Future<Map<String, String>> _getAssignedUsersTokens() async {
     List<Future> _tokenGetters = new List();
-    List<String> _assignedUsersTokens = new List();
+    Map<String, String> _assignedUsersTokens = new Map();
     List<ShortUserInfo> assignedUsers = _getAssignedUsers();
     assignedUsers.forEach((shortUserInfo) {
       if (shortUserInfo.userID != app.loggedInUser.userID) {
         _tokenGetters.add((app.usersManager.getFcmToken(shortUserInfo.userID).then((token) {
-          _assignedUsersTokens.add(token);
+          _assignedUsersTokens.putIfAbsent(token, () => shortUserInfo.displayName);
         })));
       }
     });

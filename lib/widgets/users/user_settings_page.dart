@@ -51,7 +51,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         backgroundColor: app.themeData.primaryColor,
-        title: Text("App settings"),
+        title: Text('App settings'),
       ),
       body: SafeArea(
         child: Container(
@@ -95,8 +95,8 @@ class UserSettingsPageState extends State<UserSettingsPage> {
                           app.authenticator.sendPasswordResetEmail(currentUser.email);
                           DoItDialogs.showNotificationDialog(
                             context: context,
-                            title: "Reset password",
-                            body: "Reset password email has been sent to ${userInfo?.email}",
+                            title: 'Reset password',
+                            body: 'Reset password email has been sent to ${userInfo?.email}',
                           );
                         },
                       ),
@@ -104,7 +104,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
                         icon: Icon(Icons.exit_to_app, color: app.themeData.primaryColor),
                         text: const Text('Sign out'),
                         onPressed: () {
-                          DoItDialogs.showConfirmDialog(context: context, message: "Sign out?").then((confirmed) {
+                          DoItDialogs.showConfirmDialog(context: context, message: 'Sign out?').then((confirmed) {
                             if (confirmed) {
                               Navigator.pop(context);
                               widget.onSignedOut();
@@ -142,7 +142,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    "Select Theme",
+                    'Select Theme',
                     style: Theme.of(context)
                         .textTheme
                         .title
@@ -208,13 +208,13 @@ class UserSettingsPageState extends State<UserSettingsPage> {
   void _deleteUserClicked(BuildContext context) {
     DoItDialogs.showConfirmDialog(
       context: context,
-      message: "are you sure you want to delete this account? this cannot be undone",
+      message: 'are you sure you want to delete this account? this cannot be undone',
       isWarning: true,
-      actionButtonText: "Delete accout",
+      actionButtonText: 'Delete accout',
     ).then(
       (deleteConfirmed) {
         if (deleteConfirmed) {
-          loadingOverlay.show(context: context, message: "deleting this account...");
+          loadingOverlay.show(context: context, message: 'deleting this account...');
           app.usersManager.deleteUser().whenComplete(() {
             loadingOverlay.hide();
             widget.onSignedOut();
@@ -279,7 +279,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
 
   void _profilePicClicked() {
     app.usersManager
-        .uploadProfilePic(() => loadingOverlay.show(context: context, message: "Updating profile picture..."))
+        .uploadProfilePic(() => loadingOverlay.show(context: context, message: 'Updating profile picture...'))
         .then((uploadedPhoto) {
       setState(() {
         uploadedImageFile = uploadedPhoto;
@@ -288,7 +288,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
       loadingOverlay.hide();
     }).catchError((e) {
       loadingOverlay.hide();
-      DoItDialogs.showErrorDialog(context: context, message: "Error while uploading profile photo:\n${e.message}");
+      DoItDialogs.showErrorDialog(context: context, message: 'Error while uploading profile photo:\n${e.message}');
     });
   }
 

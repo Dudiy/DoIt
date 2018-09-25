@@ -1,3 +1,5 @@
+import 'package:do_it/app.dart';
+
 enum eRecurringPolicy {
   none,
   daily,
@@ -12,19 +14,20 @@ class RecurringPolicyUtils {
   }
 
   static String policyToString(eRecurringPolicy policy) {
+    final App app = App.instance;
     switch (policy) {
       case eRecurringPolicy.none:
-        return "None";
+        return app.strings.recurringPolicyNone;
       case eRecurringPolicy.daily:
-        return "Daily";
+        return app.strings.recurringPolicyDaily;
       case eRecurringPolicy.weekly:
-        return "Weekly";
+        return app.strings.recurringPolicyWeekly;
       case eRecurringPolicy.monthly:
-        return "Monthly";
+        return app.strings.recurringPolicyMonthly;
       case eRecurringPolicy.yearly:
-        return "Yearly";
+        return app.strings.recurringPolicyYearly;
       default:
-        return "Invalid value";
+        return app.strings.invalidValue;
     }
   }
 }

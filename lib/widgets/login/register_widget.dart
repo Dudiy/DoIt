@@ -29,7 +29,7 @@ class RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: new AppBar(
-        title: Text("Register"),
+        title: Text(app.strings.registerPageTitle),
       ),
       resizeToAvoidBottomPadding: false,
       body: Container(
@@ -42,21 +42,21 @@ class RegisterPageState extends State<RegisterPage> {
                 SizedBox(height: 15.0),
                 DoItTextField(
                   controller: _emailController,
-                  label: 'Email',
+                  label: app.strings.email,
                   isRequired: true,
                   keyboardType: TextInputType.emailAddress,
                 ),
                 DoItTextField(
                   controller: _displayNameController,
-                  label: 'Name',
+                  label: app.strings.name,
                   isRequired: true,
                 ),
                 DoItTextField(
                   controller: _passwordController,
-                  label: 'Password',
+                  label: app.strings.password,
                   isRequired: true,
                   fieldValidator: (String value) => value.length >= 6,
-                  validationErrorMsg: 'Password must be at least 6 characters long',
+                  validationErrorMsg: app.strings.passwordLenValidationMsg,
                 ),
                 SizedBox(height: 30.0),
                 Container(
@@ -66,7 +66,7 @@ class RegisterPageState extends State<RegisterPage> {
                     padding: EdgeInsets.symmetric(vertical: 15.0),
                     color: app.themeData.primaryColor,
                     child: Text(
-                      'Register',
+                      app.strings.register,
                       style: TextStyle(color: Colors.white),
                     ),
                     elevation: 8.0,
@@ -77,7 +77,7 @@ class RegisterPageState extends State<RegisterPage> {
                       if (_formKey.currentState.validate()) {
                         try {
                           FocusScope.of(context).requestFocus(new FocusNode());
-                          loadingOverlay.show(context: context, message: "Registering new user...");
+                          loadingOverlay.show(context: context, message: app.strings.registeringNewUserMsg);
                           await app.authenticator.registerUserWithEmailAndPassword(
                             email: _emailController.text,
                             password: _passwordController.text,
@@ -88,10 +88,8 @@ class RegisterPageState extends State<RegisterPage> {
                           widget.onSignedIn();
                         } catch (e) {
                           loadingOverlay.hide();
-                          DoItDialogs.showErrorDialog(context: context, message: e.message);
+                          DoItDialogs.showErrorDialog(context: context, message: '${app.strings.registrationErrMsg} \n${e.message}');
                         }
-                      } else {
-                        print("register form is invalid");
                       }
                     },
                   ),

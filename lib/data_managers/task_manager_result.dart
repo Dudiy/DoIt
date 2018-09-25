@@ -1,3 +1,5 @@
+import 'package:do_it/app.dart';
+
 ///
 /// message for UI
 ///
@@ -15,25 +17,26 @@ enum TaskMethodResult {
 
 class TaskMethodResultUtils {
   static String message(TaskMethodResult enumType, [String taskTitle = ""]) {
+    final App app = App.instance;
     switch (enumType) {
       case TaskMethodResult.COMPLETE_SUCCESS:
-        return "Task \"" + taskTitle + "\" completed!! :)";
+        return "${app.strings.taskCompletedMsg} \"" + taskTitle + "\"";
       case TaskMethodResult.USER_NOT_LOGGED_IN:
-        return "Please log in first in order to complete the task";
+        return app.strings.loginToCompleteTaskMsg;
       case TaskMethodResult.USER_WHO_COMPLETED_TASK_NOT_FOUND:
-        return "Please reconnect to the application in order to complete the task";
+        return app.strings.userCompletedNotInDbErrMsg;
       case TaskMethodResult.TASK_NOT_FOUND:
-        return "The task associated with this tag does not exist anymore";
+        return app.strings.taskNotFoundErrMsg;
       case TaskMethodResult.USER_NOT_ASSIGNED_TO_TASK:
-        return "You aren't assigned to the task associated with this tag";
+        return app.strings.userNotAssignedToTaskErrMsg;
       case TaskMethodResult.INNER_SYSTEM_INVALID_TASK:
-        return "The task associated with this tag does not exist anymore";
+        return app.strings.taskDoesNotExistsErrMsg;
       case TaskMethodResult.START_TIME_AFTER_END_TIME:
-        return "Start time can\'t be later than end time";
+        return app.strings.startTimeAfterEndTimeErrMsg;
       case TaskMethodResult.ADD_TASK_FAIL:
-        return "Failed to add task";
+        return app.strings.addTaskFailedErrMsg;
       default:
-        return "Unknown complete task status";
+        return app.strings.unknownCompleteTaskStatusErrMsg;
     }
   }
 }

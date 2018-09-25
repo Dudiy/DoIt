@@ -95,7 +95,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
         ? allTasks.length == 1
             ? 'Hi ${app.loggedInUser.displayName}! \nYou only have one task remaining in all groups, lets get to work...'
             : 'Hi ${app.loggedInUser.displayName}! \nYou have a total of ${allTasks.length.toString()} tasks remaining in all groups, lets get to work...'
-        : "Awsome! you have no tasks to do :)";
+        : 'Awsome! you have no tasks to do :)';
     if (!mounted) return null;
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -147,7 +147,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
                 Image.asset(MINION_SAD, scale: 1.5),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text("You are not in any group yet",
+                  child: Text('You are not in any group yet',
                       style: Theme.of(context).textTheme.title, textAlign: TextAlign.center),
                 ),
                 SizedBox(height: 100.0),
@@ -158,7 +158,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
           Positioned(
             bottom: 0.0,
             right: 80.0,
-            child: Image.asset("assets/images/click_to_create_group.png", height: 170.0),
+            child: Image.asset(CLICK_TO_CREATE_GROUP, height: 170.0),
           ),
         ],
       );

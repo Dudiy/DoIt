@@ -13,7 +13,7 @@ class DoItTimeField extends StatefulWidget {
 
   static String formatDateTime(DateTime dateTime) {
     return dateTime == null
-        ? "Time not set"
+        ? 'Time not set'
         : '${dateTime.day}/${dateTime.month}/${dateTime.year} - '
         '${dateTime.hour > 9 ? dateTime.hour : '0${dateTime.hour}'}:'
         '${dateTime.minute > 9 ? dateTime.minute : '0${dateTime.minute}'}';
@@ -24,7 +24,7 @@ class DoItTimeField extends StatefulWidget {
     this.initDateTime,
     this.label,
     this.validator,
-    this.validationMessage = "value is invalid",
+    this.validationMessage = 'value is invalid',
     this.enabled = true,
   });
 
@@ -87,7 +87,7 @@ class DoItTimeFieldState extends State<DoItTimeField> {
 
   String _formatDateTime(DateTime dateTime) {
     return dateTime == null
-        ? "Time not set"
+        ? 'Time not set'
         : '${dateTime.day}/${dateTime.month}/${dateTime.year} - '
         '${dateTime.hour > 9 ? dateTime.hour : '0${dateTime.hour}'}:'
         '${dateTime.minute > 9 ? dateTime.minute : '0${dateTime.minute}'}';

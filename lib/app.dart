@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it/authenticator.dart';
 import 'package:do_it/constants/asset_paths.dart';
 import 'package:do_it/constants/background_images.dart';
+import 'package:do_it/constants/strings.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/data_managers/groups_manager.dart';
 import 'package:do_it/data_managers/tasks_manager.dart';
@@ -29,7 +30,8 @@ class App {
   FirebaseStorage firebaseStorage;
   FirebaseMessaging firebaseMessaging;
   Notifier notifier = new Notifier();
-  Locale locale;
+  Locale _locale;
+  Strings strings;
   final Authenticator authenticator = new Authenticator();
   final Uuid uuid = new Uuid();
   String bgImagePath = BG_IMAGE_BLUE;
@@ -138,5 +140,13 @@ class App {
     if (loggedInUserToken != currentToken) {
       usersManager.updateFcmToken(loggedInUser.userID, currentToken);
     }
+  }
+
+  Locale get locale => _locale;
+
+  set locale(Locale value) {
+    assert(value != null);
+    _locale = value;
+    strings == null ? strings = new Strings(locale.languageCode) : strings.setLanguage(value.languageCode);
   }
 }

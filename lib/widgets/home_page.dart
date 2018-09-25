@@ -36,22 +36,23 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    if (App.instance.loggedInUser?.photoUrl != null && App.instance.loggedInUser?.photoUrl != "") {
-      photoUrl = App.instance.loggedInUser?.photoUrl;
+    final app = App.instance;
+    if (app.loggedInUser?.photoUrl != null && app.loggedInUser?.photoUrl != "") {
+      photoUrl = app.loggedInUser?.photoUrl;
     } else {
       photoUrl = DEFAULT_PICTURE;
     }
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: App.instance.themeData.primaryColor,
+          backgroundColor: app.themeData.primaryColor,
           leading: GestureDetector(
             onTap: () {
-              App.instance.usersManager
-                  .uploadProfilePic(() => loadingOverlay.show(context: context, message: "Uploading image..."))
+              app.usersManager
+                  .uploadProfilePic(() => loadingOverlay.show(context: context, message: app.strings.uploadingImage))
                   .then((uploadedPhoto) {
                 loadingOverlay.hide();
                 setState(() {
-                  photoUrl = App.instance.loggedInUser.photoUrl;
+                  photoUrl = app.loggedInUser.photoUrl;
                   if (uploadedPhoto != null) {
                     userProfilePicFile = uploadedPhoto;
                   }
@@ -59,7 +60,7 @@ class HomePageState extends State<HomePage> {
               }).catchError((e) {
                 loadingOverlay.hide();
                 DoItDialogs.showErrorDialog(
-                    context: context, message: "Error while uploading profile photo:\n${e.message}");
+                    context: context, message: "${app.strings.profilePhotoUploadErrMsg}\n${e.message}");
               });
             },
             child: Padding(
@@ -78,7 +79,7 @@ class HomePageState extends State<HomePage> {
               ]),
             ),
           ),
-          title: Text(App.instance.loggedInUser.displayName),
+          title: Text(app.loggedInUser.displayName),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.settings, color: Colors.white),

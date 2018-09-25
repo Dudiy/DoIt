@@ -49,7 +49,7 @@ class TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String description = taskInfo.description.isEmpty ? "No description entered" : taskInfo.description;
+    String description = taskInfo.description.isEmpty ? 'No description entered' : taskInfo.description;
     return Card(
       elevation: 5.0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),

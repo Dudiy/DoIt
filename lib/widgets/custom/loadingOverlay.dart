@@ -1,13 +1,15 @@
+import 'package:do_it/app.dart';
 import 'package:do_it/constants/asset_paths.dart';
 import 'package:flutter/material.dart';
 
 class LoadingOverlay {
+  final App app = App.instance;
   OverlayState overlayState;
   OverlayEntry entry;
 
   void show({
     @required BuildContext context,
-    String message = "Loading...",
+    String message,
   }) {
     overlayState = Overlay.of(context);
     entry = OverlayEntry(builder: (context) {
@@ -21,7 +23,7 @@ class LoadingOverlay {
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Text(
-                  message,
+                  message ?? app.strings.loading,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.title.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
                 ),
@@ -35,7 +37,7 @@ class LoadingOverlay {
   }
 
   void hide() {
-    entry.remove();
+    entry?.remove();
     overlayState = null;
     entry = null;
   }
