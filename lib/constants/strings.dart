@@ -343,6 +343,20 @@ class Strings {
 
   String get groupMembers => 'Group Members';
 
+  get editGroupInfoErrMsg => 'Error while updating group info, the group info will not be updated';
+
+  get deleteGroupErrMsg => 'Error while deleting group';
+
+  get scoreBoardFetchErrMsg => 'Error while trying to get the group scoreboard';
+
+  get addMemberErrMsgPrefix => 'Error while trying to add new member';
+
+  get openTaskDetailsPageErrMsg => 'Error while trying to open task details page';
+
+  get deleteTaskErrMsg => 'Error while trying to delete task';
+
+  get deletingTask => "Deleting task...";
+
   void setLanguage(String languageCode) {
     switch (languageCode) {
       case "he":

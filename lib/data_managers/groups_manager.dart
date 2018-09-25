@@ -47,9 +47,6 @@ class GroupsManager {
   }
 
   Future<GroupInfo> getGroupInfoByID(String groupID) async {
-    // TODO delete
-//    DocumentSnapshot groupRef = await _firestore.document('$GROUPS/1').get();
-    // TODO uncomment
     DocumentSnapshot groupRef = await _firestore.document('$GROUPS/$groupID').get();
     if (groupRef.data == null) throw Exception('GroupsManager: groupID \'$groupID\' was not found in the DB');
     return GroupUtils.generateGroupInfoFromObject(groupRef.data);
@@ -116,6 +113,15 @@ class GroupsManager {
   }
 
   Future<void> deleteGroup({@required String groupID}) async {
+    /* delete from firebase storage */
+    String pathToDelete = "$GROUPS/$groupID/profile.jpg";
+    StorageReference storageRef = App.instance.firebaseStorage.ref().child(pathToDelete);
+    await storageRef.delete().then((v) {
+      print("GroupManager: deleted group picture from firebase storage in path: " + pathToDelete);
+    }).catchError((error) {
+      print("GroupManager: failed to delete group picture from firebase storage in path: " + pathToDelete);
+    });
+
     /* delete from firebase db */
     print('groupID:$groupID - in deleteGroup'); //TODO delete
     GroupInfo groupInfo = await getGroupInfoByID(groupID);
@@ -126,25 +132,11 @@ class GroupsManager {
     await Future.forEach(groupInfo.tasks.keys, (taskID) async {
       await app.tasksManager.deleteTask(taskID, false);
     });
-    await _firestore.collection('$GROUPS/$groupID/$COMPLETED_TASKS').getDocuments().then((docSnapshots) {
-      docSnapshots.documents.forEach((doc) {
-        _firestore.document('$GROUPS/$groupID/$COMPLETED_TASKS/${doc.data['taskID']}').delete();
-      });
-    });
+    await deleteAllCompletedTasksFromGroup(groupID: groupID);
     await _firestore.document('$GROUPS/$groupID').delete().whenComplete(() {
       print('GroupsManager: groupID:$groupID deleted');
     });
     print('groupID:$groupID - returning from deleteGroup'); //TODO delete
-
-    /* delete from firebase storage */
-    String pathToDelete = "$GROUPS/$groupID/profile.jpg";
-    StorageReference storageRef = App.instance.firebaseStorage.ref().child(pathToDelete);
-    try {
-      await storageRef.delete();
-      print("GroupManager: deleted group picture from firebase storage in path: " + pathToDelete);
-    } catch (e) {
-      print("GroupManager: failed to delete group picture from firebase storage in path: " + pathToDelete);
-    }
   }
 
   Future<void> deleteAllCompletedTasksFromGroup({@required groupID}) async {
@@ -158,22 +150,6 @@ class GroupsManager {
     await Future.forEach(querySnapshot.documents, (completedTaskDoc) {
       _firestore.document('$GROUPS/$groupID/$COMPLETED_TASKS/${completedTaskDoc.documentID}').delete();
     });
-  }
-
-  void joinGroup(String groupID) async {
-    ShortUserInfo loggedInUser = app.loggedInUser;
-    if (loggedInUser == null) throw Exception('GroupManager: Cannot join a new group when a user is not logged in');
-    GroupInfo groupInfo = await getGroupInfoByID(groupID);
-    if (groupInfo == null)
-      throw Exception('GroupManager: cannot join group, no group with ID $groupID was found in the DB');
-    Map<String, ShortUserInfo> members = groupInfo.members;
-    if (!(members.containsKey(loggedInUser.userID))) {
-      members.putIfAbsent(loggedInUser.userID, () => loggedInUser);
-      _firestore
-          .document('$GROUPS/${groupInfo.groupID}')
-          .updateData(<String, dynamic>{'members': UserUtils.generateObjectFromUsersMap(members)});
-      print('GroupManager: ${loggedInUser.displayName} has joined the group: $groupID');
-    }
   }
 
   Future<void> removeTaskFromGroup(String groupID, String taskID) async {
@@ -307,8 +283,8 @@ class GroupsManager {
 
   Future<ShortUserInfo> addMember({@required String groupID, @required String newMemberEmail}) async {
     ShortUserInfo newMemberInfo = await app.usersManager.getShortUserInfoByEmail(newMemberEmail);
-    if (newMemberInfo == null) throw Exception('GroupsManager: No user found in the DB with the given email address');
-    getGroupInfoByID(groupID).then((groupInfo) {
+    if (newMemberInfo == null) throw Exception('${app.strings.noRegisteredUserWithEmailMsg} $newMemberEmail \n\n${app.strings.emailAddressesAreCaseSensitive}');
+    await getGroupInfoByID(groupID).then((groupInfo) {
       if (!groupInfo.members.containsKey(newMemberInfo.userID)) {
         groupInfo.members.putIfAbsent(newMemberInfo.userID, () => newMemberInfo);
         _firestore

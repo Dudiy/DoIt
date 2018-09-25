@@ -6,6 +6,7 @@ import 'package:do_it/data_classes/task/eRecurringPolicies.dart';
 import 'package:do_it/data_classes/task/task_info.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
 import 'package:do_it/widgets/custom/dialog_generator.dart';
+import 'package:do_it/widgets/custom/loadingOverlay.dart';
 import 'package:do_it/widgets/custom/recurring_policy_field.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:do_it/widgets/custom/time_field.dart';
@@ -29,6 +30,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
   final TextEditingController _titleController = new TextEditingController();
   final TextEditingController _descriptionController = new TextEditingController();
   final TextEditingController _valueController = new TextEditingController();
+  final LoadingOverlay loadingOverlay = new LoadingOverlay();
   bool editEnabled;
   Map<String, ShortUserInfo> _parentGroupMembers;
   Map<String, ShortUserInfo> _assignedUsers;
@@ -55,6 +57,12 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
             ? Map.from(_parentGroupMembers)
             : taskInfo.assignedUsers;
       });
+    }).catchError((error) {
+      Navigator.pop(context);
+      DoItDialogs.showErrorDialog(
+        context: context,
+        message: '${app.strings.app.strings.openTaskDetailsPageErrMsg}:\n${error.message}',
+      );
     });
     super.initState();
   }
@@ -103,13 +111,14 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
               endTime: _selectedEndDateTime,
               recurringPolicy: _selectedPolicy,
             )
-                .catchError((error) {
+                .then((v) {
+              Navigator.pop(context);
+            }).catchError((error) {
               DoItDialogs.showErrorDialog(
                 context: context,
                 message: '${app.strings.taskNotUpdatedErrMsg}: ${error.message}',
               );
             });
-            Navigator.pop(context);
           }
         } catch (e) {
           DoItDialogs.showErrorDialog(context: context, message: e.message);
@@ -134,8 +143,17 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
                 actionButtonText: app.strings.delete,
               ).then((deleteConfirmed) {
                 if (deleteConfirmed) {
-                  app.tasksManager.deleteTask(widget.taskInfo.taskID);
-                  Navigator.popUntil(context, ModalRoute.withName('/singleGroupPage'));
+                  loadingOverlay.show(context: context, message: app.strings.deletingTask);
+                  app.tasksManager.deleteTask(widget.taskInfo.taskID).then((v) {
+                    loadingOverlay.hide();
+                    Navigator.popUntil(context, ModalRoute.withName('/singleGroupPage'));
+                  }).catchError((error) {
+                    loadingOverlay.hide();
+                    DoItDialogs.showErrorDialog(
+                      context: context,
+                      message: '${app.strings.deleteTaskErrMsg}:\n${error.message}',
+                    );
+                  });
                 }
               });
             }),
@@ -355,12 +373,15 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
         }
       });
     }
-    app.tasksManager
-        .updateTask(taskIdToChange: widget.taskInfo.taskID, assignedUsers: _newAssignedUsers)
-        .whenComplete(() {
+    app.tasksManager.updateTask(taskIdToChange: widget.taskInfo.taskID, assignedUsers: _newAssignedUsers).then((v) {
       _getAssignedUsersFromDB();
+      Navigator.pop(context);
+    }).catchError((error) {
+      DoItDialogs.showErrorDialog(
+        context: context,
+        message: '${app.strings.app.strings.taskNotUpdatedErrMsg}\n${error.message}',
+      );
     });
-    Navigator.pop(context);
   }
 
   @override

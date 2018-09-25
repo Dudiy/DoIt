@@ -112,8 +112,13 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
           )
               .then((newGroupInfo) {
             widget.onGroupInfoChanged(newGroupInfo, uploadedImageFile);
+            Navigator.pop(context);
+          }).catchError((error) {
+            DoItDialogs.showErrorDialog(
+              context: context,
+              message: '${app.strings.editGroupInfoErrMsg}:\n${error.message}',
+            );
           });
-          Navigator.pop(context);
         },
       ));
     return actions;
@@ -199,8 +204,8 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
         onTap: () {
           if (editEnabled) {
             app.groupsManager
-                .uploadGroupPic(
-                    widget.groupInfo, () => loadingOverlay.show(context: context, message: app.strings.uploadingGroupPhoto))
+                .uploadGroupPic(widget.groupInfo,
+                    () => loadingOverlay.show(context: context, message: app.strings.uploadingGroupPhoto))
                 .then((uploadedPhoto) {
               setState(() {
                 uploadedImageFile = uploadedPhoto;

@@ -207,12 +207,12 @@ class DoItDialogs {
           if (onDialogSubmitted != null) {
             onDialogSubmitted(newMember);
           }
-        }).catchError((err) {
-          print(err);
+        }).catchError((error) {
+          print(error);
           DoItDialogs.showErrorDialog(
               context: context,
               message:
-                  '${app.strings.noRegisteredUserWithEmailMsg} ${_emailController.text} \n\n${app.strings.emailAddressesAreCaseSensitive}');
+                  '${app.strings.addMemberErrMsgPrefix}:\n${error.message}');
           closeDialog = false;
         });
         if (closeDialog) {

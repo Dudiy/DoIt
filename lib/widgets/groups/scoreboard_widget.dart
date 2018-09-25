@@ -1,5 +1,6 @@
 import 'package:do_it/app.dart';
 import 'package:do_it/data_classes/group/group_info_short.dart';
+import 'package:do_it/widgets/custom/dialog_generator.dart';
 import 'package:do_it/widgets/custom/timespan_selector.dart';
 import 'package:flutter/material.dart';
 
@@ -79,6 +80,11 @@ class ScoreBoardState extends State<ScoreBoard> {
         });
       }).whenComplete(() {
         setState(() => _scoreBoardBody = list);
+      }).catchError((error) {
+        DoItDialogs.showErrorDialog(
+          context: context,
+          message: '${app.strings.scoreBoardFetchErrMsg}:\n${error.message}',
+        );
       });
     }
   }

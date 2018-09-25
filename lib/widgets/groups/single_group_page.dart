@@ -654,7 +654,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
 
   PopupMenuEntry<String> _getGroupInfoMenuItem(BuildContext context) {
     return PopupMenuItem(
-      value: 'deleteGroup',
+      value: 'groupInfo',
       child: Container(
         color: Colors.white70,
         child: ListTile(
@@ -735,9 +735,15 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     ).then((deleteConfirmed) {
       if (deleteConfirmed) {
         loadingOverlay.show(context: context, message: app.strings.deletingGroup);
-        app.groupsManager.deleteGroup(groupID: groupInfo.groupID).whenComplete(() {
+        app.groupsManager.deleteGroup(groupID: groupInfo.groupID).then((v) {
           loadingOverlay.hide();
           Navigator.pop(context);
+        }).catchError((error) {
+          loadingOverlay.hide();
+          DoItDialogs.showErrorDialog(
+            context: context,
+            message: '${app.strings.deleteGroupErrMsg}:\n${error.message}',
+          );
         });
       }
     });
@@ -752,15 +758,13 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     ).then((deleteConfirmed) {
       if (deleteConfirmed) {
         loadingOverlay.show(context: context, message: app.strings.leavingGroup);
-        app.groupsManager.deleteUserFromGroup(groupInfo.groupID, app.loggedInUser.userID).whenComplete(() {
+        app.groupsManager.deleteUserFromGroup(groupInfo.groupID, app.loggedInUser.userID).then((v) {
           loadingOverlay.hide();
           Navigator.pop(context);
         }).catchError((error) {
           loadingOverlay.hide();
-          Navigator.pop(context);
           DoItDialogs.showErrorDialog(
-              context: context,
-              message: '${app.strings.leaveGroupErrorPrefixMsg} ${error.message}');
+              context: context, message: '${app.strings.leaveGroupErrorPrefixMsg} ${error.message}');
         });
       }
     });
@@ -836,11 +840,13 @@ class SingleGroupPageState extends State<SingleGroupPage> {
           onSubmit: () async {
             Map<String, String> _tokens = await _getGroupMembersTokens();
             Navigator.pop(context); // hide menu items popup
-            app.notifier.sendNotifications(
+            app.notifier
+                .sendNotifications(
               title: '${app.strings.groupNotificationTitle} "${groupInfo.title}"',
               body: _notificationController.text,
               destUsersFcmTokens: _tokens,
-            ).catchError((error) {
+            )
+                .catchError((error) {
               DoItDialogs.showErrorDialog(
                 context: context,
                 message: error.message,
