@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it/app.dart';
 import 'package:do_it/constants/db_constants.dart';
-import 'package:do_it/constants/should_be_sync.dart';
 import 'package:do_it/data_classes/group/group_info.dart';
 import 'package:do_it/data_classes/task/eRecurringPolicies.dart';
 import 'package:do_it/data_classes/task/task_info.dart';
@@ -135,10 +134,13 @@ class TasksManager {
     if (taskInfo == null) {
       throw TaskException(TaskMethodResult.TASK_NOT_FOUND, '$errorMessagePrefix TaskID was not found in the DB');
     }
-    GroupInfo parentGroupInfo = await app.groupsManager.getGroupInfoByID(taskInfo.parentGroupID);
+    GroupInfo parentGroupInfo = await app.groupsManager.getGroupInfoByID(taskInfo.parentGroupID).catchError((error){
+      throw TaskException(
+          TaskMethodResult.PARENT_GROUP_NOT_FOUND, '$errorMessagePrefix The parent group was not found in the DB');
+    });
     if (parentGroupInfo == null) {
       throw TaskException(
-          TaskMethodResult.INNER_SYSTEM_INVALID_TASK, '$errorMessagePrefix The parent group was not found in the DB');
+          TaskMethodResult.PARENT_GROUP_NOT_FOUND, '$errorMessagePrefix The parent group was not found in the DB');
     }
     if (!parentGroupInfo.members.containsKey(userWhoCompletedID) ||
         (taskInfo.assignedUsers.length > 0 && !taskInfo.assignedUsers.containsKey(userWhoCompletedID))) {
@@ -202,7 +204,6 @@ class TasksManager {
   }
 
 // deleteFromGroup parameter is for when deleting an entire group - set to false fo efficiency
-  @ShouldBeSync()
   Future<void> deleteTask(String taskID, [bool deleteFromGroup = true]) async {
     print('taskID: $taskID - in deleteTask'); //TODO delete
     // delete from group
@@ -230,8 +231,8 @@ class TasksManager {
   Future<List<ShortTaskInfo>> getAllMyTasks() async {
     String loggedInUserID = app.getLoggedInUserID();
     List<String> myGroupsIDs = await app.groupsManager.getMyGroupsIDsFromDB();
-    QuerySnapshot snapshot = await _firestore.collection('$TASKS').getDocuments();
-    List<ShortTaskInfo> myTasks = snapshot.documents.where((doc) {
+    QuerySnapshot tasksSnapshot = await _firestore.collection('$TASKS').getDocuments();
+    List<ShortTaskInfo> myTasks = tasksSnapshot.documents.where((doc) {
       ShortTaskInfo shortTaskInfo = TaskUtils.generateShortTaskInfoFromObject(doc.data);
       Map<String, ShortUserInfo> assignedUsers = shortTaskInfo.assignedUsers;
       if (shortTaskInfo.startTime.isAfter(DateTime.now())) return false;

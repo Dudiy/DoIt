@@ -10,7 +10,7 @@ enum TaskMethodResult {
   TASK_NOT_FOUND,
   USER_NOT_ASSIGNED_TO_TASK,
   // group or user delete after task assign
-  INNER_SYSTEM_INVALID_TASK,
+  PARENT_GROUP_NOT_FOUND,
   START_TIME_AFTER_END_TIME,
   ADD_TASK_FAIL,
 }
@@ -29,8 +29,8 @@ class TaskMethodResultUtils {
         return app.strings.taskNotFoundErrMsg;
       case TaskMethodResult.USER_NOT_ASSIGNED_TO_TASK:
         return app.strings.userNotAssignedToTaskErrMsg;
-      case TaskMethodResult.INNER_SYSTEM_INVALID_TASK:
-        return app.strings.taskDoesNotExistsErrMsg;
+      case TaskMethodResult.PARENT_GROUP_NOT_FOUND:
+        return app.strings.parentGroupNotFoundErrMsg;
       case TaskMethodResult.START_TIME_AFTER_END_TIME:
         return app.strings.startTimeAfterEndTimeErrMsg;
       case TaskMethodResult.ADD_TASK_FAIL:

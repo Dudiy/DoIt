@@ -228,7 +228,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
           DoItTextField(
             controller: _valueController,
             isRequired: true,
-            label: app.strings.taskValueLabel,
+            label: app.strings.valueLabel,
             keyboardType: TextInputType.numberWithOptions(),
             fieldValidator: (value) => int.tryParse(value) != null && int.parse(value) > 0,
             validationErrorMsg: app.strings.taskValueIntegerValidationMsg,
@@ -237,7 +237,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
           ),
           DoItTextField(
             controller: _descriptionController,
-            label: app.strings.description,
+            label: app.strings.descriptionLabel,
             isRequired: false,
             textStyle: Theme.of(context).textTheme.body1,
             padding: padding,

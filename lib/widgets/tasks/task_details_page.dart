@@ -93,7 +93,8 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
       onPressed: () async {
         try {
           if (_formKey.currentState.validate()) {
-            await app.tasksManager.updateTask(
+            await app.tasksManager
+                .updateTask(
               taskIdToChange: widget.taskInfo.taskID,
               title: _titleController.text.isNotEmpty ? _titleController.text : null,
               description: _descriptionController.text.isNotEmpty ? _descriptionController.text : null,
@@ -101,7 +102,13 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
               startTime: _selectedStartDateTime,
               endTime: _selectedEndDateTime,
               recurringPolicy: _selectedPolicy,
-            );
+            )
+                .catchError((error) {
+              DoItDialogs.showErrorDialog(
+                context: context,
+                message: '${app.strings.taskNotUpdatedErrMsg}: ${error.message}',
+              );
+            });
             Navigator.pop(context);
           }
         } catch (e) {
@@ -118,13 +125,13 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
         color: Colors.white70,
         child: ListTile(
             leading: Icon(Icons.delete, color: Colors.red),
-            title: Text('Delete task'),
+            title: Text(app.strings.deleteTask),
             onTap: () async {
               DoItDialogs.showConfirmDialog(
                 context: context,
-                message: 'Are you sure you would like to delete this task? \nThis cannot be undone',
+                message: app.strings.deleteTaskConfirmMsg,
                 isWarning: true,
-                actionButtonText: 'Delete',
+                actionButtonText: app.strings.delete,
               ).then((deleteConfirmed) {
                 if (deleteConfirmed) {
                   app.tasksManager.deleteTask(widget.taskInfo.taskID);
@@ -143,7 +150,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
         color: Colors.white70,
         child: ListTile(
             leading: Icon(Icons.nfc, color: app.themeData.primaryColor),
-            title: Text('Write to NFC'),
+            title: Text(app.strings.writeToNfc),
             onTap: () {
               NfcWriter nfcWriter = new NfcWriter(widget.taskInfo.taskID);
               nfcWriter.enableWrite();
@@ -151,10 +158,10 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
                   context: context,
                   builder: (context) {
                     return SimpleDialog(
-                      title: Center(child: Text('Ready to write')),
+                      title: Center(child: Text(app.strings.readyToWrite)),
                       children: <Widget>[
                         Image.asset(SCAN_NFC),
-                        Center(child: Text('Hold phone over NFC tag')),
+                        Center(child: Text(app.strings.holdPhoneOverNfc)),
                       ],
                     );
                   }).whenComplete(() {
@@ -168,7 +175,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
   Widget _getNotifyUsersMenuItem(context) {
     TextEditingController _notificationController = new TextEditingController();
     DoItTextField notificationMessage = DoItTextField(
-      label: 'Notification message',
+      label: app.strings.notificationMessageLable,
       controller: _notificationController,
       maxLines: 3,
       maxLength: 30,
@@ -180,20 +187,22 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
         color: Colors.white70,
         child: ListTile(
             leading: Icon(Icons.comment, color: app.themeData.primaryColor),
-            title: Text('Notify users'),
+            title: Text(app.strings.notifyUsersTitle),
             onTap: () {
               DoItDialogs.showUserInputDialog(
                 context: context,
                 inputWidgets: [notificationMessage],
-                title: 'Send notification',
+                title: app.strings.sendNotificationTitle,
                 onSubmit: () async {
                   Map<String, String> _tokens = await _getAssignedUsersTokens();
                   Navigator.pop(context); // hide menu items popup
-                  app.notifier.sendNotifications(
-                    title: 'Notification from task "${widget.taskInfo.title}"',
+                  app.notifier
+                      .sendNotifications(
+                    title: '${app.strings.taskNotificationTitle} "${widget.taskInfo.title}"',
                     body: _notificationController.text,
                     destUsersFcmTokens: _tokens,
-                  ).catchError((error) {
+                  )
+                      .catchError((error) {
                     DoItDialogs.showErrorDialog(
                       context: context,
                       message: error.message,
@@ -214,7 +223,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
         color: Colors.white70,
         child: ListTile(
             leading: Icon(Icons.help_outline, color: app.themeData.primaryColor, textDirection: TextDirection.ltr),
-            title: Text('Help'),
+            title: Text(app.strings.help),
             onTap: () {
               Navigator.pop(context);
               DoItDialogs.showTaskDetailsHelp(context);
@@ -254,7 +263,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
               child: Container(
                 child: Center(
                     child: Text(
-                  'Assigned members',
+                  app.strings.assignedMembers,
                   style: Theme.of(context).textTheme.subhead.copyWith(decoration: TextDecoration.underline),
                 )),
               ),
@@ -264,7 +273,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
       ),
     ));
     if (assignedUsers == null) {
-      widgetsList.add(Center(child: Text(('Fetching assigned members from DB...'))));
+      widgetsList.add(Center(child: Text((app.strings.fetchingAssignedMembers))));
     } else {
       assignedUsers.forEach((shortUserInfo) {
         widgetsList.add(Padding(
@@ -377,19 +386,19 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
                   child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
                     DoItTextField(
                       controller: _titleController,
-                      label: 'Title',
+                      label: app.strings.titleLabel,
                       enabled: editEnabled,
                     ),
                     DoItTextField(
                       controller: _descriptionController,
-                      label: 'Description',
+                      label: app.strings.descriptionLabel,
                       enabled: editEnabled,
                       maxLines: 3,
                     ),
                     DoItTextField(
                       keyboardType: TextInputType.number,
                       controller: _valueController,
-                      label: 'Value',
+                      label: app.strings.valueLabel,
                       enabled: editEnabled,
                     ),
                     DoItRecurringPolicyField(
@@ -398,7 +407,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
                       onPolicyUpdated: (selected) => _selectedPolicy = selected,
                     ),
                     DoItTimeField(
-                      label: 'Start time',
+                      label: app.strings.startTime,
                       initDateTime: widget.taskInfo.startTime,
                       enabled: editEnabled,
                       onDateTimeUpdated: (selectedDateTime) {
@@ -406,7 +415,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
                       },
                     ),
                     DoItTimeField(
-                      label: 'End time',
+                      label: app.strings.dueTime,
                       initDateTime: widget.taskInfo.endTime,
                       enabled: editEnabled,
                       onDateTimeUpdated: (selectedDateTime) {

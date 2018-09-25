@@ -273,17 +273,75 @@ class Strings {
 
   get startTime => 'Start time';
 
-  get description => 'Description';
+  get descriptionLabel => 'Description';
 
   get taskValueIntegerValidationMsg => 'Task value must be a positive integer';
 
-  get taskValueLabel => 'Task value';
+  get valueLabel => 'Value';
 
   get titleLabel => 'Title';
 
   get loadingPhotoErrMsgPrefix => 'Error while uploading group photo:';
 
   get updatingGroupPhoto => 'Updating group photo...';
+
+  String get notifyUsersTitle => 'Notify users';
+
+  get taskNotificationTitle => 'Notification from task';
+
+  String get assignedMembers => 'Assigned members';
+
+  get fetchingAssignedMembers => 'Fetching assigned members from DB...';
+
+  get displayName => 'Display name';
+
+  String get userID => 'User ID';
+
+  String get msgSentToDevs => 'Your message has been sent to the developers. Thank you :)';
+
+  get sendMsgToDevsErr => 'Error while sending message';
+
+  get taskNotUpdatedErrMsg => 'Could not update task due to the following error';
+
+  String get deleteTask => 'Delete task';
+
+  get deleteTaskConfirmMsg => 'Are you sure you would like to delete this task? \nThis cannot be undone';
+
+  String get writeToNfc => 'Write to NFC';
+
+  String get readyToWrite => 'Ready to write';
+
+  String get holdPhoneOverNfc => 'Hold phone over NFC tag';
+
+  get getGroupInfoErrMsg => 'Error while trying to get group info';
+
+  String get parentGroupNotFoundErrMsg => 'Group containig the task was not found';
+
+  get removingGroupMember => 'Removing group member';
+
+  get removeMemberFromGroupErrMsg => 'Error while removing member from group, the member has not been removed';
+
+  get confirmRemove => 'Are you sure you would like to remove';
+
+  get fromTheGroup => 'from the group';
+
+  get removeMemberLable => 'Remove member';
+
+  get groupTitleLable => 'Group title';
+
+  get groupManager => 'Group manager';
+
+  String get groupId => 'Group ID';
+
+  get groupPhotoUploadErrMsg => 'Error while uploading group photo';
+
+  get uploadingGroupPhoto => 'Uploading group photo...';
+
+  String get tapToChange => 'tap to change';
+
+  String get groupHasNoMembers => 'The group has no members...';
+
+  String get groupMembers => 'Group Members';
 
   void setLanguage(String languageCode) {
     switch (languageCode) {

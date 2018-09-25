@@ -1,3 +1,4 @@
+import 'package:do_it/app.dart';
 import 'package:do_it/data_classes/task/eRecurringPolicies.dart';
 import 'package:do_it/data_classes/task/task_interface.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
@@ -86,7 +87,7 @@ class ShortTaskInfo implements Task {
   set endTime(DateTime value) {
     DateTime newEndTime = value;
     if (newEndTime != null && _startTime.isAfter(newEndTime))
-      throw ArgumentError('End time cannot be before start time');
+      throw ArgumentError(App.instance.strings.startTimeAfterEndTimeErrMsg);
     _endTime = value;
   }
 

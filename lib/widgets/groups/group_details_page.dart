@@ -50,7 +50,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
       appBar: AppBar(
         backgroundColor: app.themeData.primaryColor,
         title: Text(
-          '${widget.groupInfo.title} details',
+          '${widget.groupInfo.title}',
           maxLines: 2,
         ),
         titleSpacing: 5.0,
@@ -150,7 +150,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
           children: <Widget>[
             Center(
                 child: Text(
-              'Group Members',
+              app.strings.groupMembers,
               style: Theme.of(context).textTheme.subhead.copyWith(decoration: TextDecoration.underline),
             )),
             Positioned(
@@ -164,7 +164,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
       ),
     ));
     list.addAll(widget.groupInfo.members == null || widget.groupInfo.members.length == 0
-        ? [Text('The group has no members...')]
+        ? [Text(app.strings.groupHasNoMembers)]
         : widget.groupInfo.members.values.map((shortUserInfo) {
             return _singleMemberDisplay(shortUserInfo);
           }).toList());
@@ -186,7 +186,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
           color: Colors.black54,
         ),
         child: Text(
-          'tap to change',
+          app.strings.tapToChange,
           textAlign: TextAlign.center,
           style: TextStyle(color: Colors.white, fontSize: 13.0),
         ),
@@ -200,7 +200,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
           if (editEnabled) {
             app.groupsManager
                 .uploadGroupPic(
-                    widget.groupInfo, () => loadingOverlay.show(context: context, message: 'Updating group photo'))
+                    widget.groupInfo, () => loadingOverlay.show(context: context, message: app.strings.uploadingGroupPhoto))
                 .then((uploadedPhoto) {
               setState(() {
                 uploadedImageFile = uploadedPhoto;
@@ -209,7 +209,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
             }).catchError((e) {
               loadingOverlay.hide();
               DoItDialogs.showErrorDialog(
-                  context: context, message: 'Error while uploading group photo:\n${e.message}');
+                  context: context, message: '${app.strings.groupPhotoUploadErrMsg}:\n${e.message}');
             });
           }
         },
@@ -226,7 +226,6 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.center,
-//                    mainAxisSize: MainAxisSize.max,
                 children: editImageText,
               ),
             ),
@@ -250,7 +249,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  'Group ID: ',
+                  '${app.strings.groupId}: ',
                   style: Theme.of(context).textTheme.caption,
                 ),
                 Text(
@@ -271,7 +270,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
     return Row(
       children: <Widget>[
         Text(
-          'Group manager:\n ${widget.groupManager.displayName}',
+          '${app.strings.groupManager}:\n ${widget.groupManager.displayName}',
           style: Theme.of(context).textTheme.caption,
           overflow: TextOverflow.ellipsis,
           maxLines: 2,
@@ -287,14 +286,14 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
             DoItTextField(
               controller: _titleController,
-              label: 'Group title',
+              label: app.strings.groupTitleLable,
               enabled: editEnabled,
               maxLength: 15,
             ),
             DoItTextField(
               controller: _descriptionController,
               keyboardType: TextInputType.multiline,
-              label: 'Description',
+              label: app.strings.descriptionLabel,
               enabled: editEnabled,
               maxLength: 512,
             ),
@@ -331,14 +330,23 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
               onTap: () {
                 DoItDialogs.showConfirmDialog(
                   context: context,
-                  message: 'Are you sure you would like to remove ${shortUserInfo.displayName} from the group?',
-                  actionButtonText: 'Remove user',
+                  message: '${app.strings.confirmRemove} ${shortUserInfo.displayName} ${app.strings.fromTheGroup}?',
+                  actionButtonText: app.strings.removeMemberLable,
                   isWarning: true,
                 ).then((userConfirmed) {
                   if (userConfirmed) {
-                    app.groupsManager.deleteUserFromGroup(widget.groupInfo.groupID, shortUserInfo.userID);
-                    setState(() {
-                      _groupMembers.remove(shortUserInfo.userID);
+                    loadingOverlay.show(context: context, message: app.strings.removingGroupMember);
+                    app.groupsManager.deleteUserFromGroup(widget.groupInfo.groupID, shortUserInfo.userID).then((v) {
+                      loadingOverlay.hide();
+                      setState(() {
+                        _groupMembers.remove(shortUserInfo.userID);
+                      });
+                    }).catchError((error) {
+                      loadingOverlay.hide();
+                      DoItDialogs.showErrorDialog(
+                        context: context,
+                        message: '${app.strings.removeMemberFromGroupErrMsg}:\n ${error.message}',
+                      );
                     });
                   }
                 });

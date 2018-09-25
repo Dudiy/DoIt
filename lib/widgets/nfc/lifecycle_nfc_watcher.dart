@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:do_it/app.dart';
-import 'package:do_it/constants/should_be_sync.dart';
 import 'package:do_it/data_classes/task/task_info.dart';
 import 'package:do_it/data_managers/task_manager_exception.dart';
 import 'package:do_it/data_managers/task_manager_result.dart';
@@ -78,7 +77,6 @@ class _LifecycleNfcWatcherState extends State<LifecycleNfcWatcher> with WidgetsB
     });
   }
 
-  @ShouldBeSync()
   Future<void> _completeTask(taskId) async {
     TaskInfo taskInfo = await app.tasksManager.getTaskById(taskId);
     await app.tasksManager.completeTask(taskID: taskId, userWhoCompletedID: app.getLoggedInUserID()).then((dummyVal) {

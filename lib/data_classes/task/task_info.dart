@@ -109,7 +109,7 @@ class TaskInfo implements Task {
   set endTime(DateTime value) {
     DateTime newEndTime = value;
     if (startTime != null && newEndTime != null && startTime.isAfter(newEndTime))
-      throw ArgumentError('End time cannot be before start time');
+      throw ArgumentError(App.instance.strings.startTimeAfterEndTimeErrMsg);
     _endTime = value;
   }
 

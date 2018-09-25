@@ -304,7 +304,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  'Display name: ${app.loggedInUser.displayName}',
+                  '${app.strings.displayName}: ${app.loggedInUser.displayName}',
                   style: Theme.of(context).textTheme.caption,
                 ),
               ],
@@ -314,7 +314,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  'Email: ${userInfo == null ? "" : userInfo.email}',
+                  '${app.strings.email}: ${userInfo == null ? "" : userInfo.email}',
                   style: Theme.of(context).textTheme.caption,
                 ),
               ],
@@ -324,7 +324,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  'User ID: ',
+                  '${app.strings.userID}: ',
                   style: Theme.of(context).textTheme.caption,
                 ),
                 Text(
@@ -400,8 +400,8 @@ class UserSettingsPageState extends State<UserSettingsPage> {
           'message': message,
           'sentTime': DateTime.now(),
         })
-        .whenComplete(() => response = 'Your message has been sent to the developers. Thank you :)')
-        .catchError((error) => response = 'Error while sending message: ${error.toString()}');
+        .whenComplete(() => response = app.strings.msgSentToDevs)
+        .catchError((error) => response = '${app.strings.sendMsgToDevsErr}: ${error.toString()}');
 
     if (!mounted) return;
 

@@ -5,7 +5,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it/app.dart';
 import 'package:do_it/constants/db_constants.dart';
-import 'package:do_it/constants/should_be_sync.dart';
 import 'package:do_it/data_classes/group/group_info.dart';
 import 'package:do_it/data_classes/group/group_info_short.dart';
 import 'package:do_it/data_classes/group/group_utils.dart';
@@ -41,16 +40,18 @@ class GroupsManager {
   Future<List<String>> getMyGroupsIDsFromDB() async {
     ShortUserInfo loggedInUser = app.loggedInUser;
     if (loggedInUser == null) {
-      throw Exception('GroupManager: Cannot get all groups when a user is not logged in');
+      throw Exception('GroupManager: Cannot get all group IDs when a user is not logged in');
     }
     QuerySnapshot groupsQuerySnapshot = await _firestore.collection(GROUPS).getDocuments();
     return GroupUtils.conventDBGroupsToGroupIdList(loggedInUser.userID, groupsQuerySnapshot);
   }
 
-  @ShouldBeSync()
   Future<GroupInfo> getGroupInfoByID(String groupID) async {
+    // TODO delete
+//    DocumentSnapshot groupRef = await _firestore.document('$GROUPS/1').get();
+    // TODO uncomment
     DocumentSnapshot groupRef = await _firestore.document('$GROUPS/$groupID').get();
-    if (groupRef.data == null) throw ('GroupsManager: groupID \'$groupID\' was nof found in the DB');
+    if (groupRef.data == null) throw Exception('GroupsManager: groupID \'$groupID\' was not found in the DB');
     return GroupUtils.generateGroupInfoFromObject(groupRef.data);
   }
 
@@ -175,7 +176,6 @@ class GroupsManager {
     }
   }
 
-  @ShouldBeSync()
   Future<void> removeTaskFromGroup(String groupID, String taskID) async {
     print('groupID: $groupID - taskID:$taskID: in removeTaskFromGroup'); //TODO delete
     GroupInfo groupInfo = await getGroupInfoByID(groupID);

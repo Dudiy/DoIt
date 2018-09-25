@@ -144,7 +144,7 @@ class TaskCard extends StatelessWidget {
     onCheckChanged(true);
     app.tasksManager
         .completeTask(taskID: shortTaskInfo.taskID, userWhoCompletedID: app.loggedInUser.userID)
-        .whenComplete(() {
+        .then((v) {
       final String successMessage =
           TaskMethodResultUtils.message(TaskMethodResult.COMPLETE_SUCCESS, shortTaskInfo.title);
       final snackBar = SnackBar(
@@ -161,6 +161,7 @@ class TaskCard extends StatelessWidget {
           message: TaskMethodResultUtils.message(error.result),
         );
       }
+      onCheckChanged(false);
     });
   }
 

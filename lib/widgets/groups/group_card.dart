@@ -46,6 +46,12 @@ class GroupCard extends StatelessWidget {
           app.groupsManager.getGroupInfoByID(shortGroupInfo.groupID).then((groupInfo) {
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => SingleGroupPage(groupInfo), settings: RouteSettings(name: '/singleGroupPage')));
+          }).catchError((error) {
+            DoItDialogs.showErrorDialog(
+              context: context,
+              message: '${app.strings.getGroupInfoErrMsg}:\n ${error.message}',
+            );
+            print(error.message);
           });
         },
         child: Row(

@@ -57,7 +57,6 @@ class Notifier {
         },
       ),
     );
-    res = new http.Response("test", 400);
     return MapEntry(fcmToken, res);
   }
 }
