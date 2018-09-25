@@ -1,3 +1,4 @@
+import 'package:do_it/app.dart';
 import 'package:do_it/data_classes/task/eRecurringPolicies.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ class DoItRecurringPolicyField extends StatefulWidget {
 }
 
 class DoItRecurringPolicyFieldState extends State<DoItRecurringPolicyField> {
+  final App app = App.instance;
   eRecurringPolicy selectedPolicy = eRecurringPolicy.none;
 
   @override
@@ -68,7 +70,7 @@ class DoItRecurringPolicyFieldState extends State<DoItRecurringPolicyField> {
               crossAxisAlignment: WrapCrossAlignment.center,
               alignment: WrapAlignment.center,
               children: <Widget>[
-                Text('Repeat: '),
+                Text('${app.strings.repeat}: '),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: selector,
@@ -76,7 +78,7 @@ class DoItRecurringPolicyFieldState extends State<DoItRecurringPolicyField> {
               ],
             ))
         : DoItTextField(
-            label: 'Repeat',
+            label: app.strings.repeat,
             textAlign: TextAlign.center,
             enabled: false,
             initValue: RecurringPolicyUtils.policyToString(selectedPolicy),

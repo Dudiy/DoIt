@@ -1,5 +1,5 @@
-import 'dart:convert';
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:do_it/app.dart';
 import 'package:do_it/private.dart';
@@ -28,7 +28,7 @@ class Notifier {
     List<MapEntry<String, http.Response>> responses = await Future.wait(postNotificationFunctions);
     Iterable<MapEntry<String, http.Response>> badResponses = responses.where((res) => res.value.statusCode != 200);
     if (badResponses.length > 0) {
-      String exceptionMsg = 'Error while sending notifications, the following users did not get the notification:\n';
+      String exceptionMsg = '${App.instance.strings.sendNotificationsErrMsgPrefix}:\n';
       badResponses.forEach((entry) {
         exceptionMsg += '${destUsersFcmTokens[entry.key]}\n';
       });

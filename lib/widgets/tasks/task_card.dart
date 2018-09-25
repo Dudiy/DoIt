@@ -49,7 +49,7 @@ class TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String description = taskInfo.description.isEmpty ? 'No description entered' : taskInfo.description;
+    String description = taskInfo.description.isEmpty ? app.strings.noDescription : taskInfo.description;
     return Card(
       elevation: 5.0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
@@ -169,7 +169,7 @@ class TaskCard extends StatelessWidget {
     if (!_isCompletedTask()) throw Exception('User completed text is not valid for shortTaskInfo');
     CompletedTaskInfo completedTaskInfo = taskInfo as CompletedTaskInfo;
     String completedDateString = DoItTimeField.formatDateTime(completedTaskInfo.completedTime);
-    return Text('Completed by: ${completedTaskInfo.userWhoCompleted.displayName}, \non $completedDateString');
+    return Text('${app.strings.completedBy}: ${completedTaskInfo.userWhoCompleted.displayName}, \n${app.strings.completedOn} $completedDateString');
   }
 
   _getTaskTitle(BuildContext context) {

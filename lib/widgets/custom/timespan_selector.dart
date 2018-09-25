@@ -1,3 +1,4 @@
+import 'package:do_it/app.dart';
 import 'package:flutter/material.dart';
 
 class TimeSpanSelector extends StatefulWidget {
@@ -8,7 +9,7 @@ class TimeSpanSelector extends StatefulWidget {
     this.onTimeSelectionChanged,
     this.timeSpans,
   }) {
-    timeSpans.putIfAbsent(-1, () => 'please select');
+    timeSpans.putIfAbsent(-1, () => App.instance.strings.pleaseSelect);
   }
 
   @override

@@ -96,11 +96,17 @@ class _RootPageState extends State<RootPage> {
   }
 
   Future _signedOut() async {
-    App.instance.authenticator.signOut();
-    App.instance.resetThemeData();
-    await App.instance.setLoggedInUser(null);
-    setState(() {
-      authStatus = eAuthenticationStatus.NOT_SIGNED_IN;
+    await App.instance.setLoggedInUser(null).then((v) {
+      App.instance.resetThemeData();
+      App.instance.authenticator.signOut();
+      setState(() {
+        authStatus = eAuthenticationStatus.NOT_SIGNED_IN;
+      });
+    }).catchError((error) {
+      DoItDialogs.showErrorDialog(
+        context: context,
+        message: '${App.instance.strings.signOutErrMsg}:\n${error.message}',
+      );
     });
   }
 }

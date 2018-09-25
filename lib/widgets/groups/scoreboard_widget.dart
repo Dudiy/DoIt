@@ -17,7 +17,7 @@ class ScoreBoardState extends State<ScoreBoard> {
   final App app = App.instance;
   int numDaysSelected = -1;
   TimeSpanSelector _timeSpanSelector;
-  List<Widget> _scoreBoardBody = [Text('fetching score board from DB...')];
+  List<Widget> _scoreBoardBody = [Text(App.instance.strings.fetchingScoreboard)];
 
   @override
   void initState() {
@@ -30,10 +30,10 @@ class ScoreBoardState extends State<ScoreBoard> {
         });
       },
       timeSpans: {
-        1: 'today',
-        7: 'this week',
-        31: 'this month',
-        0: 'all time',
+        1: app.strings.today,
+        7: app.strings.thisWeek,
+        31: app.strings.thisMonth,
+        0: app.strings.allTime,
       },
     );
     getScoreBoard();
@@ -49,7 +49,7 @@ class ScoreBoardState extends State<ScoreBoard> {
     List<Widget> list = new List();
     list.add(_timeSpanSelector);
     if (numDaysSelected == -1) {
-      list.add(Text('Please select a time span'));
+      list.add(Text(app.strings.selectTimespanPrompt));
       setState(() => _scoreBoardBody = list);
     } else {
       DateTime fromDate = _calculateFromDate();

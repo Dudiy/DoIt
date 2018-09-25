@@ -71,9 +71,9 @@ class GroupCard extends StatelessWidget {
                   Wrap(
                     alignment: WrapAlignment.start,
                     children: <Widget>[
-                      Text('Members: ${shortGroupInfo.members.length.toString()}'),
+                      Text('${app.strings.members}: ${shortGroupInfo.members.length.toString()}'),
                       VerticalDivider(),
-                      Text('Tasks: ${shortGroupInfo.tasksPerUser[app.getLoggedInUser().userID].toString()}'),
+                      Text('${app.strings.tasks}: ${shortGroupInfo.tasksPerUser[app.getLoggedInUser().userID].toString()}'),
                     ],
                   )
                 ],
@@ -85,7 +85,7 @@ class GroupCard extends StatelessWidget {
                 children: <Widget>[
                   managerIcon,
                   IconButton(
-                    tooltip: 'Group scoreboard',
+                    tooltip: app.strings.scoreboard,
                     icon: Image.asset(
                       PODIUM_ICON,
                       height: 35.0,

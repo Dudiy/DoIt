@@ -13,7 +13,7 @@ class DoItTimeField extends StatefulWidget {
 
   static String formatDateTime(DateTime dateTime) {
     return dateTime == null
-        ? 'Time not set'
+        ? App.instance.strings.timeNotSet
         : '${dateTime.day}/${dateTime.month}/${dateTime.year} - '
         '${dateTime.hour > 9 ? dateTime.hour : '0${dateTime.hour}'}:'
         '${dateTime.minute > 9 ? dateTime.minute : '0${dateTime.minute}'}';
@@ -24,7 +24,7 @@ class DoItTimeField extends StatefulWidget {
     this.initDateTime,
     this.label,
     this.validator,
-    this.validationMessage = 'value is invalid',
+    this.validationMessage,
     this.enabled = true,
   });
 
@@ -35,7 +35,7 @@ class DoItTimeField extends StatefulWidget {
 }
 
 class DoItTimeFieldState extends State<DoItTimeField> {
-  App app = App.instance;
+  final App app = App.instance;
   TextEditingController controller = new TextEditingController();
   DateTime _selectedDate;
   bool isRtl;
@@ -87,7 +87,7 @@ class DoItTimeFieldState extends State<DoItTimeField> {
 
   String _formatDateTime(DateTime dateTime) {
     return dateTime == null
-        ? 'Time not set'
+        ? app.strings.timeNotSet
         : '${dateTime.day}/${dateTime.month}/${dateTime.year} - '
         '${dateTime.hour > 9 ? dateTime.hour : '0${dateTime.hour}'}:'
         '${dateTime.minute > 9 ? dateTime.minute : '0${dateTime.minute}'}';
@@ -109,7 +109,7 @@ class DoItTimeFieldState extends State<DoItTimeField> {
                     enabled: false,
                     validator: (String ignoredString) {
                       if (widget.validator != null && !widget.validator(_selectedDate)) {
-                        return widget.validationMessage;
+                        return widget.validationMessage ?? app.strings.invalidValue;
                       }
                     },
                     decoration: InputDecoration(

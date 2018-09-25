@@ -51,7 +51,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         backgroundColor: app.themeData.primaryColor,
-        title: Text('App settings'),
+        title: Text(app.strings.appSettings),
       ),
       body: SafeArea(
         child: Container(
@@ -79,32 +79,32 @@ class UserSettingsPageState extends State<UserSettingsPage> {
                     children: <Widget>[
                       DoItRaisedButtonWithIcon(
                         icon: Icon(Icons.color_lens, color: app.themeData.primaryColor),
-                        text: const Text('Change theme'),
+                        text: Text(app.strings.changeTheme),
                         onPressed: () async => _changeThemeClicked(context),
                       ),
                       DoItRaisedButtonWithIcon(
                         icon: Icon(Icons.email, color: app.themeData.primaryColor),
-                        text: const Text('Message the developers'),
+                        text: Text(app.strings.messageDevs),
                         onPressed: () => _sendMessageToDevsClicked(context),
                       ),
                       DoItRaisedButtonWithIcon(
                         icon: Icon(Icons.autorenew, color: app.themeData.primaryColor),
-                        text: const Text('Reset password'),
+                        text: Text(app.strings.resetPassword),
                         onPressed: () async {
                           final Auth.FirebaseUser currentUser = await app.authenticator.getCurrentUser();
                           app.authenticator.sendPasswordResetEmail(currentUser.email);
                           DoItDialogs.showNotificationDialog(
                             context: context,
-                            title: 'Reset password',
-                            body: 'Reset password email has been sent to ${userInfo?.email}',
+                            title: app.strings.resetPassword,
+                            body: '${app.strings.resetPasswordSentTo} ${userInfo?.email}',
                           );
                         },
                       ),
                       DoItRaisedButtonWithIcon(
                         icon: Icon(Icons.exit_to_app, color: app.themeData.primaryColor),
-                        text: const Text('Sign out'),
+                        text: Text(app.strings.signOut),
                         onPressed: () {
-                          DoItDialogs.showConfirmDialog(context: context, message: 'Sign out?').then((confirmed) {
+                          DoItDialogs.showConfirmDialog(context: context, message: '${app.strings.signOut}?').then((confirmed) {
                             if (confirmed) {
                               Navigator.pop(context);
                               widget.onSignedOut();
@@ -115,7 +115,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
                       Expanded(child: Container()),
                       Divider(),
                       DoItRaisedButtonWithIcon(
-                        text: const Text('Delete user', style: TextStyle(color: Colors.white)),
+                        text: Text(app.strings.deleteAccount, style: TextStyle(color: Colors.white)),
                         icon: Icon(Icons.delete, color: Colors.white),
                         color: Theme.of(context).errorColor,
                         onPressed: () => _deleteUserClicked(context),
@@ -142,7 +142,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    'Select Theme',
+                    app.strings.selectTheme,
                     style: Theme.of(context)
                         .textTheme
                         .title
@@ -190,7 +190,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
   void _sendMessageToDevsClicked(BuildContext context) {
     DoItDialogs.showUserInputDialog(
       context: context,
-      title: 'What would you like to tell us?',
+      title: app.strings.composeMsgToDevsTitle,
       inputWidgets: [
         DoItTextField(
           label: '',
@@ -208,13 +208,13 @@ class UserSettingsPageState extends State<UserSettingsPage> {
   void _deleteUserClicked(BuildContext context) {
     DoItDialogs.showConfirmDialog(
       context: context,
-      message: 'are you sure you want to delete this account? this cannot be undone',
+      message: app.strings.deleteAccountConfirmMsg,
       isWarning: true,
-      actionButtonText: 'Delete accout',
+      actionButtonText: app.strings.deleteAccount,
     ).then(
       (deleteConfirmed) {
         if (deleteConfirmed) {
-          loadingOverlay.show(context: context, message: 'deleting this account...');
+          loadingOverlay.show(context: context, message: app.strings.deletingAccount);
           app.usersManager.deleteUser().whenComplete(() {
             loadingOverlay.hide();
             widget.onSignedOut();
@@ -240,7 +240,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
           color: Colors.black54,
         ),
         child: Text(
-          'tap to change',
+          app.strings.tapToChange,
           textAlign: TextAlign.center,
           style: TextStyle(color: Colors.white, fontSize: 13.0),
         ),
@@ -279,7 +279,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
 
   void _profilePicClicked() {
     app.usersManager
-        .uploadProfilePic(() => loadingOverlay.show(context: context, message: 'Updating profile picture...'))
+        .uploadProfilePic(() => loadingOverlay.show(context: context, message: app.strings.uploadingImage))
         .then((uploadedPhoto) {
       setState(() {
         uploadedImageFile = uploadedPhoto;
@@ -288,7 +288,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
       loadingOverlay.hide();
     }).catchError((e) {
       loadingOverlay.hide();
-      DoItDialogs.showErrorDialog(context: context, message: 'Error while uploading profile photo:\n${e.message}');
+      DoItDialogs.showErrorDialog(context: context, message: '${app.strings.uploadPhotoErrMsg}:\n${e.message}');
     });
   }
 

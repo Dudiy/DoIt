@@ -93,9 +93,9 @@ class MyGroupsPageState extends State<MyGroupsPage> {
     List<ShortTaskInfo> allTasks = await app.tasksManager.getAllMyTasks();
     String tasksRemainingString = allTasks.length > 0
         ? allTasks.length == 1
-            ? 'Hi ${app.loggedInUser.displayName}! \nYou only have one task remaining in all groups, lets get to work...'
-            : 'Hi ${app.loggedInUser.displayName}! \nYou have a total of ${allTasks.length.toString()} tasks remaining in all groups, lets get to work...'
-        : 'Awsome! you have no tasks to do :)';
+            ? '${app.strings.hi} ${app.loggedInUser.displayName}! \n${app.strings.oneTaskRemainingMsg}'
+            : '${app.strings.hi} ${app.loggedInUser.displayName}! \n${allTasks.length.toString()} ${app.strings.allTasksRemainingMsg}'
+        : app.strings.noTasksRemainingMsg;
     if (!mounted) return null;
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -132,7 +132,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
             LOADING_ANIMATION,
             width: 50.0,
           ),
-          Text('Fetching groups from server...'),
+          Text(app.strings.fetchingGroups),
         ],
       );
 
@@ -147,7 +147,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
                 Image.asset(MINION_SAD, scale: 1.5),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text('You are not in any group yet',
+                  child: Text(app.strings.notInAnyGroup,
                       style: Theme.of(context).textTheme.title, textAlign: TextAlign.center),
                 ),
                 SizedBox(height: 100.0),
@@ -185,17 +185,17 @@ class MyGroupsPageState extends State<MyGroupsPage> {
       inputWidgets: [
         DoItTextField(
           controller: _groupTitleController,
-          label: 'Title',
+          label: app.strings.titleLabel,
           isRequired: true,
           maxLength: 15,
         ),
         DoItTextField(
           controller: _groupDescriptionController,
-          label: 'Description',
+          label: app.strings.descriptionLabel,
           isRequired: false,
         ),
       ],
-      title: 'New Group',
+      title: app.strings.newGroupTitle,
       onSubmit: () async {
         await app.groupsManager.addNewGroup(
           title: _groupTitleController.text,
@@ -217,7 +217,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
             child: Image.asset(LOADING_ANIMATION),
           ),
           SizedBox(height: 20.0),
-          Text('Fetching groups from server...', textAlign: TextAlign.center),
+          Text(app.strings.fetchingGroups, textAlign: TextAlign.center),
         ],
       );
     } else {

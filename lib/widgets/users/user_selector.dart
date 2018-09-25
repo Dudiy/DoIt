@@ -16,6 +16,7 @@ class UserSelector extends StatefulWidget {
 }
 
 class UserSelectorState extends State<UserSelector> {
+  final App app = App.instance;
   Map<String, dynamic> _updatedUsersState;
 
   @override
@@ -31,7 +32,7 @@ class UserSelectorState extends State<UserSelector> {
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Text('Select assigned members', style: Theme.of(context).textTheme.title),
+          child: Text(app.strings.selectAssignedMembersTitle, style: Theme.of(context).textTheme.title),
         ),
         Divider(color: Colors.black),
         Expanded(
@@ -51,7 +52,7 @@ class UserSelectorState extends State<UserSelector> {
                         onChanged: (checked) {
                           if (!checked && _numSelected == 1) {
                             DoItDialogs.showErrorDialog(
-                                context: context, message: 'At least one user must be selected');
+                                context: context, message: app.strings.atLeastOneMustBeSelected);
                           } else {
                             checked ? _numSelected++ : _numSelected--;
                             setState(() {
@@ -73,8 +74,8 @@ class UserSelectorState extends State<UserSelector> {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: RaisedButton(
-            child: Text('Update'),
-            color: App.instance.themeData.primaryColor,
+            child: Text(app.strings.update),
+            color: app.themeData.primaryColor,
             textColor: Colors.white,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
             onPressed: () {

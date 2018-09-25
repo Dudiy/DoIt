@@ -1,4 +1,5 @@
 import 'package:do_it/app.dart';
+import 'package:flutter/src/widgets/framework.dart';
 
 class Strings {
   final App app = App.instance;
@@ -356,6 +357,78 @@ class Strings {
   get deleteTaskErrMsg => 'Error while trying to delete task';
 
   get deletingTask => "Deleting task...";
+
+  get signOutErrMsg => 'Error while signing out';
+
+  String get selectAssignedMembersTitle => 'Select assigned members';
+
+  get atLeastOneMustBeSelected => 'At least one user must be selected';
+
+  String get update => 'Update';
+
+  get repeat => 'Repeat';
+
+  String get invalidEmail => 'Invalid email address';
+
+  get timeNotSet => 'Time not set';
+
+  get pleaseSelect => 'please select';
+
+  get members => 'Members';
+
+  get tasks => 'Tasks';
+
+  get hi => 'Hi';
+
+  get oneTaskRemainingMsg => 'You only have one task remaining in all groups, lets get to work...';
+
+  get allTasksRemainingMsg => '- thats all the tasks you have remaining in all groups, lets get to work...';
+
+  get noTasksRemainingMsg => 'Awsome! you have no tasks to do :)';
+
+  String get fetchingGroups => 'Fetching groups from server...';
+
+  String get notInAnyGroup => 'You are not in any group yet';
+
+  get newGroupTitle => 'New Group';
+
+  String get fetchingScoreboard => 'fetching score board from DB...';
+
+  get today => 'today';
+
+  get thisWeek => 'this week';
+
+  get thisMonth => 'this month';
+
+  get noDescription => 'No description entered';
+
+  get completedBy => 'Completed by';
+
+  get completedOn => 'Completed on';
+
+  String get appSettings => 'App settings';
+
+  String get changeTheme => 'Change theme';
+
+  String get messageDevs => 'Message the developers';
+
+  get resetPasswordSentTo => 'Reset password email has been sent to';
+
+  String get signOut => 'Sign out';
+
+  String get deleteAccount => 'Delete account';
+
+  String get selectTheme => 'Select Theme';
+
+  get composeMsgToDevsTitle => 'What would you like to tell us?';
+
+  get deleteAccountConfirmMsg => 'are you sure you want to delete this account? this cannot be undone';
+
+  get deletingAccount => 'deleting this account...';
+
+  get uploadPhotoErrMsg => 'Error while uploading photo';
+
+  get sendNotificationsErrMsgPrefix => 'Error while sending notifications, the following users did not get the notification';
 
   void setLanguage(String languageCode) {
     switch (languageCode) {

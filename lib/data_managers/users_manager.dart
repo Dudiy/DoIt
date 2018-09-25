@@ -49,12 +49,11 @@ class UsersManager {
     /* delete from firebase storage */
     String pathToDelete = "$USERS/$userID/profile.jpg";
     StorageReference storageRef = app.firebaseStorage.ref().child(pathToDelete);
-    try {
-      await storageRef.delete();
+    await storageRef.delete().then((v) {
       print("GroupManager: deleted profile picture from firebase storage in path: " + pathToDelete);
-    } catch (e) {
+    }).catchError((error) {
       print("GroupManager: failed to delete profile picture from firebase storage in path: " + pathToDelete);
-    }
+    });
 
     /* delete from firebase db */
     await app.groupsManager.deleteAllGroupsUserIsManagerOf(userID);

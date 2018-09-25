@@ -55,6 +55,7 @@ class RegisterPageState extends State<RegisterPage> {
                   controller: _passwordController,
                   label: app.strings.password,
                   isRequired: true,
+                  obscureText: true,
                   fieldValidator: (String value) => value.length >= 6,
                   validationErrorMsg: app.strings.passwordLenValidationMsg,
                 ),
@@ -75,21 +76,23 @@ class RegisterPageState extends State<RegisterPage> {
                     ),
                     onPressed: () async {
                       if (_formKey.currentState.validate()) {
-                        try {
-                          FocusScope.of(context).requestFocus(new FocusNode());
-                          loadingOverlay.show(context: context, message: app.strings.registeringNewUserMsg);
-                          await app.authenticator.registerUserWithEmailAndPassword(
-                            email: _emailController.text,
-                            password: _passwordController.text,
-                            displayName: _displayNameController.text,
-                          );
+                        FocusScope.of(context).requestFocus(new FocusNode());
+                        loadingOverlay.show(context: context, message: app.strings.registeringNewUserMsg);
+                        await app.authenticator
+                            .registerUserWithEmailAndPassword(
+                          email: _emailController.text,
+                          password: _passwordController.text,
+                          displayName: _displayNameController.text,
+                        )
+                            .then((v) {
                           loadingOverlay.hide();
                           Navigator.pop(context);
                           widget.onSignedIn();
-                        } catch (e) {
+                        }).catchError((error) {
                           loadingOverlay.hide();
-                          DoItDialogs.showErrorDialog(context: context, message: '${app.strings.registrationErrMsg} \n${e.message}');
-                        }
+                          DoItDialogs.showErrorDialog(
+                              context: context, message: '${app.strings.registrationErrMsg} \n${error.message}');
+                        });
                       }
                     },
                   ),

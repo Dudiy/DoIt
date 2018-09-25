@@ -32,11 +32,7 @@ class Authenticator {
 
     print('$user has signed in using google \n Adding to firebase...');
     await App.instance.usersManager.addUser(user);
-    try {
-      await App.instance.setLoggedInUser(user);
-    } catch (e) {
-      throw e;
-    }
+    await App.instance.setLoggedInUser(user);
     print('${user.displayName} wass added to firebase');
     return user;
   }
@@ -52,12 +48,7 @@ class Authenticator {
 
     final FirebaseUser currentUser = await _firebaseAuth.currentUser();
     assert(user.uid == currentUser.uid);
-
-    try {
-      await App.instance.setLoggedInUser(user);
-    } catch (e) {
-      throw e;
-    }
+    await App.instance.setLoggedInUser(user);
     print('$user has signed in using email and password');
     return user;
   }
