@@ -38,6 +38,7 @@ class _RootPageState extends State<RootPage> {
         projectID: 'doit-grouptaskmanager',
       ),
     );
+    App.instance.locale =  Localizations.localeOf(context);
     await App.instance.init(app);
     // TODO implement handlers
     App.instance.firebaseMessaging.configure(
@@ -68,7 +69,6 @@ class _RootPageState extends State<RootPage> {
 
   @override
   Widget build(BuildContext context) {
-    App.instance.locale = Localizations.localeOf(context);
     // disable landscape orientation
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
@@ -96,6 +96,7 @@ class _RootPageState extends State<RootPage> {
   }
 
   Future _signedOut() async {
+    App.instance.locale = Localizations.localeOf(context);
     await App.instance.setLoggedInUser(null).then((v) {
       App.instance.resetThemeData();
       App.instance.authenticator.signOut();

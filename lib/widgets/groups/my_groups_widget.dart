@@ -46,24 +46,29 @@ class MyGroupsPageState extends State<MyGroupsPage> {
   /// update the change groups from db
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomPadding: false,
-      body: Container(
-        child: _renderMyGroupBody(),
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            fit: BoxFit.cover,
-            image: AssetImage(app.bgImagePath),
+    return Directionality(
+      textDirection: app.textDirection,
+      child: SafeArea(
+        child: Scaffold(
+          resizeToAvoidBottomPadding: false,
+          body: Container(
+            child: _renderMyGroupBody(),
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: AssetImage(app.bgImagePath),
+              ),
+            ),
           ),
+          floatingActionButton: _myGroups == null || _allTasksWidget == null
+              ? null
+              : FloatingActionButton(
+                  backgroundColor: app.themeData.primaryColor,
+                  child: Icon(Icons.add),
+                  onPressed: () => _showAddGroupDialog(),
+                ),
         ),
       ),
-      floatingActionButton: _myGroups == null || _allTasksWidget == null
-          ? null
-          : FloatingActionButton(
-              backgroundColor: app.themeData.primaryColor,
-              child: Icon(Icons.add),
-              onPressed: () => _showAddGroupDialog(),
-            ),
     );
   }
 
@@ -71,6 +76,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
   /// get all groups from db
   ///
   Future<void> _getMyGroupsFromDB([List<ShortGroupInfo> myGroups]) async {
+    if (app.loggedInUser == null) return;
     await _getAllTasksCount().then((allTasksCount) async {
       if (myGroups == null) {
         myGroups = await app.groupsManager.getMyGroupsFromDB().catchError((e) {
@@ -90,6 +96,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
 
   /// tasks count message on the top of home screen
   Future<Widget> _getAllTasksCount() async {
+    if (app.loggedInUser == null) return null;
     List<ShortTaskInfo> allTasks = await app.tasksManager.getAllMyTasks();
     String tasksRemainingString = allTasks.length > 0
         ? allTasks.length == 1

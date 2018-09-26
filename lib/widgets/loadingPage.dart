@@ -14,7 +14,7 @@ class LoadingPage extends StatelessWidget {
             Column(
               children: <Widget>[
                 Image.asset(LOADING_ANIMATION, height: 100.0, width: 100.0),
-                Text(App.instance.strings.loadingPage),
+//                Text(App.instance.strings.loadingPage),
               ],
             ),
           ],

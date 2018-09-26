@@ -8,6 +8,7 @@ import 'package:do_it/data_classes/user/user_info.dart';
 import 'package:do_it/data_classes/user/user_info_utils.dart';
 import 'package:do_it/widgets/custom/dialog_generator.dart';
 import 'package:do_it/widgets/custom/imageContainer.dart';
+import 'package:do_it/widgets/custom/language_selector_dialog.dart';
 import 'package:do_it/widgets/custom/loadingOverlay.dart';
 import 'package:do_it/widgets/custom/raised_button_with_icon.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
@@ -46,85 +47,97 @@ class UserSettingsPageState extends State<UserSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      resizeToAvoidBottomPadding: false,
-      appBar: AppBar(
-        backgroundColor: app.themeData.primaryColor,
-        title: Text(app.strings.appSettings),
-      ),
-      body: SafeArea(
-        child: Container(
-          decoration: app.getBackgroundImage(),
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Card(
-                color: app.themeData.primaryColorLight.withAlpha(200),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-                child: Row(
-                  children: <Widget>[
-                    _profilePicture(),
-                    _userDetails(),
-                  ],
-                ),
-              ),
-              Divider(),
-              Expanded(
-                child: Container(
-                  padding: EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      DoItRaisedButtonWithIcon(
-                        icon: Icon(Icons.color_lens, color: app.themeData.primaryColor),
-                        text: Text(app.strings.changeTheme),
-                        onPressed: () async => _changeThemeClicked(context),
-                      ),
-                      DoItRaisedButtonWithIcon(
-                        icon: Icon(Icons.email, color: app.themeData.primaryColor),
-                        text: Text(app.strings.messageDevs),
-                        onPressed: () => _sendMessageToDevsClicked(context),
-                      ),
-                      DoItRaisedButtonWithIcon(
-                        icon: Icon(Icons.autorenew, color: app.themeData.primaryColor),
-                        text: Text(app.strings.resetPassword),
-                        onPressed: () async {
-                          final Auth.FirebaseUser currentUser = await app.authenticator.getCurrentUser();
-                          app.authenticator.sendPasswordResetEmail(currentUser.email);
-                          DoItDialogs.showNotificationDialog(
-                            context: context,
-                            title: app.strings.resetPassword,
-                            body: '${app.strings.resetPasswordSentTo} ${userInfo?.email}',
-                          );
-                        },
-                      ),
-                      DoItRaisedButtonWithIcon(
-                        icon: Icon(Icons.exit_to_app, color: app.themeData.primaryColor),
-                        text: Text(app.strings.signOut),
-                        onPressed: () {
-                          DoItDialogs.showConfirmDialog(context: context, message: '${app.strings.signOut}?').then((confirmed) {
-                            if (confirmed) {
-                              Navigator.pop(context);
-                              widget.onSignedOut();
-                            }
-                          });
-                        },
-                      ),
-                      Expanded(child: Container()),
-                      Divider(),
-                      DoItRaisedButtonWithIcon(
-                        text: Text(app.strings.deleteAccount, style: TextStyle(color: Colors.white)),
-                        icon: Icon(Icons.delete, color: Colors.white),
-                        color: Theme.of(context).errorColor,
-                        onPressed: () => _deleteUserClicked(context),
-                      ),
-                    ],
+    return Directionality(
+      textDirection: app.textDirection,
+      child: SafeArea(
+        child: Scaffold(
+          key: _scaffoldKey,
+          resizeToAvoidBottomPadding: false,
+          appBar: AppBar(
+            backgroundColor: app.themeData.primaryColor,
+            title: Text(app.strings.appSettings),
+          ),
+          body: SafeArea(
+            child: Container(
+              decoration: app.getBackgroundImage(),
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Card(
+                    color: app.themeData.primaryColorLight.withAlpha(200),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+                    child: Row(
+                      children: <Widget>[
+                        _profilePicture(),
+                        _userDetails(),
+                      ],
+                    ),
                   ),
-                ),
+                  Divider(),
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          DoItRaisedButtonWithIcon(
+                            icon: Icon(Icons.color_lens, color: app.themeData.primaryColor),
+                            text: Text(app.strings.changeTheme),
+                            onPressed: () async => _changeThemeClicked(context),
+                          ),
+                          DoItRaisedButtonWithIcon(
+                            icon: Icon(Icons.language, color: app.themeData.primaryColor),
+                            text: Text(app.strings.changeLanguage),
+                            onPressed: () async => LanguageSelector.showAsDialog(context).then((v){
+                              setState(() {});
+                            }),
+                          ),
+                          DoItRaisedButtonWithIcon(
+                            icon: Icon(Icons.email, color: app.themeData.primaryColor),
+                            text: Text(app.strings.messageDevs),
+                            onPressed: () => _sendMessageToDevsClicked(context),
+                          ),
+                          DoItRaisedButtonWithIcon(
+                            icon: Icon(Icons.autorenew, color: app.themeData.primaryColor),
+                            text: Text(app.strings.resetPassword),
+                            onPressed: () async {
+                              final Auth.FirebaseUser currentUser = await app.authenticator.getCurrentUser();
+                              app.authenticator.sendPasswordResetEmail(currentUser.email);
+                              DoItDialogs.showNotificationDialog(
+                                context: context,
+                                title: app.strings.resetPassword,
+                                body: '${app.strings.resetPasswordSentTo} ${userInfo?.email}',
+                              );
+                            },
+                          ),
+                          DoItRaisedButtonWithIcon(
+                            icon: Icon(Icons.exit_to_app, color: app.themeData.primaryColor),
+                            text: Text(app.strings.signOut),
+                            onPressed: () {
+                              DoItDialogs.showConfirmDialog(context: context, message: '${app.strings.signOut}?').then((confirmed) {
+                                if (confirmed) {
+                                  Navigator.pop(context);
+                                  widget.onSignedOut();
+                                }
+                              });
+                            },
+                          ),
+                          Expanded(child: Container()),
+                          Divider(),
+                          DoItRaisedButtonWithIcon(
+                            text: Text(app.strings.deleteAccount, style: TextStyle(color: Colors.white)),
+                            icon: Icon(Icons.delete, color: Colors.white),
+                            color: Theme.of(context).errorColor,
+                            onPressed: () => _deleteUserClicked(context),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),

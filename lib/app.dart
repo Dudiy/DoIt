@@ -78,10 +78,13 @@ class App {
       // login success
       _loggedInUser = userFromDB;
       // after login success get user's theme
-      usersManager.getFullUserInfo(user.uid).then((userInfo) {
+      await usersManager.getFullUserInfo(user.uid).then((userInfo) {
         if (backgroundImages[userInfo.bgImage] != null) {
           bgImagePath = backgroundImages[userInfo.bgImage]["assetPath"];
           themeData = backgroundImages[userInfo.bgImage]["themeData"];
+        }
+        if (userInfo.localeStr != null) {
+          locale = Strings.localeParse(userInfo.localeStr);
         }
       });
     }
@@ -127,6 +130,8 @@ class App {
               bgImagePath = backgroundImages[userInfo.bgImage]["assetPath"];
               themeData = backgroundImages[userInfo.bgImage]["themeData"];
             }
+            if (userInfo.localeStr != null)
+                locale = Strings.localeParse(userInfo.localeStr);
             _loggedInUser = userInfo.getShortUserInfo();
           }
         });
@@ -146,6 +151,7 @@ class App {
 
   set locale(Locale value) {
     assert(value != null);
+
     _locale = value;
     strings == null ? strings = new Strings(locale.languageCode) : strings.setLanguage(value.languageCode);
   }

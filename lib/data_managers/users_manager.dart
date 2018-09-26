@@ -10,6 +10,7 @@ import 'package:do_it/data_classes/user/user_info_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Auth;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:meta/meta.dart';
 
 class UsersManager {
   Firestore _firestore;
@@ -18,7 +19,12 @@ class UsersManager {
   UsersManager(this._firestore);
 
   // [] on parameter to make them optional
-  Future<void> addUser(Auth.FirebaseUser user, [String displayName = "", String photoUrl = ""]) async {
+  Future<void> addUser({
+    @required Auth.FirebaseUser user,
+    String displayName = "",
+    String photoUrl = "",
+    String localeStr,
+  }) async {
     DocumentSnapshot documentSnapshot = await App.instance.firestore.document('$USERS/${user.uid}').get();
     bool isUserAlreadyInDB = documentSnapshot.data != null;
     String photoUrl = "";
@@ -32,13 +38,13 @@ class UsersManager {
 
     // create new userInfo from parameters
     UserInfo userInfo = new UserInfo(
-      userID: user.uid,
-      displayName: user.displayName ?? displayName,
-      fcmToken: fcmToken,
-      email: user.email,
-      photoUrl: photoUrl,
-      bgImage: bgImage,
-    );
+        userID: user.uid,
+        displayName: user.displayName ?? displayName,
+        fcmToken: fcmToken,
+        email: user.email,
+        photoUrl: photoUrl,
+        bgImage: bgImage,
+        localeStr: localeStr);
     await _firestore.document('$USERS/${user.uid}').setData(UserUtils.generateObjectFromUserInfo(userInfo));
   }
 
@@ -130,6 +136,15 @@ class UsersManager {
   Future<void> updateBgImage(String userID, String newImageName) async {
     App.instance.firestore.document('$USERS/$userID').updateData({
       'bgImage': newImageName,
+    });
+  }
+
+  /// update the locale value in the DB, if parameter is null will take app.locale value
+  Future<void> updateLocale([String newLocale]) async {
+    if (app.loggedInUser == null) return;
+    String userID = app.loggedInUser.userID;
+    App.instance.firestore.document('$USERS/$userID').updateData({
+      'localeStr': newLocale ?? app.locale.toString(),
     });
   }
 }

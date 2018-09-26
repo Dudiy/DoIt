@@ -62,7 +62,9 @@ flutter:
     - assets/images/bg_images/green_circuit.png
     - assets/images/bg_images/red_sun.jpg
     - assets/images/scan_nfc.png
-
+    - assets/icons_and_buttons/usa_flag.png
+    - assets/icons_and_buttons/russia_flag.png
+    - assets/icons_and_buttons/israel_flag.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.

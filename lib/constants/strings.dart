@@ -1,10 +1,11 @@
 import 'package:do_it/app.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/material.dart';
 
 class Strings {
   final App app = App.instance;
   Map<String, String> _currentLanguageMap;
 
+  //region language mappings
   final Map<String, String> _english = {
     // =================================================================
     // ===========================  General  ===========================
@@ -133,7 +134,7 @@ class Strings {
     'today': 'today',
     'thisWeek': 'this week',
     'thisMonth': 'this month',
-
+    'selectLanguageTitle': 'Select Language',
     // ~~~ Notification messages ~~~
     'notificationFromGroupTitle': 'Notification from group',
     'sendNotificationTitle': 'Send notification',
@@ -190,7 +191,8 @@ class Strings {
     'leaveGroupErrorPrefixMsg': 'Error while trying to leave group, please try again.\n\nException details:\n',
     'uploadPhotoErrMsg': 'Error while uploading photo, please try again.\n\nException details:\n',
     'sendMsgToDevsErr': 'Error while sending message, please try again.\n\nException details:\n',
-    'taskNotUpdatedErrMsg': 'Could not update task due to the following error, please try again.\n\nException details:\n',
+    'taskNotUpdatedErrMsg':
+        'Could not update task due to the following error, please try again.\n\nException details:\n',
     'getGroupInfoErrMsg': 'Error while trying to get group info, please try again.\n\nException details:\n',
     'parentGroupNotFoundErrMsg': 'Group containig the task was not found',
     'removeMemberFromGroupErrMsg':
@@ -198,7 +200,8 @@ class Strings {
     'editGroupInfoErrMsg':
         'Error while updating group info, the group info will not be updated, please try again.\n\nException details:\n',
     'deleteGroupErrMsg': 'Error while deleting group, please try again.\n\nException details:\n',
-    'scoreBoardFetchErrMsg': 'Error while trying to get the group scoreboard, please try again.\n\nException details:\n',
+    'scoreBoardFetchErrMsg':
+        'Error while trying to get the group scoreboard, please try again.\n\nException details:\n',
     'addMemberErrMsgPrefix': 'Error while trying to add new member, please try again.\n\nException details:\n',
     'openTaskDetailsPageErrMsg':
         'Error while trying to open task details page, please try again.\n\nException details:\n',
@@ -212,6 +215,14 @@ class Strings {
     'registrationErrMsg': 'Error while trying to register a new user, please try again.\n\nException details:\n',
     'loginWithGoogleErrMsg': 'Error while trying to log in with google, please try again.\n\nInner exception:\n',
     'fieldCannotBeEmpty': 'This field cannot be empty',
+
+    // =================================================================
+    // ==========================  Languages  ==========================
+    // =================================================================
+    'hebrew': 'Hebrew',
+    'english': 'English',
+    'russian': 'Russian',
+    'changeLanguage': 'Change language',
   };
 
   final Map<String, String> _hebrew = {
@@ -335,6 +346,7 @@ class Strings {
     'today': 'היום',
     'thisWeek': 'השבוע',
     'thisMonth': 'החודש',
+    'selectLanguageTitle': 'בחר/י שפה',
 
     // ~~~ Notification messages ~~~
     'notificationFromGroupTitle': 'עדכון מקבוצה',
@@ -410,65 +422,115 @@ class Strings {
     'registrationErrMsg': 'אירעה שגיאה בעת רישום משתמש חדש, אנא נסה/י שוב.\n\nהודעת שגיאה:\n',
     'loginWithGoogleErrMsg': 'אירעה שגיאה בעת התחברות באמצעות Google, אנא נסה/י שוב.\n\nהודעת שגיאה:\n',
     'fieldCannotBeEmpty': 'שדה זה הוא שדה חובה',
+
+    // =================================================================
+    // ==========================  Languages  ==========================
+    // =================================================================
+    'hebrew': 'עברית',
+    'english': 'אנגלית',
+    'russian': 'רוסית',
+    'changeLanguage': 'שנה שפה',
   };
+
+  //endregion
 
   Strings([String languageCode]) {
     setLanguage(languageCode);
   }
 
+  //region string Getters
   // =================================================================
   // ===========================  General  ===========================
   // =================================================================
   String get email => _currentLanguageMap['email'] ?? _english['email'];
+
   String get password => _currentLanguageMap['password'] ?? _english['password'];
+
   String get resetPassword => _currentLanguageMap['resetPassword'] ?? _english['resetPassword'];
+
   String get name => _currentLanguageMap['name'] ?? _english['name'];
+
   String get loadingPage => _currentLanguageMap['loadingPage'] ?? _english['loadingPage'];
+
   String get invalidValue => _currentLanguageMap['invalidValue'] ?? _english['invalidValue'];
+
   String get gotIt => _currentLanguageMap['gotIt'] ?? _english['gotIt'];
+
   String get loading => _currentLanguageMap['loading'] ?? _english['loading'];
 
   // =================================================================
   // ==========================  Login page  =========================
   // =================================================================
   String get newUserButton => _currentLanguageMap['newUserButton'] ?? _english['newUserButton'];
-  String get sendingResetPasswordMsg => _currentLanguageMap['sendingResetPasswordMsg'] ?? _english['sendingResetPasswordMsg'];
+
+  String get sendingResetPasswordMsg =>
+      _currentLanguageMap['sendingResetPasswordMsg'] ?? _english['sendingResetPasswordMsg'];
+
   String get resetPasswordSentMsg => _currentLanguageMap['resetPasswordSentMsg'] ?? _english['resetPasswordSentMsg'];
-  String get noRegisteredUserWithEmailMsg => _currentLanguageMap['noRegisteredUserWithEmailMsg'] ?? _english['noRegisteredUserWithEmailMsg'];
+
+  String get noRegisteredUserWithEmailMsg =>
+      _currentLanguageMap['noRegisteredUserWithEmailMsg'] ?? _english['noRegisteredUserWithEmailMsg'];
+
   String get loggingIn => _currentLanguageMap['loggingIn'] ?? _english['loggingIn'];
+
   String get loginWithGoogle => _currentLanguageMap['loginWithGoogle'] ?? _english['loginWithGoogle'];
+
   String get loggingInWithGoogle => _currentLanguageMap['loggingInWithGoogle'] ?? _english['loggingInWithGoogle'];
+
   String get loginButtonText => _currentLanguageMap['loginButtonText'] ?? _english['loginButtonText'];
 
   // =================================================================
   // =========================  Register page  =======================
   // =================================================================
   String get registerPageTitle => _currentLanguageMap['registerPageTitle'] ?? _english['registerPageTitle'];
+
   String get register => _currentLanguageMap['register'] ?? _english['register'];
-  String get passwordLenValidationMsg => _currentLanguageMap['passwordLenValidationMsg'] ?? _english['passwordLenValidationMsg'];
+
+  String get passwordLenValidationMsg =>
+      _currentLanguageMap['passwordLenValidationMsg'] ?? _english['passwordLenValidationMsg'];
+
   String get registeringNewUserMsg => _currentLanguageMap['registeringNewUserMsg'] ?? _english['registeringNewUserMsg'];
 
   // =================================================================
   // =======================  Recurring Policies  ====================
   // =================================================================
   String get recurringPolicyNone => _currentLanguageMap['recurringPolicyNone'] ?? _english['recurringPolicyNone'];
+
   String get recurringPolicyDaily => _currentLanguageMap['recurringPolicyDaily'] ?? _english['recurringPolicyDaily'];
+
   String get recurringPolicyWeekly => _currentLanguageMap['recurringPolicyWeekly'] ?? _english['recurringPolicyWeekly'];
-  String get recurringPolicyMonthly => _currentLanguageMap['recurringPolicyMonthly'] ?? _english['recurringPolicyMonthly'];
+
+  String get recurringPolicyMonthly =>
+      _currentLanguageMap['recurringPolicyMonthly'] ?? _english['recurringPolicyMonthly'];
+
   String get recurringPolicyYearly => _currentLanguageMap['recurringPolicyYearly'] ?? _english['recurringPolicyYearly'];
 
   // =================================================================
   // =====================  Task Completed results  ==================
   // =================================================================
   String get taskCompletedMsg => _currentLanguageMap['taskCompletedMsg'] ?? _english['taskCompletedMsg'];
-  String get loginToCompleteTaskMsg => _currentLanguageMap['loginToCompleteTaskMsg'] ?? _english['loginToCompleteTaskMsg'];
-  String get userCompletedNotInDbErrMsg => _currentLanguageMap['userCompletedNotInDbErrMsg'] ?? _english['userCompletedNotInDbErrMsg'];
+
+  String get loginToCompleteTaskMsg =>
+      _currentLanguageMap['loginToCompleteTaskMsg'] ?? _english['loginToCompleteTaskMsg'];
+
+  String get userCompletedNotInDbErrMsg =>
+      _currentLanguageMap['userCompletedNotInDbErrMsg'] ?? _english['userCompletedNotInDbErrMsg'];
+
   String get taskNotFoundErrMsg => _currentLanguageMap['taskNotFoundErrMsg'] ?? _english['taskNotFoundErrMsg'];
-  String get userNotAssignedToTaskErrMsg => _currentLanguageMap['userNotAssignedToTaskErrMsg'] ?? _english['userNotAssignedToTaskErrMsg'];
-  String get taskDoesNotExistsErrMsg => _currentLanguageMap['taskDoesNotExistsErrMsg'] ?? _english['taskDoesNotExistsErrMsg'];
-  String get startTimeAfterEndTimeErrMsg => _currentLanguageMap['startTimeAfterEndTimeErrMsg'] ?? _english['startTimeAfterEndTimeErrMsg'];
+
+  String get userNotAssignedToTaskErrMsg =>
+      _currentLanguageMap['userNotAssignedToTaskErrMsg'] ?? _english['userNotAssignedToTaskErrMsg'];
+
+  String get taskDoesNotExistsErrMsg =>
+      _currentLanguageMap['taskDoesNotExistsErrMsg'] ?? _english['taskDoesNotExistsErrMsg'];
+
+  String get startTimeAfterEndTimeErrMsg =>
+      _currentLanguageMap['startTimeAfterEndTimeErrMsg'] ?? _english['startTimeAfterEndTimeErrMsg'];
+
   String get addTaskFailedErrMsg => _currentLanguageMap['addTaskFailedErrMsg'] ?? _english['addTaskFailedErrMsg'];
-  String get unknownCompleteTaskStatusErrMsg => _currentLanguageMap['unknownCompleteTaskStatusErrMsg'] ?? _english['unknownCompleteTaskStatusErrMsg'];
+
+  String get unknownCompleteTaskStatusErrMsg =>
+      _currentLanguageMap['unknownCompleteTaskStatusErrMsg'] ?? _english['unknownCompleteTaskStatusErrMsg'];
 
   // =================================================================
   // ===========================  General  ===========================
@@ -476,151 +538,330 @@ class Strings {
   //_currentLanguageMap[''] ?? _english[''];
   // ~~ user ~~~
   String get userID => _currentLanguageMap['userID'] ?? _english[''];
+
   // ~~~ group ~~~
   String get groupInfo => _currentLanguageMap['groupInfo'] ?? _english['groupInfo'];
+
   String get groupId => _currentLanguageMap['groupId'] ?? _english['groupId'];
+
   String get groupTitleLable => _currentLanguageMap['groupTitleLable'] ?? _english['groupTitleLable'];
+
   String get groupManager => _currentLanguageMap['groupManager'] ?? _english['groupManager'];
+
   String get groupMembers => _currentLanguageMap['groupMembers'] ?? _english['groupMembers'];
+
   String get members => _currentLanguageMap['members'] ?? _english['members'];
+
   String get groupHasNoMembers => _currentLanguageMap['groupHasNoMembers'] ?? _english['groupHasNoMembers'];
+
   // ~~~ task ~~~
   String get titleLabel => _currentLanguageMap['titleLabel'] ?? _english['titleLabel'];
+
   String get tasks => _currentLanguageMap['tasks'] ?? _english['tasks'];
+
   String get valueLabel => _currentLanguageMap['valueLabel'] ?? _english['valueLabel'];
+
   String get timeNotSet => _currentLanguageMap['timeNotSet'] ?? _english['timeNotSet'];
+
   String get repeat => _currentLanguageMap['repeat'] ?? _english['repeat'];
+
   String get completedBy => _currentLanguageMap['completedBy'] ?? _english['completedBy'];
+
   String get completedOn => _currentLanguageMap['completedOn'] ?? _english['completedOn'];
+
   String get points => _currentLanguageMap['points'] ?? _english['points'];
+
   // ~~~ App Settings Page ~~~
   String get appSettings => _currentLanguageMap['appSettings'] ?? _english['appSettings'];
+
   String get changeTheme => _currentLanguageMap['changeTheme'] ?? _english['changeTheme'];
+
   String get messageDevs => _currentLanguageMap['messageDevs'] ?? _english['messageDevs'];
+
   String get resetPasswordSentTo => _currentLanguageMap['resetPasswordSentTo'] ?? _english['resetPasswordSentTo'];
+
   String get signOut => _currentLanguageMap['signOut'] ?? _english['signOut'];
+
   String get deleteAccount => _currentLanguageMap['deleteAccount'] ?? _english['deleteAccount'];
+
   String get selectTheme => _currentLanguageMap['selectTheme'] ?? _english['selectTheme'];
+
   String get composeMsgToDevsTitle => _currentLanguageMap['composeMsgToDevsTitle'] ?? _english['composeMsgToDevsTitle'];
-  String get deleteAccountConfirmMsg => _currentLanguageMap['deleteAccountConfirmMsg'] ?? _english['deleteAccountConfirmMsg'];
+
+  String get deleteAccountConfirmMsg =>
+      _currentLanguageMap['deleteAccountConfirmMsg'] ?? _english['deleteAccountConfirmMsg'];
 
 // =================================================================
   // ==================  Dialogs and Notifications ===================
   // =================================================================
   // ~~~ buttons labels and titles ~~~
   String get confirm => _currentLanguageMap['confirm'] ?? _english['confirm'];
+
   String get submit => _currentLanguageMap['submit'] ?? _english['submit'];
+
   String get ok => _currentLanguageMap['ok'] ?? _english['ok'];
+
   String get oops => _currentLanguageMap['oops'] ?? _english['oops'];
+
   String get delete => _currentLanguageMap['delete'] ?? _english['delete'];
+
   String get cancel => _currentLanguageMap['cancel'] ?? _english['cancel'];
+
   String get leave => _currentLanguageMap['leave'] ?? _english['leave'];
+
   String get help => _currentLanguageMap['help'] ?? _english['help'];
+
   String get update => _currentLanguageMap['update'] ?? _english['update'];
+
   String get newGroupTitle => _currentLanguageMap['newGroupTitle'] ?? _english['newGroupTitle'];
+
   String get pleaseSelect => _currentLanguageMap['pleaseSelect'] ?? _english['pleaseSelect'];
+
   String get tapToChange => _currentLanguageMap['tapToChange'] ?? _english['tapToChange'];
+
   String get descriptionLabel => _currentLanguageMap['descriptionLabel'] ?? _english['descriptionLabel'];
+
   String get leaveGroupLabel => _currentLanguageMap['leaveGroupLabel'] ?? _english['leaveGroupLabel'];
+
   String get deleteGroupLabel => _currentLanguageMap['deleteGroupLabel'] ?? _english['deleteGroupLabel'];
+
   String get addMemberTitle => _currentLanguageMap['addMemberTitle'] ?? _english['addMemberTitle'];
-  String get selectAssignedMembersTitle => _currentLanguageMap['selectAssignedMembersTitle'] ?? _english['selectAssignedMembersTitle'];
+
+  String get selectAssignedMembersTitle =>
+      _currentLanguageMap['selectAssignedMembersTitle'] ?? _english['selectAssignedMembersTitle'];
+
   String get newTask => _currentLanguageMap['newTask'] ?? _english['newTask'];
+
   String get scoreboard => _currentLanguageMap['scoreboard'] ?? _english['scoreboard'];
+
   String get futureTasks => _currentLanguageMap['futureTasks'] ?? _english['futureTasks'];
+
   String get week => _currentLanguageMap['week'] ?? _english['week'];
+
   String get month => _currentLanguageMap['month'] ?? _english['month'];
+
   String get allTime => _currentLanguageMap['allTime'] ?? _english['allTime'];
+
   String get dueTime => _currentLanguageMap['dueTime'] ?? _english['dueTime'];
+
   String get startTime => _currentLanguageMap['startTime'] ?? _english['startTime'];
+
   String get notifyMembers => _currentLanguageMap['notifyMembers'] ?? _english['notifyMembers'];
+
   String get taskNotificationTitle => _currentLanguageMap['taskNotificationTitle'] ?? _english['taskNotificationTitle'];
+
   String get assignedMembers => _currentLanguageMap['assignedMembers'] ?? _english['assignedMembers'];
+
   String get displayName => _currentLanguageMap['displayName'] ?? _english['displayName'];
+
   String get deleteTask => _currentLanguageMap['deleteTask'] ?? _english['deleteTask'];
+
   String get writeToNfc => _currentLanguageMap['writeToNfc'] ?? _english['writeToNfc'];
+
   String get readyToWrite => _currentLanguageMap['readyToWrite'] ?? _english['readyToWrite'];
+
   String get holdPhoneOverNfc => _currentLanguageMap['holdPhoneOverNfc'] ?? _english['holdPhoneOverNfc'];
+
   String get today => _currentLanguageMap['today'] ?? _english['today'];
+
   String get thisWeek => _currentLanguageMap['thisWeek'] ?? _english['thisWeek'];
+
   String get thisMonth => _currentLanguageMap['thisMonth'] ?? _english['thisMonth'];
 
+  String get selectLanguageTitle => _currentLanguageMap['selectLanguageTitle'] ?? _english['selectLanguageTitle'];
+
   // ~~~ Notification messages ~~~
-  String get notificationFromGroupTitle => _currentLanguageMap['notificationFromGroupTitle'] ?? _english['notificationFromGroupTitle'];
+  String get notificationFromGroupTitle =>
+      _currentLanguageMap['notificationFromGroupTitle'] ?? _english['notificationFromGroupTitle'];
+
   String get sendNotificationTitle => _currentLanguageMap['sendNotificationTitle'] ?? _english['sendNotificationTitle'];
-  String get notificationMessageLable => _currentLanguageMap['notificationMessageLable'] ?? _english['notificationMessageLable'];
+
+  String get notificationMessageLable =>
+      _currentLanguageMap['notificationMessageLable'] ?? _english['notificationMessageLable'];
+
   String get addedToGroupMsg => _currentLanguageMap['addedToGroupMsg'] ?? _english['addedToGroupMsg'];
-  String get hasBeenAddedToThisGroup => _currentLanguageMap['hasBeenAddedToThisGroup'] ?? _english['hasBeenAddedToThisGroup'];
+
+  String get hasBeenAddedToThisGroup =>
+      _currentLanguageMap['hasBeenAddedToThisGroup'] ?? _english['hasBeenAddedToThisGroup'];
+
   String get leaveGroupConfirmMsg => _currentLanguageMap['leaveGroupConfirmMsg'] ?? _english['leaveGroupConfirmMsg'];
+
   String get deleteTaskConfirmMsg => _currentLanguageMap['deleteTaskConfirmMsg'] ?? _english['deleteTaskConfirmMsg'];
+
   String get hi => _currentLanguageMap['hi'] ?? _english['hi'];
+
   String get oneTaskRemainingMsg => _currentLanguageMap['oneTaskRemainingMsg'] ?? _english['oneTaskRemainingMsg'];
+
   String get allTasksRemainingMsg => _currentLanguageMap['allTasksRemainingMsg'] ?? _english['allTasksRemainingMsg'];
+
   String get noTasksRemainingMsg => _currentLanguageMap['noTasksRemainingMsg'] ?? _english['noTasksRemainingMsg'];
+
   String get notInAnyGroup => _currentLanguageMap['notInAnyGroup'] ?? _english['notInAnyGroup'];
+
   String get noDescription => _currentLanguageMap['noDescription'] ?? _english['noDescription'];
 
   // ~~~ message bodies ~~~
   String get deleteGroupConfirmMsg => _currentLanguageMap['deleteGroupConfirmMsg'] ?? _english['deleteGroupConfirmMsg'];
+
   String get selectTimespanPrompt => _currentLanguageMap['selectTimespanPrompt'] ?? _english['selectTimespanPrompt'];
+
   String get noCompletedTasks => _currentLanguageMap['noCompletedTasks'] ?? _english['noCompletedTasks'];
+
   String get msgSentToDevs => _currentLanguageMap['msgSentToDevs'] ?? _english['msgSentToDevs'];
 
   // ~~~ single group page ~~~
-  String get tasksAssignedToOthersTitle => _currentLanguageMap['tasksAssignedToOthersTitle'] ?? _english['tasksAssignedToOthersTitle'];
-  String get tasksAssignedToMeTitle => _currentLanguageMap['tasksAssignedToMeTitle'] ?? _english['tasksAssignedToMeTitle'];
+  String get tasksAssignedToOthersTitle =>
+      _currentLanguageMap['tasksAssignedToOthersTitle'] ?? _english['tasksAssignedToOthersTitle'];
+
+  String get tasksAssignedToMeTitle =>
+      _currentLanguageMap['tasksAssignedToMeTitle'] ?? _english['tasksAssignedToMeTitle'];
+
   String get completedTasksTitle => _currentLanguageMap['completedTasksTitle'] ?? _english['completedTasksTitle'];
-  String get noTasksAssignedToOthers => _currentLanguageMap['noTasksAssignedToOthers'] ?? _english['noTasksAssignedToOthers'];
+
+  String get noTasksAssignedToOthers =>
+      _currentLanguageMap['noTasksAssignedToOthers'] ?? _english['noTasksAssignedToOthers'];
+
   String get noTasksAssignetToYou => _currentLanguageMap['noTasksAssignetToYou'] ?? _english['noTasksAssignetToYou'];
+
   String get noFutureTasks => _currentLanguageMap['noFutureTasks'] ?? _english['noFutureTasks'];
 
-   // ~~~ remove member ~~~
+  // ~~~ remove member ~~~
   String get removeMemberLable => _currentLanguageMap['removeMemberLable'] ?? _english['removeMemberLable'];
+
   String get confirmRemove => _currentLanguageMap['confirmRemove'] ?? _english['confirmRemove'];
+
   String get fromTheGroup => _currentLanguageMap['fromTheGroup'] ?? _english['fromTheGroup'];
 
   // ~~~ fetching from DB and loading overlay messages ~~~
-  String get fetchingAssignedMembers => _currentLanguageMap['fetchingAssignedMembers'] ?? _english['fetchingAssignedMembers'];
-  String get fetchingTasksFromServer => _currentLanguageMap['fetchingTasksFromServer'] ?? _english['fetchingTasksFromServer'];
-  String get fetchingGroups => _currentLanguageMap['fetchingGroups'] ?? _english['fetchingGroups'];
-  String get fetchingScoreboard => _currentLanguageMap['fetchingScoreboard'] ?? _english['fetchingScoreboard'];
-  String get removingGroupMember => _currentLanguageMap['removingGroupMember'] ?? _english['removingGroupMember'];
-  String get leavingGroup => _currentLanguageMap['leavingGroup'] ?? _english['leavingGroup'];
-  String get deletingGroup => _currentLanguageMap['deletingGroup'] ?? _english['deletingGroup'];
-  String get deletingAccount => _currentLanguageMap['deletingAccount'] ?? _english['deletingAccount'];
-  String get deletingTask => _currentLanguageMap['deletingTask'] ?? _english['deletingTask'];
-  String get uploadingImage => _currentLanguageMap['uploadingImage'] ?? _english['uploadingImage'];
+  String get fetchingAssignedMembers =>
+      _currentLanguageMap['fetchingAssignedMembers'] ?? _english['fetchingAssignedMembers'];
 
+  String get fetchingTasksFromServer =>
+      _currentLanguageMap['fetchingTasksFromServer'] ?? _english['fetchingTasksFromServer'];
+
+  String get fetchingGroups => _currentLanguageMap['fetchingGroups'] ?? _english['fetchingGroups'];
+
+  String get fetchingScoreboard => _currentLanguageMap['fetchingScoreboard'] ?? _english['fetchingScoreboard'];
+
+  String get removingGroupMember => _currentLanguageMap['removingGroupMember'] ?? _english['removingGroupMember'];
+
+  String get leavingGroup => _currentLanguageMap['leavingGroup'] ?? _english['leavingGroup'];
+
+  String get deletingGroup => _currentLanguageMap['deletingGroup'] ?? _english['deletingGroup'];
+
+  String get deletingAccount => _currentLanguageMap['deletingAccount'] ?? _english['deletingAccount'];
+
+  String get deletingTask => _currentLanguageMap['deletingTask'] ?? _english['deletingTask'];
+
+  String get uploadingImage => _currentLanguageMap['uploadingImage'] ?? _english['uploadingImage'];
 
   // =================================================================
   // =======================  Error Messages  ========================
   // =================================================================
-  String get addMemberNotificationErrMsg => _currentLanguageMap['addMemberNotificationErrMsg'] ?? _english['addMemberNotificationErrMsg'];
-  String get taskValueIntegerValidationMsg => _currentLanguageMap['taskValueIntegerValidationMsg'] ?? _english['taskValueIntegerValidationMsg'];
-  String get emailAddressesAreCaseSensitive => _currentLanguageMap['emailAddressesAreCaseSensitive'] ?? _english['emailAddressesAreCaseSensitive'];
-  String get leaveGroupErrorPrefixMsg => _currentLanguageMap['leaveGroupErrorPrefixMsg'] ?? _english['leaveGroupErrorPrefixMsg'];
-  String get uploadPhotoErrMsg => _currentLanguageMap['uploadPhotoErrMsg'] ?? _english['uploadPhotoErrMsg'];
-  String get sendMsgToDevsErr => _currentLanguageMap['sendMsgToDevsErr'] ?? _english['sendMsgToDevsErr'];
-  String get taskNotUpdatedErrMsg => _currentLanguageMap['taskNotUpdatedErrMsg'] ?? _english['taskNotUpdatedErrMsg'];
-  String get getGroupInfoErrMsg => _currentLanguageMap['getGroupInfoErrMsg'] ?? _english['getGroupInfoErrMsg'];
-  String get parentGroupNotFoundErrMsg => _currentLanguageMap['parentGroupNotFoundErrMsg'] ?? _english['parentGroupNotFoundErrMsg'];
-  String get removeMemberFromGroupErrMsg => _currentLanguageMap['removeMemberFromGroupErrMsg'] ?? _english['removeMemberFromGroupErrMsg'];
-  String get editGroupInfoErrMsg => _currentLanguageMap['editGroupInfoErrMsg'] ?? _english['editGroupInfoErrMsg'];
-  String get deleteGroupErrMsg => _currentLanguageMap['deleteGroupErrMsg'] ?? _english['deleteGroupErrMsg'];
-  String get scoreBoardFetchErrMsg => _currentLanguageMap['scoreBoardFetchErrMsg'] ?? _english['scoreBoardFetchErrMsg'];
-  String get addMemberErrMsgPrefix => _currentLanguageMap['addMemberErrMsgPrefix'] ?? _english['addMemberErrMsgPrefix'];
-  String get openTaskDetailsPageErrMsg => _currentLanguageMap['openTaskDetailsPageErrMsg'] ?? _english['openTaskDetailsPageErrMsg'];
-  String get deleteTaskErrMsg => _currentLanguageMap['deleteTaskErrMsg'] ?? _english['deleteTaskErrMsg'];
-  String get signOutErrMsg => _currentLanguageMap['signOutErrMsg'] ?? _english['signOutErrMsg'];
-  String get atLeastOneMustBeSelected => _currentLanguageMap['atLeastOneMustBeSelected'] ?? _english['atLeastOneMustBeSelected'];
-  String get sendNotificationsErrMsgPrefix => _currentLanguageMap['sendNotificationsErrMsgPrefix'] ?? _english['sendNotificationsErrMsgPrefix'];
-  String get invalidEmail => _currentLanguageMap['invalidEmail'] ?? _english['invalidEmail'];
-  String get loginErrMsg => _currentLanguageMap['loginErrMsg'] ?? _english['loginErrMsg'];
-  String get registrationErrMsg => _currentLanguageMap['registrationErrMsg'] ?? _english['registrationErrMsg'];
-  String get loginWithGoogleErrMsg => _currentLanguageMap['loginWithGoogleErrMsg'] ?? _english['loginWithGoogleErrMsg'];
-  String get loadingPhotoErrMsgPrefix => _currentLanguageMap['loadingPhotoErrMsgPrefix'] ?? _english['loadingPhotoErrMsgPrefix'];
-  String get fieldCannotBeEmpty => 'This field cannot be empty';
+  String get addMemberNotificationErrMsg =>
+      _currentLanguageMap['addMemberNotificationErrMsg'] ?? _english['addMemberNotificationErrMsg'];
 
+  String get taskValueIntegerValidationMsg =>
+      _currentLanguageMap['taskValueIntegerValidationMsg'] ?? _english['taskValueIntegerValidationMsg'];
+
+  String get emailAddressesAreCaseSensitive =>
+      _currentLanguageMap['emailAddressesAreCaseSensitive'] ?? _english['emailAddressesAreCaseSensitive'];
+
+  String get leaveGroupErrorPrefixMsg =>
+      _currentLanguageMap['leaveGroupErrorPrefixMsg'] ?? _english['leaveGroupErrorPrefixMsg'];
+
+  String get uploadPhotoErrMsg => _currentLanguageMap['uploadPhotoErrMsg'] ?? _english['uploadPhotoErrMsg'];
+
+  String get sendMsgToDevsErr => _currentLanguageMap['sendMsgToDevsErr'] ?? _english['sendMsgToDevsErr'];
+
+  String get taskNotUpdatedErrMsg => _currentLanguageMap['taskNotUpdatedErrMsg'] ?? _english['taskNotUpdatedErrMsg'];
+
+  String get getGroupInfoErrMsg => _currentLanguageMap['getGroupInfoErrMsg'] ?? _english['getGroupInfoErrMsg'];
+
+  String get parentGroupNotFoundErrMsg =>
+      _currentLanguageMap['parentGroupNotFoundErrMsg'] ?? _english['parentGroupNotFoundErrMsg'];
+
+  String get removeMemberFromGroupErrMsg =>
+      _currentLanguageMap['removeMemberFromGroupErrMsg'] ?? _english['removeMemberFromGroupErrMsg'];
+
+  String get editGroupInfoErrMsg => _currentLanguageMap['editGroupInfoErrMsg'] ?? _english['editGroupInfoErrMsg'];
+
+  String get deleteGroupErrMsg => _currentLanguageMap['deleteGroupErrMsg'] ?? _english['deleteGroupErrMsg'];
+
+  String get scoreBoardFetchErrMsg => _currentLanguageMap['scoreBoardFetchErrMsg'] ?? _english['scoreBoardFetchErrMsg'];
+
+  String get addMemberErrMsgPrefix => _currentLanguageMap['addMemberErrMsgPrefix'] ?? _english['addMemberErrMsgPrefix'];
+
+  String get openTaskDetailsPageErrMsg =>
+      _currentLanguageMap['openTaskDetailsPageErrMsg'] ?? _english['openTaskDetailsPageErrMsg'];
+
+  String get deleteTaskErrMsg => _currentLanguageMap['deleteTaskErrMsg'] ?? _english['deleteTaskErrMsg'];
+
+  String get signOutErrMsg => _currentLanguageMap['signOutErrMsg'] ?? _english['signOutErrMsg'];
+
+  String get atLeastOneMustBeSelected =>
+      _currentLanguageMap['atLeastOneMustBeSelected'] ?? _english['atLeastOneMustBeSelected'];
+
+  String get sendNotificationsErrMsgPrefix =>
+      _currentLanguageMap['sendNotificationsErrMsgPrefix'] ?? _english['sendNotificationsErrMsgPrefix'];
+
+  String get invalidEmail => _currentLanguageMap['invalidEmail'] ?? _english['invalidEmail'];
+
+  String get loginErrMsg => _currentLanguageMap['loginErrMsg'] ?? _english['loginErrMsg'];
+
+  String get registrationErrMsg => _currentLanguageMap['registrationErrMsg'] ?? _english['registrationErrMsg'];
+
+  String get loginWithGoogleErrMsg => _currentLanguageMap['loginWithGoogleErrMsg'] ?? _english['loginWithGoogleErrMsg'];
+
+  String get loadingPhotoErrMsgPrefix =>
+      _currentLanguageMap['loadingPhotoErrMsgPrefix'] ?? _english['loadingPhotoErrMsgPrefix'];
+
+  String get fieldCannotBeEmpty => _currentLanguageMap['fieldCannotBeEmpty'] ?? _english['fieldCannotBeEmpty'];
+
+  // =================================================================
+  // ==========================  Languages  ==========================
+  // =================================================================
+  String get hebrew => _currentLanguageMap['hebrew'] ?? _english['hebrew'];
+
+  String get english => _currentLanguageMap['english'] ?? _english['english'];
+
+  String get russian => _currentLanguageMap['russian'] ?? _english['russian'];
+
+  String get changeLanguage => _currentLanguageMap['changeLanguage'] ?? _english['changeLanguage'];
+
+  //endregion
+
+  List<Locale> getSupportedLanguages() {
+    return [
+      Locale('en', 'US'),
+      Locale('he', 'IL'),
+//      Locale('ru', 'RU'),
+    ];
+  }
+
+  static String localeToLanguageString(Locale locale) {
+    switch (locale.languageCode) {
+      case 'he':
+        return App.instance.strings.hebrew;
+      case 'en':
+        return App.instance.strings.english;
+      case 'ru':
+        return App.instance.strings.russian;
+      default:
+        return locale.languageCode;
+    }
+  }
+
+  static Locale localeParse(String localeStr) {
+    switch (localeStr) {
+      case 'he_IL':
+        return Locale('he', 'IL');
+      case 'ru_RU':
+        return Locale('ru', 'RU');
+      default:
+        return Locale('en', 'US');
+    }
+  }
 
   void setLanguage(String languageCode) {
     switch (languageCode) {

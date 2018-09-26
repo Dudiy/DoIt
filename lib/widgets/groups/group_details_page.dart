@@ -46,34 +46,39 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: app.themeData.primaryColor,
-        title: Text(
-          '${widget.groupInfo.title}',
-          maxLines: 2,
-        ),
-        titleSpacing: 5.0,
-        actions: drawActions(),
-      ),
-      body: Container(
-        decoration: app.getBackgroundImage(),
-        padding: EdgeInsets.all(8.0),
-        child: ListView(
-          children: <Widget>[
-            Card(
-              color: app.themeData.primaryColorLight.withAlpha(200),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-              child: Row(
-                children: <Widget>[
-                  _groupImage(),
-                  _groupManagerAndID(context),
-                ],
-              ),
+    return Directionality(
+      textDirection: app.textDirection,
+      child: SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: app.themeData.primaryColor,
+            title: Text(
+              '${widget.groupInfo.title}',
+              maxLines: 2,
             ),
-            _editableDetails(),
-            _groupMembersDisplay(),
-          ],
+            titleSpacing: 5.0,
+            actions: drawActions(),
+          ),
+          body: Container(
+            decoration: app.getBackgroundImage(),
+            padding: EdgeInsets.all(8.0),
+            child: ListView(
+              children: <Widget>[
+                Card(
+                  color: app.themeData.primaryColorLight.withAlpha(200),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+                  child: Row(
+                    children: <Widget>[
+                      _groupImage(),
+                      _groupManagerAndID(context),
+                    ],
+                  ),
+                ),
+                _editableDetails(),
+                _groupMembersDisplay(),
+              ],
+            ),
+          ),
         ),
       ),
     );

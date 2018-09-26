@@ -1,6 +1,8 @@
 import 'package:do_it/app.dart';
 import 'package:do_it/constants/asset_paths.dart';
+import 'package:do_it/constants/strings.dart';
 import 'package:do_it/widgets/custom/dialog_generator.dart';
+import 'package:do_it/widgets/custom/language_selector_dialog.dart';
 import 'package:do_it/widgets/custom/loadingOverlay.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:do_it/widgets/login/register_widget.dart';
@@ -25,22 +27,59 @@ class LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: scaffoldKey,
-      resizeToAvoidBottomPadding: false,
-      body: SafeArea(
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              SizedBox(height: 40.0),
-              Image.asset(LOGO_WITH_SHADOW, height: 100.0, width: 120.0),
-              _drawLoginForm(),
-              Divider(color: Colors.black),
-              _drawSignInServices(),
-              SizedBox(height: 20.0),
-            ],
+    return Directionality(
+      textDirection: app.textDirection,
+      child: SafeArea(
+        child: Scaffold(
+          key: scaffoldKey,
+          resizeToAvoidBottomPadding: false,
+          body: SafeArea(
+            child: Stack(
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      SizedBox(height: 40.0),
+                      Image.asset(LOGO_WITH_SHADOW, height: 100.0, width: 120.0),
+                      _drawLoginForm(),
+                      Divider(color: Colors.black),
+                      _drawSignInServices(),
+                      SizedBox(height: 20.0),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  top: 10.0,
+                  left: 10.0,
+                  child: Row(
+                    textDirection: TextDirection.ltr,
+                    children: <Widget>[
+                      IconButton(
+                        icon: Icon(
+                          Icons.language,
+                          color: app.themeData.primaryColor,
+                          size: 30.0,
+                        ),
+                        onPressed: () {
+                          LanguageSelector.showAsDialog(context).then((v) {
+                            setState(() {});
+                          });
+                          /*showDialog(
+                            context: context,
+                            builder: (context) {
+                              return LanguageSelector(() => setState(() {}));
+                            },
+                          );*/
+                        },
+                      ),
+                      Text(Strings.localeToLanguageString(app.locale), style: Theme.of(context).textTheme.subhead),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -153,7 +192,6 @@ class LoginPageState extends State<LoginPage> {
             app.authenticator.signInWithEmailAndPassword(_emailController.text, _passwordController.text).then((user) {
               loadingOverlay.hide();
               app.refreshLoggedInUserFcmToken();
-
               print('${user.displayName} has logged in using email and password');
               widget.onSignedIn();
             }).catchError((error) {

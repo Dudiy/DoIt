@@ -39,6 +39,7 @@ class UserUtils {
             fcmToken: userInfoObject['fcmToken'],
             photoUrl: userInfoObject['photoUrl'],
             bgImage: userInfoObject['bgImage'],
+            localeStr: userInfoObject['localeStr'],
           );
   }
 
@@ -60,6 +61,7 @@ class UserUtils {
       'email': userInfo.email,
       'fcmToken': userInfo.fcmToken,
       'bgImage': userInfo.bgImage,
+      'localeStr': userInfo.localeStr
     };
   }
 

@@ -5,6 +5,11 @@ const LOGO_WITH_SHADOW = "assets/doit_logo/logo_with_shadow.png";
 // Icons and buttons
 const GOOGLE_ICON = "assets/icons_and_buttons/google_icon.png";
 const PODIUM_ICON = "assets/icons_and_buttons/podium_icon.png";
+const Map<String, String> FLAGS = {
+  'en': "assets/icons_and_buttons/usa_flag.png",
+  'ru;': "assets/icons_and_buttons/russia_flag.png",
+  'he': "assets/icons_and_buttons/israel_flag.png",
+};
 
 // Images
 const CLICK_TO_CREATE_GROUP = "assets/images/click_to_create_group.png";

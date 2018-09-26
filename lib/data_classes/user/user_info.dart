@@ -1,5 +1,6 @@
 import 'package:do_it/constants/background_images.dart';
 import 'package:do_it/data_classes/user/user_info_short.dart';
+import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
 class UserInfo {
@@ -9,6 +10,7 @@ class UserInfo {
   String _email;
   String _fcmToken;
   String _bgImage;
+  String _localeStr;
 
   UserInfo({
     @required String userID,
@@ -17,6 +19,7 @@ class UserInfo {
     @required String email,
     photoUrl,
     bgImage,
+    localeStr,
   }) {
     assert(userID != null && userID.isNotEmpty);
     assert(displayName != null && displayName.isNotEmpty);
@@ -28,6 +31,7 @@ class UserInfo {
     this._fcmToken = fcmToken;
     this._email = email;
     this._bgImage = bgImage;
+    this._localeStr = localeStr;
   }
 
   ShortUserInfo getShortUserInfo() {
@@ -54,9 +58,11 @@ class UserInfo {
 
   String get bgImage => _bgImage;
 
-// ===========================================================
-// ========================= Setters =========================
-// ===========================================================
+  String get localeStr => _localeStr;
+
+  // ===========================================================
+  // ========================= Setters =========================
+  // ===========================================================
 
   set bgImage(String value) {
     _bgImage = backgroundImages.containsKey(value) ? value : null;

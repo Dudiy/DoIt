@@ -31,7 +31,7 @@ class Authenticator {
     assert(user.uid == currentUser.uid);
 
     print('$user has signed in using google \n Adding to firebase...');
-    await App.instance.usersManager.addUser(user);
+    await App.instance.usersManager.addUser(user: user, localeStr: App.instance.locale.toString());
     await App.instance.setLoggedInUser(user);
     print('${user.displayName} wass added to firebase');
     return user;
@@ -54,12 +54,20 @@ class Authenticator {
   }
 
   Future<FirebaseUser> registerUserWithEmailAndPassword(
-      {@required String email, @required String password, @required String displayName, String photoUrl}) async {
+      {@required String email,
+      @required String password,
+      @required String displayName,
+      String photoUrl}) async {
     FirebaseUser user = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
     final App app = App.instance;
 
     try {
-      await app.usersManager.addUser(user, displayName, photoUrl);
+      await app.usersManager.addUser(
+        user: user,
+        displayName: displayName,
+        photoUrl: photoUrl,
+        localeStr: app.locale.toString(),
+      );
       await app.setLoggedInUser(user);
     } catch (e) {
       await user.delete();

@@ -386,82 +386,87 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: app.themeData.primaryColor,
-        title: Text(
-          widget.taskInfo.title,
-          maxLines: 2,
-        ),
-        titleSpacing: 0.0,
-        actions: _drawActionsBar(),
-      ),
-      body: Container(
-        padding: EdgeInsets.all(8.0),
-        decoration: app.getBackgroundImage(),
-        child: ListView(
-          children: <Widget>[
-            Container(
-              child: Form(
-                  key: _formKey,
-                  child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-                    DoItTextField(
-                      controller: _titleController,
-                      label: app.strings.titleLabel,
-                      enabled: editEnabled,
-                    ),
-                    DoItTextField(
-                      controller: _descriptionController,
-                      label: app.strings.descriptionLabel,
-                      enabled: editEnabled,
-                      maxLines: 3,
-                    ),
-                    DoItTextField(
-                      keyboardType: TextInputType.number,
-                      controller: _valueController,
-                      label: app.strings.valueLabel,
-                      enabled: editEnabled,
-                    ),
-                    DoItRecurringPolicyField(
-                      enabled: editEnabled,
-                      initPolicy: widget.taskInfo.recurringPolicy,
-                      onPolicyUpdated: (selected) => _selectedPolicy = selected,
-                    ),
-                    DoItTimeField(
-                      label: app.strings.startTime,
-                      initDateTime: widget.taskInfo.startTime,
-                      enabled: editEnabled,
-                      onDateTimeUpdated: (selectedDateTime) {
-                        _selectedStartDateTime = selectedDateTime;
-                      },
-                    ),
-                    DoItTimeField(
-                      label: app.strings.dueTime,
-                      initDateTime: widget.taskInfo.endTime,
-                      enabled: editEnabled,
-                      onDateTimeUpdated: (selectedDateTime) {
-                        setState(() {
-                          _selectedEndDateTime = selectedDateTime;
-                        });
-                      },
-                    ),
-                  ])),
+    return Directionality(
+      textDirection: app.textDirection,
+      child: SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: app.themeData.primaryColor,
+            title: Text(
+              widget.taskInfo.title,
+              maxLines: 2,
             ),
-            Divider(),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black38),
-                  borderRadius: BorderRadius.circular(10.0),
-                  color: Colors.white70,
+            titleSpacing: 0.0,
+            actions: _drawActionsBar(),
+          ),
+          body: Container(
+            padding: EdgeInsets.all(8.0),
+            decoration: app.getBackgroundImage(),
+            child: ListView(
+              children: <Widget>[
+                Container(
+                  child: Form(
+                      key: _formKey,
+                      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+                        DoItTextField(
+                          controller: _titleController,
+                          label: app.strings.titleLabel,
+                          enabled: editEnabled,
+                        ),
+                        DoItTextField(
+                          controller: _descriptionController,
+                          label: app.strings.descriptionLabel,
+                          enabled: editEnabled,
+                          maxLines: 3,
+                        ),
+                        DoItTextField(
+                          keyboardType: TextInputType.number,
+                          controller: _valueController,
+                          label: app.strings.valueLabel,
+                          enabled: editEnabled,
+                        ),
+                        DoItRecurringPolicyField(
+                          enabled: editEnabled,
+                          initPolicy: widget.taskInfo.recurringPolicy,
+                          onPolicyUpdated: (selected) => _selectedPolicy = selected,
+                        ),
+                        DoItTimeField(
+                          label: app.strings.startTime,
+                          initDateTime: widget.taskInfo.startTime,
+                          enabled: editEnabled,
+                          onDateTimeUpdated: (selectedDateTime) {
+                            _selectedStartDateTime = selectedDateTime;
+                          },
+                        ),
+                        DoItTimeField(
+                          label: app.strings.dueTime,
+                          initDateTime: widget.taskInfo.endTime,
+                          enabled: editEnabled,
+                          onDateTimeUpdated: (selectedDateTime) {
+                            setState(() {
+                              _selectedEndDateTime = selectedDateTime;
+                            });
+                          },
+                        ),
+                      ])),
                 ),
-                child: Column(
-                  children: _getAssignedUsersWidgets(),
+                Divider(),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black38),
+                      borderRadius: BorderRadius.circular(10.0),
+                      color: Colors.white70,
+                    ),
+                    child: Column(
+                      children: _getAssignedUsersWidgets(),
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

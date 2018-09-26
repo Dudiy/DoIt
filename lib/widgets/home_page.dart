@@ -42,55 +42,60 @@ class HomePageState extends State<HomePage> {
     } else {
       photoUrl = DEFAULT_PICTURE;
     }
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: app.themeData.primaryColor,
-          leading: GestureDetector(
-            onTap: () {
-              app.usersManager
-                  .uploadProfilePic(() => loadingOverlay.show(context: context, message: app.strings.uploadingImage))
-                  .then((uploadedPhoto) {
-                loadingOverlay.hide();
-                setState(() {
-                  photoUrl = app.loggedInUser.photoUrl;
-                  if (uploadedPhoto != null) {
-                    userProfilePicFile = uploadedPhoto;
-                  }
-                });
-              }).catchError((e) {
-                loadingOverlay.hide();
-                DoItDialogs.showErrorDialog(
-                    context: context, message: "${app.strings.uploadPhotoErrMsg}${e.message}");
-              });
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Stack(children: <Widget>[
-                Center(
-                  child: Container(
-                    width: 65.0,
-                    height: 65.0,
-                    child: ClipOval(
-                      child: _getProfilePic(),
+    return Directionality(
+      textDirection: app.textDirection,
+      child: SafeArea(
+        child: Scaffold(
+            appBar: AppBar(
+              backgroundColor: app.themeData.primaryColor,
+              leading: GestureDetector(
+                onTap: () {
+                  app.usersManager
+                      .uploadProfilePic(() => loadingOverlay.show(context: context, message: app.strings.uploadingImage))
+                      .then((uploadedPhoto) {
+                    loadingOverlay.hide();
+                    setState(() {
+                      photoUrl = app.loggedInUser.photoUrl;
+                      if (uploadedPhoto != null) {
+                        userProfilePicFile = uploadedPhoto;
+                      }
+                    });
+                  }).catchError((e) {
+                    loadingOverlay.hide();
+                    DoItDialogs.showErrorDialog(
+                        context: context, message: "${app.strings.uploadPhotoErrMsg}${e.message}");
+                  });
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Stack(children: <Widget>[
+                    Center(
+                      child: Container(
+                        width: 65.0,
+                        height: 65.0,
+                        child: ClipOval(
+                          child: _getProfilePic(),
+                        ),
+                      ),
                     ),
-                  ),
+                    Container(child: LifecycleNfcWatcher(_nfcTriggerRender)),
+                  ]),
                 ),
-                Container(child: LifecycleNfcWatcher(_nfcTriggerRender)),
-              ]),
+              ),
+              title: Text(app.loggedInUser.displayName),
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.settings, color: Colors.white),
+                  onPressed: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => UserSettingsPage(widget.onSignedOut, profilePicChanged)));
+                  },
+                ),
+              ],
             ),
-          ),
-          title: Text(app.loggedInUser.displayName),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.settings, color: Colors.white),
-              onPressed: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => UserSettingsPage(widget.onSignedOut, profilePicChanged)));
-              },
-            ),
-          ],
-        ),
-        body: MyGroupsPage());
+            body: MyGroupsPage()),
+      ),
+    );
   }
 
   void profilePicChanged(File newProfilePic) {

@@ -86,60 +86,65 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     } else {
       photoUrl = DEFAULT_PICTURE;
     }
-    return Scaffold(
-      key: scaffoldKey,
-      body: Container(
-        decoration: app.getBackgroundImage(),
-        child: RefreshIndicator(
-          onRefresh: getGroupTasksFromDB,
-          child: CustomScrollView(
-            slivers: <Widget>[
-              SliverAppBar(
-                backgroundColor: app.themeData.primaryColor.withOpacity(0.65),
-                expandedHeight: 220.0,
-                pinned: true,
-                flexibleSpace: FlexibleSpaceBar(
-                  centerTitle: true,
-                  title: Text(
-                    groupInfo.title,
-                    maxLines: 2,
-                    style: Theme.of(context).textTheme.title.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
-                  background: Container(
-                    color: Colors.transparent,
-                    child: Center(
-                      child: GestureDetector(
-                        onTap: () => _groupImageClicked(context),
-                        child: ImageContainer(
-                          imagePath: photoUrl,
-                          imageFile: groupImageFile,
-                          size: 130.0,
-                          borderColor: Colors.white,
+    return Directionality(
+      textDirection: app.textDirection,
+      child: SafeArea(
+        child: Scaffold(
+          key: scaffoldKey,
+          body: Container(
+            decoration: app.getBackgroundImage(),
+            child: RefreshIndicator(
+              onRefresh: getGroupTasksFromDB,
+              child: CustomScrollView(
+                slivers: <Widget>[
+                  SliverAppBar(
+                    backgroundColor: app.themeData.primaryColor.withOpacity(0.65),
+                    expandedHeight: 220.0,
+                    pinned: true,
+                    flexibleSpace: FlexibleSpaceBar(
+                      centerTitle: true,
+                      title: Text(
+                        groupInfo.title,
+                        maxLines: 2,
+                        style: Theme.of(context).textTheme.title.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                      background: Container(
+                        color: Colors.transparent,
+                        child: Center(
+                          child: GestureDetector(
+                            onTap: () => _groupImageClicked(context),
+                            child: ImageContainer(
+                              imagePath: photoUrl,
+                              imageFile: groupImageFile,
+                              size: 130.0,
+                              borderColor: Colors.white,
+                            ),
+                          ),
                         ),
                       ),
                     ),
+                    actions: [
+                      PopupMenuButton<String>(
+                        itemBuilder: _getPopupMenuItems,
+                      )
+                    ],
                   ),
-                ),
-                actions: [
-                  PopupMenuButton<String>(
-                    itemBuilder: _getPopupMenuItems,
+                  SliverList(
+                    delegate: SliverChildListDelegate([
+                      _getExpansionPanelList(context),
+                      Container(height: 80.0), //container added so the add task button doesn't hide an expansion panel
+                    ]),
                   )
                 ],
               ),
-              SliverList(
-                delegate: SliverChildListDelegate([
-                  _getExpansionPanelList(context),
-                  Container(height: 80.0), //container added so the add task button doesn't hide an expansion panel
-                ]),
-              )
-            ],
+            ),
           ),
+          floatingActionButton: (app.getLoggedInUserID() == groupInfo.managerID) ? _renderSpeedDial() : null,
         ),
       ),
-      floatingActionButton: (app.getLoggedInUserID() == groupInfo.managerID) ? _renderSpeedDial() : null,
     );
   }
 
@@ -294,32 +299,35 @@ class SingleGroupPageState extends State<SingleGroupPage> {
   Padding _getExpansionPanelList(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(10.0),
-      child: ExpansionPanelList(
-        animationDuration: Duration(milliseconds: 600),
-        expansionCallback: (int index, bool isExpanded) {
-          setState(() {
-            switch (index) {
-              case 0:
-                _myTasksIsExpanded = !_myTasksIsExpanded;
-                break;
-              case 1:
-                _othersTasksIsExpanded = !_othersTasksIsExpanded;
-                break;
-              case 2:
-                groupInfo.managerID == app.loggedInUser.userID
-                    ? _futureTasksIsExpanded = !_futureTasksIsExpanded
-                    : _completedTasksIsExpanded = !_completedTasksIsExpanded;
-                break;
-              case 3:
-                _completedTasksIsExpanded = !_completedTasksIsExpanded;
-                if (_completedTasksIsExpanded) {
-                  fetchCompletedTasksFromServer();
-                }
-                break;
-            }
-          });
-        },
-        children: _getExpansionPanels(context),
+      child: Directionality(
+        textDirection: app.textDirection,
+        child: ExpansionPanelList(
+          animationDuration: Duration(milliseconds: 600),
+          expansionCallback: (int index, bool isExpanded) {
+            setState(() {
+              switch (index) {
+                case 0:
+                  _myTasksIsExpanded = !_myTasksIsExpanded;
+                  break;
+                case 1:
+                  _othersTasksIsExpanded = !_othersTasksIsExpanded;
+                  break;
+                case 2:
+                  groupInfo.managerID == app.loggedInUser.userID
+                      ? _futureTasksIsExpanded = !_futureTasksIsExpanded
+                      : _completedTasksIsExpanded = !_completedTasksIsExpanded;
+                  break;
+                case 3:
+                  _completedTasksIsExpanded = !_completedTasksIsExpanded;
+                  if (_completedTasksIsExpanded) {
+                    fetchCompletedTasksFromServer();
+                  }
+                  break;
+              }
+            });
+          },
+          children: _getExpansionPanels(context),
+        ),
       ),
     );
   }
