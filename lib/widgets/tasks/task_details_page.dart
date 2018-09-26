@@ -61,7 +61,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
       Navigator.pop(context);
       DoItDialogs.showErrorDialog(
         context: context,
-        message: '${app.strings.app.strings.openTaskDetailsPageErrMsg}:\n${error.message}',
+        message: '${app.strings.app.strings.openTaskDetailsPageErrMsg}${error.message}',
       );
     });
     super.initState();
@@ -116,7 +116,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
             }).catchError((error) {
               DoItDialogs.showErrorDialog(
                 context: context,
-                message: '${app.strings.taskNotUpdatedErrMsg}: ${error.message}',
+                message: '${app.strings.taskNotUpdatedErrMsg}${error.message}',
               );
             });
           }
@@ -151,7 +151,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
                     loadingOverlay.hide();
                     DoItDialogs.showErrorDialog(
                       context: context,
-                      message: '${app.strings.deleteTaskErrMsg}:\n${error.message}',
+                      message: '${app.strings.deleteTaskErrMsg}${error.message}',
                     );
                   });
                 }
@@ -205,7 +205,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
         color: Colors.white70,
         child: ListTile(
             leading: Icon(Icons.comment, color: app.themeData.primaryColor),
-            title: Text(app.strings.notifyUsersTitle),
+            title: Text(app.strings.notifyMembers),
             onTap: () {
               DoItDialogs.showUserInputDialog(
                 context: context,
@@ -379,7 +379,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
     }).catchError((error) {
       DoItDialogs.showErrorDialog(
         context: context,
-        message: '${app.strings.app.strings.taskNotUpdatedErrMsg}\n${error.message}',
+        message: '${app.strings.app.strings.taskNotUpdatedErrMsg}${error.message}',
       );
     });
   }

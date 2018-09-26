@@ -28,7 +28,7 @@ class Notifier {
     List<MapEntry<String, http.Response>> responses = await Future.wait(postNotificationFunctions);
     Iterable<MapEntry<String, http.Response>> badResponses = responses.where((res) => res.value.statusCode != 200);
     if (badResponses.length > 0) {
-      String exceptionMsg = '${App.instance.strings.sendNotificationsErrMsgPrefix}:\n';
+      String exceptionMsg = '${App.instance.strings.sendNotificationsErrMsgPrefix}';
       badResponses.forEach((entry) {
         exceptionMsg += '${destUsersFcmTokens[entry.key]}\n';
       });

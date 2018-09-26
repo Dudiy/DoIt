@@ -63,7 +63,7 @@ class Authenticator {
       await app.setLoggedInUser(user);
     } catch (e) {
       await user.delete();
-      throw new Exception('The user was not added - error while adding to DB. \n inner exception: $e');
+      throw new Exception('The user was not added - error while adding to DB. \n Exception details: $e');
     }
 
     return user;

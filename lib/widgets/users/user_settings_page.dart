@@ -152,16 +152,17 @@ class UserSettingsPageState extends State<UserSettingsPage> {
                 new Expanded(
                   child: GridView.count(
                     primary: true,
+                    physics: BouncingScrollPhysics(),
                     padding: EdgeInsets.all(20.0),
                     crossAxisCount: 2,
                     childAspectRatio: 1.0,
-                    mainAxisSpacing: 20.0,
-                    crossAxisSpacing: 20.0,
+                    mainAxisSpacing: 5.0,
+                    crossAxisSpacing: 5.0,
                     children: List.generate(backgroundImages.length, (i) {
                       return _imageContainerWithText(
                           imageContainer:
                               ImageContainer(assetPath: backgroundImages.values.toList()[i]["assetPath"], size: 25.0),
-                          imageSize: 50.0,
+                          imageSize: 40.0,
                           onTap: () {
                             app.usersManager.updateBgImage(userInfo.userID, backgroundImages.keys.toList()[i]);
                             setState(() {
@@ -288,7 +289,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
       loadingOverlay.hide();
     }).catchError((e) {
       loadingOverlay.hide();
-      DoItDialogs.showErrorDialog(context: context, message: '${app.strings.uploadPhotoErrMsg}:\n${e.message}');
+      DoItDialogs.showErrorDialog(context: context, message: '${app.strings.uploadPhotoErrMsg}${e.message}');
     });
   }
 
@@ -401,7 +402,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
           'sentTime': DateTime.now(),
         })
         .whenComplete(() => response = app.strings.msgSentToDevs)
-        .catchError((error) => response = '${app.strings.sendMsgToDevsErr}: ${error.toString()}');
+        .catchError((error) => response = '${app.strings.sendMsgToDevsErr}${error.toString()}');
 
     if (!mounted) return;
 

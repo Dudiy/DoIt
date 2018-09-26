@@ -49,7 +49,7 @@ class GroupCard extends StatelessWidget {
           }).catchError((error) {
             DoItDialogs.showErrorDialog(
               context: context,
-              message: '${app.strings.getGroupInfoErrMsg}:\n ${error.message}',
+              message: '${app.strings.getGroupInfoErrMsg}${error.message}',
             );
             print(error.message);
           });

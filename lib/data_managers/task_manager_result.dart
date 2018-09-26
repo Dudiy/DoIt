@@ -20,7 +20,7 @@ class TaskMethodResultUtils {
     final App app = App.instance;
     switch (enumType) {
       case TaskMethodResult.COMPLETE_SUCCESS:
-        return "${app.strings.taskCompletedMsg} \"" + taskTitle + "\"";
+        return '${app.strings.taskCompletedMsg} $taskTitle"';
       case TaskMethodResult.USER_NOT_LOGGED_IN:
         return app.strings.loginToCompleteTaskMsg;
       case TaskMethodResult.USER_WHO_COMPLETED_TASK_NOT_FOUND:

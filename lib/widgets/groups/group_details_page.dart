@@ -116,7 +116,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
           }).catchError((error) {
             DoItDialogs.showErrorDialog(
               context: context,
-              message: '${app.strings.editGroupInfoErrMsg}:\n${error.message}',
+              message: '${app.strings.editGroupInfoErrMsg}${error.message}',
             );
           });
         },
@@ -205,7 +205,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
           if (editEnabled) {
             app.groupsManager
                 .uploadGroupPic(widget.groupInfo,
-                    () => loadingOverlay.show(context: context, message: app.strings.uploadingGroupPhoto))
+                    () => loadingOverlay.show(context: context, message: app.strings.uploadingImage))
                 .then((uploadedPhoto) {
               setState(() {
                 uploadedImageFile = uploadedPhoto;
@@ -214,7 +214,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
             }).catchError((e) {
               loadingOverlay.hide();
               DoItDialogs.showErrorDialog(
-                  context: context, message: '${app.strings.groupPhotoUploadErrMsg}:\n${e.message}');
+                  context: context, message: '${app.strings.uploadPhotoErrMsg}${e.message}');
             });
           }
         },
@@ -350,7 +350,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                       loadingOverlay.hide();
                       DoItDialogs.showErrorDialog(
                         context: context,
-                        message: '${app.strings.removeMemberFromGroupErrMsg}:\n ${error.message}',
+                        message: '${app.strings.removeMemberFromGroupErrMsg}${error.message}',
                       );
                     });
                   }

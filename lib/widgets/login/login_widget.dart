@@ -160,7 +160,7 @@ class LoginPageState extends State<LoginPage> {
               loadingOverlay.hide();
               DoItDialogs.showErrorDialog(
                 context: context,
-                message: '${app.strings.loginErrMsg} \n${error.message}',
+                message: '${app.strings.loginErrMsg}\n${error.message}',
               );
               print('Error while trying to log in: \n${error.message}');
             });
@@ -193,7 +193,7 @@ class LoginPageState extends State<LoginPage> {
             widget.onSignedIn();
           }
         }).catchError((e) {
-          print('${app.strings.loginWithGoogleErrMsg} \n${e.message}');
+          print('${app.strings.loginWithGoogleErrMsg}${e.message}');
           loadingOverlay.hide();
         });
       },

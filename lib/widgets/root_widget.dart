@@ -105,7 +105,7 @@ class _RootPageState extends State<RootPage> {
     }).catchError((error) {
       DoItDialogs.showErrorDialog(
         context: context,
-        message: '${App.instance.strings.signOutErrMsg}:\n${error.message}',
+        message: '${App.instance.strings.signOutErrMsg}${error.message}',
       );
     });
   }

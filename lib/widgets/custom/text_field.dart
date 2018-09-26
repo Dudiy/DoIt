@@ -59,7 +59,7 @@ class DoItTextField extends StatelessWidget {
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
           ),
           validator: (value) {
-            if (isRequired && value.isEmpty) return 'This field cannot be empty';
+            if (isRequired && value.isEmpty) return App.instance.strings.fieldCannotBeEmpty;
             if (keyboardType == TextInputType.emailAddress) {
               Pattern pattern =
                   r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';

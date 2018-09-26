@@ -183,7 +183,7 @@ class TaskCard extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
         ),
         Text(
-          '  (${taskInfo.value.toString()} point${taskInfo.value > 1 ? 's' : ''})',
+          '  (${taskInfo.value.toString()} ${app.strings.points})',
           style: Theme.of(context).textTheme.caption,
         )
       ],

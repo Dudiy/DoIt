@@ -83,7 +83,7 @@ class ScoreBoardState extends State<ScoreBoard> {
       }).catchError((error) {
         DoItDialogs.showErrorDialog(
           context: context,
-          message: '${app.strings.scoreBoardFetchErrMsg}:\n${error.message}',
+          message: '${app.strings.scoreBoardFetchErrMsg}${error.message}',
         );
       });
     }

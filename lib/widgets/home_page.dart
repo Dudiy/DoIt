@@ -60,7 +60,7 @@ class HomePageState extends State<HomePage> {
               }).catchError((e) {
                 loadingOverlay.hide();
                 DoItDialogs.showErrorDialog(
-                    context: context, message: "${app.strings.profilePhotoUploadErrMsg}\n${e.message}");
+                    context: context, message: "${app.strings.uploadPhotoErrMsg}${e.message}");
               });
             },
             child: Padding(

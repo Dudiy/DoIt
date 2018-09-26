@@ -212,7 +212,7 @@ class DoItDialogs {
           DoItDialogs.showErrorDialog(
               context: context,
               message:
-                  '${app.strings.addMemberErrMsgPrefix}:\n${error.message}');
+                  '${app.strings.addMemberErrMsgPrefix}${error.message}');
           closeDialog = false;
         });
         if (closeDialog) {

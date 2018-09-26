@@ -157,7 +157,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
 
   void _groupImageClicked(BuildContext context) {
     app.groupsManager
-        .uploadGroupPic(groupInfo, () => loadingOverlay.show(context: context, message: app.strings.updatingGroupPhoto))
+        .uploadGroupPic(groupInfo, () => loadingOverlay.show(context: context, message: app.strings.uploadingImage))
         .then((newPhoto) {
       loadingOverlay.hide();
       _groupPhotoChanged(newPhoto);
@@ -166,7 +166,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       });
     }).catchError((e) {
       loadingOverlay.hide();
-      DoItDialogs.showErrorDialog(context: context, message: '${app.strings.loadingPhotoErrMsgPrefix}\n${e.message}');
+      DoItDialogs.showErrorDialog(context: context, message: '${app.strings.uploadPhotoErrMsg}${e.message}');
     });
   }
 
@@ -259,7 +259,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
             _selectedPolicy = selectedPolicy;
           }),
         ],
-        title: app.strings.addTaskTitle,
+        title: app.strings.newTask,
         onSubmit: () async {
           bool closeDialog = true;
           await app.tasksManager
@@ -742,7 +742,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
           loadingOverlay.hide();
           DoItDialogs.showErrorDialog(
             context: context,
-            message: '${app.strings.deleteGroupErrMsg}:\n${error.message}',
+            message: '${app.strings.deleteGroupErrMsg}${error.message}',
           );
         });
       }
@@ -764,7 +764,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
         }).catchError((error) {
           loadingOverlay.hide();
           DoItDialogs.showErrorDialog(
-              context: context, message: '${app.strings.leaveGroupErrorPrefixMsg} ${error.message}');
+              context: context, message: '${app.strings.leaveGroupErrorPrefixMsg}${error.message}');
         });
       }
     });
@@ -791,7 +791,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       child: Icon(Icons.check_box, color: Colors.white),
       backgroundColor: Colors.blue,
       onTap: _showAddTaskDialog,
-      label: app.strings.newTaskLabel,
+      label: app.strings.newTask,
       labelStyle: TextStyle(fontWeight: FontWeight.w500),
     );
   }
@@ -842,7 +842,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
             Navigator.pop(context); // hide menu items popup
             app.notifier
                 .sendNotifications(
-              title: '${app.strings.groupNotificationTitle} "${groupInfo.title}"',
+              title: '${app.strings.notificationFromGroupTitle} "${groupInfo.title}"',
               body: _notificationController.text,
               destUsersFcmTokens: _tokens,
             )
@@ -855,7 +855,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
           },
         );
       },
-      label: app.strings.notifyMembersLabel,
+      label: app.strings.notifyMembers,
       labelStyle: TextStyle(fontWeight: FontWeight.w500),
     );
   }
