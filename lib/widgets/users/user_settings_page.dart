@@ -132,7 +132,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
                           ),
                           Center(child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text('Version: $appVersion'),
+                            child: Text('${app.strings.version}: $appVersion'),
                           ),),
                           Expanded(child: Container()),
                           Divider(),

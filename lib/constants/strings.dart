@@ -17,6 +17,7 @@ class Strings {
     'invalidValue': 'Invalid value',
     'gotIt': 'Got it',
     'loading': 'Loading...',
+    'version': 'Version',
 
     // =================================================================
     // ==========================  Login page  =========================
@@ -268,6 +269,7 @@ class Strings {
     'invalidValue': 'ערך לא תקין',
     'gotIt': 'הבנתי',
     'loading': 'טוען...',
+    'version': 'גרסה',
     // =================================================================
     // ==========================  Login page  =========================
     // =================================================================
@@ -510,7 +512,7 @@ class Strings {
     'invalidValue': 'Неверное значение', // 'Invalid value'
     'gotIt': 'понял', // 'Got it'
     'loading': 'погрузка...', // 'Loading...'
-
+    'version': 'версия', //'Version'
     // =================================================================
     // ==========================  Login page  =========================
     // =================================================================
@@ -642,27 +644,35 @@ class Strings {
     'notificationMessageLable': 'уведомление', //'notification message',
     'addedToGroupMsg': 'Вы были добавлены в эту группу', //'You have been added to this group',
     'hasBeenAddedToThisGroup': 'был добавлен в эту группу', //'has been added to this group',
-    'leaveGroupConfirmMsg': 'Вы уверены, что хотите покинуть эту группу? \nЭто не может быть отменено', //'Are you sure you would like to leave this group? \nThis cannot be undone',
-    'deleteTaskConfirmMsg': 'Вы уверены, что хотите удалить эту задачу? \nЭто не может быть отменено' , //'Are you sure you would like to delete this task? \nThis cannot be undone',
+    'leaveGroupConfirmMsg':
+        'Вы уверены, что хотите покинуть эту группу? \nЭто не может быть отменено', //'Are you sure you would like to leave this group? \nThis cannot be undone',
+    'deleteTaskConfirmMsg':
+        'Вы уверены, что хотите удалить эту задачу? \nЭто не может быть отменено', //'Are you sure you would like to delete this task? \nThis cannot be undone',
     'hi': 'Здравствуй', //'Hi',
-    'oneTaskRemainingMsg': 'У вас остается только одна задача, оставшаяся во всех группах, позволяющая работать ...', //'You only have one task remaining in all groups, lets get to work...',
-    'allTasksRemainingMsg':'- вот все задачи, которые у вас остались во всех группах, позволяют работать...', // '- thats all the tasks you have remaining in all groups, lets get to work...',
+    'oneTaskRemainingMsg':
+        'У вас остается только одна задача, оставшаяся во всех группах, позволяющая работать ...', //'You only have one task remaining in all groups, lets get to work...',
+    'allTasksRemainingMsg':
+        '- вот все задачи, которые у вас остались во всех группах, позволяют работать...', // '- thats all the tasks you have remaining in all groups, lets get to work...',
     'noTasksRemainingMsg': 'Потрясающие! у вас нет задач :)', //'Awsome! you have no tasks to do :)',
     'notInAnyGroup': 'Вы еще не в группе', //'You are not in any group yet',
     'noDescription': 'Введенное описание не указано', //'No description entered',
 
     // ~~~ message bodies ~~~
-    'deleteGroupConfirmMsg': 'Вы уверены, что хотите удалить эту группу? \nЭто не может быть отменено', //'Are you sure you would like to delete this group? \nThis cannot be undone',
+    'deleteGroupConfirmMsg':
+        'Вы уверены, что хотите удалить эту группу? \nЭто не может быть отменено', //'Are you sure you would like to delete this group? \nThis cannot be undone',
     'selectTimespanPrompt': 'Выберите промежуток времени', //'Please select a timespan',
     'noCompletedTasks': 'Нет завершенных задач', //'No completed tasks',
-    'msgSentToDevs': 'Ваше сообщение отправлено разработчикам. Спасибо :)', //'Your message has been sent to the developers. Thank you :)',
+    'msgSentToDevs':
+        'Ваше сообщение отправлено разработчикам. Спасибо :)', //'Your message has been sent to the developers. Thank you :)',
 
     // ~~~ single group page ~~~
     'tasksAssignedToOthersTitle': 'Задачи, назначенные другим', //'Tasks assigned to others',
     'tasksAssignedToMeTitle': 'Задачи, назначенные мне', //'Tasks assigned to me',
     'completedTasksTitle': 'Завершенные задачи', //'Completed tasks',
-    'noTasksAssignedToOthers': 'В этой группе нет заданий, назначенных другим', //'There are no tasks assigned to others in this group',
-    'noTasksAssignetToYou': 'В этой группе нет заданий, назначенных вам', //'There are no tasks assigned to you in this group',
+    'noTasksAssignedToOthers':
+        'В этой группе нет заданий, назначенных другим', //'There are no tasks assigned to others in this group',
+    'noTasksAssignetToYou':
+        'В этой группе нет заданий, назначенных вам', //'There are no tasks assigned to you in this group',
     'noFutureTasks': 'В этой группе нет будущих задач', //'There are no future tasks in this group',
 
     // ~~~ remove member ~~~
@@ -687,34 +697,49 @@ class Strings {
     // =================================================================
     'addMemberNotificationErrMsg':
         'был добавлен в группу, но из-за ошибки подключения уведомление не было отправлено', //'has been added to the group but due to a connection error, a notification was not sent',
-    'taskValueIntegerValidationMsg': 'Значение задачи должно быть положительным целым числом', //'Task value must be a positive integer',
-    'emailAddressesAreCaseSensitive':'** Адреса электронной почты чувствительны к регистру **', // '** Email addresses are case sensitive **',
-    'leaveGroupErrorPrefixMsg': 'Ошибка при попытке покинуть группу, повторите попытку.\n\nСведения об исключении\n', //'Error while trying to leave group, please try again.\n\nException details:\n',
-    'uploadPhotoErrMsg': 'Ошибка при загрузке фото, повторите попытку.\n\nСведения об исключении\n', //'Error while uploading photo, please try again.\n\nException details:\n',
-    'sendMsgToDevsErr': 'Ошибка при отправке сообщения, повторите попытку.\n\nСведения об исключении\n', //'Error while sending message, please try again.\n\nException details:\n',
+    'taskValueIntegerValidationMsg':
+        'Значение задачи должно быть положительным целым числом', //'Task value must be a positive integer',
+    'emailAddressesAreCaseSensitive':
+        '** Адреса электронной почты чувствительны к регистру **', // '** Email addresses are case sensitive **',
+    'leaveGroupErrorPrefixMsg':
+        'Ошибка при попытке покинуть группу, повторите попытку.\n\nСведения об исключении\n', //'Error while trying to leave group, please try again.\n\nException details:\n',
+    'uploadPhotoErrMsg':
+        'Ошибка при загрузке фото, повторите попытку.\n\nСведения об исключении\n', //'Error while uploading photo, please try again.\n\nException details:\n',
+    'sendMsgToDevsErr':
+        'Ошибка при отправке сообщения, повторите попытку.\n\nСведения об исключении\n', //'Error while sending message, please try again.\n\nException details:\n',
     'taskNotUpdatedErrMsg':
         'Не удалось обновить задачу из-за следующей ошибки, повторите попытку.\n\nСведения об исключении\n', //'Could not update task due to the following error, please try again.\n\nException details:\n',
-    'getGroupInfoErrMsg': 'Ошибка при попытке получить информацию о группе, повторите попытку.\n\nСведения об исключении\n', //'Error while trying to get group info, please try again.\n\nException details:\n',
-    'parentGroupNotFoundErrMsg': 'Группа, содержащая задание, не была найдена', //'Group containing the task was not found',
+    'getGroupInfoErrMsg':
+        'Ошибка при попытке получить информацию о группе, повторите попытку.\n\nСведения об исключении\n', //'Error while trying to get group info, please try again.\n\nException details:\n',
+    'parentGroupNotFoundErrMsg':
+        'Группа, содержащая задание, не была найдена', //'Group containing the task was not found',
     'removeMemberFromGroupErrMsg':
-       'Ошибка при удалении члена из группы, элемент не удален, повторите попытку.\n\nСведения об исключении\n', // 'Error while removing member from group, the member has not been removed, please try again.\n\nException details:\n',
+        'Ошибка при удалении члена из группы, элемент не удален, повторите попытку.\n\nСведения об исключении\n', // 'Error while removing member from group, the member has not been removed, please try again.\n\nException details:\n',
     'editGroupInfoErrMsg':
         'Ошибка при обновлении информации о группе, информация о группе не будет обновлена, повторите попытку.\n\nСведения об исключении\n', //'Error while updating group info, the group info will not be updated, please try again.\n\nException details:\n',
-    'deleteGroupErrMsg': 'Ошибка при удалении группы, повторите попытку.\n\nСведения об исключении\n', //'Error while deleting group, please try again.\n\nException details:\n',
+    'deleteGroupErrMsg':
+        'Ошибка при удалении группы, повторите попытку.\n\nСведения об исключении\n', //'Error while deleting group, please try again.\n\nException details:\n',
     'scoreBoardFetchErrMsg':
-       'Ошибка при попытке получить групповой табло, попробуйте еще раз.\n\nСведения об исключении\n', // 'Error while trying to get the group scoreboard, please try again.\n\nException details:\n',
-    'addMemberErrMsgPrefix': 'Ошибка при попытке добавить нового участника, повторите попытку.\n\nСведения об исключении\n', //'Error while trying to add new member, please try again.\n\nException details:\n',
+        'Ошибка при попытке получить групповой табло, попробуйте еще раз.\n\nСведения об исключении\n', // 'Error while trying to get the group scoreboard, please try again.\n\nException details:\n',
+    'addMemberErrMsgPrefix':
+        'Ошибка при попытке добавить нового участника, повторите попытку.\n\nСведения об исключении\n', //'Error while trying to add new member, please try again.\n\nException details:\n',
     'openTaskDetailsPageErrMsg':
-       '«Ошибка при попытке открыть страницу сведений о задании, повторите попытку.\n\nСведения об исключении\n', // 'Error while trying to open task details page, please try again.\n\nException details:\n',
-    'deleteTaskErrMsg': 'Ошибка при попытке удалить задачу, повторите попытку.\n\nСведения об исключении\n', //'Error while trying to delete task, please try again.\n\nException details:\n',
-    'signOutErrMsg': 'Ошибка при выходе из системы, повторите попытку.\n\nСведения об исключении\n', //'Error while signing out, please try again.\n\nException details:\n',
-    'atLeastOneMustBeSelected': 'Необходимо выбрать хотя бы одного пользователя', //'At least one user must be selected',
+        '«Ошибка при попытке открыть страницу сведений о задании, повторите попытку.\n\nСведения об исключении\n', // 'Error while trying to open task details page, please try again.\n\nException details:\n',
+    'deleteTaskErrMsg':
+        'Ошибка при попытке удалить задачу, повторите попытку.\n\nСведения об исключении\n', //'Error while trying to delete task, please try again.\n\nException details:\n',
+    'signOutErrMsg':
+        'Ошибка при выходе из системы, повторите попытку.\n\nСведения об исключении\n', //'Error while signing out, please try again.\n\nException details:\n',
+    'atLeastOneMustBeSelected':
+        'Необходимо выбрать хотя бы одного пользователя', //'At least one user must be selected',
     'sendNotificationsErrMsgPrefix':
         'Ошибка при отправке уведомлений, следующие пользователи не получили уведомление:\n', //'''Error while sending notifications, the following users did not get the notification:\n',
     'invalidEmail': 'Неверный адрес электронной почты', //'Invalid email address',
-    'loginErrMsg': 'Ошибка при попытке войти в систему, повторите попытку.\n\nСведения об исключении\n', //'Error while trying to log in, please try again.\n\nException details:\n',
-    'registrationErrMsg': 'Ошибка при попытке зарегистрировать нового пользователя, повторите попытку.\n\nСведения об исключении\n', //'Error while trying to register a new user, please try again.\n\nException details:\n',
-    'loginWithGoogleErrMsg': 'Ошибка при попытке войти в систему с помощью Google, повторите попытку.\n\nСведения об исключении\n', //'Error while trying to log in with google, please try again.\n\nException details:\n',
+    'loginErrMsg':
+        'Ошибка при попытке войти в систему, повторите попытку.\n\nСведения об исключении\n', //'Error while trying to log in, please try again.\n\nException details:\n',
+    'registrationErrMsg':
+        'Ошибка при попытке зарегистрировать нового пользователя, повторите попытку.\n\nСведения об исключении\n', //'Error while trying to register a new user, please try again.\n\nException details:\n',
+    'loginWithGoogleErrMsg':
+        'Ошибка при попытке войти в систему с помощью Google, повторите попытку.\n\nСведения об исключении\n', //'Error while trying to log in with google, please try again.\n\nException details:\n',
     'fieldCannotBeEmpty': 'Это поле не может быть пустым', //'This field cannot be empty',
 
     // =================================================================
@@ -729,30 +754,40 @@ class Strings {
     // ==========================  Help Pages ==========================
     // =================================================================
     'singleGroupDetailsHelpTitle': 'Страница отдельных групп', //'Single group details page',
-    'singleGroupDetailsHelpIntro': 'На этой странице пользователь может видеть все задачи выбранной группы.' //'This page is where a user can see all the tasks of the selected group.\n\n'
+    'singleGroupDetailsHelpIntro':
+        'На этой странице пользователь может видеть все задачи выбранной группы.' //'This page is where a user can see all the tasks of the selected group.\n\n'
         'Групповое изображение может быть изменено любым членом группы, нажав на групповое изображение в верхней части страницы\n\n' //'The group picture can be changed by any group member by clicking on the group image at the top of the page\n\n'
         'Каждая задача в группе отображается на карте задач, при нажатии на карту отображается страница сведений о задаче\n' //'Every task in the group is shown on a task card, clicking on the card will show the task details page\n'
         'Здесь менеджер группы может также обновить задачу\n\n' //'This is where the group manager can also update the task\n\n'
         'Групповые задачи разделяются на следующие разделы:\n', //'The group tasks are seperated into the following sections:\n',
-    'singleGroupDetailsHelpTasksAssignedToMeSubtitle': 'Заданные мне задачи (активный пользователь)', //'- Tasks assigned to me (the active user):',
-    'singleGroupDetailsHelpTasksAssignedToMeBody': 'Эти задачи - это задачи, которые пользователь может выполнить.\n' //'These tasks are the tasks that the user can complete.\n '
+    'singleGroupDetailsHelpTasksAssignedToMeSubtitle':
+        'Заданные мне задачи (активный пользователь)', //'- Tasks assigned to me (the active user):',
+    'singleGroupDetailsHelpTasksAssignedToMeBody':
+        'Эти задачи - это задачи, которые пользователь может выполнить.\n' //'These tasks are the tasks that the user can complete.\n '
         'Когда задача завершена, она перемещается в раздел завершенных задач.\n' //'When a task is completed it is moved to the completed tasks section.\n'
         'Если задача является повторяющейся задачей, то после ее завершения будет создана новая задача с обновленной датой начала\\окончания.\n' //'If a task is a recurring task then after it is completed a new task with the updated start\\end date will be generated.\n'
         '* Если новая дата повторяющейся задачи после текущего времени будет отображаться в разделе будущих задач *\n', //'* If the new date of a recurring task is after the current time it will show up in the future tasks section *\n',
-    'singleGroupDetailsHelpTasksAssignedToOthersSubtitle': '- Задачи, назначенные другим пользователям:', //'- Tasks assigned to other users:',
+    'singleGroupDetailsHelpTasksAssignedToOthersSubtitle':
+        '- Задачи, назначенные другим пользователям:', //'- Tasks assigned to other users:',
     'singleGroupDetailsHelpTasksAssignedToOthersBody':
         'Эти задачи назначаются другим членам группы, но не активным пользователем.\n ' //'These tasks are assigned to other members of the group but not the active user.\n '
         'Активные пользователи не могут выполнить эти задачи.\n', //'These tasks cannot be completed by the active user\n',
-    'singleGroupDetailsHelpFutureTasksSubtitle': '- Будущие задачи (видимы только для менеджера группы):', // '- Future tasks (visible to group manager only):',
-    'singleGroupDetailsHelpFutureTasksBody': 'Эти задачи имеют начальную дату, которая превышает текущее время.\n ', //'These tasks have a starting date that is lated than the current time.\n ',
-    'singleGroupDetailsHelpCompletedTasksBody': 'Чтобы просмотреть выполненные задания, необходимо выбрать временной интервал.\n ' //'To see completed tasks a time span must be selected.\n '
+    'singleGroupDetailsHelpFutureTasksSubtitle':
+        '- Будущие задачи (видимы только для менеджера группы):', // '- Future tasks (visible to group manager only):',
+    'singleGroupDetailsHelpFutureTasksBody':
+        'Эти задачи имеют начальную дату, которая превышает текущее время.\n ', //'These tasks have a starting date that is lated than the current time.\n ',
+    'singleGroupDetailsHelpCompletedTasksBody':
+        'Чтобы просмотреть выполненные задания, необходимо выбрать временной интервал.\n ' //'To see completed tasks a time span must be selected.\n '
         'Только менеджер группы или участник, выполнивший задачу, могут «выполнить незавершенную» задачу\n', //'Only the group manager or the member who completed a task can "uncomplete" a task\n',
     'taskDetailsHelpTitle': 'Страница сведений о задаче', //'Task details page',
-    'taskDetailsHelpIntro': 'На этой странице указаны все детали выбранной задачи.\n\n' //'This page is where all the details of a selected task are.\n\n'
+    'taskDetailsHelpIntro':
+        'На этой странице указаны все детали выбранной задачи.\n\n' //'This page is where all the details of a selected task are.\n\n'
         'Только менеджер группы может обновлять сведения о задаче.\n\n' //'Only the group manager can update the details of a task.\n\n'
         'Поле задач:\n', //'Task fields:\n',
-    'taskDetailsHelpValueBody': 'Количество очков, которые получит член для выполнения этой задачи.\n', //'The amount of points a member will get for completing this task.\n',
-    'taskDetailsHelpRepeatBody': 'Когда задача снова появится после завершения.\n', //'When should the task reappear after completion.\n',
+    'taskDetailsHelpValueBody':
+        'Количество очков, которые получит член для выполнения этой задачи.\n', //'The amount of points a member will get for completing this task.\n',
+    'taskDetailsHelpRepeatBody':
+        'Когда задача снова появится после завершения.\n', //'When should the task reappear after completion.\n',
     'taskDetailsHelpStartTimeBody':
         'Задача будет видна членам группы только после того, как текущее время будет после этого значения.\n ', //'The task will be visible to the group members only after the current time is after this value.\n ',
     'taskDetailsHelpDueTimeBody':
@@ -784,6 +819,8 @@ class Strings {
   String get gotIt => _currentLanguageMap['gotIt'] ?? _english['gotIt'];
 
   String get loading => _currentLanguageMap['loading'] ?? _english['loading'];
+
+  String get version => _currentLanguageMap['version'] ?? _english['version'];
 
   // =================================================================
   // ==========================  Login page  =========================
@@ -1192,6 +1229,7 @@ class Strings {
       _currentLanguageMap['taskDetailsHelpDueTimeBody'] ?? _english['taskDetailsHelpDueTimeBody'];
   String get taskDetailsHelpAsssignedMembersBody =>
       _currentLanguageMap['taskDetailsHelpAsssignedMembersBody'] ?? _english['taskDetailsHelpAsssignedMembersBody'];
+
   //endregion
 
   List<Locale> getSupportedLanguages() {
