@@ -25,17 +25,24 @@ class UsersManager {
     String photoUrl = "",
     String localeStr,
   }) async {
-    DocumentSnapshot documentSnapshot = await App.instance.firestore.document('$USERS/${user.uid}').get();
-    bool isUserAlreadyInDB = documentSnapshot.data != null;
+    DocumentSnapshot userInfoDocSnapshot = await App.instance.firestore.document('$USERS/${user.uid}').get();
+    bool userIsAlreadyInDB = userInfoDocSnapshot.data != null;
     String photoUrl = "";
-    if (isUserAlreadyInDB && documentSnapshot['photoUrl'] != null) {
-      photoUrl = documentSnapshot['photoUrl'];
+    if (userIsAlreadyInDB && userInfoDocSnapshot['photoUrl'] != null) {
+      photoUrl = userInfoDocSnapshot['photoUrl'];
     } else if (user.photoUrl != null) {
       photoUrl = user.photoUrl;
     }
-    String bgImage = isUserAlreadyInDB ? documentSnapshot.data['bgImage'] : null;
+    String bgImage = userIsAlreadyInDB ? userInfoDocSnapshot.data['bgImage'] : null;
     String fcmToken = await app.firebaseMessaging.getToken();
 
+    if (localeStr == null) {
+      if (userIsAlreadyInDB && userInfoDocSnapshot['localeStr'] != null) {
+        localeStr = userInfoDocSnapshot['localeStr'];
+      } else {
+        localeStr = app.locale.toString();
+      }
+    }
     // create new userInfo from parameters
     UserInfo userInfo = new UserInfo(
         userID: user.uid,
@@ -45,7 +52,7 @@ class UsersManager {
         photoUrl: photoUrl,
         bgImage: bgImage,
         localeStr: localeStr);
-    await _firestore.document('$USERS/${user.uid}').setData(UserUtils.generateObjectFromUserInfo(userInfo));
+    await _firestore.document('$USERS/${user.uid}').updateData(UserUtils.generateObjectFromUserInfo(userInfo));
   }
 
   Future<void> deleteUser() async {

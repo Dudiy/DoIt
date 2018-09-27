@@ -31,7 +31,7 @@ class Authenticator {
     assert(user.uid == currentUser.uid);
 
     print('$user has signed in using google \n Adding to firebase...');
-    await App.instance.usersManager.addUser(user: user, localeStr: App.instance.locale.toString());
+    await App.instance.usersManager.addUser(user: user);
     await App.instance.setLoggedInUser(user);
     print('${user.displayName} wass added to firebase');
     return user;

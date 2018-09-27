@@ -85,6 +85,10 @@ class App {
         }
         if (userInfo.localeStr != null) {
           locale = Strings.localeParse(userInfo.localeStr);
+        } else {
+          // default locale is always set on app init if there is no locale value
+          // in the DB update it to be the current locale
+          usersManager.updateLocale(_locale.toString());
         }
       });
     }
