@@ -123,7 +123,7 @@ class GroupsManager {
     });
 
     /* delete from firebase db */
-    print('groupID:$groupID - in deleteGroup'); //TODO delete
+    print('groupID:$groupID - in deleteGroup');
     GroupInfo groupInfo = await getGroupInfoByID(groupID);
     String loggedInUserID = app.getLoggedInUserID();
     if (loggedInUserID == null) throw new Exception('GroupManager: User is not logged in, cannot delete group');
@@ -136,7 +136,7 @@ class GroupsManager {
     await _firestore.document('$GROUPS/$groupID').delete().whenComplete(() {
       print('GroupsManager: groupID:$groupID deleted');
     });
-    print('groupID:$groupID - returning from deleteGroup'); //TODO delete
+    print('groupID:$groupID - returning from deleteGroup');
   }
 
   Future<void> deleteAllCompletedTasksFromGroup({@required groupID}) async {
@@ -153,7 +153,7 @@ class GroupsManager {
   }
 
   Future<void> removeTaskFromGroup(String groupID, String taskID) async {
-    print('groupID: $groupID - taskID:$taskID: in removeTaskFromGroup'); //TODO delete
+    print('groupID: $groupID - taskID:$taskID: in removeTaskFromGroup');
     GroupInfo groupInfo = await getGroupInfoByID(groupID);
     if (groupInfo.tasks.containsKey(taskID)) {
       groupInfo.tasks.remove(taskID);
@@ -161,7 +161,7 @@ class GroupsManager {
           .document('$GROUPS/$groupID')
           .updateData({'tasks': TaskUtils.generateObjectFromTasksMap(groupInfo.tasks)});
     }
-    print('groupID: $groupID - taskID:$taskID: returning from removeTaskFromGroup'); //TODO delete
+    print('groupID: $groupID - taskID:$taskID: returning from removeTaskFromGroup');
   }
 
   Future<void> addTaskToGroup(
@@ -191,7 +191,7 @@ class GroupsManager {
 
   //deletes all group asynchronously but only returns after all groups are deleted
   Future<void> deleteAllGroupsUserIsManagerOf(String userID) async {
-    print('userId: $userID - in deleteAllGroupsUserIsManagerOf'); //TODO delete
+    print('userId: $userID - in deleteAllGroupsUserIsManagerOf');
     List<GroupInfo> allGroupsFromDB = await getAllGroupsFromDB();
     List<Future> deleteGroupFunctions = new List();
     allGroupsFromDB.forEach((groupInfo) {
@@ -200,11 +200,11 @@ class GroupsManager {
       }
     });
     await Future.wait(deleteGroupFunctions);
-    print('userId: $userID - returning from deleteAllGroupsUserIsManagerOf'); //TODO delete
+    print('userId: $userID - returning from deleteAllGroupsUserIsManagerOf');
   }
 
   Future<void> deleteUserFromAllGroups(String userID) async {
-    print('userId: $userID - in deleteUserFromAllGroups'); //TODO delete
+    print('userId: $userID - in deleteUserFromAllGroups');
     List<GroupInfo> allGroupsFromDB = await getAllGroupsFromDB();
     List<Future> deleteUserFromGroupFunctions = new List();
     allGroupsFromDB.forEach((group) {
@@ -213,11 +213,11 @@ class GroupsManager {
       }
     });
     await Future.wait(deleteUserFromGroupFunctions);
-    print('userId: $userID - returning from deleteUserFromAllGroups'); //TODO delete
+    print('userId: $userID - returning from deleteUserFromAllGroups');
   }
 
   Future<void> deleteUserFromGroup(String groupID, String userID) async {
-    print('userId: $userID, groupID: $groupID - in deleteUserFromGroup'); //TODO delete
+    print('userId: $userID, groupID: $groupID - in deleteUserFromGroup');
     GroupInfo groupInfo = await getGroupInfoByID(groupID);
     // delete user from group
     groupInfo.members.remove(userID);
@@ -234,7 +234,7 @@ class GroupsManager {
       await app.tasksManager.removeUserFromAssignedTask(userID: userID, taskID: task.taskID);
     });
     await Future.wait([removeUserFromGroupMembersFuture]);
-    print('userId: $userID, groupID: $groupID  - returning from deleteUserFromGroup'); //TODO delete
+    print('userId: $userID, groupID: $groupID  - returning from deleteUserFromGroup');
   }
 
   Future<List<GroupInfo>> getAllGroupsFromDB() async {
@@ -301,7 +301,6 @@ class GroupsManager {
     File file = await ImagePicker.pickImage(source: ImageSource.gallery);
     if (file != null) {
       showLoadingCallback();
-      // TODO do we want to limit the file size?
       double fileSizeInMb = await file.length() / 1000000;
       if (fileSizeInMb > MAX_PIC_UPLOAD_SIZE_MB) throw Exception('Maximum file size is $MAX_PIC_UPLOAD_SIZE_MB Mb');
       StorageUploadTask uploadTask = storageRef.child("$GROUPS/${groupInfo.groupID}/profile.jpg").putFile(file);

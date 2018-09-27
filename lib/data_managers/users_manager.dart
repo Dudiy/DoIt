@@ -71,12 +71,12 @@ class UsersManager {
     /* delete from firebase db */
     await app.groupsManager.deleteAllGroupsUserIsManagerOf(userID);
     await app.groupsManager.deleteUserFromAllGroups(userID);
-    print('userId: $userID - deleting user from DB'); //TODO delete
+    print('userId: $userID - deleting user from DB');
     await _firestore.document('$USERS/$userID').delete();
-    print('userId: $userID - user deleted from DB'); //TODO delete
-    print('userId: $userID - deleting user from Auth'); //TODO delete
+    print('userId: $userID - user deleted from DB');
+    print('userId: $userID - deleting user from Auth');
     await app.authenticator.deleteUser();
-    print('userId: $userID - user deleted from Auth'); //TODO delete
+    print('userId: $userID - user deleted from Auth');
   }
 
   //we only want the user to be able to change his picture and not hes other data

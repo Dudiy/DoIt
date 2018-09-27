@@ -83,7 +83,7 @@ class TasksManager {
       eRecurringPolicy recurringPolicy,
       Map<String, ShortUserInfo> assignedUsers,
       bool allowNonManagerUpdate = false}) async {
-    print('taskID: $taskIdToChange - in updateTask'); //TODO delete
+    print('taskID: $taskIdToChange - in updateTask');
     /* validation */
     ShortUserInfo loggedInUser = app.loggedInUser;
     String errorMessagePrefix = 'TasksManager: cannot update task.';
@@ -104,7 +104,7 @@ class TasksManager {
 
     /* update */
     await _updateTaskInDB(taskInfo);
-    print('taskID: $taskIdToChange  - returning from updateTask'); //TODO delete
+    print('taskID: $taskIdToChange  - returning from updateTask');
     return taskInfo;
   }
 
@@ -205,20 +205,20 @@ class TasksManager {
 
 // deleteFromGroup parameter is for when deleting an entire group - set to false fo efficiency
   Future<void> deleteTask(String taskID, [bool deleteFromGroup = true]) async {
-    print('taskID: $taskID - in deleteTask'); //TODO delete
+    print('taskID: $taskID - in deleteTask');
     // delete from group
     TaskInfo taskInfo = await getTaskById(taskID);
     if (deleteFromGroup) {
       await app.groupsManager.removeTaskFromGroup(taskInfo.parentGroupID, taskInfo.taskID).whenComplete(() {
-        print('taskID: $taskID - deleted from parent group'); //TODO delete
+        print('taskID: $taskID - deleted from parent group');
       });
     }
     // delete from tasks
     await _firestore.document('$TASKS/$taskID').delete().whenComplete(() {
-      print('taskID: $taskID - deleted from tasks collection'); //TODO delete
+      print('taskID: $taskID - deleted from tasks collection');
     });
 
-    print('taskID: $taskID - returning from deleteTask'); //TODO delete
+    print('taskID: $taskID - returning from deleteTask');
   }
 
   Future<TaskInfo> getTaskById(String taskID) async {
@@ -264,7 +264,7 @@ class TasksManager {
   }
 
   Future<void> removeUserFromAssignedTask({String userID, String taskID}) async {
-    print('userId: $userID, taskID: $taskID - in removeUserFromAssignedTask'); //TODO delete
+    print('userId: $userID, taskID: $taskID - in removeUserFromAssignedTask');
     TaskInfo taskInfo = await getTaskById(taskID);
     if (taskInfo.assignedUsers.containsKey(userID)) {
       taskInfo.assignedUsers.remove(userID);
@@ -275,7 +275,7 @@ class TasksManager {
       );
       print('TasksManager: Task ${taskInfo.title} no longer assigned to $userID');
     }
-    print('userId: $userID, taskID: $taskID  - returning from removeUserFromAssignedTask'); //TODO delete
+    print('userId: $userID, taskID: $taskID  - returning from removeUserFromAssignedTask');
   }
 
   DateTime _getStartTimeFromRecurringPolicy(DateTime time, eRecurringPolicy policy) {
