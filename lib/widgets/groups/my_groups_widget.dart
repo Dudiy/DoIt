@@ -180,7 +180,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
       );
     }).toList());
     list.add(SizedBox(height: 80.0)); // this is so the "add group" button doesn't hide the last card
-    return ListView(children: list);
+    return ListView(physics: BouncingScrollPhysics(), children: list);
   }
 
   Future<void> _showAddGroupDialog() async {

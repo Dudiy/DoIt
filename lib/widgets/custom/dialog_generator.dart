@@ -223,15 +223,6 @@ class DoItDialogs {
   static void showSingleGroupPageHelp(BuildContext context) {
     const double PADDING_1 = 8.0;
     const double PADDING_2 = 16.0;
-    bool isRtl = app.textDirection == TextDirection.rtl;
-    EdgeInsets padding1 = EdgeInsets.only(
-      left: !isRtl ? PADDING_1 : 0.0,
-      right: isRtl ? PADDING_1 : 0.0,
-    );
-    EdgeInsets padding2 = EdgeInsets.only(
-      left: !isRtl ? PADDING_2 : 0.0,
-      right: isRtl ? PADDING_2 : 0.0,
-    );
     showDialog(
       context: context,
       builder: (context) {
@@ -251,52 +242,18 @@ class DoItDialogs {
                     padding: EdgeInsets.all(16.0),
                     children: <Widget>[
                       Text(app.strings.singleGroupDetailsHelpIntro),
-                      Padding(
-                        padding: padding1,
-                        child: Text(
-                          app.strings.singleGroupDetailsHelpTasksAssignedToMeSubtitle,
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Padding(
-                        padding: padding2,
-                        child: Text(
-                          app.strings.singleGroupDetailsHelpTasksAssignedToMeBody,
-                        ),
-                      ),
-                      Padding(
-                        padding: padding1,
-                        child: Text(
-                          app.strings.singleGroupDetailsHelpTasksAssignedToOthersSubtitle,
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Padding(
-                        padding: padding2,
-                        child: Text(app.strings.singleGroupDetailsHelpTasksAssignedToOthersBody),
-                      ),
-                      Padding(
-                        padding: padding1,
-                        child: Text(
-                          app.strings.singleGroupDetailsHelpFutureTasksSubtitle,
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Padding(
-                        padding: padding2,
-                        child: Text(app.strings.singleGroupDetailsHelpFutureTasksBody),
-                      ),
-                      Padding(
-                        padding: padding1,
-                        child: Text(
-                          '- ${app.strings.completedTasksTitle}:',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Padding(
-                        padding: padding2,
-                        child: Text(app.strings.singleGroupDetailsHelpCompletedTasksBody),
-                      ),
+                      _getHelpPageText(app.strings.singleGroupDetailsHelpTasksAssignedToMeSubtitle, PADDING_1,
+                          TextStyle(fontWeight: FontWeight.bold)),
+                      _getHelpPageText(app.strings.singleGroupDetailsHelpTasksAssignedToMeBody, PADDING_2),
+                      _getHelpPageText(app.strings.singleGroupDetailsHelpTasksAssignedToOthersSubtitle, PADDING_1,
+                          TextStyle(fontWeight: FontWeight.bold)),
+                      _getHelpPageText(app.strings.singleGroupDetailsHelpTasksAssignedToOthersBody, PADDING_2),
+                      _getHelpPageText(app.strings.singleGroupDetailsHelpFutureTasksSubtitle, PADDING_1,
+                          TextStyle(fontWeight: FontWeight.bold)),
+                      _getHelpPageText(app.strings.singleGroupDetailsHelpFutureTasksBody, PADDING_2),
+                      _getHelpPageText(
+                          '- ${app.strings.completedTasksTitle}:', PADDING_1, TextStyle(fontWeight: FontWeight.bold)),
+                      _getHelpPageText(app.strings.singleGroupDetailsHelpCompletedTasksBody, PADDING_2),
                     ],
                   ),
                 ),
@@ -327,15 +284,6 @@ class DoItDialogs {
   static void showTaskDetailsHelp(BuildContext context) {
     const double PADDING_1 = 8.0;
     const double PADDING_2 = 16.0;
-    bool isRtl = app.textDirection == TextDirection.rtl;
-    EdgeInsets padding1 = EdgeInsets.only(
-      left: !isRtl ? PADDING_1 : 0.0,
-      right: isRtl ? PADDING_1 : 0.0,
-    );
-    EdgeInsets padding2 = EdgeInsets.only(
-      left: !isRtl ? PADDING_2 : 0.0,
-      right: isRtl ? PADDING_2 : 0.0,
-    );
     showDialog(
       context: context,
       builder: (context) {
@@ -355,63 +303,19 @@ class DoItDialogs {
                     padding: EdgeInsets.all(16.0),
                     children: <Widget>[
                       Text(app.strings.taskDetailsHelpIntro),
-                      Padding(
-                        padding: padding1,
-                        child: Text(
-                          '- ${app.strings.valueLabel}:',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Padding(
-                        padding: padding2,
-                        child: Text(
-                          app.strings.taskDetailsHelpValueBody,
-                        ),
-                      ),
-                      Padding(
-                        padding: padding1,
-                        child: Text(
-                          '- ${app.strings.repeat}:',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Padding(
-                        padding: padding2,
-                        child: Text(app.strings.taskDetailsHelpRepeatBody),
-                      ),
-                      Padding(
-                        padding: padding1,
-                        child: Text(
-                          '- ${app.strings.startTime}:',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Padding(
-                        padding: padding2,
-                        child: Text(app.strings.taskDetailsHelpStartTimeBody),
-                      ),
-                      Padding(
-                        padding: padding1,
-                        child: Text(
-                          '- ${app.strings.dueTime}:',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Padding(
-                        padding: padding2,
-                        child: Text(app.strings.taskDetailsHelpDueTimeBody),
-                      ),
-                      Padding(
-                        padding: padding1,
-                        child: Text(
-                          '- ${app.strings.assignedMembers}:',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Padding(
-                        padding: padding2,
-                        child: Text(app.strings.taskDetailsHelpAsssignedMembersBody),
-                      ),
+                      _getHelpPageText(
+                          '- ${app.strings.valueLabel}:', PADDING_1, TextStyle(fontWeight: FontWeight.bold)),
+                      _getHelpPageText(app.strings.taskDetailsHelpValueBody, PADDING_2),
+                      _getHelpPageText('- ${app.strings.repeat}:', PADDING_1, TextStyle(fontWeight: FontWeight.bold)),
+                      _getHelpPageText(app.strings.taskDetailsHelpRepeatBody, PADDING_2),
+                      _getHelpPageText(
+                          '- ${app.strings.startTime}:', PADDING_1, TextStyle(fontWeight: FontWeight.bold)),
+                      _getHelpPageText(app.strings.taskDetailsHelpStartTimeBody, PADDING_2),
+                      _getHelpPageText('- ${app.strings.dueTime}:', PADDING_1, TextStyle(fontWeight: FontWeight.bold)),
+                      _getHelpPageText(app.strings.taskDetailsHelpDueTimeBody, PADDING_2),
+                      _getHelpPageText(
+                          '- ${app.strings.assignedMembers}:', PADDING_1, TextStyle(fontWeight: FontWeight.bold)),
+                      _getHelpPageText(app.strings.taskDetailsHelpAsssignedMembersBody, PADDING_2),
                     ],
                   ),
                 ),
@@ -436,6 +340,21 @@ class DoItDialogs {
           ),
         );
       },
+    );
+  }
+
+  static Widget _getHelpPageText(String text, double paddingFromStart, [TextStyle textStyle]) {
+    return Padding(
+      padding: _getPaddingFromStart(paddingFromStart),
+      child: Text(text, style: textStyle),
+    );
+  }
+
+  static EdgeInsets _getPaddingFromStart(double fromStart) {
+    bool isRtl = app.textDirection == TextDirection.rtl;
+    return EdgeInsets.only(
+      left: !isRtl ? fromStart : 0.0,
+      right: isRtl ? fromStart : 0.0,
     );
   }
 }

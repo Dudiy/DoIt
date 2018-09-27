@@ -61,33 +61,5 @@ class LanguageSelector extends StatelessWidget {
         );
       }).toList(),
     );
-    /*Dialog(
-      child: Container(
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                app.strings.selectLanguageTitle,
-                style: Theme.of(context)
-                    .textTheme
-                    .title
-                    .copyWith(fontWeight: FontWeight.bold, decoration: TextDecoration.underline),
-              ),
-            ),
-            Expanded(
-              child: ListView(
-                children: app.strings.getSupportedLanguages().map((locale) {
-                  return ListTile(
-                    title: Text(Strings.localeToLanguageString(locale)),
-                    leading: Image.asset(FLAGS[locale.languageCode], width: 30.0,),
-                  );
-                }).toList(),
-              ),
-            )
-          ],
-        ),
-      ),
-    );*/
   }
 }
