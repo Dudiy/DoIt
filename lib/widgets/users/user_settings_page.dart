@@ -14,6 +14,7 @@ import 'package:do_it/widgets/custom/raised_button_with_icon.dart';
 import 'package:do_it/widgets/custom/text_field.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Auth;
 import 'package:flutter/material.dart';
+import 'package:package_info/package_info.dart';
 
 class UserSettingsPage extends StatefulWidget {
   final VoidCallback onSignedOut;
@@ -32,6 +33,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
   final LoadingOverlay loadingOverlay = new LoadingOverlay();
   final TextEditingController _messageBodyController = new TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  String appVersion = '';
   UserInfo userInfo;
   File uploadedImageFile;
 
@@ -40,6 +42,11 @@ class UserSettingsPageState extends State<UserSettingsPage> {
     app.usersManager.getFullUserInfo(app.loggedInUser.userID).then((retrievedUserInfo) {
       setState(() {
         userInfo = retrievedUserInfo;
+      });
+    });
+    PackageInfo.fromPlatform().then((packageInfo){
+      setState(() {
+        appVersion = packageInfo.version;
       });
     });
     super.initState();
@@ -123,6 +130,10 @@ class UserSettingsPageState extends State<UserSettingsPage> {
                               });
                             },
                           ),
+                          Center(child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('Version: $appVersion'),
+                          ),),
                           Expanded(child: Container()),
                           Divider(),
                           DoItRaisedButtonWithIcon(
