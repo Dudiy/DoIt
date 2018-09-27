@@ -7,7 +7,7 @@ const GOOGLE_ICON = "assets/icons_and_buttons/google_icon.png";
 const PODIUM_ICON = "assets/icons_and_buttons/podium_icon.png";
 const Map<String, String> FLAGS = {
   'en': "assets/icons_and_buttons/usa_flag.png",
-  'ru;': "assets/icons_and_buttons/russia_flag.png",
+  'ru': "assets/icons_and_buttons/russia_flag.png",
   'he': "assets/icons_and_buttons/israel_flag.png",
 };
 

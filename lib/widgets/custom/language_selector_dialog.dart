@@ -22,44 +22,47 @@ class LanguageSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SimpleDialog(
-      title: Text(
-        app.strings.selectLanguageTitle,
-        textAlign: TextAlign.center,
-        style: Theme.of(context)
-            .textTheme
-            .title
-            .copyWith(fontWeight: FontWeight.bold, decoration: TextDecoration.underline),
+    return Directionality(
+      textDirection: app.textDirection,
+      child: SimpleDialog(
+        title: Text(
+          app.strings.selectLanguageTitle,
+          textAlign: TextAlign.center,
+          style: Theme.of(context)
+              .textTheme
+              .title
+              .copyWith(fontWeight: FontWeight.bold, decoration: TextDecoration.underline),
+        ),
+        contentPadding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 16.0),
+        children: app.strings.getSupportedLanguages().map((locale) {
+          return Container(
+            decoration: BoxDecoration(
+              border: Border(
+                top: BorderSide(color: app.themeData.dividerColor),
+                bottom: BorderSide(color: app.themeData.dividerColor),
+              ),
+              color: Colors.white,
+            ),
+            child: ListTile(
+              title: Text(Strings.localeToLanguageString(locale)),
+              leading: Image.asset(
+                FLAGS[locale.languageCode],
+                width: 30.0,
+              ),
+              onTap: () {
+                app.locale = locale;
+                Navigator.pop(context);
+                if (app.loggedInUser != null) {
+                  app.usersManager.updateLocale(locale.toString());
+                }
+                if (onSelected != null) {
+                  onSelected();
+                }
+              },
+            ),
+          );
+        }).toList(),
       ),
-      contentPadding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 16.0),
-      children: app.strings.getSupportedLanguages().map((locale) {
-        return Container(
-          decoration: BoxDecoration(
-            border: Border(
-              top: BorderSide(color: app.themeData.dividerColor),
-              bottom: BorderSide(color: app.themeData.dividerColor),
-            ),
-            color: Colors.white,
-          ),
-          child: ListTile(
-            title: Text(Strings.localeToLanguageString(locale)),
-            leading: Image.asset(
-              FLAGS[locale.languageCode],
-              width: 30.0,
-            ),
-            onTap: () {
-              app.locale = locale;
-              Navigator.pop(context);
-              if (app.loggedInUser != null) {
-                app.usersManager.updateLocale(locale.toString());
-              }
-              if (onSelected != null) {
-                onSelected();
-              }
-            },
-          ),
-        );
-      }).toList(),
     );
   }
 }

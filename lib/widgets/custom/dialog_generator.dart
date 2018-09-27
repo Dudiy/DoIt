@@ -19,15 +19,18 @@ class DoItDialogs {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return new AlertDialog(
-          title: Text(app.strings.oops),
-          content: Text(message),
-          actions: <Widget>[
-            new SimpleDialogOption(
-              onPressed: () => Navigator.pop(context),
-              child: Text(app.strings.ok),
-            ),
-          ],
+        return Directionality(
+          textDirection: app.textDirection,
+          child: new AlertDialog(
+            title: Text(app.strings.oops),
+            content: Text(message),
+            actions: <Widget>[
+              new SimpleDialogOption(
+                onPressed: () => Navigator.pop(context),
+                child: Text(app.strings.ok),
+              ),
+            ],
+          ),
         );
       },
     );
@@ -41,31 +44,34 @@ class DoItDialogs {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(body),
-          actions: <Widget>[
-            new RaisedButton(
-              onPressed: () => Navigator.pop(context),
-              color: App.instance.themeData.primaryColor,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-              child: Row(
-                children: <Widget>[
-                  Text(
-                    app.strings.gotIt,
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Icon(
-                      Icons.thumb_up,
-                      color: Colors.white,
+        return Directionality(
+          textDirection: app.textDirection,
+          child: AlertDialog(
+            title: Text(title),
+            content: Text(body),
+            actions: <Widget>[
+              new RaisedButton(
+                onPressed: () => Navigator.pop(context),
+                color: App.instance.themeData.primaryColor,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                child: Row(
+                  children: <Widget>[
+                    Text(
+                      app.strings.gotIt,
+                      style: TextStyle(color: Colors.white),
                     ),
-                  ),
-                ],
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(
+                        Icons.thumb_up,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         );
       },
     );
@@ -101,10 +107,13 @@ class DoItDialogs {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return new SimpleDialog(
-          title: Center(child: Text(title)),
-          children: dialogBody,
-          contentPadding: EdgeInsets.all(16.0),
+        return Directionality(
+          textDirection: app.textDirection,
+          child: new SimpleDialog(
+            title: Center(child: Text(title)),
+            children: dialogBody,
+            contentPadding: EdgeInsets.all(16.0),
+          ),
         );
       },
     );
@@ -120,51 +129,63 @@ class DoItDialogs {
     return showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
-        return new SimpleDialog(
-          title: Center(child: Text(message)),
-          children: <Widget>[
-            Wrap(alignment: WrapAlignment.center, children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: RaisedButton(
-                  child: Text(app.strings.cancel),
-                  onPressed: () {
-                    Navigator.pop(context, false);
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: RaisedButton(
-                  child: Text(
-                    actionButtonText,
-                    style: TextStyle(color: Colors.white),
+        return Directionality(
+          textDirection: app.textDirection,
+          child: new SimpleDialog(
+            title: Center(child: Text(message)),
+            children: <Widget>[
+              Wrap(alignment: WrapAlignment.center, children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: RaisedButton(
+                    child: Text(app.strings.cancel),
+                    onPressed: () {
+                      Navigator.pop(context, false);
+                    },
                   ),
-                  color: isWarning ? Theme.of(context).errorColor : App.instance.themeData.primaryColor,
-                  onPressed: () => Navigator.pop(context, true),
                 ),
-              ),
-            ]),
-          ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: RaisedButton(
+                    child: Text(
+                      actionButtonText,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    color: isWarning ? Theme.of(context).errorColor : App.instance.themeData.primaryColor,
+                    onPressed: () => Navigator.pop(context, true),
+                  ),
+                ),
+              ]),
+            ],
+          ),
         );
       },
-    );
+    ).then((val){
+      if (val == null)
+        return false;
+    });
   }
 
   static void showGroupScoreboardDialog({@required BuildContext context, @required ShortGroupInfo groupInfo}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return SimpleDialog(
-          title: Center(
-            child: Text(
-              '${groupInfo.title} - ${app.strings.scoreboard}',
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.title.copyWith(decoration: TextDecoration.underline),
+        return Directionality(
+          textDirection: app.textDirection,
+          child: Directionality(
+            textDirection: app.textDirection,
+            child: SimpleDialog(
+              title: Center(
+                child: Text(
+                  '${groupInfo.title} - ${app.strings.scoreboard}',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.title.copyWith(decoration: TextDecoration.underline),
+                ),
+              ),
+              children: [ScoreBoard(groupInfo)],
             ),
           ),
-          children: [ScoreBoard(groupInfo)],
         );
       },
     );
