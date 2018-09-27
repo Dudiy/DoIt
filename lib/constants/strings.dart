@@ -223,6 +223,42 @@ class Strings {
     'english': 'English',
     'russian': 'Russian',
     'changeLanguage': 'Change language',
+
+    // =================================================================
+    // ==========================  Help Pages ==========================
+    // =================================================================
+    'singleGroupDetailsHelpTitle': 'Single group details page',
+    'singleGroupDetailsHelpIntro': 'This page is where a user can see all the tasks of the selected group.\n\n'
+        'The group picture can be changed by any group member by clicking on the group image at the top of the page\n\n'
+        'Every task in the group is shown on a task card, clicking on the card will show the task details page\n'
+        'This is where the group manager can also update the task\n\n'
+        'The group tasks are seperated into the following sections:\n',
+    'singleGroupDetailsHelpTasksAssignedToMeSubtitle': '- Tasks assigned to me (the active user):',
+    'singleGroupDetailsHelpTasksAssignedToMeBody': 'These tasks are the tasks that the user can complete.\n '
+        'When a task is completed it is moved to the completed tasks section.\n'
+        'If a task is a recurring task then after it is completed a new task with the updated start\\end date will be generated.\n'
+        '* If the new date of a recurring task is after the current time it will show up in the future tasks section *\n',
+    'singleGroupDetailsHelpTasksAssignedToOthersSubtitle': '- Tasks assigned to other users:',
+    'singleGroupDetailsHelpTasksAssignedToOthersBody':
+        'These tasks are assigned to other members of the group but not the active user.\n '
+        'These tasks cannot be completed by the active user\n',
+    'singleGroupDetailsHelpFutureTasksSubtitle': '- Future tasks (visible to group manager only):',
+    'singleGroupDetailsHelpFutureTasksBody': 'These tasks have a starting date that is lated than the current time.\n ',
+    'singleGroupDetailsHelpCompletedTasksBody': 'To see completed tasks a time span must be selected.\n '
+        'Only the group manager or the member who completed a task can "uncomplete" a task\n',
+    'taskDetailsHelpTitle': 'Task details page',
+    'taskDetailsHelpIntro': 'This page is where all the details of a selected task are.\n\n'
+        'Only the group manager can update the details of a task.\n\n'
+        'Task fields:\n',
+    'taskDetailsHelpValueBody': 'The amount of points a member will get for completing this task.\n',
+    'taskDetailsHelpRepeatBody': 'When should the task re-appear after completion.\n',
+    'taskDetailsHelpStartTimeBody':
+        'The task will be visible to the group members only after the current time is after this value.\n ',
+    'taskDetailsHelpDueTimeBody':
+        'The due time of the task, after this time the task background will be colored red.\n',
+    'taskDetailsHelpAsssignedMembersBody':
+        'The group members who are assigned to this task - only they are able to complete it.\n'
+        'By default tasks are assigned to allmembers of the group.\n',
   };
 
   final Map<String, String> _hebrew = {
@@ -370,11 +406,11 @@ class Strings {
     'msgSentToDevs': 'הודעתך נשלחה למפתחים, תודה :)',
 
     // ~~~ single group page ~~~
-    'tasksAssignedToOthersTitle': 'מטלות שהוקצו לאחרים',
-    'tasksAssignedToMeTitle': 'מטלות שהוקצו לי',
+    'tasksAssignedToOthersTitle': 'מטלות של אחרים',
+    'tasksAssignedToMeTitle': 'מטלות שלי',
     'completedTasksTitle': 'מטלות שבוצעו',
-    'noTasksAssignedToOthers': 'אין מטלות שהוקצו לאחרים בקבוצה זו',
-    'noTasksAssignetToYou': 'אין מטלות שהוקצו לך בקבוצה זו',
+    'noTasksAssignedToOthers': 'אין לאחרים מטלות בקבוצה זו',
+    'noTasksAssignetToYou': 'אין לך מטלות בקבוצה זו',
     'noFutureTasks': 'אין מטלות עתידיות בקבוצה זו',
 
     // ~~~ remove member ~~~
@@ -430,6 +466,39 @@ class Strings {
     'english': 'אנגלית',
     'russian': 'רוסית',
     'changeLanguage': 'שנה שפה',
+
+    // =================================================================
+    // ==========================  Help Pages ==========================
+    // =================================================================
+    'singleGroupDetailsHelpTitle': 'עמוד הקבוצה',
+    'singleGroupDetailsHelpIntro': 'בעמוד זה ניתן לראות את כל המטלות של הקבוצה.\n\n'
+        'את תמונה הקבוצה כל חבר בקבוצה יכול להחליף ע"י לחיצה על תמונת הקבוצה בחלקו העליון של העמוד\n\n'
+        'כל מטלה בקבוצה מוצגת בתוך מסגרת, לחיצה בתוך תחומי המסגרת תציג פרטי המטלה בהרחבה\n'
+        'עמוד זה הוא גם העמוד בו מנהל הקבוצה יכול לעדכן את פרטי המטלה\n\n'
+        'מטלות הקבוצה מחולקות לתתי קבוצות באופן הבא:\n',
+    'singleGroupDetailsHelpTasksAssignedToMeSubtitle': '- משימות שלי:',
+    'singleGroupDetailsHelpTasksAssignedToMeBody': 'אלו המטלות שהמשתמש הנוכחי יכול לבצע.\n '
+        'כאשר המשתמש מסמן מטלה כ"בוצעה" כרטיס המטלה עובר אל "מטלות שבוצעו".\n'
+        'אם המטלה היא מטלה חוזרת אז לאחר ביצועה, מטלה חדשה תיווצר עם זמני ההתחלה/יעד המתאימים.\n'
+        '* שימו לב! אם זמן ההתחלה החדש של המטלה הוא מאוחר מהזמן הנוכחי, המטלה תופיע תחת "מטלות עתידיות" *\n',
+    'singleGroupDetailsHelpTasksAssignedToOthersSubtitle': '- מטלות של אחרים:',
+    'singleGroupDetailsHelpTasksAssignedToOthersBody':
+        'מטלות אלה הן מטלות אשר נמצאות בקבוצה אך לא מוקצות למשתמש הנוכחי.\n '
+        'המשתמש הנוכחי לא יכול לבצע המטלות הללו.\n',
+    'singleGroupDetailsHelpFutureTasksSubtitle': '- מטלות עתידיות (רק מנהל הקבוצה יכול לראותן):',
+    'singleGroupDetailsHelpFutureTasksBody': 'מטלות אלה הן מטלות שזמן ההתחלה שלהן הוא מאוחר מהזמן הנוכחי.\n ',
+    'singleGroupDetailsHelpCompletedTasksBody': 'בכדי לראות מטלות שבוצעו יש לבחור את פרק הזמן הרצוי.\n '
+        'רק מנהל הקבוצה או המשתמש אשר ביצע את המטלה יכול לבטל את סימון ה"בוצע" של המטלה\n',
+    'taskDetailsHelpTitle': 'עמוד פרטי מטלה',
+    'taskDetailsHelpIntro': 'בעמוד זה ניתן למצוא את כל פרטי המטלה שנבחרה.\n\n'
+        'רק מנהל הקבוצה יכול לשנו את פקטי המטלה.\n\n'
+        'שדות מטלה:\n',
+    'taskDetailsHelpValueBody': 'הניקוד אותו ירוויח משתמש אשר יבצע את המטלה.\n',
+    'taskDetailsHelpRepeatBody': 'מתי יש להציד שוב את המטלה לאחר שהיא תסומן כ"בוצעה".\n',
+    'taskDetailsHelpStartTimeBody': 'המטלה תוצג לכלל משתתפי הקבוצה רק לאחר שהזמן הנוכחי יהיה מאוחר מערך זה.\n ',
+    'taskDetailsHelpDueTimeBody': 'זמן היעד לביצוע המטלה, לאחר זמן זה רקע המטלה יהפוך לאדום.\n',
+    'taskDetailsHelpAsssignedMembersBody': 'משתתפי הקבוצה המוקצים למטלה זו - רק הם יכולים לבצע אותה.\n'
+        'כאשר מטלה נוצרת היא תחילה מוקצת לכל משתתפי הקבוצה.\n',
   };
 
   //endregion
@@ -822,13 +891,49 @@ class Strings {
   // ==========================  Languages  ==========================
   // =================================================================
   String get hebrew => _currentLanguageMap['hebrew'] ?? _english['hebrew'];
-
   String get english => _currentLanguageMap['english'] ?? _english['english'];
-
   String get russian => _currentLanguageMap['russian'] ?? _english['russian'];
-
   String get changeLanguage => _currentLanguageMap['changeLanguage'] ?? _english['changeLanguage'];
 
+  // =================================================================
+  // ==========================  Help Pages ==========================
+  // =================================================================
+  String get singleGroupDetailsHelpTitle =>
+      _currentLanguageMap['singleGroupDetailsHelpTitle'] ?? _english['singleGroupDetailsHelpTitle'];
+  String get singleGroupDetailsHelpIntro =>
+      _currentLanguageMap['singleGroupDetailsHelpIntro'] ?? _english['singleGroupDetailsHelpIntro'];
+  String get singleGroupDetailsHelpTasksAssignedToMeSubtitle =>
+      _currentLanguageMap['singleGroupDetailsHelpTasksAssignedToMeSubtitle'] ??
+      _english['singleGroupDetailsHelpTasksAssignedToMeSubtitle'];
+  String get singleGroupDetailsHelpTasksAssignedToMeBody =>
+      _currentLanguageMap['singleGroupDetailsHelpTasksAssignedToMeBody'] ??
+      _english['singleGroupDetailsHelpTasksAssignedToMeBody'];
+  String get singleGroupDetailsHelpTasksAssignedToOthersSubtitle =>
+      _currentLanguageMap['singleGroupDetailsHelpTasksAssignedToOthersSubtitle'] ??
+      _english['singleGroupDetailsHelpTasksAssignedToOthersSubtitle'];
+  String get singleGroupDetailsHelpTasksAssignedToOthersBody =>
+      _currentLanguageMap['singleGroupDetailsHelpTasksAssignedToOthersBody'] ??
+      _english['singleGroupDetailsHelpTasksAssignedToOthersBody'];
+  String get singleGroupDetailsHelpFutureTasksSubtitle =>
+      _currentLanguageMap['singleGroupDetailsHelpFutureTasksSubtitle'] ??
+      _english['singleGroupDetailsHelpFutureTasksSubtitle'];
+  String get singleGroupDetailsHelpFutureTasksBody =>
+      _currentLanguageMap['singleGroupDetailsHelpFutureTasksBody'] ?? _english['singleGroupDetailsHelpFutureTasksBody'];
+  String get singleGroupDetailsHelpCompletedTasksBody =>
+      _currentLanguageMap['singleGroupDetailsHelpCompletedTasksBody'] ??
+      _english['singleGroupDetailsHelpCompletedTasksBody'];
+  String get taskDetailsHelpTitle => _currentLanguageMap['taskDetailsHelpTitle'] ?? _english['taskDetailsHelpTitle'];
+  String get taskDetailsHelpIntro => _currentLanguageMap['taskDetailsHelpIntro'] ?? _english['taskDetailsHelpIntro'];
+  String get taskDetailsHelpValueBody =>
+      _currentLanguageMap['taskDetailsHelpValueBody'] ?? _english['taskDetailsHelpValueBody'];
+  String get taskDetailsHelpRepeatBody =>
+      _currentLanguageMap['taskDetailsHelpRepeatBody'] ?? _english['taskDetailsHelpRepeatBody'];
+  String get taskDetailsHelpStartTimeBody =>
+      _currentLanguageMap['taskDetailsHelpStartTimeBody'] ?? _english['taskDetailsHelpStartTimeBody'];
+  String get taskDetailsHelpDueTimeBody =>
+      _currentLanguageMap['taskDetailsHelpDueTimeBody'] ?? _english['taskDetailsHelpDueTimeBody'];
+  String get taskDetailsHelpAsssignedMembersBody =>
+      _currentLanguageMap['taskDetailsHelpAsssignedMembersBody'] ?? _english['taskDetailsHelpAsssignedMembersBody'];
   //endregion
 
   List<Locale> getSupportedLanguages() {

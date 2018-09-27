@@ -1,4 +1,3 @@
-import 'package:do_it/app.dart';
 import 'package:do_it/constants/asset_paths.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +13,6 @@ class LoadingPage extends StatelessWidget {
             Column(
               children: <Widget>[
                 Image.asset(LOADING_ANIMATION, height: 100.0, width: 100.0),
-//                Text(App.instance.strings.loadingPage),
               ],
             ),
           ],
