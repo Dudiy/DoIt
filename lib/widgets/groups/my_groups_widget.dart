@@ -130,6 +130,7 @@ class MyGroupsPageState extends State<MyGroupsPage> {
   }
 
   Widget _myGroupsWidget(BuildContext context) {
+    bool isRtl = app.textDirection == TextDirection.rtl;
     if (_myGroups == null || _allTasksWidget == null)
       return Column(
         mainAxisSize: MainAxisSize.max,
@@ -163,9 +164,24 @@ class MyGroupsPageState extends State<MyGroupsPage> {
             ),
           ),
           Positioned(
-            bottom: 0.0,
-            right: 80.0,
-            child: Image.asset(CLICK_TO_CREATE_GROUP, height: 170.0),
+            bottom: 15.0,
+            right: !isRtl ? 90.0 : null,
+            left: isRtl ? 90.0 : null,
+            child: Stack(
+              children: <Widget>[
+                Center(
+                  child: Transform.rotate(
+                    angle: isRtl ? 0.25 : -0.25,
+                    origin: Offset(
+                      isRtl ? -50.0 : 50.0,
+                      -140.0,
+                    ),
+                    child: Text(app.strings.clickToCreateGroup),
+                  ),
+                ),
+                Image.asset(isRtl ? ARROW_LEFT : ARROW_RIGHT, height: 130.0),
+              ],
+            ),
           ),
         ],
       );

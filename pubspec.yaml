@@ -48,7 +48,8 @@ flutter:
     - assets/doit_logo/loading_animation.gif
     - assets/logo_with_shadow.png
     - assets/icons_and_buttons/google_icon.png
-    - assets/images/click_to_create_group.png
+    - assets/images/arrow_left.png
+    - assets/images/arrow_right.png
     - assets/images/minion_sad.png
     - assets/images/bg_images/blue.jpg
     - assets/images/bg_images/colorful.jpg

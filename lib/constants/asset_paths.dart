@@ -12,7 +12,8 @@ const Map<String, String> FLAGS = {
 };
 
 // Images
-const CLICK_TO_CREATE_GROUP = "assets/images/click_to_create_group.png";
+const ARROW_LEFT = "assets/images/arrow_left.png";
+const ARROW_RIGHT = "assets/images/arrow_right.png";
 const DEFAULT_GROUP_IMAGE = "assets/images/default_group_image.png";
 const LOADING_PROFILE_PIC = "assets/images/loading_profile_pic.png";
 const MINION_SAD = "assets/images/minion_sad.png";

@@ -149,6 +149,7 @@ class Strings {
     'noTasksRemainingMsg': 'Awsome! you have no tasks to do :)',
     'notInAnyGroup': 'You are not in any group yet',
     'noDescription': 'No description entered',
+    'clickToCreateGroup': 'Click the "+" to\ncreate a new group',
 
     // ~~~ message bodies ~~~
     'deleteGroupConfirmMsg': 'Are you sure you would like to delete this group? \nThis cannot be undone',
@@ -400,6 +401,7 @@ class Strings {
     'noTasksRemainingMsg': 'מדהים! לא נותרו לך מטלות לביצוע :)',
     'notInAnyGroup': 'אינך רשום/ה באף קבוצה עדיין',
     'noDescription': 'לא הוזן פירוט',
+    'clickToCreateGroup': 'לחץ על ה"+" בכדי\n ליצור קבוצה חדשה',
 
     // ~~~ message bodies ~~~
     'deleteGroupConfirmMsg': 'האם את/ה בטוח/ה שברצונך למחוק קבוצה זו? \nלא ניתן לבטל פעולה זו',
@@ -756,6 +758,8 @@ class Strings {
     //'You are not in any group yet',
     'noDescription': 'Введенное описание не указано',
     //'No description entered',
+    'clickToCreateGroup': 'Нажмите «+», чтобы\nсоздать новую группу.',
+    //'Click the "+" to\ncreate a new group',
 
     // ~~~ message bodies ~~~
     'deleteGroupConfirmMsg': 'Вы уверены, что хотите удалить эту группу? \nЭто не может быть отменено',
@@ -1214,6 +1218,8 @@ class Strings {
 
   String get noDescription => _currentLanguageMap['noDescription'] ?? _english['noDescription'];
 
+  String get clickToCreateGroup => _currentLanguageMap['clickToCreateGroup'] ?? _english['clickToCreateGroup'];
+
   // ~~~ message bodies ~~~
   String get deleteGroupConfirmMsg => _currentLanguageMap['deleteGroupConfirmMsg'] ?? _english['deleteGroupConfirmMsg'];
 
@@ -1271,7 +1277,8 @@ class Strings {
 
   String get loadingGroupPage => _currentLanguageMap['loadingGroupPage'] ?? _english['loadingGroupPage'];
 
-  String get loadingTaskDetailsPage => _currentLanguageMap['loadingTaskDetailsPage'] ?? _english['loadingTaskDetailsPage'];
+  String get loadingTaskDetailsPage =>
+      _currentLanguageMap['loadingTaskDetailsPage'] ?? _english['loadingTaskDetailsPage'];
 
   // =================================================================
   // =======================  Error Messages  ========================
@@ -1401,7 +1408,6 @@ class Strings {
 
   String get taskDetailsHelpAsssignedMembersBody =>
       _currentLanguageMap['taskDetailsHelpAsssignedMembersBody'] ?? _english['taskDetailsHelpAsssignedMembersBody'];
-
   //endregion
 
   List<Locale> getSupportedLanguages() {
