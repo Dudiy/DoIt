@@ -113,16 +113,23 @@ class SingleGroupPageState extends State<SingleGroupPage> {
                       ),
                       background: Container(
                         color: Colors.transparent,
-                        child: Center(
-                          child: GestureDetector(
-                            onTap: () => _groupImageClicked(context),
-                            child: ImageContainer(
-                              imagePath: photoUrl,
-                              imageFile: groupImageFile,
-                              size: 120.0,
-                              borderColor: Colors.white,
+                        child: Column(
+                          children: <Widget>[
+                            Expanded(
+                              child: Center(
+                                child: GestureDetector(
+                                  onTap: () => _groupImageClicked(context),
+                                  child: ImageContainer(
+                                    imagePath: photoUrl,
+                                    imageFile: groupImageFile,
+                                    size: 120.0,
+                                    borderColor: Colors.white,
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
+                            SizedBox(height: 30.0),
+                          ],
                         ),
                       ),
                     ),

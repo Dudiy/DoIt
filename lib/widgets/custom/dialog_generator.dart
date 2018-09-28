@@ -126,7 +126,7 @@ class DoItDialogs {
     String actionButtonText,
   }) async {
     actionButtonText = actionButtonText ?? app.strings.confirm;
-    return showDialog<bool>(
+    return await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
         return Directionality(
@@ -134,35 +134,35 @@ class DoItDialogs {
           child: new SimpleDialog(
             title: Center(child: Text(message)),
             children: <Widget>[
-              Wrap(alignment: WrapAlignment.center, children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: RaisedButton(
-                    child: Text(app.strings.cancel),
-                    onPressed: () {
-                      Navigator.pop(context, false);
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: RaisedButton(
-                    child: Text(
-                      actionButtonText,
-                      style: TextStyle(color: Colors.white),
+              Wrap(
+                alignment: WrapAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: RaisedButton(
+                      child: Text(app.strings.cancel),
+                      onPressed: () => Navigator.pop(context, false),
                     ),
-                    color: isWarning ? Theme.of(context).errorColor : App.instance.themeData.primaryColor,
-                    onPressed: () => Navigator.pop(context, true),
                   ),
-                ),
-              ]),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: RaisedButton(
+                      child: Text(
+                        actionButtonText,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      color: isWarning ? Theme.of(context).errorColor : App.instance.themeData.primaryColor,
+                      onPressed: () => Navigator.pop(context, true),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         );
       },
-    ).then((val){
-      if (val == null)
-        return false;
+    ).then((val) {
+      return val ?? false;
     });
   }
 

@@ -31,7 +31,6 @@ class GroupCard extends StatelessWidget {
               child: Icon(
                 Icons.supervisor_account,
                 size: 15.0,
-                color: app.themeData.primaryColor,
               ),
             ),
           )

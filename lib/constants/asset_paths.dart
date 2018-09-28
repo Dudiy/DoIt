@@ -13,11 +13,11 @@ const Map<String, String> FLAGS = {
 
 // Images
 const CLICK_TO_CREATE_GROUP = "assets/images/click_to_create_group.png";
-const DEFAULT_GROUP_IMAGE = "assets/images/default_group_image.jpg";
+const DEFAULT_GROUP_IMAGE = "assets/images/default_group_image.png";
 const LOADING_PROFILE_PIC = "assets/images/loading_profile_pic.png";
 const MINION_SAD = "assets/images/minion_sad.png";
 const SCAN_NFC = "assets/images/scan_nfc.png";
-const UNKNOWN_PROFILE_PIC = "assets/images/unknown_profile_pic.jpg";
+const UNKNOWN_PROFILE_PIC = "assets/images/unknown_profile_pic.png";
 
 // Background images
 const BG_IMAGE_BLUE = "assets/images/bg_images/blue.jpg";
