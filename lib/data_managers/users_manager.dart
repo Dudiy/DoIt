@@ -52,7 +52,7 @@ class UsersManager {
         photoUrl: photoUrl,
         bgImage: bgImage,
         localeStr: localeStr);
-    await _firestore.document('$USERS/${user.uid}').updateData(UserUtils.generateObjectFromUserInfo(userInfo));
+    await _firestore.document('$USERS/${user.uid}').setData(UserUtils.generateObjectFromUserInfo(userInfo));
   }
 
   Future<void> deleteUser() async {
