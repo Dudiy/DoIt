@@ -6,6 +6,7 @@ import 'package:do_it/data_classes/task/task_interface.dart';
 import 'package:do_it/data_managers/task_manager_exception.dart';
 import 'package:do_it/data_managers/task_manager_result.dart';
 import 'package:do_it/widgets/custom/dialog_generator.dart';
+import 'package:do_it/widgets/custom/loadingOverlay.dart';
 import 'package:do_it/widgets/custom/time_field.dart';
 import 'package:do_it/widgets/custom/vertical_divider.dart';
 import 'package:do_it/widgets/tasks/task_details_page.dart';
@@ -20,6 +21,7 @@ class TaskCard extends StatelessWidget {
   final bool showCheckbox;
   final bool isChecked;
   final App app = App.instance;
+  final LoadingOverlay loadingOverlay = new LoadingOverlay();
 
   TaskCard({
     @required this.taskInfo,
@@ -49,6 +51,7 @@ class TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool cardClicked = false;
     String description = taskInfo.description.isEmpty ? app.strings.noDescription : taskInfo.description;
     return Card(
       elevation: 5.0,
@@ -62,7 +65,12 @@ class TaskCard extends StatelessWidget {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
           color: Colors.white,
           highlightColor: app.themeData.primaryColorLight,
-          onPressed: () => _cardClicked(context),
+          onPressed: () {
+            if (!cardClicked) {
+              cardClicked = true;
+              _cardClicked(context);
+            }
+          },
           padding: EdgeInsets.all(10.0),
           child: Row(
             children: <Widget>[
@@ -92,8 +100,14 @@ class TaskCard extends StatelessWidget {
 
   void _cardClicked(BuildContext context) {
     if (taskInfo.runtimeType == ShortTaskInfo) {
+      loadingOverlay.show(context: context, message: app.strings.loadingTaskDetailsPage);
       App.instance.tasksManager.getTaskById(taskInfo.taskID).then((taskInfo) {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetailsPage(taskInfo)));
+        loadingOverlay.hide();
+      }).catchError((e) {
+        DoItDialogs.showErrorDialog(
+            context: context, message: '${app.strings.app.strings.openTaskDetailsPageErrMsg}${e.message}');
+        loadingOverlay.hide();
       });
     }
   }
@@ -142,9 +156,7 @@ class TaskCard extends StatelessWidget {
 
   void _completeTask(ShortTaskInfo shortTaskInfo, BuildContext context) {
     onCheckChanged(true);
-    app.tasksManager
-        .completeTask(taskID: shortTaskInfo.taskID, userWhoCompletedID: app.loggedInUser.userID)
-        .then((v) {
+    app.tasksManager.completeTask(taskID: shortTaskInfo.taskID, userWhoCompletedID: app.loggedInUser.userID).then((v) {
       final String successMessage =
           TaskMethodResultUtils.message(TaskMethodResult.COMPLETE_SUCCESS, shortTaskInfo.title);
       final snackBar = SnackBar(
@@ -169,7 +181,8 @@ class TaskCard extends StatelessWidget {
     if (!_isCompletedTask()) throw Exception('User completed text is not valid for shortTaskInfo');
     CompletedTaskInfo completedTaskInfo = taskInfo as CompletedTaskInfo;
     String completedDateString = DoItTimeField.formatDateTime(completedTaskInfo.completedTime);
-    return Text('${app.strings.completedBy}: ${completedTaskInfo.userWhoCompleted.displayName}, \n${app.strings.completedOn} $completedDateString');
+    return Text(
+        '${app.strings.completedBy}: ${completedTaskInfo.userWhoCompleted.displayName}, \n${app.strings.completedOn} $completedDateString');
   }
 
   _getTaskTitle(BuildContext context) {

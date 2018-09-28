@@ -3,6 +3,7 @@ import 'package:do_it/constants/asset_paths.dart';
 import 'package:do_it/data_classes/group/group_info_short.dart';
 import 'package:do_it/widgets/custom/dialog_generator.dart';
 import 'package:do_it/widgets/custom/imageContainer.dart';
+import 'package:do_it/widgets/custom/loadingOverlay.dart';
 import 'package:do_it/widgets/custom/vertical_divider.dart';
 import 'package:do_it/widgets/groups/single_group_page.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ class GroupCard extends StatelessWidget {
   final ShortGroupInfo shortGroupInfo;
   final Function onTapped;
   final app = App.instance;
+  final LoadingOverlay loadingOverlay = new LoadingOverlay();
 
   GroupCard({
     @required this.shortGroupInfo,
@@ -21,6 +23,7 @@ class GroupCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool cardClicked = false;
     Container managerIcon = app.loggedInUser.userID == shortGroupInfo.managerID
         ? Container(
             child: Padding(
@@ -43,16 +46,10 @@ class GroupCard extends StatelessWidget {
         color: app.themeData.primaryColorLight.withAlpha(200),
         padding: EdgeInsets.all(0.0),
         onPressed: () {
-          app.groupsManager.getGroupInfoByID(shortGroupInfo.groupID).then((groupInfo) {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => SingleGroupPage(groupInfo), settings: RouteSettings(name: '/singleGroupPage')));
-          }).catchError((error) {
-            DoItDialogs.showErrorDialog(
-              context: context,
-              message: '${app.strings.getGroupInfoErrMsg}${error.message}',
-            );
-            print(error.message);
-          });
+          if (!cardClicked) {
+            cardClicked = true;
+            _groupCardClicked(context);
+          }
         },
         child: Row(
           children: <Widget>[
@@ -73,7 +70,8 @@ class GroupCard extends StatelessWidget {
                     children: <Widget>[
                       Text('${app.strings.members}: ${shortGroupInfo.members.length.toString()}'),
                       VerticalDivider(),
-                      Text('${app.strings.tasks}: ${shortGroupInfo.tasksPerUser[app.getLoggedInUser().userID].toString()}'),
+                      Text(
+                          '${app.strings.tasks}: ${shortGroupInfo.tasksPerUser[app.getLoggedInUser().userID].toString()}'),
                     ],
                   )
                 ],
@@ -101,5 +99,21 @@ class GroupCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _groupCardClicked(BuildContext context) {
+    loadingOverlay.show(context: context, message: app.strings.loadingGroupPage);
+    app.groupsManager.getGroupInfoByID(shortGroupInfo.groupID).then((groupInfo) {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => SingleGroupPage(groupInfo), settings: RouteSettings(name: '/singleGroupPage')));
+      loadingOverlay.hide();
+    }).catchError((error) {
+      DoItDialogs.showErrorDialog(
+        context: context,
+        message: '${app.strings.getGroupInfoErrMsg}${error.message}',
+      );
+      loadingOverlay.hide();
+      print(error.message);
+    });
   }
 }

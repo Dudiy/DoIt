@@ -113,7 +113,7 @@ class Strings {
     'descriptionLabel': 'Description',
     'leaveGroupLabel': 'Leave group',
     'deleteGroupLabel': 'Delete group',
-    'addMemberTitle': 'add Member',
+    'addMemberTitle': 'Add member',
     'selectAssignedMembersTitle': 'Select assigned members',
     'newTask': 'New task',
     'scoreboard': 'scoreboard',
@@ -178,8 +178,10 @@ class Strings {
     'leavingGroup': 'Leaving group...',
     'deletingGroup': 'Deleting group...',
     'deletingAccount': 'Deleting this account...',
-    'deletingTask': "Deleting task...",
-    'uploadingImage': "Uploading image...",
+    'deletingTask': 'Deleting task...',
+    'uploadingImage': 'Uploading image...',
+    'loadingGroupPage': 'Loading group page...',
+    'loadingTaskDetailsPage': 'Loading task details page...',
 
     // =================================================================
     // =======================  Error Messages  ========================
@@ -429,6 +431,8 @@ class Strings {
     'deletingAccount': 'מוחק חשבון זה...',
     'deletingTask': "מוחק מטלה...",
     'uploadingImage': "מעלה את התמונה...",
+    'loadingGroupPage': 'טוען את עמוד הקבוצה...',
+    'loadingTaskDetailsPage': 'טוען את פרטי המטלה...',
 
     // =================================================================
     // =======================  Error Messages  ========================
@@ -505,297 +509,443 @@ class Strings {
     // =================================================================
     // ===========================  General  ===========================
     // =================================================================
-    'email': 'Эл. адрес', // 'Email'
-    'password': 'пароль', // 'Password'
-    'resetPassword': 'Сброс пароля', // 'Reset password'
-    'name': 'имя', // 'Name'
-    'invalidValue': 'Неверное значение', // 'Invalid value'
-    'gotIt': 'понял', // 'Got it'
-    'loading': 'погрузка...', // 'Loading...'
-    'version': 'версия', //'Version'
+    'email': 'Эл. адрес',
+    // 'Email'
+    'password': 'пароль',
+    // 'Password'
+    'resetPassword': 'Сброс пароля',
+    // 'Reset password'
+    'name': 'имя',
+    // 'Name'
+    'invalidValue': 'Неверное значение',
+    // 'Invalid value'
+    'gotIt': 'понял',
+    // 'Got it'
+    'loading': 'погрузка...',
+    // 'Loading...'
+    'version': 'версия',
+    //'Version'
     // =================================================================
     // ==========================  Login page  =========================
     // =================================================================
-    'newUserButton': 'новый пользователь?  завести аккаунт', //'New user?  Create an account'
-    'sendingResetPasswordMsg': 'отправка пароля для сброса пароля...', // 'sending reset password email...',
-    'resetPasswordSentMsg': 'пароль для сброса пароля отправлен', //'Reset password email has been sent to',
-    'noRegisteredUserWithEmailMsg':
-        'Нет зарегистрированного пользователя с указанным адресом электронной почты', //'There is no registered user with the given Email address',
-    'loggingIn': 'Вход в систему...', //'Logging in...',
-    'loginWithGoogle': 'Войти в Google', //'Log in with google',
-    'loggingInWithGoogle': 'Вход в систему с помощью Google...', //'Logging in with google...',
-    'loginButtonText': 'Авторизоваться', //'Login'
+    'newUserButton': 'новый пользователь?  завести аккаунт',
+    //'New user?  Create an account'
+    'sendingResetPasswordMsg': 'отправка пароля для сброса пароля...',
+    // 'sending reset password email...',
+    'resetPasswordSentMsg': 'пароль для сброса пароля отправлен',
+    //'Reset password email has been sent to',
+    'noRegisteredUserWithEmailMsg': 'Нет зарегистрированного пользователя с указанным адресом электронной почты',
+    //'There is no registered user with the given Email address',
+    'loggingIn': 'Вход в систему...',
+    //'Logging in...',
+    'loginWithGoogle': 'Войти в Google',
+    //'Log in with google',
+    'loggingInWithGoogle': 'Вход в систему с помощью Google...',
+    //'Logging in with google...',
+    'loginButtonText': 'Авторизоваться',
+    //'Login'
 
     // =================================================================
     // ========================  Register page  ========================
     // =================================================================
-    'registerPageTitle': 'Постановка на учет', //'Registration',
-    'register': 'регистр', //'Register',
-    'passwordLenValidationMsg':
-        'пароль должен содержать как минимум 6 символов', //'Password must be at least 6 characters long',
-    'registeringNewUserMsg': 'Регистрация нового пользователя...', //'Registering new user...',
+    'registerPageTitle': 'Постановка на учет',
+    //'Registration',
+    'register': 'регистр',
+    //'Register',
+    'passwordLenValidationMsg': 'пароль должен содержать как минимум 6 символов',
+    //'Password must be at least 6 characters long',
+    'registeringNewUserMsg': 'Регистрация нового пользователя...',
+    //'Registering new user...',
 
     // =================================================================
     // =======================  Recurring Policies  ====================
     // =================================================================
-    'recurringPolicyNone': 'Никто', //'None',
-    'recurringPolicyDaily': 'Ежедневно', //'Daily',
-    'recurringPolicyWeekly': 'еженедельно', //'Weekly',
-    'recurringPolicyMonthly': 'ежемесячно', //'Monthly',
-    'recurringPolicyYearly': 'каждый год', //'Yearly',
+    'recurringPolicyNone': 'Никто',
+    //'None',
+    'recurringPolicyDaily': 'Ежедневно',
+    //'Daily',
+    'recurringPolicyWeekly': 'еженедельно',
+    //'Weekly',
+    'recurringPolicyMonthly': 'ежемесячно',
+    //'Monthly',
+    'recurringPolicyYearly': 'каждый год',
+    //'Yearly',
 
     // =================================================================
     // =====================  Task Completed results  ==================
     // =================================================================
-    'taskCompletedMsg': 'Вы выполнили задачу', //'You have completed the task:',
-    'loginToCompleteTaskMsg':
-        'Сначала выполните вход, чтобы выполнить задачу.', //'Please log in first in order to complete the task',
-    'userCompletedNotInDbErrMsg':
-        'Пожалуйста, подключитесь к приложению, чтобы выполнить задачу', //'Please reconnect to the application in order to complete the task',
-    'taskNotFoundErrMsg':
-        'Задача, связанная с этим тегом, больше не существует', //'The task associated with this tag does not exist anymore',
-    'userNotAssignedToTaskErrMsg':
-        'Вы не назначены для задачи, связанной с этим тегом', //'You are not assigned to the task associated with this tag',
-    'taskDoesNotExistsErrMsg':
-        'Задача, связанная с этим тегом, больше не существует', //'The task associated with this tag does not exist anymore',
-    'startTimeAfterEndTimeErrMsg':
-        'Время начала не может быть позже конечного времени', //'Start time cannot be later than end time',
-    'addTaskFailedErrMsg': 'Не удалось добавить задачу', //'Failed to add task',
-    'unknownCompleteTaskStatusErrMsg': 'Неизвестный статус задачи', //'Unknown complete task status',
+    'taskCompletedMsg': 'Вы выполнили задачу',
+    //'You have completed the task:',
+    'loginToCompleteTaskMsg': 'Сначала выполните вход, чтобы выполнить задачу.',
+    //'Please log in first in order to complete the task',
+    'userCompletedNotInDbErrMsg': 'Пожалуйста, подключитесь к приложению, чтобы выполнить задачу',
+    //'Please reconnect to the application in order to complete the task',
+    'taskNotFoundErrMsg': 'Задача, связанная с этим тегом, больше не существует',
+    //'The task associated with this tag does not exist anymore',
+    'userNotAssignedToTaskErrMsg': 'Вы не назначены для задачи, связанной с этим тегом',
+    //'You are not assigned to the task associated with this tag',
+    'taskDoesNotExistsErrMsg': 'Задача, связанная с этим тегом, больше не существует',
+    //'The task associated with this tag does not exist anymore',
+    'startTimeAfterEndTimeErrMsg': 'Время начала не может быть позже конечного времени',
+    //'Start time cannot be later than end time',
+    'addTaskFailedErrMsg': 'Не удалось добавить задачу',
+    //'Failed to add task',
+    'unknownCompleteTaskStatusErrMsg': 'Неизвестный статус задачи',
+    //'Unknown complete task status',
 
     // =================================================================
     // ===========================  General  ===========================
     // =================================================================
     // ~~ user ~~~
-    'userID': 'Идентификатор пользователя', //'User ID',
+    'userID': 'Идентификатор пользователя',
+    //'User ID',
     // ~~~ group ~~~
-    'groupInfo': 'Информация о группе', //'Group info',
-    'groupId': 'Идентификатор группы', //'Group ID',
-    'groupTitleLable': 'Название группы', //'Group title',
-    'groupManager': 'Менеджер группы', //'Group manager',
-    'groupMembers': 'Участники группы', //'Group Members',
-    'members': 'члены', //'Members',
-    'groupHasNoMembers': 'В группе нет участников ...', //'The group has no members...',
+    'groupInfo': 'Информация о группе',
+    //'Group info',
+    'groupId': 'Идентификатор группы',
+    //'Group ID',
+    'groupTitleLable': 'Название группы',
+    //'Group title',
+    'groupManager': 'Менеджер группы',
+    //'Group manager',
+    'groupMembers': 'Участники группы',
+    //'Group Members',
+    'members': 'члены',
+    //'Members',
+    'groupHasNoMembers': 'В группе нет участников ...',
+    //'The group has no members...',
     // ~~~ task ~~~
-    'titleLabel': 'Заглавие', //'Title',
-    'tasks': 'Задания', //'Tasks',
-    'valueLabel': 'Стоимость', // 'Value',
-    'timeNotSet': 'Время не установлено', //'Time not set',
-    'repeat': 'Повторение', // 'Repeat',
-    'completedBy': 'Завершено', //'Completed by',
-    'completedOn': 'Завершено', //'Completed on',
-    'points': 'точки', //'points',
+    'titleLabel': 'Заглавие',
+    //'Title',
+    'tasks': 'Задания',
+    //'Tasks',
+    'valueLabel': 'Стоимость',
+    // 'Value',
+    'timeNotSet': 'Время не установлено',
+    //'Time not set',
+    'repeat': 'Повторение',
+    // 'Repeat',
+    'completedBy': 'Завершено',
+    //'Completed by',
+    'completedOn': 'Завершено',
+    //'Completed on',
+    'points': 'точки',
+    //'points',
     // ~~~ App Settings Page ~~~
-    'appSettings': 'Настройки приложения', //'Application settings',
-    'changeTheme': 'Менять тему', //'Change theme',
-    'messageDevs': 'Послание разработчиков', //'Message the developers',
-    'resetPasswordSentTo': 'Сброс пароля отправлено по электронной почте', //'Reset password email has been sent to',
-    'signOut': 'Выход', //'Sign out',
-    'deleteAccount': 'Удалить аккаунт', //'Delete account',
-    'selectTheme': 'Выберите тему', //'Select Theme',
-    'composeMsgToDevsTitle': 'Что бы вы хотели нам рассказать?', //'What would you like to tell us?',
-    'deleteAccountConfirmMsg':
-        'Вы уверены, что хотите удалить эту учетную запись? Это не может быть отменено', //'are you sure you want to delete this account? this cannot be undone',
+    'appSettings': 'Настройки приложения',
+    //'Application settings',
+    'changeTheme': 'Менять тему',
+    //'Change theme',
+    'messageDevs': 'Послание разработчиков',
+    //'Message the developers',
+    'resetPasswordSentTo': 'Сброс пароля отправлено по электронной почте',
+    //'Reset password email has been sent to',
+    'signOut': 'Выход',
+    //'Sign out',
+    'deleteAccount': 'Удалить аккаунт',
+    //'Delete account',
+    'selectTheme': 'Выберите тему',
+    //'Select Theme',
+    'composeMsgToDevsTitle': 'Что бы вы хотели нам рассказать?',
+    //'What would you like to tell us?',
+    'deleteAccountConfirmMsg': 'Вы уверены, что хотите удалить эту учетную запись? Это не может быть отменено',
+    //'are you sure you want to delete this account? this cannot be undone',
 
     // =================================================================
     // ==================  Dialogs and Notifications ===================
     // =================================================================
     // ~~~ buttons labels and titles ~~~
-    'confirm': 'подтвердить', //'Confirm',
-    'submit': 'Отправить', //'Submit',
-    'ok': 'ОК', //'Ok',
-    'oops': 'ой...', //'Oops...',
-    'delete': 'Удалить', //'Delete',
-    'cancel': 'Отмена', //'Cancel',
-    'leave': 'Оставлять', //'Leave',
-    'help': 'Помогите', //'Help',
-    'update': 'Обновить', // 'Update',
-    'newGroupTitle': 'Новая группа', //'New Group',
-    'pleaseSelect': 'пожалуйста выберите', //'please select',
-    'tapToChange': 'коснуться, чтобы изменить', //'tap to change',
-    'descriptionLabel': 'Описание', // 'Description',
-    'leaveGroupLabel': 'Покинуть группу', //'Leave group',
-    'deleteGroupLabel': 'Удалить группу', //'Delete group',
-    'addMemberTitle': 'добавить участников', //'add Member',
-    'selectAssignedMembersTitle': 'Выберите назначенных участников', //'Select assigned members',
-    'newTask': 'Новое задание', //'New task',
-    'scoreboard': 'табло', // 'scoreboard',
-    'futureTasks': 'Будущие задачи', //'Future tasks',
-    'week': 'неделю', // 'week',
-    'month': 'месяц', // 'month',
-    'allTime': 'все время', //'all time',
-    'dueTime': 'Время выполнения', //'Due time',
-    'startTime': 'Время начала', //'Start time',
-    'notifyMembers': 'уведомлять участников', //'notify members',
-    'taskNotificationTitle': 'Уведомление из задачи', //'Notification from task',
-    'assignedMembers': 'Назначенные члены', //'Assigned members',
-    'displayName': 'Отображаемое имя', //'Display name',
-    'deleteTask': 'Удалить задачу', //'Delete task',
-    'writeToNfc': 'Написать в NFC', //'Write to NFC',
-    'readyToWrite': 'Готовы написать', //'Ready to write',
-    'holdPhoneOverNfc': 'Держите телефон над тегом NFC', //'Hold phone over NFC tag',
-    'today': 'cегодня', // 'today',
-    'thisWeek': 'на этой неделе', //'this week',
-    'thisMonth': 'этот месяц', //'this month',
-    'selectLanguageTitle': 'Выберите язык', //'Select Language',
+    'confirm': 'подтвердить',
+    //'Confirm',
+    'submit': 'Отправить',
+    //'Submit',
+    'ok': 'ОК',
+    //'Ok',
+    'oops': 'ой...',
+    //'Oops...',
+    'delete': 'Удалить',
+    //'Delete',
+    'cancel': 'Отмена',
+    //'Cancel',
+    'leave': 'Оставлять',
+    //'Leave',
+    'help': 'Помогите',
+    //'Help',
+    'update': 'Обновить',
+    // 'Update',
+    'newGroupTitle': 'Новая группа',
+    //'New Group',
+    'pleaseSelect': 'пожалуйста выберите',
+    //'please select',
+    'tapToChange': 'коснуться, чтобы изменить',
+    //'tap to change',
+    'descriptionLabel': 'Описание',
+    // 'Description',
+    'leaveGroupLabel': 'Покинуть группу',
+    //'Leave group',
+    'deleteGroupLabel': 'Удалить группу',
+    //'Delete group',
+    'addMemberTitle': 'добавить участников',
+    //'Add member',
+    'selectAssignedMembersTitle': 'Выберите назначенных участников',
+    //'Select assigned members',
+    'newTask': 'Новое задание',
+    //'New task',
+    'scoreboard': 'табло',
+    // 'scoreboard',
+    'futureTasks': 'Будущие задачи',
+    //'Future tasks',
+    'week': 'неделю',
+    // 'week',
+    'month': 'месяц',
+    // 'month',
+    'allTime': 'все время',
+    //'all time',
+    'dueTime': 'Время выполнения',
+    //'Due time',
+    'startTime': 'Время начала',
+    //'Start time',
+    'notifyMembers': 'уведомлять участников',
+    //'notify members',
+    'taskNotificationTitle': 'Уведомление из задачи',
+    //'Notification from task',
+    'assignedMembers': 'Назначенные члены',
+    //'Assigned members',
+    'displayName': 'Отображаемое имя',
+    //'Display name',
+    'deleteTask': 'Удалить задачу',
+    //'Delete task',
+    'writeToNfc': 'Написать в NFC',
+    //'Write to NFC',
+    'readyToWrite': 'Готовы написать',
+    //'Ready to write',
+    'holdPhoneOverNfc': 'Держите телефон над тегом NFC',
+    //'Hold phone over NFC tag',
+    'today': 'cегодня',
+    // 'today',
+    'thisWeek': 'на этой неделе',
+    //'this week',
+    'thisMonth': 'этот месяц',
+    //'this month',
+    'selectLanguageTitle': 'Выберите язык',
+    //'Select Language',
     // ~~~ Notification messages ~~~
-    'notificationFromGroupTitle': 'Уведомление от группы', //'Notification from group',
-    'sendNotificationTitle': 'Отправить уведомление', //'Send notification',
-    'notificationMessageLable': 'уведомление', //'notification message',
-    'addedToGroupMsg': 'Вы были добавлены в эту группу', //'You have been added to this group',
-    'hasBeenAddedToThisGroup': 'был добавлен в эту группу', //'has been added to this group',
-    'leaveGroupConfirmMsg':
-        'Вы уверены, что хотите покинуть эту группу? \nЭто не может быть отменено', //'Are you sure you would like to leave this group? \nThis cannot be undone',
-    'deleteTaskConfirmMsg':
-        'Вы уверены, что хотите удалить эту задачу? \nЭто не может быть отменено', //'Are you sure you would like to delete this task? \nThis cannot be undone',
-    'hi': 'Здравствуй', //'Hi',
-    'oneTaskRemainingMsg':
-        'У вас остается только одна задача, оставшаяся во всех группах, позволяющая работать ...', //'You only have one task remaining in all groups, lets get to work...',
-    'allTasksRemainingMsg':
-        '- вот все задачи, которые у вас остались во всех группах, позволяют работать...', // '- thats all the tasks you have remaining in all groups, lets get to work...',
-    'noTasksRemainingMsg': 'Потрясающие! у вас нет задач :)', //'Awsome! you have no tasks to do :)',
-    'notInAnyGroup': 'Вы еще не в группе', //'You are not in any group yet',
-    'noDescription': 'Введенное описание не указано', //'No description entered',
+    'notificationFromGroupTitle': 'Уведомление от группы',
+    //'Notification from group',
+    'sendNotificationTitle': 'Отправить уведомление',
+    //'Send notification',
+    'notificationMessageLable': 'уведомление',
+    //'notification message',
+    'addedToGroupMsg': 'Вы были добавлены в эту группу',
+    //'You have been added to this group',
+    'hasBeenAddedToThisGroup': 'был добавлен в эту группу',
+    //'has been added to this group',
+    'leaveGroupConfirmMsg': 'Вы уверены, что хотите покинуть эту группу? \nЭто не может быть отменено',
+    //'Are you sure you would like to leave this group? \nThis cannot be undone',
+    'deleteTaskConfirmMsg': 'Вы уверены, что хотите удалить эту задачу? \nЭто не может быть отменено',
+    //'Are you sure you would like to delete this task? \nThis cannot be undone',
+    'hi': 'Здравствуй',
+    //'Hi',
+    'oneTaskRemainingMsg': 'У вас остается только одна задача, оставшаяся во всех группах, позволяющая работать ...',
+    //'You only have one task remaining in all groups, lets get to work...',
+    'allTasksRemainingMsg': '- вот все задачи, которые у вас остались во всех группах, позволяют работать...',
+    // '- thats all the tasks you have remaining in all groups, lets get to work...',
+    'noTasksRemainingMsg': 'Потрясающие! у вас нет задач :)',
+    //'Awsome! you have no tasks to do :)',
+    'notInAnyGroup': 'Вы еще не в группе',
+    //'You are not in any group yet',
+    'noDescription': 'Введенное описание не указано',
+    //'No description entered',
 
     // ~~~ message bodies ~~~
-    'deleteGroupConfirmMsg':
-        'Вы уверены, что хотите удалить эту группу? \nЭто не может быть отменено', //'Are you sure you would like to delete this group? \nThis cannot be undone',
-    'selectTimespanPrompt': 'Выберите промежуток времени', //'Please select a timespan',
-    'noCompletedTasks': 'Нет завершенных задач', //'No completed tasks',
-    'msgSentToDevs':
-        'Ваше сообщение отправлено разработчикам. Спасибо :)', //'Your message has been sent to the developers. Thank you :)',
+    'deleteGroupConfirmMsg': 'Вы уверены, что хотите удалить эту группу? \nЭто не может быть отменено',
+    //'Are you sure you would like to delete this group? \nThis cannot be undone',
+    'selectTimespanPrompt': 'Выберите промежуток времени',
+    //'Please select a timespan',
+    'noCompletedTasks': 'Нет завершенных задач',
+    //'No completed tasks',
+    'msgSentToDevs': 'Ваше сообщение отправлено разработчикам. Спасибо :)',
+    //'Your message has been sent to the developers. Thank you :)',
 
     // ~~~ single group page ~~~
-    'tasksAssignedToOthersTitle': 'Задачи, назначенные другим', //'Tasks assigned to others',
-    'tasksAssignedToMeTitle': 'Задачи, назначенные мне', //'Tasks assigned to me',
-    'completedTasksTitle': 'Завершенные задачи', //'Completed tasks',
-    'noTasksAssignedToOthers':
-        'В этой группе нет заданий, назначенных другим', //'There are no tasks assigned to others in this group',
-    'noTasksAssignetToYou':
-        'В этой группе нет заданий, назначенных вам', //'There are no tasks assigned to you in this group',
-    'noFutureTasks': 'В этой группе нет будущих задач', //'There are no future tasks in this group',
+    'tasksAssignedToOthersTitle': 'Задачи, назначенные другим',
+    //'Tasks assigned to others',
+    'tasksAssignedToMeTitle': 'Задачи, назначенные мне',
+    //'Tasks assigned to me',
+    'completedTasksTitle': 'Завершенные задачи',
+    //'Completed tasks',
+    'noTasksAssignedToOthers': 'В этой группе нет заданий, назначенных другим',
+    //'There are no tasks assigned to others in this group',
+    'noTasksAssignetToYou': 'В этой группе нет заданий, назначенных вам',
+    //'There are no tasks assigned to you in this group',
+    'noFutureTasks': 'В этой группе нет будущих задач',
+    //'There are no future tasks in this group',
 
     // ~~~ remove member ~~~
-    'removeMemberLable': 'Удалить элемент', //'Remove member',
-    'confirmRemove': 'Вы уверены, что хотите удалить', //'Are you sure you would like to remove',
-    'fromTheGroup': 'из группы', //'from the group',
+    'removeMemberLable': 'Удалить элемент',
+    //'Remove member',
+    'confirmRemove': 'Вы уверены, что хотите удалить',
+    //'Are you sure you would like to remove',
+    'fromTheGroup': 'из группы',
+    //'from the group',
 
     // ~~~ fetching from DB and loading overlay messages ~~~
-    'fetchingAssignedMembers': 'Получение назначенных участников...', //'Fetching assigned members...',
-    'fetchingTasksFromServer': 'Получение заданий...', //'Fetching tasks...',
-    'fetchingGroups': 'Получение групп...', //'Fetching groups...',
-    'fetchingScoreboard': 'Захватывающий табло...', //'Fetching score board...',
-    'removingGroupMember': 'Удаление члена группы...', //'Removing group member...',
-    'leavingGroup': 'Уходящая группа...', //'Leaving group...',
-    'deletingGroup': 'Удаление группы...', //'Deleting group...',
-    'deletingAccount': 'Удаление этой учетной записи...', //'Deleting this account...',
-    'deletingTask': 'Удаление задачи...', //"Deleting task...",
-    'uploadingImage': 'Загрузка изображения...', //"Uploading image...",
+    'fetchingAssignedMembers': 'Получение назначенных участников...',
+    //'Fetching assigned members...',
+    'fetchingTasksFromServer': 'Получение заданий...',
+    //'Fetching tasks...',
+    'fetchingGroups': 'Получение групп...',
+    //'Fetching groups...',
+    'fetchingScoreboard': 'Захватывающий табло...',
+    //'Fetching score board...',
+    'removingGroupMember': 'Удаление члена группы...',
+    //'Removing group member...',
+    'leavingGroup': 'Уходящая группа...',
+    //'Leaving group...',
+    'deletingGroup': 'Удаление группы...',
+    //'Deleting group...',
+    'deletingAccount': 'Удаление этой учетной записи...',
+    //'Deleting this account...',
+    'deletingTask': 'Удаление задачи...',
+    //"Deleting task...",
+    'uploadingImage': 'Загрузка изображения...',
+    //"Uploading image...",
+    'loadingGroupPage': 'Загрузка группы групп ...',
+    //'Loading group page...',
+    'loadingTaskDetailsPage': 'Загрузка страницы сведений о задаче ...',
+    //'Loading task details page...',
 
     // =================================================================
     // =======================  Error Messages  ========================
     // =================================================================
-    'addMemberNotificationErrMsg':
-        'был добавлен в группу, но из-за ошибки подключения уведомление не было отправлено', //'has been added to the group but due to a connection error, a notification was not sent',
-    'taskValueIntegerValidationMsg':
-        'Значение задачи должно быть положительным целым числом', //'Task value must be a positive integer',
-    'emailAddressesAreCaseSensitive':
-        '** Адреса электронной почты чувствительны к регистру **', // '** Email addresses are case sensitive **',
-    'leaveGroupErrorPrefixMsg':
-        'Ошибка при попытке покинуть группу, повторите попытку.\n\nСведения об исключении\n', //'Error while trying to leave group, please try again.\n\nException details:\n',
-    'uploadPhotoErrMsg':
-        'Ошибка при загрузке фото, повторите попытку.\n\nСведения об исключении\n', //'Error while uploading photo, please try again.\n\nException details:\n',
-    'sendMsgToDevsErr':
-        'Ошибка при отправке сообщения, повторите попытку.\n\nСведения об исключении\n', //'Error while sending message, please try again.\n\nException details:\n',
+    'addMemberNotificationErrMsg': 'был добавлен в группу, но из-за ошибки подключения уведомление не было отправлено',
+    //'has been added to the group but due to a connection error, a notification was not sent',
+    'taskValueIntegerValidationMsg': 'Значение задачи должно быть положительным целым числом',
+    //'Task value must be a positive integer',
+    'emailAddressesAreCaseSensitive': '** Адреса электронной почты чувствительны к регистру **',
+    // '** Email addresses are case sensitive **',
+    'leaveGroupErrorPrefixMsg': 'Ошибка при попытке покинуть группу, повторите попытку.\n\nСведения об исключении\n',
+    //'Error while trying to leave group, please try again.\n\nException details:\n',
+    'uploadPhotoErrMsg': 'Ошибка при загрузке фото, повторите попытку.\n\nСведения об исключении\n',
+    //'Error while uploading photo, please try again.\n\nException details:\n',
+    'sendMsgToDevsErr': 'Ошибка при отправке сообщения, повторите попытку.\n\nСведения об исключении\n',
+    //'Error while sending message, please try again.\n\nException details:\n',
     'taskNotUpdatedErrMsg':
-        'Не удалось обновить задачу из-за следующей ошибки, повторите попытку.\n\nСведения об исключении\n', //'Could not update task due to the following error, please try again.\n\nException details:\n',
+        'Не удалось обновить задачу из-за следующей ошибки, повторите попытку.\n\nСведения об исключении\n',
+    //'Could not update task due to the following error, please try again.\n\nException details:\n',
     'getGroupInfoErrMsg':
-        'Ошибка при попытке получить информацию о группе, повторите попытку.\n\nСведения об исключении\n', //'Error while trying to get group info, please try again.\n\nException details:\n',
-    'parentGroupNotFoundErrMsg':
-        'Группа, содержащая задание, не была найдена', //'Group containing the task was not found',
+        'Ошибка при попытке получить информацию о группе, повторите попытку.\n\nСведения об исключении\n',
+    //'Error while trying to get group info, please try again.\n\nException details:\n',
+    'parentGroupNotFoundErrMsg': 'Группа, содержащая задание, не была найдена',
+    //'Group containing the task was not found',
     'removeMemberFromGroupErrMsg':
-        'Ошибка при удалении члена из группы, элемент не удален, повторите попытку.\n\nСведения об исключении\n', // 'Error while removing member from group, the member has not been removed, please try again.\n\nException details:\n',
+        'Ошибка при удалении члена из группы, элемент не удален, повторите попытку.\n\nСведения об исключении\n',
+    // 'Error while removing member from group, the member has not been removed, please try again.\n\nException details:\n',
     'editGroupInfoErrMsg':
-        'Ошибка при обновлении информации о группе, информация о группе не будет обновлена, повторите попытку.\n\nСведения об исключении\n', //'Error while updating group info, the group info will not be updated, please try again.\n\nException details:\n',
-    'deleteGroupErrMsg':
-        'Ошибка при удалении группы, повторите попытку.\n\nСведения об исключении\n', //'Error while deleting group, please try again.\n\nException details:\n',
+        'Ошибка при обновлении информации о группе, информация о группе не будет обновлена, повторите попытку.\n\nСведения об исключении\n',
+    //'Error while updating group info, the group info will not be updated, please try again.\n\nException details:\n',
+    'deleteGroupErrMsg': 'Ошибка при удалении группы, повторите попытку.\n\nСведения об исключении\n',
+    //'Error while deleting group, please try again.\n\nException details:\n',
     'scoreBoardFetchErrMsg':
-        'Ошибка при попытке получить групповой табло, попробуйте еще раз.\n\nСведения об исключении\n', // 'Error while trying to get the group scoreboard, please try again.\n\nException details:\n',
+        'Ошибка при попытке получить групповой табло, попробуйте еще раз.\n\nСведения об исключении\n',
+    // 'Error while trying to get the group scoreboard, please try again.\n\nException details:\n',
     'addMemberErrMsgPrefix':
-        'Ошибка при попытке добавить нового участника, повторите попытку.\n\nСведения об исключении\n', //'Error while trying to add new member, please try again.\n\nException details:\n',
+        'Ошибка при попытке добавить нового участника, повторите попытку.\n\nСведения об исключении\n',
+    //'Error while trying to add new member, please try again.\n\nException details:\n',
     'openTaskDetailsPageErrMsg':
-        '«Ошибка при попытке открыть страницу сведений о задании, повторите попытку.\n\nСведения об исключении\n', // 'Error while trying to open task details page, please try again.\n\nException details:\n',
-    'deleteTaskErrMsg':
-        'Ошибка при попытке удалить задачу, повторите попытку.\n\nСведения об исключении\n', //'Error while trying to delete task, please try again.\n\nException details:\n',
-    'signOutErrMsg':
-        'Ошибка при выходе из системы, повторите попытку.\n\nСведения об исключении\n', //'Error while signing out, please try again.\n\nException details:\n',
-    'atLeastOneMustBeSelected':
-        'Необходимо выбрать хотя бы одного пользователя', //'At least one user must be selected',
+        '«Ошибка при попытке открыть страницу сведений о задании, повторите попытку.\n\nСведения об исключении\n',
+    // 'Error while trying to open task details page, please try again.\n\nException details:\n',
+    'deleteTaskErrMsg': 'Ошибка при попытке удалить задачу, повторите попытку.\n\nСведения об исключении\n',
+    //'Error while trying to delete task, please try again.\n\nException details:\n',
+    'signOutErrMsg': 'Ошибка при выходе из системы, повторите попытку.\n\nСведения об исключении\n',
+    //'Error while signing out, please try again.\n\nException details:\n',
+    'atLeastOneMustBeSelected': 'Необходимо выбрать хотя бы одного пользователя',
+    //'At least one user must be selected',
     'sendNotificationsErrMsgPrefix':
-        'Ошибка при отправке уведомлений, следующие пользователи не получили уведомление:\n', //'''Error while sending notifications, the following users did not get the notification:\n',
-    'invalidEmail': 'Неверный адрес электронной почты', //'Invalid email address',
-    'loginErrMsg':
-        'Ошибка при попытке войти в систему, повторите попытку.\n\nСведения об исключении\n', //'Error while trying to log in, please try again.\n\nException details:\n',
+        'Ошибка при отправке уведомлений, следующие пользователи не получили уведомление:\n',
+    //'''Error while sending notifications, the following users did not get the notification:\n',
+    'invalidEmail': 'Неверный адрес электронной почты',
+    //'Invalid email address',
+    'loginErrMsg': 'Ошибка при попытке войти в систему, повторите попытку.\n\nСведения об исключении\n',
+    //'Error while trying to log in, please try again.\n\nException details:\n',
     'registrationErrMsg':
-        'Ошибка при попытке зарегистрировать нового пользователя, повторите попытку.\n\nСведения об исключении\n', //'Error while trying to register a new user, please try again.\n\nException details:\n',
+        'Ошибка при попытке зарегистрировать нового пользователя, повторите попытку.\n\nСведения об исключении\n',
+    //'Error while trying to register a new user, please try again.\n\nException details:\n',
     'loginWithGoogleErrMsg':
-        'Ошибка при попытке войти в систему с помощью Google, повторите попытку.\n\nСведения об исключении\n', //'Error while trying to log in with google, please try again.\n\nException details:\n',
-    'fieldCannotBeEmpty': 'Это поле не может быть пустым', //'This field cannot be empty',
+        'Ошибка при попытке войти в систему с помощью Google, повторите попытку.\n\nСведения об исключении\n',
+    //'Error while trying to log in with google, please try again.\n\nException details:\n',
+    'fieldCannotBeEmpty': 'Это поле не может быть пустым',
+    //'This field cannot be empty',
 
     // =================================================================
     // ==========================  Languages  ==========================
     // =================================================================
-    'hebrew': 'Иврит', //'Hebrew'
-    'english': 'Английский', //'English'
-    'russian': 'Русский', //'Russian'
-    'changeLanguage': 'изменение языка', //'Change language',
+    'hebrew': 'Иврит',
+    //'Hebrew'
+    'english': 'Английский',
+    //'English'
+    'russian': 'Русский',
+    //'Russian'
+    'changeLanguage': 'изменение языка',
+    //'Change language',
 
     // =================================================================
     // ==========================  Help Pages ==========================
     // =================================================================
-    'singleGroupDetailsHelpTitle': 'Страница отдельных групп', //'Single group details page',
+    'singleGroupDetailsHelpTitle': 'Страница отдельных групп',
+    //'Single group details page',
     'singleGroupDetailsHelpIntro':
         'На этой странице пользователь может видеть все задачи выбранной группы.' //'This page is where a user can see all the tasks of the selected group.\n\n'
         'Групповое изображение может быть изменено любым членом группы, нажав на групповое изображение в верхней части страницы\n\n' //'The group picture can be changed by any group member by clicking on the group image at the top of the page\n\n'
         'Каждая задача в группе отображается на карте задач, при нажатии на карту отображается страница сведений о задаче\n' //'Every task in the group is shown on a task card, clicking on the card will show the task details page\n'
         'Здесь менеджер группы может также обновить задачу\n\n' //'This is where the group manager can also update the task\n\n'
-        'Групповые задачи разделяются на следующие разделы:\n', //'The group tasks are seperated into the following sections:\n',
-    'singleGroupDetailsHelpTasksAssignedToMeSubtitle':
-        'Заданные мне задачи (активный пользователь)', //'- Tasks assigned to me (the active user):',
+        'Групповые задачи разделяются на следующие разделы:\n',
+    //'The group tasks are seperated into the following sections:\n',
+    'singleGroupDetailsHelpTasksAssignedToMeSubtitle': 'Заданные мне задачи (активный пользователь)',
+    //'- Tasks assigned to me (the active user):',
     'singleGroupDetailsHelpTasksAssignedToMeBody':
         'Эти задачи - это задачи, которые пользователь может выполнить.\n' //'These tasks are the tasks that the user can complete.\n '
         'Когда задача завершена, она перемещается в раздел завершенных задач.\n' //'When a task is completed it is moved to the completed tasks section.\n'
         'Если задача является повторяющейся задачей, то после ее завершения будет создана новая задача с обновленной датой начала\\окончания.\n' //'If a task is a recurring task then after it is completed a new task with the updated start\\end date will be generated.\n'
-        '* Если новая дата повторяющейся задачи после текущего времени будет отображаться в разделе будущих задач *\n', //'* If the new date of a recurring task is after the current time it will show up in the future tasks section *\n',
-    'singleGroupDetailsHelpTasksAssignedToOthersSubtitle':
-        '- Задачи, назначенные другим пользователям:', //'- Tasks assigned to other users:',
+        '* Если новая дата повторяющейся задачи после текущего времени будет отображаться в разделе будущих задач *\n',
+    //'* If the new date of a recurring task is after the current time it will show up in the future tasks section *\n',
+    'singleGroupDetailsHelpTasksAssignedToOthersSubtitle': '- Задачи, назначенные другим пользователям:',
+    //'- Tasks assigned to other users:',
     'singleGroupDetailsHelpTasksAssignedToOthersBody':
         'Эти задачи назначаются другим членам группы, но не активным пользователем.\n ' //'These tasks are assigned to other members of the group but not the active user.\n '
-        'Активные пользователи не могут выполнить эти задачи.\n', //'These tasks cannot be completed by the active user\n',
-    'singleGroupDetailsHelpFutureTasksSubtitle':
-        '- Будущие задачи (видимы только для менеджера группы):', // '- Future tasks (visible to group manager only):',
-    'singleGroupDetailsHelpFutureTasksBody':
-        'Эти задачи имеют начальную дату, которая превышает текущее время.\n ', //'These tasks have a starting date that is lated than the current time.\n ',
+        'Активные пользователи не могут выполнить эти задачи.\n',
+    //'These tasks cannot be completed by the active user\n',
+    'singleGroupDetailsHelpFutureTasksSubtitle': '- Будущие задачи (видимы только для менеджера группы):',
+    // '- Future tasks (visible to group manager only):',
+    'singleGroupDetailsHelpFutureTasksBody': 'Эти задачи имеют начальную дату, которая превышает текущее время.\n ',
+    //'These tasks have a starting date that is lated than the current time.\n ',
     'singleGroupDetailsHelpCompletedTasksBody':
         'Чтобы просмотреть выполненные задания, необходимо выбрать временной интервал.\n ' //'To see completed tasks a time span must be selected.\n '
-        'Только менеджер группы или участник, выполнивший задачу, могут «выполнить незавершенную» задачу\n', //'Only the group manager or the member who completed a task can "uncomplete" a task\n',
-    'taskDetailsHelpTitle': 'Страница сведений о задаче', //'Task details page',
+        'Только менеджер группы или участник, выполнивший задачу, могут «выполнить незавершенную» задачу\n',
+    //'Only the group manager or the member who completed a task can "uncomplete" a task\n',
+    'taskDetailsHelpTitle': 'Страница сведений о задаче',
+    //'Task details page',
     'taskDetailsHelpIntro':
         'На этой странице указаны все детали выбранной задачи.\n\n' //'This page is where all the details of a selected task are.\n\n'
         'Только менеджер группы может обновлять сведения о задаче.\n\n' //'Only the group manager can update the details of a task.\n\n'
-        'Поле задач:\n', //'Task fields:\n',
-    'taskDetailsHelpValueBody':
-        'Количество очков, которые получит член для выполнения этой задачи.\n', //'The amount of points a member will get for completing this task.\n',
-    'taskDetailsHelpRepeatBody':
-        'Когда задача снова появится после завершения.\n', //'When should the task reappear after completion.\n',
+        'Поле задач:\n',
+    //'Task fields:\n',
+    'taskDetailsHelpValueBody': 'Количество очков, которые получит член для выполнения этой задачи.\n',
+    //'The amount of points a member will get for completing this task.\n',
+    'taskDetailsHelpRepeatBody': 'Когда задача снова появится после завершения.\n',
+    //'When should the task reappear after completion.\n',
     'taskDetailsHelpStartTimeBody':
-        'Задача будет видна членам группы только после того, как текущее время будет после этого значения.\n ', //'The task will be visible to the group members only after the current time is after this value.\n ',
+        'Задача будет видна членам группы только после того, как текущее время будет после этого значения.\n ',
+    //'The task will be visible to the group members only after the current time is after this value.\n ',
     'taskDetailsHelpDueTimeBody':
-        'Сроки выполнения задачи, после этого времени фона задачи будут окрашены в красный цвет.\n', //'The due time of the task, after this time the task background will be colored red.\n',
+        'Сроки выполнения задачи, после этого времени фона задачи будут окрашены в красный цвет.\n',
+    //'The due time of the task, after this time the task background will be colored red.\n',
     'taskDetailsHelpAsssignedMembersBody':
         'Члены группы, которые назначены на эту задачу - только они могут ее завершить.\n' // 'The group members who are assigned to this task - only they are able to complete it.\n'
-        'По умолчанию задачи назначаются всем членам группы.\n', // 'By default tasks are assigned to allmembers of the group.\n',
+        'По умолчанию задачи назначаются всем членам группы.\n',
+    // 'By default tasks are assigned to allmembers of the group.\n',
   };
+
   //endregion
 
   Strings([String languageCode]) {
@@ -1119,6 +1269,10 @@ class Strings {
 
   String get uploadingImage => _currentLanguageMap['uploadingImage'] ?? _english['uploadingImage'];
 
+  String get loadingGroupPage => _currentLanguageMap['loadingGroupPage'] ?? _english['loadingGroupPage'];
+
+  String get loadingTaskDetailsPage => _currentLanguageMap['loadingTaskDetailsPage'] ?? _english['loadingTaskDetailsPage'];
+
   // =================================================================
   // =======================  Error Messages  ========================
   // =================================================================
@@ -1186,8 +1340,11 @@ class Strings {
   // ==========================  Languages  ==========================
   // =================================================================
   String get hebrew => _currentLanguageMap['hebrew'] ?? _english['hebrew'];
+
   String get english => _currentLanguageMap['english'] ?? _english['english'];
+
   String get russian => _currentLanguageMap['russian'] ?? _english['russian'];
+
   String get changeLanguage => _currentLanguageMap['changeLanguage'] ?? _english['changeLanguage'];
 
   // =================================================================
@@ -1195,38 +1352,53 @@ class Strings {
   // =================================================================
   String get singleGroupDetailsHelpTitle =>
       _currentLanguageMap['singleGroupDetailsHelpTitle'] ?? _english['singleGroupDetailsHelpTitle'];
+
   String get singleGroupDetailsHelpIntro =>
       _currentLanguageMap['singleGroupDetailsHelpIntro'] ?? _english['singleGroupDetailsHelpIntro'];
+
   String get singleGroupDetailsHelpTasksAssignedToMeSubtitle =>
       _currentLanguageMap['singleGroupDetailsHelpTasksAssignedToMeSubtitle'] ??
       _english['singleGroupDetailsHelpTasksAssignedToMeSubtitle'];
+
   String get singleGroupDetailsHelpTasksAssignedToMeBody =>
       _currentLanguageMap['singleGroupDetailsHelpTasksAssignedToMeBody'] ??
       _english['singleGroupDetailsHelpTasksAssignedToMeBody'];
+
   String get singleGroupDetailsHelpTasksAssignedToOthersSubtitle =>
       _currentLanguageMap['singleGroupDetailsHelpTasksAssignedToOthersSubtitle'] ??
       _english['singleGroupDetailsHelpTasksAssignedToOthersSubtitle'];
+
   String get singleGroupDetailsHelpTasksAssignedToOthersBody =>
       _currentLanguageMap['singleGroupDetailsHelpTasksAssignedToOthersBody'] ??
       _english['singleGroupDetailsHelpTasksAssignedToOthersBody'];
+
   String get singleGroupDetailsHelpFutureTasksSubtitle =>
       _currentLanguageMap['singleGroupDetailsHelpFutureTasksSubtitle'] ??
       _english['singleGroupDetailsHelpFutureTasksSubtitle'];
+
   String get singleGroupDetailsHelpFutureTasksBody =>
       _currentLanguageMap['singleGroupDetailsHelpFutureTasksBody'] ?? _english['singleGroupDetailsHelpFutureTasksBody'];
+
   String get singleGroupDetailsHelpCompletedTasksBody =>
       _currentLanguageMap['singleGroupDetailsHelpCompletedTasksBody'] ??
       _english['singleGroupDetailsHelpCompletedTasksBody'];
+
   String get taskDetailsHelpTitle => _currentLanguageMap['taskDetailsHelpTitle'] ?? _english['taskDetailsHelpTitle'];
+
   String get taskDetailsHelpIntro => _currentLanguageMap['taskDetailsHelpIntro'] ?? _english['taskDetailsHelpIntro'];
+
   String get taskDetailsHelpValueBody =>
       _currentLanguageMap['taskDetailsHelpValueBody'] ?? _english['taskDetailsHelpValueBody'];
+
   String get taskDetailsHelpRepeatBody =>
       _currentLanguageMap['taskDetailsHelpRepeatBody'] ?? _english['taskDetailsHelpRepeatBody'];
+
   String get taskDetailsHelpStartTimeBody =>
       _currentLanguageMap['taskDetailsHelpStartTimeBody'] ?? _english['taskDetailsHelpStartTimeBody'];
+
   String get taskDetailsHelpDueTimeBody =>
       _currentLanguageMap['taskDetailsHelpDueTimeBody'] ?? _english['taskDetailsHelpDueTimeBody'];
+
   String get taskDetailsHelpAsssignedMembersBody =>
       _currentLanguageMap['taskDetailsHelpAsssignedMembersBody'] ?? _english['taskDetailsHelpAsssignedMembersBody'];
 
@@ -1259,6 +1431,7 @@ class Strings {
         return Locale('he', 'IL');
       case 'ru_RU':
         return Locale('ru', 'RU');
+      case 'en_US':
       default:
         return Locale('en', 'US');
     }

@@ -40,6 +40,7 @@ class UserSettingsPageState extends State<UserSettingsPage> {
   @override
   void initState() {
     app.usersManager.getFullUserInfo(app.loggedInUser.userID).then((retrievedUserInfo) {
+      if (!mounted) return;
       setState(() {
         userInfo = retrievedUserInfo;
       });

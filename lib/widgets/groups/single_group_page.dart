@@ -119,7 +119,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
                             child: ImageContainer(
                               imagePath: photoUrl,
                               imageFile: groupImageFile,
-                              size: 130.0,
+                              size: 120.0,
                               borderColor: Colors.white,
                             ),
                           ),
