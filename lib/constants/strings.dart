@@ -60,6 +60,7 @@ class Strings {
     'startTimeAfterEndTimeErrMsg': 'Start time cannot be later than end time',
     'addTaskFailedErrMsg': 'Failed to add task',
     'unknownCompleteTaskStatusErrMsg': 'Unknown complete task status',
+    'taskIsInFuture': 'Task start date is in the future',
 
     // =================================================================
     // ===========================  General  ===========================
@@ -311,6 +312,7 @@ class Strings {
     'startTimeAfterEndTimeErrMsg': 'זמן התחלת המטלה לא יכול להיות לפני תאריך היעד שלה',
     'addTaskFailedErrMsg': 'אירעה שגיאה ביצירת המטלה',
     'unknownCompleteTaskStatusErrMsg': 'שגיאה לא מוגדרת',
+    'taskIsInFuture': 'זמן ההתחלה של המטלה הוא בעתיד',
 
     // =================================================================
     // ===========================  General  ===========================
@@ -594,6 +596,8 @@ class Strings {
     //'Failed to add task',
     'unknownCompleteTaskStatusErrMsg': 'Неизвестный статус задачи',
     //'Unknown complete task status',
+    'taskIsInFuture': 'Дата начала работы в будущем',
+    //'Task start date is in the future',
 
     // =================================================================
     // ===========================  General  ===========================
@@ -1049,6 +1053,8 @@ class Strings {
 
   String get unknownCompleteTaskStatusErrMsg =>
       _currentLanguageMap['unknownCompleteTaskStatusErrMsg'] ?? _english['unknownCompleteTaskStatusErrMsg'];
+
+  String get taskIsInFuture => _currentLanguageMap['taskIsInFuture'] ?? _english['taskIsInFuture'];
 
   // =================================================================
   // ===========================  General  ===========================

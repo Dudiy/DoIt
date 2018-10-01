@@ -12,6 +12,7 @@ enum TaskMethodResult {
   // group or user delete after task assign
   PARENT_GROUP_NOT_FOUND,
   START_TIME_AFTER_END_TIME,
+  TASK_IS_IN_FUTURE,
   ADD_TASK_FAIL,
 }
 
@@ -35,6 +36,8 @@ class TaskMethodResultUtils {
         return app.strings.startTimeAfterEndTimeErrMsg;
       case TaskMethodResult.ADD_TASK_FAIL:
         return app.strings.addTaskFailedErrMsg;
+        case TaskMethodResult.TASK_IS_IN_FUTURE:
+        return app.strings.taskIsInFuture;
       default:
         return app.strings.unknownCompleteTaskStatusErrMsg;
     }

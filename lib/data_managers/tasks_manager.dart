@@ -149,6 +149,11 @@ class TasksManager {
           '$errorMessagePrefix The given user is not a member of the task\'s parent group \n'
           'or user was not assigned to this task');
     }
+    if (taskInfo.startTime.isAfter(DateTime.now())){
+      throw TaskException(
+          TaskMethodResult.TASK_IS_IN_FUTURE,
+          '$errorMessagePrefix The task\'s start time is in the future');
+    }
 
     // complete the task (add completedTaskInfo to the groups sub-collection -> delete the original task)
     CompletedTaskInfo completedTaskInfo = taskInfo.generateCompletedTaskInfo(userWhoCompleted: userWhoCompleted);
