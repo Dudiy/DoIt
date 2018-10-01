@@ -568,11 +568,11 @@ class Strings {
     //'None',
     'recurringPolicyDaily': 'Ежедневно',
     //'Daily',
-    'recurringPolicyWeekly': 'еженедельно',
+    'recurringPolicyWeekly': 'Еженедельно',
     //'Weekly',
-    'recurringPolicyMonthly': 'ежемесячно',
+    'recurringPolicyMonthly': 'Ежемесячно',
     //'Monthly',
-    'recurringPolicyYearly': 'каждый год',
+    'recurringPolicyYearly': 'Каждый год',
     //'Yearly',
 
     // =================================================================
@@ -635,7 +635,7 @@ class Strings {
     //'Completed by',
     'completedOn': 'Завершено',
     //'Completed on',
-    'points': 'точки',
+    'points': 'очков',
     //'points',
     // ~~~ App Settings Page ~~~
     'appSettings': 'Настройки приложения',
@@ -691,7 +691,7 @@ class Strings {
     //'Leave group',
     'deleteGroupLabel': 'Удалить группу',
     //'Delete group',
-    'addMemberTitle': 'добавить участников',
+    'addMemberTitle': 'Добавить участников',
     //'Add member',
     'selectAssignedMembersTitle': 'Выберите назначенных участников',
     //'Select assigned members',
