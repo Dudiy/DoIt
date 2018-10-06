@@ -341,7 +341,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                 DoItDialogs.showConfirmDialog(
                   context: context,
                   message: '${app.strings.confirmRemove} ${shortUserInfo.displayName} ${app.strings.fromTheGroup}?',
-                  actionButtonText: app.strings.removeMemberLable,
+                  actionButtonText: app.strings.removeMemberLabel,
                   isWarning: true,
                 ).then((userConfirmed) {
                   if (userConfirmed) {

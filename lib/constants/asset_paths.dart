@@ -9,6 +9,7 @@ const Map<String, String> FLAGS = {
   'en': "assets/icons_and_buttons/usa_flag.png",
   'ru': "assets/icons_and_buttons/russia_flag.png",
   'he': "assets/icons_and_buttons/israel_flag.png",
+  'ro': "assets/icons_and_buttons/romania_flag.png",
 };
 
 // Images

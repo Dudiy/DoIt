@@ -193,7 +193,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
   Widget _getNotifyUsersMenuItem(context) {
     TextEditingController _notificationController = new TextEditingController();
     DoItTextField notificationMessage = DoItTextField(
-      label: app.strings.notificationMessageLable,
+      label: app.strings.notificationMessageLabel,
       controller: _notificationController,
       maxLines: 3,
       maxLength: 30,

@@ -223,9 +223,6 @@ class Strings {
     // =================================================================
     // ==========================  Languages  ==========================
     // =================================================================
-    'hebrew': 'Hebrew',
-    'english': 'English',
-    'russian': 'Russian',
     'changeLanguage': 'Change language',
 
     // =================================================================
@@ -247,7 +244,7 @@ class Strings {
         'These tasks are assigned to other members of the group but not the active user.\n '
         'These tasks cannot be completed by the active user.\n',
     'singleGroupDetailsHelpFutureTasksSubtitle': '- Future tasks (visible to group manager only):',
-    'singleGroupDetailsHelpFutureTasksBody': 'These tasks have a starting date that is lated than the current time.\n ',
+    'singleGroupDetailsHelpFutureTasksBody': 'These tasks have a starting date that is later than the current time.\n ',
     'singleGroupDetailsHelpCompletedTasksBody': 'To see completed tasks a time span must be selected.\n '
         'Only the group manager or the member who completed a task can "uncomplete" a task\n',
     'taskDetailsHelpTitle': 'Task details page',
@@ -262,7 +259,7 @@ class Strings {
         'The due time of the task, after this time the task background will be colored red.\n',
     'taskDetailsHelpAsssignedMembersBody':
         'The group members who are assigned to this task - only they are able to complete it.\n'
-        'By default tasks are assigned to allmembers of the group.\n',
+        'By default tasks are assigned to all members of the group.\n',
   };
 
   final Map<String, String> _hebrew = {
@@ -470,9 +467,6 @@ class Strings {
     // =================================================================
     // ==========================  Languages  ==========================
     // =================================================================
-    'hebrew': 'עברית',
-    'english': 'אנגלית',
-    'russian': 'רוסית',
     'changeLanguage': 'שנה שפה',
 
     // =================================================================
@@ -888,12 +882,6 @@ class Strings {
     // =================================================================
     // ==========================  Languages  ==========================
     // =================================================================
-    'hebrew': 'Иврит',
-    //'Hebrew'
-    'english': 'Английский',
-    //'English'
-    'russian': 'Русский',
-    //'Russian'
     'changeLanguage': 'изменение языка',
     //'Change language',
 
@@ -954,6 +942,261 @@ class Strings {
     // 'By default tasks are assigned to allmembers of the group.\n',
   };
 
+  final Map<String, String> _romanian = {
+    // =================================================================
+    // ===========================  General  ===========================
+    // =================================================================
+    'email': 'E-mail',
+    'password': 'Parola',
+    'resetPassword': 'Reseteaza parola',
+    'name': 'Nume',
+    'invalidValue': 'valoare invalida',
+    'gotIt': 'Am înţeles',
+    'loading': 'se incarca...',
+    'version': 'Versiune',
+
+    // =================================================================
+    // ==========================  Login page  =========================
+    // =================================================================
+    'newUserButton': 'Utilizator nou? Creează un cont',
+    'sendingResetPasswordMsg': 'trimiterea unui mesaj de resetare a parolei...',
+    'resetPasswordSentMsg': 'Resetați adresa de e-mail pentru parolă',
+    'noRegisteredUserWithEmailMsg': 'Nu există niciun utilizator înregistrat cu adresa de e-mail dată',
+    'loggingIn': 'Autentificare...',
+    'loginWithGoogle': 'Conectați-vă cu Google',
+    'loggingInWithGoogle': 'Conectarea la Google...',
+    'loginButtonText': 'LOGARE',
+
+    // =================================================================
+    // ========================  Register page  ========================
+    // =================================================================
+    'registerPageTitle': 'Înregistrare',
+    'register': 'Inregistreaza-te',
+    'passwordLenValidationMsg': 'parola trebuie sa contina minim 6 caractere',
+    'registeringNewUserMsg': 'Înregistrarea unui utilizator nou...',
+
+    // =================================================================
+    // =======================  Recurring Policies  ====================
+    // =================================================================
+    'recurringPolicyNone': 'Nici unul',
+    'recurringPolicyDaily': 'Zilnic',
+    'recurringPolicyWeekly': 'Săptămânal',
+    'recurringPolicyMonthly': 'Lunar',
+    'recurringPolicyYearly': 'Anual',
+
+    // =================================================================
+    // =====================  Task Completed results  ==================
+    // =================================================================
+    'taskCompletedMsg': 'Ați finalizat sarcina:',
+    'loginToCompleteTaskMsg': 'Vă rugăm să vă conectați mai întâi pentru a finaliza sarcina',
+    'userCompletedNotInDbErrMsg': 'Vă rugăm să vă reconectați la aplicație pentru a finaliza sarcina',
+    'taskNotFoundErrMsg': 'Sarcina asociată cu această etichetă nu mai există',
+    'userNotAssignedToTaskErrMsg': 'Nu sunteți alocat sarcinii asociate cu această etichetă',
+    'taskDoesNotExistsErrMsg': 'Sarcina asociată cu această etichetă nu mai există',
+    'startTimeAfterEndTimeErrMsg': 'Timpul de începere nu poate fi mai târziu decât ora de încheiere',
+    'addTaskFailedErrMsg': 'Nu sa reușit adăugarea unei sarcini',
+    'unknownCompleteTaskStatusErrMsg': 'Stare completă de sarcină necunoscută',
+    'taskIsInFuture': 'Data de începere a activității este în viitor',
+
+    // =================================================================
+    // ===========================  General  ===========================
+    // =================================================================
+    // ~~ user ~~~
+    'userID': 'numele de utilizator',
+    // ~~~ group ~~~
+    'groupInfo': 'Informații despre grup',
+    'groupId': 'ID-ul grupului',
+    'groupTitleLable': 'Titlul grupului',
+    'groupManager': 'Manager de grup',
+    'groupMembers': 'Membrii grupului',
+    'members': 'Membrii',
+    'groupHasNoMembers': 'Grupul nu are membri...',
+    // ~~~ task ~~~
+    'titleLabel': 'Titlu',
+    'tasks': 'Sarcini',
+    'valueLabel': 'Valoare',
+    'timeNotSet': 'Timpul nu este setat',
+    'repeat': 'Repeta',
+    'completedBy': 'Completat de',
+    'completedOn': 'Completat pe',
+    'points': 'puncte',
+    // ~~~ App Settings Page ~~~
+    'appSettings': 'Setările aplicației',
+    'changeTheme': 'Schimbă tema',
+    'messageDevs': 'Adresați-i dezvoltatorilor',
+    'resetPasswordSentTo': 'Resetați adresa de e-mail pentru parolă',
+    'signOut': 'Sign out',
+    'deleteAccount': 'Șterge cont',
+    'selectTheme': 'Selectează tema',
+    'composeMsgToDevsTitle': 'Ce vrei să ne spui?',
+    'deleteAccountConfirmMsg': 'Sigur doriți să ștergeți acest cont? Acest lucru nu poate fi anulat',
+
+    // =================================================================
+    // ==================  Dialogs and Notifications ===================
+    // =================================================================
+    // ~~~ buttons labels and titles ~~~
+    'confirm': 'A confirma',
+    'submit': 'A depune',
+    'ok': 'O.K',
+    'oops': 'Hopa...',
+    'delete': 'Șterge',
+    'cancel': 'Anulare',
+    'leave': 'Părăsi',
+    'help': 'Ajutor',
+    'update': 'Actualizați',
+    'newGroupTitle': 'Grup nou',
+    'pleaseSelect': 'te rog selecteaza',
+    'tapToChange': 'atingeți pentru a schimba',
+    'descriptionLabel': 'Descriere',
+    'leaveGroupLabel': 'Paraseste grupul',
+    'deleteGroupLabel': 'Ștergeți grupul',
+    'addMemberTitle': 'Adăugați membru',
+    'selectAssignedMembersTitle': 'Selectați membrii desemnați',
+    'newTask': 'Sarcina noua',
+    'scoreboard': 'tablou de bord',
+    'futureTasks': 'Sarcinile viitoare',
+    'week': 'săptămână',
+    'month': 'lună',
+    'allTime': 'tot timpul',
+    'dueTime': 'Due time',
+    'startTime': 'Timpul de începere',
+    'notifyMembers': 'notifica membrii',
+    'taskNotificationTitle': 'Notificarea de la sarcină',
+    'assignedMembers': 'Membrii asociați',
+    'displayName': 'Numele afisat',
+    'deleteTask': 'Ștergeți sarcina',
+    'writeToNfc': 'Scrieți către NFC',
+    'readyToWrite': 'Sunteți gata să scrieți',
+    'holdPhoneOverNfc': 'Țineți telefonul prin eticheta NFC',
+    'today': 'astăzi',
+    'thisWeek': 'săptămâna aceasta',
+    'thisMonth': 'luna aceasta',
+    'selectLanguageTitle': 'Selecteaza limba',
+    // ~~~ Notification messages ~~~
+    'notificationFromGroupTitle': 'Notificare din grup',
+    'sendNotificationTitle': 'Trimiteți o notificare',
+    'notificationMessageLable': 'mesaj de notificare',
+    'addedToGroupMsg': 'Ați fost adăugați în acest grup',
+    'hasBeenAddedToThisGroup': 'a fost adăugat la acest grup',
+    'leaveGroupConfirmMsg': 'Sigur doriți să părăsiți acest grup?\nAcest lucru nu poate fi anulat',
+    'deleteTaskConfirmMsg': 'Sigur doriți să ștergeți această sarcină?\nAcest lucru nu poate fi anulat',
+    'hi': 'Bună',
+    'oneTaskRemainingMsg': 'Aveți doar o singură sarcină care rămâne în toate grupurile, permiteți-vă să lucrați...',
+    'allTasksRemainingMsg': '- toate sarcinile pe care le-ai rămas în toate grupurile, te lasă să lucrezi...',
+    'noTasksRemainingMsg': 'Minunat! nu aveți sarcini de făcut :)',
+    'notInAnyGroup': 'Încă nu sunteți în niciun grup',
+    'noDescription': 'Nu a fost introdusă nicio descriere',
+    'clickToCreateGroup': 'Faceți clic pe "+" în\creați un nou grup',
+
+    // ~~~ message bodies ~~~
+    'deleteGroupConfirmMsg': 'Sigur doriți să ștergeți acest grup?\nAcest lucru nu poate fi anulat',
+    'selectTimespanPrompt': 'Selectați o perioadă de timp',
+    'noCompletedTasks': 'Nu există sarcini completate',
+    'msgSentToDevs': 'Mesajul dvs. a fost trimis dezvoltatorilor. Mulțumesc :)',
+
+    // ~~~ single group page ~~~
+    'tasksAssignedToOthersTitle': 'Sarcini atribuite altor persoane',
+    'tasksAssignedToMeTitle': 'Sarcinile care mi-au fost atribuite',
+    'completedTasksTitle': 'Sarcini completate',
+    'noTasksAssignedToOthers': 'Nu există sarcini alocate altor persoane din acest grup',
+    'noTasksAssignetToYou': 'Nu există sarcini care să vă fie atribuite în acest grup',
+    'noFutureTasks': 'Nu există sarcini viitoare în acest grup',
+
+    // ~~~ remove member ~~~
+    'removeMemberLable': 'Scoateți membrul',
+    'confirmRemove': 'Sigur doriți să eliminați',
+    'fromTheGroup': 'din grup',
+
+    // ~~~ fetching from DB and loading overlay messages ~~~
+    'fetchingAssignedMembers': 'Obtinerea membrilor desemnați ...',
+    'fetchingTasksFromServer': 'Obtinerea sarcinilor ...',
+    'fetchingGroups': 'Obtinerea grupuri ...',
+    'fetchingScoreboard': 'Obtinerea tablou de bord ...',
+    'removingGroupMember': 'Eliminarea membrului grupului...',
+    'leavingGroup': 'Lăsând grupul ...',
+    'deletingGroup': 'Ștergerea grupului ...',
+    'deletingAccount': 'Ștergerea acestui cont ...',
+    'deletingTask': 'Ștergerea sarcinii ...',
+    'uploadingImage': 'Se încarcă imaginea ...',
+    'loadingGroupPage': 'Se încarcă pagina grupului ...',
+    'loadingTaskDetailsPage': 'Încărcați pagina cu detalii despre sarcină ...',
+
+    // =================================================================
+    // =======================  Error Messages  ========================
+    // =================================================================
+    'addMemberNotificationErrMsg':
+    'a fost adăugat la grup, dar din cauza unei erori de conectare, nu a fost trimisă o notificare',
+    'taskValueIntegerValidationMsg': 'Valoarea sarcinii trebuie să fie un număr întreg pozitiv',
+    'emailAddressesAreCaseSensitive': '** Adresele de e-mail sunt sensibile la minuscule **',
+    'leaveGroupErrorPrefixMsg': 'Eroare la încercarea de a părăsi grupul, încercați din nou.\n\nDetaliile de excepție:\n',
+    'uploadPhotoErrMsg': 'Eroare la încărcarea fotografiei, încercați din nou.\n\nDetaliile de excepție:\n',
+    'sendMsgToDevsErr': 'Eroare la trimiterea mesajului, încercați din nou.\n\nDetaliile de excepție:\n',
+    'taskNotUpdatedErrMsg':
+    'Nu s-a putut actualiza sarcina din cauza următoarei erori, încercați din nou.\n\nDetaliile de excepție:\n',
+    'getGroupInfoErrMsg': 'Eroare la încercarea de a obține informații despre grup, încercați din nou.\n\nDetaliile de excepție:\n',
+    'parentGroupNotFoundErrMsg': 'Grupul care conținea sarcina nu a fost găsit',
+    'removeMemberFromGroupErrMsg':
+    'Eroare la eliminarea membrilor din grup, membrul nu a fost eliminat, încercați din nou.\n\nDetaliile de excepție:\n',
+    'editGroupInfoErrMsg':
+    'Eroare la actualizarea informațiilor despre grup, informațiile despre grup nu vor fi actualizate, încercați din nou.\n\nDetaliile de excepție:\n',
+    'deleteGroupErrMsg': 'Eroare la ștergerea grupului, încercați din nou.\n\nDetaliile de excepție:\n',
+    'scoreBoardFetchErrMsg':
+    'Eroare la încercarea de a obține tabloul de bord al grupului, încercați din nou.\n\nDetaliile de excepție:\n',
+    'addMemberErrMsgPrefix': 'Eroare la încercarea de a adăuga un nou membru, încercați din nou.\n\nDetaliile de excepție:\n',
+    'openTaskDetailsPageErrMsg':
+    'Eroare în timp ce încercați să deschideți pagina cu detalii privind sarcina, încercați din nou.\n\nDetaliile de excepție:\n',
+    'deleteTaskErrMsg': 'Eroare la încercarea de a șterge sarcina, încercați din nou.\n\nDetaliile de excepție:\n',
+    'signOutErrMsg': 'Eroare la deconectare, încercați din nou.\n\nDetaliile de excepție:\n',
+    'atLeastOneMustBeSelected': 'Trebuie să fie selectat cel puțin un utilizator',
+    'sendNotificationsErrMsgPrefix':
+    'Eroare la trimiterea notificărilor, următorii utilizatori nu au primit notificarea:\n',
+    'invalidEmail': 'Adresa email invalida',
+    'loginErrMsg': 'Eroare la încercarea de conectare, încercați din nou.\n\nDetaliile de excepție:\n',
+    'registrationErrMsg': 'Eroare la încercarea de a înregistra un utilizator nou, încercați din nou.\n\nDetaliile de excepție:\n',
+    'loginWithGoogleErrMsg': 'Eroare la încercarea de a vă conecta cu Google, încercați din nou.\n\nDetaliile de excepție:\n',
+    'fieldCannotBeEmpty': 'Acest câmp nu poate fi gol',
+
+    // =================================================================
+    // ==========================  Languages  ==========================
+    // =================================================================
+    'changeLanguage': 'Schimbați limba',
+
+    // =================================================================
+    // ==========================  Help Pages ==========================
+    // =================================================================
+    'singleGroupDetailsHelpTitle': 'Pagina cu detalii privind grupul unic',
+    'singleGroupDetailsHelpIntro': 'Această pagină este locul în care un utilizator poate vedea toate sarcinile grupului selectat.\n\n'
+        'Imaginea grupului poate fi modificată de orice membru al grupului făcând clic pe imaginea grupului din partea de sus a paginii\n\n'
+        'Fiecare sarcină din grup este afișată pe o carte de sarcini, făcând clic pe carte va afișa pagina cu detaliile sarcinii\n'
+        'Aici managerul de grup poate actualiza sarcina\n\n'
+        'Sarcinile de grup sunt separate în următoarele secțiuni:\n',
+    'singleGroupDetailsHelpTasksAssignedToMeSubtitle': '- Sarcinile care mi-au fost atribuite (utilizatorul activ):',
+    'singleGroupDetailsHelpTasksAssignedToMeBody': 'Aceste sarcini sunt sarcinile pe care utilizatorul le poate finaliza.\n '
+        'Când o sarcină este finalizată, ea este mutată la secțiunea sarcinilor finalizate.\n'
+        'Dacă o sarcină este o sarcină recurentă, după ce este finalizată, va fi generată o nouă sarcină cu data actualizată de început sau de sfârșit.\n'
+        '* Dacă noua dată a unei sarcini recurente este după ora curentă, va apărea în secțiunea de sarcini viitoare *\n',
+    'singleGroupDetailsHelpTasksAssignedToOthersSubtitle': '- Sarcini atribuite altor utilizatori:',
+    'singleGroupDetailsHelpTasksAssignedToOthersBody':
+    'Aceste sarcini sunt atribuite altor membri ai grupului, dar nu utilizator activ.\n '
+        'Aceste sarcini nu pot fi completate de utilizatorul activ.\n',
+    'singleGroupDetailsHelpFutureTasksSubtitle': '- Sarcinile viitoare (vizibile numai pentru managerul de grup):',
+    'singleGroupDetailsHelpFutureTasksBody': 'Aceste sarcini au o dată de început care este mai târziu decât ora curentă.\n ',
+    'singleGroupDetailsHelpCompletedTasksBody': 'Pentru a vedea sarcinile finalizate, trebuie selectat un interval de timp.\n '
+        'Doar managerul de grup sau membrul care a finalizat o sarcină poate "să nu finalizeze" o activitate\n',
+    'taskDetailsHelpTitle': 'Detalii despre pagina de activități',
+    'taskDetailsHelpIntro': 'Această pagină este în cazul în care toate detaliile unei sarcini selectate sunt.\n\n'
+        'Numai managerul de grup poate actualiza detaliile unei sarcini.\n\n'
+        'Câmpuri de activități:\n',
+    'taskDetailsHelpValueBody': 'Suma de puncte pe care un membru o va obține pentru a îndeplini această sarcină.\n',
+    'taskDetailsHelpRepeatBody': 'Când trebuie să reapară sarcina după finalizare.\n',
+    'taskDetailsHelpStartTimeBody':
+    'Sarcina va fi vizibilă membrilor grupului numai după ce ora curentă este după această valoare.\n ',
+    'taskDetailsHelpDueTimeBody':
+    'Perioada de timp a sarcinii, după care fundalul sarcinii va fi colorat roșu.\n',
+    'taskDetailsHelpAsssignedMembersBody':
+    'Membrii grupului care sunt desemnați pentru această sarcină - numai ei pot să o completeze.\n'
+        'În mod implicit, sarcinile sunt atribuite tuturor membrilor grupului.\n',
+  };
   //endregion
 
   Strings([String languageCode]) {
@@ -1200,7 +1443,7 @@ class Strings {
 
   String get sendNotificationTitle => _currentLanguageMap['sendNotificationTitle'] ?? _english['sendNotificationTitle'];
 
-  String get notificationMessageLable =>
+  String get notificationMessageLabel =>
       _currentLanguageMap['notificationMessageLable'] ?? _english['notificationMessageLable'];
 
   String get addedToGroupMsg => _currentLanguageMap['addedToGroupMsg'] ?? _english['addedToGroupMsg'];
@@ -1247,12 +1490,12 @@ class Strings {
   String get noTasksAssignedToOthers =>
       _currentLanguageMap['noTasksAssignedToOthers'] ?? _english['noTasksAssignedToOthers'];
 
-  String get noTasksAssignetToYou => _currentLanguageMap['noTasksAssignetToYou'] ?? _english['noTasksAssignetToYou'];
+  String get noTasksAssignedToYou => _currentLanguageMap['noTasksAssignetToYou'] ?? _english['noTasksAssignetToYou'];
 
   String get noFutureTasks => _currentLanguageMap['noFutureTasks'] ?? _english['noFutureTasks'];
 
   // ~~~ remove member ~~~
-  String get removeMemberLable => _currentLanguageMap['removeMemberLable'] ?? _english['removeMemberLable'];
+  String get removeMemberLabel => _currentLanguageMap['removeMemberLable'] ?? _english['removeMemberLable'];
 
   String get confirmRemove => _currentLanguageMap['confirmRemove'] ?? _english['confirmRemove'];
 
@@ -1352,12 +1595,6 @@ class Strings {
   // =================================================================
   // ==========================  Languages  ==========================
   // =================================================================
-  String get hebrew => _currentLanguageMap['hebrew'] ?? _english['hebrew'];
-
-  String get english => _currentLanguageMap['english'] ?? _english['english'];
-
-  String get russian => _currentLanguageMap['russian'] ?? _english['russian'];
-
   String get changeLanguage => _currentLanguageMap['changeLanguage'] ?? _english['changeLanguage'];
 
   // =================================================================
@@ -1421,6 +1658,7 @@ class Strings {
       Locale('en', 'US'),
       Locale('he', 'IL'),
       Locale('ru', 'RU'),
+      Locale('ro', 'RO'),
     ];
   }
 
@@ -1432,6 +1670,8 @@ class Strings {
         return 'English';
       case 'ru':
         return 'Русский';
+      case 'ro':
+        return 'Română';
       default:
         return locale.languageCode;
     }
@@ -1443,6 +1683,8 @@ class Strings {
         return Locale('he', 'IL');
       case 'ru_RU':
         return Locale('ru', 'RU');
+      case 'ro_RO':
+        return Locale('ro', 'RO');
       case 'en_US':
       default:
         return Locale('en', 'US');
@@ -1456,6 +1698,9 @@ class Strings {
         break;
       case "ru":
         _currentLanguageMap = _russian;
+        break;
+      case "ro":
+        _currentLanguageMap = _romanian;
         break;
       default:
         _currentLanguageMap = _english;

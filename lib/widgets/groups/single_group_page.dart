@@ -497,7 +497,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
     }
     Padding noTasksAssignedToMe = Padding(
       padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-      child: Center(child: Text(app.strings.noTasksAssignetToYou)),
+      child: Center(child: Text(app.strings.noTasksAssignedToYou)),
     );
     if (_myTasks == null) return Text(app.strings.fetchingTasksFromServer);
     if (_myTasks.length == 0) return noTasksAssignedToMe;
@@ -842,7 +842,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
       onTap: () {
         TextEditingController _notificationController = new TextEditingController();
         DoItTextField notificationMessage = DoItTextField(
-          label: app.strings.notificationMessageLable,
+          label: app.strings.notificationMessageLabel,
           controller: _notificationController,
           maxLines: 3,
           maxLength: 30,
