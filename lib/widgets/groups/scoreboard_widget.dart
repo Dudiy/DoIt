@@ -49,7 +49,7 @@ class ScoreBoardState extends State<ScoreBoard> {
     List<Widget> list = new List();
     list.add(_timeSpanSelector);
     if (numDaysSelected == -1) {
-      list.add(Text(app.strings.selectTimespanPrompt));
+      list.add(Text(app.strings.selectTimeSpanPrompt));
       setState(() => _scoreBoardBody = list);
     } else {
       DateTime fromDate = _calculateFromDate();

@@ -4,7 +4,7 @@ import 'package:do_it/widgets/custom/dialog_generator.dart';
 import 'package:flutter/material.dart';
 
 class UserSelector extends StatefulWidget {
-  final Map<String, dynamic> _initialUsersState; // userID, {'userInfo', 'isSelectd'}
+  final Map<String, dynamic> _initialUsersState; // userID, {'userInfo', 'isSelected'}
   final Function _onSelectionSubmitted;
 
   UserSelector(this._initialUsersState, this._onSelectionSubmitted);

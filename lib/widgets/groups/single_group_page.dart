@@ -597,7 +597,7 @@ class SingleGroupPageState extends State<SingleGroupPage> {
           timeSpanSelectors,
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Center(child: Text(app.strings.selectTimespanPrompt)),
+            child: Center(child: Text(app.strings.selectTimeSpanPrompt)),
           ),
         ],
       );

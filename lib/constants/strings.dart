@@ -749,9 +749,9 @@ class Strings {
     'oneTaskRemainingMsg': 'У вас остается только одна задача, оставшаяся во всех группах, позволяющая работать ...',
     //'You only have one task remaining in all groups, lets get to work...',
     'allTasksRemainingMsg': '- вот все задачи, которые у вас остались во всех группах, позволяют работать...',
-    // '- thats all the tasks you have remaining in all groups, lets get to work...',
+    // '- that's all the tasks you have remaining in all groups, lets get to work...',
     'noTasksRemainingMsg': 'Потрясающие! у вас нет задач :)',
-    //'Awsome! you have no tasks to do :)',
+    //'Awesome! you have no tasks to do :)',
     'notInAnyGroup': 'Вы еще не в группе',
     //'You are not in any group yet',
     'noDescription': 'Введенное описание не указано',
@@ -763,7 +763,7 @@ class Strings {
     'deleteGroupConfirmMsg': 'Вы уверены, что хотите удалить эту группу? \nЭто не может быть отменено',
     //'Are you sure you would like to delete this group? \nThis cannot be undone',
     'selectTimespanPrompt': 'Выберите промежуток времени',
-    //'Please select a timespan',
+    //'Please select a time span',
     'noCompletedTasks': 'Нет завершенных задач',
     //'No completed tasks',
     'msgSentToDevs': 'Ваше сообщение отправлено разработчикам. Спасибо :)',
@@ -896,7 +896,7 @@ class Strings {
         'Каждая задача в группе отображается на карте задач, при нажатии на карту отображается страница сведений о задаче\n' //'Every task in the group is shown on a task card, clicking on the card will show the task details page\n'
         'Здесь менеджер группы может также обновить задачу\n\n' //'This is where the group manager can also update the task\n\n'
         'Групповые задачи разделяются на следующие разделы:\n',
-    //'The group tasks are seperated into the following sections:\n',
+    //'The group tasks are separated into the following sections:\n',
     'singleGroupDetailsHelpTasksAssignedToMeSubtitle': 'Заданные мне задачи (активный пользователь)',
     //'- Tasks assigned to me (the active user):',
     'singleGroupDetailsHelpTasksAssignedToMeBody':
@@ -913,8 +913,8 @@ class Strings {
     //'These tasks cannot be completed by the active user\n',
     'singleGroupDetailsHelpFutureTasksSubtitle': '- Будущие задачи (видимы только для менеджера группы):',
     // '- Future tasks (visible to group manager only):',
-    'singleGroupDetailsHelpFutureTasksBody': 'Эти задачи имеют начальную дату, которая превышает текущее время.\n ',
-    //'These tasks have a starting date that is lated than the current time.\n ',
+    'singleGroupDetailsHelpFutureTasksBody': 'Эти задачи имеют дату начала, которая позже, чем текущее время.\n ',
+    //'These tasks have a starting date that is later than the current time.\n ',
     'singleGroupDetailsHelpCompletedTasksBody':
         'Чтобы просмотреть выполненные задания, необходимо выбрать временной интервал.\n ' //'To see completed tasks a time span must be selected.\n '
         'Только менеджер группы или участник, выполнивший задачу, могут «выполнить незавершенную» задачу\n',
@@ -939,7 +939,7 @@ class Strings {
     'taskDetailsHelpAsssignedMembersBody':
         'Члены группы, которые назначены на эту задачу - только они могут ее завершить.\n' // 'The group members who are assigned to this task - only they are able to complete it.\n'
         'По умолчанию задачи назначаются всем членам группы.\n',
-    // 'By default tasks are assigned to allmembers of the group.\n',
+    // 'By default tasks are assigned to all members of the group.\n',
   };
 
   final Map<String, String> _romanian = {
@@ -1311,7 +1311,7 @@ class Strings {
 
   String get groupId => _currentLanguageMap['groupId'] ?? _english['groupId'];
 
-  String get groupTitleLable => _currentLanguageMap['groupTitleLable'] ?? _english['groupTitleLable'];
+  String get groupTitleLabel => _currentLanguageMap['groupTitleLable'] ?? _english['groupTitleLable'];
 
   String get groupManager => _currentLanguageMap['groupManager'] ?? _english['groupManager'];
 
@@ -1472,7 +1472,7 @@ class Strings {
   // ~~~ message bodies ~~~
   String get deleteGroupConfirmMsg => _currentLanguageMap['deleteGroupConfirmMsg'] ?? _english['deleteGroupConfirmMsg'];
 
-  String get selectTimespanPrompt => _currentLanguageMap['selectTimespanPrompt'] ?? _english['selectTimespanPrompt'];
+  String get selectTimeSpanPrompt => _currentLanguageMap['selectTimespanPrompt'] ?? _english['selectTimespanPrompt'];
 
   String get noCompletedTasks => _currentLanguageMap['noCompletedTasks'] ?? _english['noCompletedTasks'];
 
@@ -1649,7 +1649,7 @@ class Strings {
   String get taskDetailsHelpDueTimeBody =>
       _currentLanguageMap['taskDetailsHelpDueTimeBody'] ?? _english['taskDetailsHelpDueTimeBody'];
 
-  String get taskDetailsHelpAsssignedMembersBody =>
+  String get taskDetailsHelpAssignedMembersBody =>
       _currentLanguageMap['taskDetailsHelpAsssignedMembersBody'] ?? _english['taskDetailsHelpAsssignedMembersBody'];
   //endregion
 

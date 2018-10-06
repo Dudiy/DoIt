@@ -296,7 +296,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
             DoItTextField(
               controller: _titleController,
-              label: app.strings.groupTitleLable,
+              label: app.strings.groupTitleLabel,
               enabled: editEnabled,
               maxLength: 15,
             ),

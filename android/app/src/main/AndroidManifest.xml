@@ -26,7 +26,7 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="DoIt"
+        android:label="Do It"
         android:icon="@mipmap/doit_icon">
         <activity
             android:name=".NfcActivity"

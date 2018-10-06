@@ -336,7 +336,7 @@ class DoItDialogs {
                       _getHelpPageText(app.strings.taskDetailsHelpDueTimeBody, PADDING_2),
                       _getHelpPageText(
                           '- ${app.strings.assignedMembers}:', PADDING_1, TextStyle(fontWeight: FontWeight.bold)),
-                      _getHelpPageText(app.strings.taskDetailsHelpAsssignedMembersBody, PADDING_2),
+                      _getHelpPageText(app.strings.taskDetailsHelpAssignedMembersBody, PADDING_2),
                     ],
                   ),
                 ),
